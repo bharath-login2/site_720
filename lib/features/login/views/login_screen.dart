@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
+import 'package:site_720/core/constants/routes.dart';
 import '../cubit/login_cubit.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -129,12 +130,13 @@ class LoginScreen extends StatelessWidget {
                 listener: (context, state) {
                   if (state is LoginSuccess) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Login successful'),
+                      SnackBar(
+                        content: Text(state.message),
                         backgroundColor: Colors.green,
                       ),
                     );
-                    Navigator.of(context).pushReplacementNamed('/home');
+                    Navigator.of(context)
+                        .pushReplacementNamed(AppRoutes.dashboard);
                   } else if (state is LoginFailure) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
@@ -150,7 +152,6 @@ class LoginScreen extends StatelessWidget {
                       child: CircularProgressIndicator(),
                     );
                   }
-
                   return InkWell(
                     onTap: () {
                       if (_usernameController.text.isEmpty) {

@@ -1,4 +1,3 @@
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'login_state.dart';
@@ -13,14 +12,12 @@ class LoginCubit extends Cubit<LoginState> {
   Future<void> login(String username, String password) async {
     emit(LoginLoading());
     try {
-      // Simulate API call
       await Future.delayed(const Duration(seconds: 2));
 
-      // Mock response
-      final success = username == "admin" && password == "1234";
+      final success = username == "1" && password == "1";
 
       if (success) {
-        emit(LoginSuccess());
+        emit(LoginSuccess("Login success"));
       } else {
         emit(LoginFailure("Invalid username or password."));
       }

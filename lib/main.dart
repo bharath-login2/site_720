@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/constants/routes.dart';
+import 'package:site_720/features/dashboard/views/dashboard_screen.dart';
 
 import 'features/login/views/login_screen.dart';
 
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
       initialRoute: AppRoutes.login,
       routes: {
         '/login': (context) => LoginScreen(),
-        // '/home': (context) => const HomeScreen(),
+        '/dashboard': (context) =>  DashboardScreen(),
       },
     );
   }

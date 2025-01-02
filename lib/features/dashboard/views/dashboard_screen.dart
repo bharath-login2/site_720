@@ -8,6 +8,7 @@ import 'package:site_720/features/dashboard/cubit/dasahboard_cubit.dart';
 import 'package:site_720/features/dashboard/cubit/dashboard_state.dart';
 import 'package:site_720/features/dashboard/widgets/pie_chart.dart';
 
+import '../../../core/constants/routes.dart';
 import '../widgets/dash_container.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -35,7 +36,7 @@ class DashboardScreen extends StatelessWidget {
                       const BoxDecoration(color: AppColors.secondaryColor),
                   child: Padding(
                     padding: const EdgeInsets.only(
-                        top: 80.0, bottom: 16.0, left: 16.0, right: 16.0),
+                        top: 60.0, bottom: 16.0, left: 16.0, right: 16.0),
                     child: Column(
                       children: [
                         Row(
@@ -47,14 +48,14 @@ class DashboardScreen extends StatelessWidget {
                                 Text(
                                   "DEMO",
                                   style: TextStyle(
-                                    fontSize: 17,
+                                    fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 Text(
                                   "PRADEESH",
                                   style: TextStyle(
-                                    fontSize: 13,
+                                    fontSize: 11,
                                     fontWeight: FontWeight.bold,
                                     // color: AppColors.primaryColor,
                                     letterSpacing: 1,
@@ -64,8 +65,8 @@ class DashboardScreen extends StatelessWidget {
                               ],
                             ),
                             Container(
-                                width: 50,
-                                height: 50,
+                                width: 40,
+                                height: 40,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
                                   color: AppColors.backgroundColor,
@@ -82,7 +83,7 @@ class DashboardScreen extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(
-                          height: 20,
+                          height: 15,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -90,7 +91,7 @@ class DashboardScreen extends StatelessWidget {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .75,
-                              height: 45,
+                              height: 40,
                               decoration: BoxDecoration(
                                   color: AppColors.search,
                                   borderRadius: BorderRadius.circular(8)),
@@ -104,8 +105,8 @@ class DashboardScreen extends StatelessWidget {
                               ),
                             ),
                             Container(
-                                width: 45,
-                                height: 45,
+                                width: 40,
+                                height: 40,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
                                   color: AppColors.coffie,
@@ -133,9 +134,15 @@ class DashboardScreen extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      DashContainer(
-                        title: "Upcoming",
-                        count: "100",
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(AppRoutes.projectList);
+                        },
+                        child: DashContainer(
+                          title: "Upcoming",
+                          count: "100",
+                        ),
                       ),
                       DashContainer(
                         title: "Running",
@@ -199,7 +206,7 @@ class DashboardScreen extends StatelessWidget {
                                       const Text(
                                         "Overall Progress",
                                         style: TextStyle(
-                                          fontSize: 13,
+                                          fontSize: 12,
                                           fontWeight: FontWeight.bold,
                                           // color: AppColors.coffie,
                                         ),
@@ -313,7 +320,8 @@ class DashboardScreen extends StatelessWidget {
                             itemCount: 3,
                             itemBuilder: (context, i) {
                               return Padding(
-                                padding: const EdgeInsets.all(12.0),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 6.0, horizontal: 8.0),
                                 child: Container(
                                   decoration: BoxDecoration(
                                       boxShadow: [
@@ -327,7 +335,8 @@ class DashboardScreen extends StatelessWidget {
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(8))),
                                   child: Padding(
-                                    padding: const EdgeInsets.all(12.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12.0, vertical: 8.0),
                                     child: Column(
                                       children: [
                                         const Padding(

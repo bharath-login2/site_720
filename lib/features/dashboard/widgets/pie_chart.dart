@@ -26,7 +26,7 @@ class _DashboardPieChartState extends State<DashboardPieChart> {
       child: Row(
         children: <Widget>[
           const SizedBox(
-            height: 18,
+            height: 15,
           ),
           Expanded(
             child: AspectRatio(
@@ -51,7 +51,7 @@ class _DashboardPieChartState extends State<DashboardPieChart> {
                     show: false,
                   ),
                   sectionsSpace: 0,
-                  centerSpaceRadius: 35,
+                  centerSpaceRadius: 25,
                   sections: _buildSections(total),
                 ),
               ),
@@ -77,8 +77,8 @@ class _DashboardPieChartState extends State<DashboardPieChart> {
   List<PieChartSectionData> _buildSections(total) {
     return List.generate(widget.values.length, (index) {
       final isTouched = index == touchedIndex;
-      final fontSize = isTouched ? 14.0 : 10.0;
-      final radius = isTouched ? 60.0 : 50.0;
+      final fontSize = isTouched ? 12.0 : 10.0;
+      final radius = isTouched ? 50.0 : 40.0;
       const shadows = [Shadow(color: Colors.black, blurRadius: 2)];
       return PieChartSectionData(
         color: widget.colors[index],
@@ -102,7 +102,7 @@ class Indicator extends StatelessWidget {
     required this.color,
     required this.text,
     required this.isSquare,
-    this.size = 16,
+    this.size = 12,
     this.textColor,
   });
   final Color color;
@@ -131,7 +131,7 @@ class Indicator extends StatelessWidget {
           Text(
             text,
             style: TextStyle(
-              fontSize: 16,
+              fontSize: 10,
               fontWeight: FontWeight.bold,
               color: textColor,
             ),

@@ -36,7 +36,7 @@ class DashContainer extends StatelessWidget {
               Text(
                 title,
                 style: const TextStyle(
-                  fontSize: 16,
+                  fontSize: 14,
                   fontWeight: FontWeight.bold,
                   // color: AppColors.coffie,
                 ),
@@ -44,7 +44,7 @@ class DashContainer extends StatelessWidget {
               Text(
                 count,
                 style: const TextStyle(
-                  fontSize: 20,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                   // color: AppColors.coffie,
                 ),
@@ -52,10 +52,13 @@ class DashContainer extends StatelessWidget {
               const Align(
                 alignment: Alignment.bottomRight,
                 child: CircleAvatar(
-                  radius: 15,
+                  radius: 12,
                   backgroundColor: AppColors.coffie,
                   foregroundColor: Colors.white,
-                  child: Icon(Icons.arrow_forward),
+                  child: Icon(
+                    Icons.arrow_forward,
+                    size: 15,
+                  ),
                 ),
               )
             ],

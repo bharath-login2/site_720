@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/constants/routes.dart';
+import '../../../core/widgets/buttons.dart';
 import '../cubit/login_cubit.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -21,7 +22,7 @@ class LoginScreen extends StatelessWidget {
             children: [
               Container(
                 width: MediaQuery.of(context).size.width,
-                height: 200,
+                height: 250,
                 child: const Center(
                     // child: Image.asset(
                     //   'assets/main/logo.png',
@@ -33,7 +34,7 @@ class LoginScreen extends StatelessWidget {
               const Text(
                 "Login",
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                   // color: AppColors.primaryColor,
                   letterSpacing: 1,
@@ -44,7 +45,7 @@ class LoginScreen extends StatelessWidget {
               const Text(
                 "Enter your login details",
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 14,
                   fontWeight: FontWeight.bold,
                   // color: AppColors.primaryColor,
                   letterSpacing: 1,
@@ -63,7 +64,8 @@ class LoginScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         Container(
-                          width: MediaQuery.of(context).size.width * 0.9,
+                          height: 45,
+                          width: MediaQuery.of(context).size.width * 0.85,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             boxShadow: [
@@ -85,7 +87,8 @@ class LoginScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 15),
                         Container(
-                          width: MediaQuery.of(context).size.width * 0.9,
+                          width: MediaQuery.of(context).size.width * 0.85,
+                          height: 45,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             boxShadow: [
@@ -175,29 +178,7 @@ class LoginScreen extends StatelessWidget {
                             );
                       }
                     },
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: AppColors.primaryColor,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.8),
-                            blurRadius: 6,
-                            offset: const Offset(3, 3),
-                          ),
-                        ],
-                      ),
-                      alignment: Alignment.center,
-                      child: const Text(
-                        'Login',
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
+                    child: LargeButton(title: "Login",),
                   );
                 },
               ),
@@ -207,7 +188,7 @@ class LoginScreen extends StatelessWidget {
               const Text(
                 "Forgot Password ?",
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 12,
                   fontWeight: FontWeight.bold,
                   color: AppColors.primaryColor,
                   fontFamily: "Lobster",
@@ -220,3 +201,4 @@ class LoginScreen extends StatelessWidget {
     );
   }
 }
+

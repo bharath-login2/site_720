@@ -26,109 +26,115 @@ class DashboardScreen extends StatelessWidget {
       create: (context) => DashboardCubit(),
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(
+              MediaQuery.of(context).size.height * 0.18), // Reduced height
+          child: Container(
+            decoration: const BoxDecoration(color: AppColors.secondaryColor),
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 60.0, left: 16.0, right: 16.0), // Reduced bottom padding
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "DEMO",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            "PRADEESH",
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1,
+                              fontFamily: "Lobster",
+                            ),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: AppColors.backgroundColor,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.8),
+                              blurRadius: 6,
+                              offset: const Offset(3, 3),
+                            ),
+                          ],
+                        ),
+                        alignment: Alignment.center,
+                        child: const Icon(Icons.person),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10, // Reduced height
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * .75,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: AppColors.search,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: TextFormField(
+                          controller: searchController,
+                          decoration: const InputDecoration(
+                            hintText: 'Search...',
+                            contentPadding: EdgeInsets.all(10),
+                            border: InputBorder.none,
+                            prefixIcon: Icon(Icons.search),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: AppColors.coffie,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.8),
+                              blurRadius: 6,
+                              offset: const Offset(1, 1),
+                            ),
+                          ],
+                        ),
+                        alignment: Alignment.center,
+                        child: const Icon(
+                          Icons.tune,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
         body: BlocBuilder<DashboardCubit, DashboardState>(
             builder: (context, state) {
           return SingleChildScrollView(
             child: Column(
               children: [
-                Container(
-                  decoration:
-                      const BoxDecoration(color: AppColors.secondaryColor),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        top: 60.0, bottom: 16.0, left: 16.0, right: 16.0),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "DEMO",
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  "PRADEESH",
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.bold,
-                                    // color: AppColors.primaryColor,
-                                    letterSpacing: 1,
-                                    fontFamily: "Lobster",
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: AppColors.backgroundColor,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.8),
-                                      blurRadius: 6,
-                                      offset: const Offset(3, 3),
-                                    ),
-                                  ],
-                                ),
-                                alignment: Alignment.center,
-                                child: const Icon(Icons.person)),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 15,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * .75,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                  color: AppColors.search,
-                                  borderRadius: BorderRadius.circular(8)),
-                              child: TextFormField(
-                                controller: searchController,
-                                decoration: const InputDecoration(
-                                    hintText: 'Search...',
-                                    contentPadding: EdgeInsets.all(10),
-                                    border: InputBorder.none,
-                                    prefixIcon: Icon(Icons.search)),
-                              ),
-                            ),
-                            Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: AppColors.coffie,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.8),
-                                      blurRadius: 6,
-                                      offset: const Offset(1, 1),
-                                    ),
-                                  ],
-                                ),
-                                alignment: Alignment.center,
-                                child: const Icon(
-                                  Icons.tune,
-                                  color: Colors.white,
-                                )),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ),
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0),
                   child: Row(

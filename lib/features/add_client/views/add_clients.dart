@@ -75,7 +75,6 @@ class AddCilentScreen extends StatelessWidget {
                       fillColor: Colors.white,
                       filled: true,
                       border: OutlineInputBorder(
-                        // Custom border
                         borderRadius: BorderRadius.circular(5),
                       ),
                       labelText: 'Contact person',

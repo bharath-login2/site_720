@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:site_720/core/constants/colors.dart';
+import 'package:site_720/core/constants/routes.dart';
+import '../../../core/widgets/appbar.dart';
 import '../widgets/details_button_container.dart';
 import '../widgets/details_item.dart';
 import '../widgets/floating_profile_card.dart';
@@ -27,47 +29,8 @@ class ProjectDetails extends StatelessWidget {
                 // height: MediaQuery.of(context).size.height,
                 child: Column(
                   children: [
-                    Container(
-                      height: MediaQuery.of(context).size.height * .22,
-                      width: MediaQuery.of(context).size.width,
-                      decoration: const BoxDecoration(
-                          color: AppColors.primaryColor,
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(22),
-                            bottomRight: Radius.circular(22),
-                          )),
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            top: 60.0, left: 16.0, right: 16.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: InkWell(
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Icon(
-                                        Icons.arrow_back_ios,
-                                        color: Colors.white,
-                                      )),
-                                ),
-                                const Text(
-                                  "Project Details",
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
+                    FloatingAppBar(
+                      title: "Project Details",
                     ),
                     SizedBox(
                       height: MediaQuery.of(context).size.height * .075,
@@ -215,10 +178,15 @@ class ProjectDetails extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          DetailsButtonContainer(
-                            title: "Gallery",
-                            color: AppColors.primaryColor,
-                            width: MediaQuery.of(context).size.width * .43,
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(context, AppRoutes.gallery);
+                            },
+                            child: DetailsButtonContainer(
+                              title: "Gallery",
+                              color: AppColors.primaryColor,
+                              width: MediaQuery.of(context).size.width * .43,
+                            ),
                           ),
                           DetailsButtonContainer(
                             title: "Work Details",

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/constants/routes.dart';
+import '../../../core/widgets/buttons.dart';
 import '../widgets/floating_card.dart';
 
 class ProjectList extends StatelessWidget {
@@ -30,8 +31,10 @@ class ProjectList extends StatelessWidget {
                       height: MediaQuery.of(context).size.height * .25,
                       width: MediaQuery.of(context).size.width,
                       decoration: const BoxDecoration(
+                          color: AppColors.primaryColor,
                           image: DecorationImage(
-                              image: AssetImage("assets/images/appbar.png"))),
+                              image: AssetImage("assets/images/appbar.png"),
+                              fit: BoxFit.fill)),
                       child: Padding(
                         padding: const EdgeInsets.only(
                             top: 80.0, bottom: 16.0, left: 16.0, right: 16.0),
@@ -106,7 +109,6 @@ class ProjectList extends StatelessWidget {
                           fillColor: Colors.white,
                           filled: true,
                           border: OutlineInputBorder(
-                            // Custom border
                             borderRadius: BorderRadius.circular(5),
                           ),
                           labelText: 'Select Status',
@@ -144,30 +146,9 @@ class ProjectList extends StatelessWidget {
                               ),
                             ),
                           ),
-                          Container(
-                              width: MediaQuery.of(context).size.width * .25,
-                              height: MediaQuery.of(context).size.width * .105,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: AppColors.primaryColor,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.8),
-                                    blurRadius: 6,
-                                    offset: const Offset(1, 1),
-                                  ),
-                                ],
-                              ),
-                              alignment: Alignment.center,
-                              child: const Text(
-                                "Submit",
-                                style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 1,
-                                    fontFamily: "Lobster",
-                                    color: Colors.white),
-                              )),
+                          InkWell(
+                              onTap: () {},
+                              child: SmallButton(title: "Submit")),
                         ],
                       ),
                     ),

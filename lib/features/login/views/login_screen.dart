@@ -1,8 +1,13 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/constants/routes.dart';
+import 'package:site_720/core/widgets/connectivity_dialog.dart';
 import '../../../core/widgets/buttons.dart';
+import '../../connectivity/cubit/connectivity_cubit.dart';
+import '../../connectivity/cubit/connectivity_state.dart';
 import '../cubit/login_cubit.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -10,33 +15,69 @@ class LoginScreen extends StatelessWidget {
 
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool connStatus = false;
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => LoginCubit(),
-      child: Scaffold(
-        backgroundColor: AppColors.backgroundColor,
-        body: SingleChildScrollView(
+    return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<ConnectivityCubit, ConnectivityState>(
+            listener: (context, state) {
+              if (state is ConnectivityDisconnected) {
+                connStatus = false;
+                connectivityDialog(context);
+              } else {
+                connStatus = true;
+              }
+            },
+          ),
+          BlocListener<LoginCubit, LoginState>(
+            listener: (context, state) {
+              if (state is LoginSuccess) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.message),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+                Navigator.of(context).pushReplacementNamed(AppRoutes.dashboard);
+              } else if (state is LoginFailure) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.message),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            },
+          ),
+        ],
+        child: SingleChildScrollView(
           child: Column(
             children: [
               Container(
+                height: MediaQuery.of(context).size.height * .37,
                 width: MediaQuery.of(context).size.width,
-                height: 250,
-                child: const Center(
-                    // child: Image.asset(
-                    //   'assets/main/logo.png',
-                    //   width: 200,
-                    // ),
-                    ),
+                decoration: const BoxDecoration(
+                  color: AppColors.primaryColor,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(100),
+                    bottomRight: Radius.circular(15),
+                  ),
+                  image: DecorationImage(
+                    image: AssetImage("assets/images/login.jpg"),
+                    fit: BoxFit.fill,
+                  ),
+                ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 40),
               const Text(
                 "Login",
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  // color: AppColors.primaryColor,
                   letterSpacing: 1,
                   fontFamily: "Lobster",
                 ),
@@ -47,7 +88,6 @@ class LoginScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
-                  // color: AppColors.primaryColor,
                   letterSpacing: 1,
                   fontFamily: "Lobster",
                 ),
@@ -129,26 +169,7 @@ class LoginScreen extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 25),
-              BlocConsumer<LoginCubit, LoginState>(
-                listener: (context, state) {
-                  if (state is LoginSuccess) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(state.message),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                    Navigator.of(context)
-                        .pushReplacementNamed(AppRoutes.dashboard);
-                  } else if (state is LoginFailure) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(state.message),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                  }
-                },
+              BlocBuilder<LoginCubit, LoginState>(
                 builder: (context, state) {
                   if (state is LoginLoading) {
                     return const Center(
@@ -156,42 +177,52 @@ class LoginScreen extends StatelessWidget {
                     );
                   }
                   return InkWell(
-                    onTap: () {
-                      if (_usernameController.text.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Enter username"),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      } else if (_passwordController.text.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Enter password"),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      } else {
-                        context.read<LoginCubit>().login(
-                              _usernameController.text,
-                              _passwordController.text,
-                            );
+                    onTap: () async {
+                      await context.read<ConnectivityCubit>().checkConnection();
+                      if (context.mounted) {
+                        if (_usernameController.text.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Enter username"),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        } else if (_passwordController.text.isEmpty) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Enter password"),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        } else {
+                          if (connStatus == true) {
+                            context.read<LoginCubit>().login(
+                                  _usernameController.text,
+                                  _passwordController.text,
+                                );
+                          }
+                        }
                       }
                     },
-                    child: LargeButton(title: "Login",),
+                    child: LargeButton(
+                      title: "Login",
+                    ),
                   );
                 },
               ),
-              const SizedBox(
-                height: 20,
-              ),
-              const Text(
-                "Forgot Password ?",
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primaryColor,
-                  fontFamily: "Lobster",
+              const SizedBox(height: 20),
+              InkWell(
+                onTap: () {
+                  // connectivityDialog(context);
+                },
+                child: const Text(
+                  "Forgot Password ?",
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primaryColor,
+                    fontFamily: "Lobster",
+                  ),
                 ),
               ),
             ],
@@ -201,4 +232,3 @@ class LoginScreen extends StatelessWidget {
     );
   }
 }
-

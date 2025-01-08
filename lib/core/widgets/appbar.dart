@@ -9,6 +9,8 @@ PreferredSize simpleAppbar(BuildContext context, String title) {
       height: MediaQuery.of(context).size.height * .15,
       width: MediaQuery.of(context).size.width,
       decoration: const BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage("assets/images/appbar.png"), fit: BoxFit.fill),
           color: AppColors.primaryColor,
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(25),
@@ -45,4 +47,56 @@ PreferredSize simpleAppbar(BuildContext context, String title) {
       ),
     ),
   );
+}
+
+class FloatingAppBar extends StatelessWidget {
+  String title;
+  FloatingAppBar({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height * .22,
+      width: MediaQuery.of(context).size.width,
+      decoration: const BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage("assets/images/appbar.png"), fit: BoxFit.fill),
+          color: AppColors.primaryColor,
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(22),
+            bottomRight: Radius.circular(22),
+          )),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 60.0, left: 16.0, right: 16.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.white,
+                      )),
+                ),
+                Text(
+                  title,
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

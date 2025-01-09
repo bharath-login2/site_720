@@ -54,17 +54,17 @@ class ProjectDetails extends StatelessWidget {
                         child: Column(
                           children: [
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 DetailsItem(
                                   title: "Start Date",
                                   value: "11-12-2024",
-                                  icon: "",
+                                  icon: Icons.calendar_month,
                                 ),
                                 DetailsItem(
-                                  title: "Start Date",
-                                  value: "11-12-2024",
-                                  icon: "",
+                                  title: "End Date",
+                                  value: "11-12-2025",
+                                  icon: Icons.calendar_month,
                                 ),
                               ],
                             ),
@@ -72,17 +72,17 @@ class ProjectDetails extends StatelessWidget {
                               height: 10,
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 DetailsItem(
-                                  title: "Start Date",
-                                  value: "11-12-2024",
-                                  icon: "",
+                                  title: "Total Cost",
+                                  value: "10000/-",
+                                  icon: Icons.currency_rupee,
                                 ),
                                 DetailsItem(
-                                  title: "Start Date",
-                                  value: "11-12-2024",
-                                  icon: "",
+                                  title: "CCTV Address",
+                                  value: "BWERT45",
+                                  icon: Icons.video_camera_back,
                                 ),
                               ],
                             ),
@@ -90,17 +90,17 @@ class ProjectDetails extends StatelessWidget {
                               height: 10,
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 DetailsItem(
-                                  title: "Start Date",
-                                  value: "11-12-2024",
-                                  icon: "",
+                                  title: "Total Worked",
+                                  value: "20",
+                                  icon: Icons.done_all,
                                 ),
                                 DetailsItem(
-                                  title: "Start Date",
-                                  value: "11-12-2024",
-                                  icon: "",
+                                  title: "Assigned Work",
+                                  value: "50",
+                                  icon: Icons.person,
                                 ),
                               ],
                             ),
@@ -108,17 +108,17 @@ class ProjectDetails extends StatelessWidget {
                               height: 10,
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 DetailsItem(
-                                  title: "Start Date",
-                                  value: "11-12-2024",
-                                  icon: "",
+                                  title: "Company Issues",
+                                  value: "12",
+                                  icon: Icons.location_city,
                                 ),
                                 DetailsItem(
-                                  title: "Start Date",
-                                  value: "11-12-2024",
-                                  icon: "",
+                                  title: "Client Issues",
+                                  value: "5",
+                                  icon: Icons.person_remove,
                                 ),
                               ],
                             ),
@@ -126,17 +126,17 @@ class ProjectDetails extends StatelessWidget {
                               height: 10,
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 DetailsItem(
-                                  title: "Start Date",
+                                  title: "General Issues",
                                   value: "11-12-2024",
-                                  icon: "",
+                                  icon: Icons.public,
                                 ),
                                 DetailsItem(
-                                  title: "Start Date",
-                                  value: "11-12-2024",
-                                  icon: "",
+                                  title: "Payment Delay",
+                                  value: "20000",
+                                  icon: Icons.currency_rupee,
                                 ),
                               ],
                             ),
@@ -202,32 +202,18 @@ class ProjectDetails extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          DetailsButtonContainer(
-                            title: "Gallery",
-                            color: AppColors.primaryColor,
-                            width: MediaQuery.of(context).size.width * .43,
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(context, AppRoutes.drawing);
+                            },
+                            child: DetailsButtonContainer(
+                              title: "Site Drawing",
+                              color: AppColors.primaryColor,
+                              width: MediaQuery.of(context).size.width * .43,
+                            ),
                           ),
                           DetailsButtonContainer(
-                            title: "Work Details",
-                            color: AppColors.primaryColor,
-                            width: MediaQuery.of(context).size.width * .43,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 12.0, horizontal: 16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          DetailsButtonContainer(
-                            title: "Gallery",
-                            color: AppColors.primaryColor,
-                            width: MediaQuery.of(context).size.width * .43,
-                          ),
-                          DetailsButtonContainer(
-                            title: "Work Details",
+                            title: "Site Note",
                             color: AppColors.primaryColor,
                             width: MediaQuery.of(context).size.width * .43,
                           ),
@@ -241,12 +227,12 @@ class ProjectDetails extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           DetailsButtonContainer(
-                            title: "Gallery",
+                            title: "Stage",
                             color: AppColors.primaryColor,
                             width: MediaQuery.of(context).size.width * .43,
                           ),
                           DetailsButtonContainer(
-                            title: "Work Details",
+                            title: "Sub Contractor",
                             color: AppColors.primaryColor,
                             width: MediaQuery.of(context).size.width * .43,
                           ),
@@ -260,12 +246,31 @@ class ProjectDetails extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           DetailsButtonContainer(
-                            title: "Gallery",
+                            title: "Extra Work",
                             color: AppColors.primaryColor,
                             width: MediaQuery.of(context).size.width * .43,
                           ),
                           DetailsButtonContainer(
-                            title: "Work Details",
+                            title: "Deduction Work",
+                            color: AppColors.primaryColor,
+                            width: MediaQuery.of(context).size.width * .43,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12.0, horizontal: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          DetailsButtonContainer(
+                            title: "Purchase",
+                            color: AppColors.primaryColor,
+                            width: MediaQuery.of(context).size.width * .43,
+                          ),
+                          DetailsButtonContainer(
+                            title: "Stock",
                             color: AppColors.primaryColor,
                             width: MediaQuery.of(context).size.width * .43,
                           ),

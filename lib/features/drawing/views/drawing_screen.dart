@@ -7,33 +7,27 @@ import 'package:image_picker/image_picker.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/buttons.dart';
 import '../../../core/widgets/appbar.dart';
-import '../cubit/gallery_state.dart';
-import '../cubit/galllery_cubit.dart';
+import '../cubit/drawing_state.dart';
+import '../cubit/drawing_cubit.dart';
 import '../widgets/phase_widget.dart';
 
-class GalleryScreen extends StatelessWidget {
-  GalleryScreen({super.key});
+class DrawingScreen extends StatelessWidget {
+  DrawingScreen({super.key});
 
-  dynamic phase;
-  List<Map<String, dynamic>> phases = [
-    {"statusId": 101, "statusName": "status 1"},
-    {"statusId": 102, "statusName": "status 2"},
-    {"statusId": 103, "statusName": "status 3"},
-  ];
-  TextEditingController youtubeLink = TextEditingController();
+  TextEditingController remark = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => GalleryCubit(),
+      create: (context) => DrawingCubit(),
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
-        body: BlocConsumer<GalleryCubit, GalleryState>(
+        body: BlocConsumer<DrawingCubit, DrawingState>(
           listener: (context, state) {
-            if (state is GallerySuccess) {
+            if (state is DrawingSuccess) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(state.message)),
               );
-            } else if (state is GalleryFailure) {
+            } else if (state is DrawingFailure) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(state.message)),
               );
@@ -47,10 +41,10 @@ class GalleryScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         FloatingAppBar(
-                          title: "Gallery",
+                          title: "Drawing",
                         ),
                         SizedBox(
-                          height: MediaQuery.of(context).size.height * .35,
+                          height: MediaQuery.of(context).size.height * .28,
                         ),
                         Container(
                           width: MediaQuery.of(context).size.width * .92,
@@ -137,7 +131,7 @@ class GalleryScreen extends StatelessWidget {
             const Padding(
               padding: EdgeInsets.only(top: 8.0, bottom: 12.0),
               child: Text(
-                "Upload Gallery",
+                "Upload Drawing",
                 style: TextStyle(
                   color: AppColors.primaryColor,
                   fontSize: 20,
@@ -145,34 +139,6 @@ class GalleryScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * .75,
-              height: 40,
-              child: DropdownButtonFormField(
-                value: phase,
-                onChanged: (value) {
-                  phase = value.toString();
-                },
-                items: phases.map((data) {
-                  return DropdownMenuItem<String>(
-                    value: data["statusId"].toString(),
-                    child: Text(data["statusName"].toString()),
-                  );
-                }).toList(),
-                decoration: InputDecoration(
-                  fillColor: Colors.white,
-                  filled: true,
-                  border: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.black),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  labelText: 'Select Phase',
-                  labelStyle: const TextStyle(color: Colors.grey, fontSize: 14),
-                  contentPadding: const EdgeInsets.only(left: 10),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
             InkWell(
               onTap: () async {
                 imageDialog(context);
@@ -191,9 +157,9 @@ class GalleryScreen extends StatelessWidget {
                     const Icon(Icons.image, color: Colors.grey),
                     const SizedBox(width: 10),
                     Expanded(
-                      child: BlocBuilder<GalleryCubit, GalleryState>(
+                      child: BlocBuilder<DrawingCubit, DrawingState>(
                         builder: (context, state) {
-                          if (state is GalleryLoading) {
+                          if (state is DrawingLoading) {
                             return const Center(
                                 child: CircularProgressIndicator());
                           } else if (state is ImageSuccess) {
@@ -214,7 +180,7 @@ class GalleryScreen extends StatelessWidget {
                                 );
                               },
                             );
-                          } else if (state is GalleryFailure) {
+                          } else if (state is DrawingFailure) {
                             return Center(
                                 child: Text(
                               state.message,
@@ -238,7 +204,7 @@ class GalleryScreen extends StatelessWidget {
               width: MediaQuery.of(context).size.width * .75,
               height: 40,
               child: TextFormField(
-                controller: youtubeLink,
+                controller: remark,
                 decoration: InputDecoration(
                   fillColor: Colors.white,
                   filled: true,
@@ -246,9 +212,9 @@ class GalleryScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(5),
                     borderSide: const BorderSide(color: Colors.black),
                   ),
-                  labelText: 'YouTube Link',
+                  labelText: 'Remarks',
                   prefixIcon: const Icon(
-                    Icons.link,
+                    Icons.text_fields,
                     color: Colors.grey,
                     size: 18,
                   ),
@@ -319,7 +285,7 @@ class GalleryScreen extends StatelessWidget {
                         InkWell(
                           onTap: () async {
                             await context
-                                .read<GalleryCubit>()
+                                .read<DrawingCubit>()
                                 .selectMultiImage(ImageSource.camera);
                             Navigator.pop(context);
                           },
@@ -351,7 +317,7 @@ class GalleryScreen extends StatelessWidget {
                         InkWell(
                           onTap: () async {
                             await context
-                                .read<GalleryCubit>()
+                                .read<DrawingCubit>()
                                 .selectMultiImage(null);
                             Navigator.pop(context);
                           },
@@ -372,7 +338,7 @@ class GalleryScreen extends StatelessWidget {
                                 ),
                                 SizedBox(height: 10),
                                 Text(
-                                  "Gallery",
+                                  "Drawing",
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ],

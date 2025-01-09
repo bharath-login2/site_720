@@ -16,6 +16,7 @@ class LoginScreen extends StatelessWidget {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool connStatus = false;
+  bool isObscure = true;
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +62,6 @@ class LoginScreen extends StatelessWidget {
                 height: MediaQuery.of(context).size.height * .37,
                 width: MediaQuery.of(context).size.width,
                 decoration: const BoxDecoration(
-                  color: AppColors.primaryColor,
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(100),
                     bottomRight: Radius.circular(15),
@@ -86,7 +86,7 @@ class LoginScreen extends StatelessWidget {
               const Text(
                 "Enter your login details",
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: 14, 
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1,
                   fontFamily: "Lobster",
@@ -95,11 +95,9 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: 25),
               BlocBuilder<LoginCubit, LoginState>(
                 builder: (context, state) {
-                  bool isObscure = true;
                   if (state is LoginPasswordVisibilityChanged) {
                     isObscure = state.isObscure;
                   }
-
                   return Form(
                     child: Column(
                       children: [

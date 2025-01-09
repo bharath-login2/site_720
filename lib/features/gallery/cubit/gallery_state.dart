@@ -1,15 +1,9 @@
 class GalleryState {
-  final DateTime? fromDate;
-  final DateTime? toDate;
+  
 
-  GalleryState({this.fromDate, this.toDate});
+  GalleryState();
 
-  GalleryState copyWith({String? fromDate, String? toDate}) {
-    return GalleryState(
-      fromDate: this.fromDate,
-      toDate: this.toDate,
-    );
-  }
+
 }
 
 class GalleryInitial extends GalleryState {
@@ -26,4 +20,13 @@ class GallerySuccess extends GalleryState {
 class GalleryFailure extends GalleryState {
   final String message;
   GalleryFailure(this.message);
+}
+class ImageSuccess extends GalleryState {
+  final List imageList;
+  ImageSuccess(this.imageList);
+}
+
+class ImageFailure extends GalleryState {
+  final String message;
+  ImageFailure(this.message);
 }

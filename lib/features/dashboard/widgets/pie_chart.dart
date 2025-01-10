@@ -10,13 +10,18 @@ class DashboardPieChart extends StatefulWidget {
     required this.values,
     required this.colors,
   });
-
   @override
   State<DashboardPieChart> createState() => _DashboardPieChartState();
 }
 
 class _DashboardPieChartState extends State<DashboardPieChart> {
   int touchedIndex = -1;
+  List names = [
+    "New",
+    "Pending",
+    "Completed",
+    "Rejected",
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -57,17 +62,23 @@ class _DashboardPieChartState extends State<DashboardPieChart> {
               ),
             ),
           ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width * .3,
-            child: ListView.builder(
-                itemCount: 4,
-                itemBuilder: (context, index) {
-                  return Indicator(
-                    color: widget.colors[index],
-                    text: 'First',
-                    isSquare: false,
-                  );
-                }),
+          Padding(
+            padding: const EdgeInsets.only(
+              top: 50.0,
+              bottom: 50.0,
+            ),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * .3,
+              child: ListView.builder(
+                  itemCount: 4,
+                  itemBuilder: (context, index) {
+                    return Indicator(
+                      color: widget.colors[index],
+                      text: names[index],
+                      isSquare: false,
+                    );
+                  }),
+            ),
           ),
         ],
       ),

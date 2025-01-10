@@ -1,3 +1,4 @@
+
 class AppRoutes {
   static const splash = '/splash';
   static const login = '/login';
@@ -8,4 +9,11 @@ class AppRoutes {
   static const addCilentScreen = '/addCilentScreen';
   static const gallery = '/gallery';
   static const drawing = '/drawing';
+  static const workDetails = '/workDetails';
+  static const siteNote = '/siteNote';
+  static const stages = '/stages';
+  static const stageHistory = '/stageHistory';
+  static const subContractor = '/subContractor';
+  static const extraWork = '/extraWork';
+  static const deductionWork = '/deductionWork';
 }

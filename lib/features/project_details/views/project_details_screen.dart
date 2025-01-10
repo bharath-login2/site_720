@@ -53,6 +53,16 @@ class ProjectDetails extends StatelessWidget {
                             vertical: 16.0, horizontal: 16),
                         child: Column(
                           children: [
+                            const Padding(
+                              padding: EdgeInsets.only(top: 8.0, bottom: 16.0),
+                              child: Text(
+                                "OVERVIEW",
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.primaryColor),
+                              ),
+                            ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
@@ -188,10 +198,16 @@ class ProjectDetails extends StatelessWidget {
                               width: MediaQuery.of(context).size.width * .43,
                             ),
                           ),
-                          DetailsButtonContainer(
-                            title: "Work Details",
-                            color: AppColors.primaryColor,
-                            width: MediaQuery.of(context).size.width * .43,
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, AppRoutes.workDetails);
+                            },
+                            child: DetailsButtonContainer(
+                              title: "Work Details",
+                              color: AppColors.primaryColor,
+                              width: MediaQuery.of(context).size.width * .43,
+                            ),
                           ),
                         ],
                       ),
@@ -212,10 +228,15 @@ class ProjectDetails extends StatelessWidget {
                               width: MediaQuery.of(context).size.width * .43,
                             ),
                           ),
-                          DetailsButtonContainer(
-                            title: "Site Note",
-                            color: AppColors.primaryColor,
-                            width: MediaQuery.of(context).size.width * .43,
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(context, AppRoutes.siteNote);
+                            },
+                            child: DetailsButtonContainer(
+                              title: "Site Note",
+                              color: AppColors.primaryColor,
+                              width: MediaQuery.of(context).size.width * .43,
+                            ),
                           ),
                         ],
                       ),
@@ -226,15 +247,26 @@ class ProjectDetails extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          DetailsButtonContainer(
-                            title: "Stage",
-                            color: AppColors.primaryColor,
-                            width: MediaQuery.of(context).size.width * .43,
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(context, AppRoutes.stages);
+                            },
+                            child: DetailsButtonContainer(
+                              title: "Stages",
+                              color: AppColors.primaryColor,
+                              width: MediaQuery.of(context).size.width * .43,
+                            ),
                           ),
-                          DetailsButtonContainer(
-                            title: "Sub Contractor",
-                            color: AppColors.primaryColor,
-                            width: MediaQuery.of(context).size.width * .43,
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, AppRoutes.subContractor);
+                            },
+                            child: DetailsButtonContainer(
+                              title: "Sub Contractor",
+                              color: AppColors.primaryColor,
+                              width: MediaQuery.of(context).size.width * .43,
+                            ),
                           ),
                         ],
                       ),
@@ -245,15 +277,26 @@ class ProjectDetails extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          DetailsButtonContainer(
-                            title: "Extra Work",
-                            color: AppColors.primaryColor,
-                            width: MediaQuery.of(context).size.width * .43,
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(context, AppRoutes.extraWork);
+                            },
+                            child: DetailsButtonContainer(
+                              title: "Extra Work",
+                              color: AppColors.primaryColor,
+                              width: MediaQuery.of(context).size.width * .43,
+                            ),
                           ),
-                          DetailsButtonContainer(
-                            title: "Deduction Work",
-                            color: AppColors.primaryColor,
-                            width: MediaQuery.of(context).size.width * .43,
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, AppRoutes.deductionWork);
+                            },
+                            child: DetailsButtonContainer(
+                              title: "Deduction Work",
+                              color: AppColors.primaryColor,
+                              width: MediaQuery.of(context).size.width * .43,
+                            ),
                           ),
                         ],
                       ),

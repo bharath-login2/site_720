@@ -23,7 +23,18 @@ class DashboardScreen extends StatelessWidget {
   TextEditingController tdate = TextEditingController(
       text: DateFormat('dd-MM-yyyy').format(DateTime.now()));
   bool connStatus = false;
-
+  List names = [
+    "Company Issue",
+    "Client Issue",
+    "Payment Delay",
+    "General",
+  ];
+  List colors = [
+    Colors.blue,
+    Colors.green,
+    Colors.orange,
+    Colors.red,
+  ];
   @override
   Widget build(BuildContext context) {
     return MultiBlocListener(
@@ -228,7 +239,7 @@ class DashboardScreen extends StatelessWidget {
                                           CrossAxisAlignment.start,
                                       children: [
                                         const Text(
-                                          "Overall Progress",
+                                          "Complaints",
                                           style: TextStyle(
                                             fontSize: 12,
                                             fontWeight: FontWeight.bold,
@@ -337,64 +348,69 @@ class DashboardScreen extends StatelessWidget {
                                   ],
                                 ),
                               )),
-                          ListView.builder(
-                              padding: EdgeInsets.zero,
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: 3,
-                              itemBuilder: (context, i) {
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 6.0, horizontal: 8.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.withOpacity(0.8),
-                                            blurRadius: 3,
-                                            offset: const Offset(3, 3),
-                                          ),
-                                        ],
-                                        color: AppColors.backgroundColor,
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(8))),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 12.0, vertical: 8.0),
-                                      child: Column(
-                                        children: [
-                                          const Padding(
-                                            padding: EdgeInsets.all(2.0),
-                                            child: Row(
-                                              children: [
-                                                Text(
-                                                  "Company issue",
-                                                  style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 12),
-                                                ),
-                                              ],
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ListView.builder(
+                                padding: EdgeInsets.zero,
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: names.length,
+                                itemBuilder: (context, i) {
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 6.0, horizontal: 8.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.8),
+                                              blurRadius: 3,
+                                              offset: const Offset(3, 3),
                                             ),
-                                          ),
-                                          LinearProgressIndicator(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            backgroundColor:
-                                                Colors.grey.shade400,
-                                            value: double.parse("40") / 100,
-                                            valueColor:
-                                                const AlwaysStoppedAnimation<
-                                                    Color>(Colors.blue),
-                                            minHeight: 5,
-                                          ),
-                                        ],
+                                          ],
+                                          color: AppColors.backgroundColor,
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(8))),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 12.0, vertical: 8.0),
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(2.0),
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    names[i],
+                                                    style: const TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 12),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            LinearProgressIndicator(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              backgroundColor:
+                                                  Colors.grey.shade400,
+                                              value: double.parse("40") / 100,
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                      colors[i]),
+                                              minHeight: 5,
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              })
+                                  );
+                                }),
+                          )
                         ],
                       ),
                     ),
@@ -431,7 +447,7 @@ class DashboardScreen extends StatelessWidget {
                       Container(
                           height: 50,
                           width: double.infinity,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                               color: AppColors.primaryColor,
                               borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(10),

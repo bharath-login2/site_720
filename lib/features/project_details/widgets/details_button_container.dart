@@ -2,8 +2,6 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../core/constants/colors.dart';
-
 class DetailsButtonContainer extends StatelessWidget {
   String title;
   Color color;

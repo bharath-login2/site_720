@@ -9,4 +9,6 @@ class AppColors {
   static const coffie = Color(0xFF412018);
   static const dashContainer = Color(0xFFE9DCDA);
   static const lightA = Color(0xFFFFF8F8);
+  static const lightPrimary = Color(0xFF7B4853);
+  static const lightBlue = Color(0xFF95C9F4);
 }

@@ -307,15 +307,25 @@ class ProjectDetails extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          DetailsButtonContainer(
-                            title: "Purchase",
-                            color: AppColors.primaryColor,
-                            width: MediaQuery.of(context).size.width * .43,
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(context, AppRoutes.purchase);
+                            },
+                            child: DetailsButtonContainer(
+                              title: "Purchase",
+                              color: AppColors.primaryColor,
+                              width: MediaQuery.of(context).size.width * .43,
+                            ),
                           ),
-                          DetailsButtonContainer(
-                            title: "Stock",
-                            color: AppColors.primaryColor,
-                            width: MediaQuery.of(context).size.width * .43,
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(context, AppRoutes.stock);
+                            },
+                            child: DetailsButtonContainer(
+                              title: "Stock",
+                              color: AppColors.primaryColor,
+                              width: MediaQuery.of(context).size.width * .43,
+                            ),
                           ),
                         ],
                       ),

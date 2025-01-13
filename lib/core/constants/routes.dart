@@ -1,4 +1,5 @@
 
+
 class AppRoutes {
   static const splash = '/splash';
   static const login = '/login';
@@ -16,4 +17,6 @@ class AppRoutes {
   static const subContractor = '/subContractor';
   static const extraWork = '/extraWork';
   static const deductionWork = '/deductionWork';
+  static const purchase = '/purchase';
+  static const stock = '/stock';
 }

@@ -9,6 +9,7 @@ import 'package:site_720/features/extra_work/views/extra_work_screen.dart';
 import 'package:site_720/features/gallery/views/gallery_screen.dart';
 import 'package:site_720/features/project_details/views/project_details_screen.dart';
 import 'package:site_720/features/project_list/views/project_list_screen.dart';
+import 'package:site_720/features/purchase/views/purchase_list_screen.dart';
 import 'package:site_720/features/site_note/views/site_note_screen.dart';
 import 'package:site_720/features/splash/views/splash.dart';
 import 'package:site_720/features/sub_contactors/views/sub_contrctor_screen.dart';
@@ -58,6 +59,8 @@ class MyApp extends StatelessWidget {
         '/subContractor': (context) => SubContractor(),
         '/extraWork': (context) => ExtraWork(),
         '/deductionWork': (context) => DeductionWork(),
+        '/purchase': (context) => const PurchaseList(),
+        '/stock': (context) => DeductionWork(),
       },
     );
   }

@@ -3,14 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
-import '../cubit/extra_work_cubit.dart';
+import '../cubit/purchase_cubit.dart';
 
-class ExtraWork extends StatelessWidget {
-  ExtraWork({super.key});
-  TextEditingController searchController = TextEditingController();
-  TextEditingController work = TextEditingController();
-  TextEditingController amount = TextEditingController();
-  TextEditingController description = TextEditingController();
+class PurchaseList extends StatelessWidget {
+  const PurchaseList({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +48,7 @@ class ExtraWork extends StatelessWidget {
                         width: 10,
                       ),
                       const Text(
-                        "Extra Work",
+                        "Purchase",
                         style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -63,9 +59,7 @@ class ExtraWork extends StatelessWidget {
                     ],
                   ),
                   InkWell(
-                    onTap: () {
-                      workDialog(context);
-                    },
+                    onTap: () {},
                     child: const CircleAvatar(
                       radius: 20,
                       backgroundColor: AppColors.lightPrimary,
@@ -81,7 +75,7 @@ class ExtraWork extends StatelessWidget {
           ),
         ),
         body: BlocProvider(
-          create: (context) => ExtraWorkCubit(),
+          create: (context) => PurchaseCubit(),
           child: ListView.builder(
             shrinkWrap: true,
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -204,139 +198,5 @@ class ExtraWork extends StatelessWidget {
             },
           ),
         ));
-  }
-
-  Future<void> workDialog(BuildContext context) async {
-    return showDialog(
-      barrierColor: Colors.white.withOpacity(.4),
-      context: context,
-      builder: (context) {
-        return Material(
-          type: MaterialType.transparency,
-          color: Colors.grey.shade200,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  ),
-                  height: 300,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: Column(
-                    children: [
-                      Container(
-                          height: 50,
-                          width: double.infinity,
-                          decoration: const BoxDecoration(
-                              color: AppColors.primaryColor,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10),
-                              )),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                // SizedBox(),
-                                const Text(
-                                  "Add Work",
-                                  style: TextStyle(
-                                      color: AppColors.backgroundColor,
-                                      fontSize: 16),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const CircleAvatar(
-                                    radius: 10,
-                                    backgroundColor: AppColors.backgroundColor,
-                                    foregroundColor: AppColors.primaryColor,
-                                    child: Center(
-                                        child: Icon(
-                                      Icons.close,
-                                      size: 16,
-                                    )),
-                                  ),
-                                )
-                              ],
-                            ),
-                          )),
-                      SizedBox(
-                        height: 250,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            SizedBox(
-                              width: MediaQuery.sizeOf(context).width * .8,
-                              height: 40,
-                              child: TextFormField(
-                                controller: work,
-                                decoration: const InputDecoration(
-                                    hintText: 'Work',
-                                    contentPadding: EdgeInsets.all(10),
-                                    border: OutlineInputBorder(),
-                                    prefixIcon: Icon(
-                                      Icons.work,
-                                      size: 20,
-                                    )),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 40,
-                              width: MediaQuery.sizeOf(context).width * .8,
-                              child: TextFormField(
-                                controller: amount,
-                                decoration: const InputDecoration(
-                                    hintText: 'Amount',
-                                    contentPadding: EdgeInsets.all(10),
-                                    border: OutlineInputBorder(),
-                                    prefixIcon: Icon(
-                                      Icons.currency_rupee,
-                                      size: 20,
-                                    )),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 40,
-                              width: MediaQuery.sizeOf(context).width * .8,
-                              child: TextFormField(
-                                controller: description,
-                                decoration: const InputDecoration(
-                                    hintText: 'Description',
-                                    contentPadding: EdgeInsets.all(10),
-                                    border: OutlineInputBorder(),
-                                    prefixIcon: Icon(
-                                      Icons.text_fields,
-                                      size: 20,
-                                    )),
-                              ),
-                            ),
-                            Container(
-                              height: 40,
-                              width: MediaQuery.sizeOf(context).width * .5,
-                              decoration: BoxDecoration(
-                                  color: AppColors.primaryColor,
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: const Center(
-                                child: Text(
-                                  "Add Work",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  )),
-            ),
-          ),
-        );
-      },
-    );
   }
 }

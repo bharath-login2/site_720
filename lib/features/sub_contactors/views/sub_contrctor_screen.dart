@@ -5,8 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/appbar.dart';
-
-import '../../../core/constants/routes.dart';
 import '../cubit/sub_contractor_cubit.dart';
 
 class SubContractor extends StatelessWidget {
@@ -23,7 +21,7 @@ class SubContractor extends StatelessWidget {
         backgroundColor: AppColors.backgroundColor,
         appBar: simpleAppbar(context, "Sub Contractor"),
         body: BlocProvider(
-          create: (context) => StagesCubit(),
+          create: (context) => SubContractorCubit(),
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -68,8 +66,8 @@ class SubContractor extends StatelessWidget {
                       padding: const EdgeInsets.all(6.0),
                       child: InkWell(
                         onTap: () {
-                          Navigator.of(context)
-                              .pushNamed(AppRoutes.stageHistory);
+                          // Navigator.of(context)
+                          //     .pushNamed(AppRoutes.stageHistory);
                         },
                         child: Container(
                           width: MediaQuery.of(context).size.width * .9,

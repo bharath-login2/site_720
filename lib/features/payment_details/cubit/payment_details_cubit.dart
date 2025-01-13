@@ -1,20 +1,20 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'sub_contractor_state.dart';
+import 'payment_details_state.dart';
 
-class SubContractorCubit extends Cubit<SubContractorState> {
-  SubContractorCubit() : super(SubContractorInitial());
+class PaymentDetailsCubit extends Cubit<PaymentDetailsState> {
+  PaymentDetailsCubit() : super(PaymentDetailsInitial());
 
   void startLoading() {
-    emit(SubContractorLoading());
+    emit(PaymentDetailsLoading());
   }
 
   void emitSuccess(String message) {
-    emit(SubContractorSuccess(message));
+    emit(PaymentDetailsSuccess(message));
   }
 
   void emitFailure(String message) {
-    emit(SubContractorFailure(message));
+    emit(PaymentDetailsFailure(message));
   }
 
   void updateFromDate(String? date) {

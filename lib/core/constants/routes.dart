@@ -20,4 +20,6 @@ class AppRoutes {
   static const purchase = '/purchase';
   static const addPurchase = '/addPurchase';
   static const stock = '/stock';
+  static const expense = '/expense';
+  static const paymentDetails = '/paymentDetails';
 }

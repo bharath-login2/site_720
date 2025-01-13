@@ -1,29 +1,29 @@
-class StagesState {
+class SubContractorState {
   final DateTime? fromDate;
   final DateTime? toDate;
 
-  StagesState({this.fromDate, this.toDate});
+  SubContractorState({this.fromDate, this.toDate});
 
-  StagesState copyWith({String? fromDate, String? toDate}) {
-    return StagesState(
+  SubContractorState copyWith({String? fromDate, String? toDate}) {
+    return SubContractorState(
       fromDate: this.fromDate,
       toDate: this.toDate,
     );
   }
 }
 
-class StagesInitial extends StagesState {
+class SubContractorInitial extends SubContractorState {
   
 }
 
-class StagesLoading extends StagesState {}
+class SubContractorLoading extends SubContractorState {}
 
-class StagesSuccess extends StagesState {
+class SubContractorSuccess extends SubContractorState {
   final String message;
-  StagesSuccess(this.message);
+  SubContractorSuccess(this.message);
 }
 
-class StagesFailure extends StagesState {
+class SubContractorFailure extends SubContractorState {
   final String message;
-  StagesFailure(this.message);
+  SubContractorFailure(this.message);
 }

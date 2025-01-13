@@ -12,9 +12,7 @@ class PurchaseState {
   }
 }
 
-class PurchaseInitial extends PurchaseState {
-  
-}
+class PurchaseInitial extends PurchaseState {}
 
 class PurchaseLoading extends PurchaseState {}
 
@@ -26,4 +24,14 @@ class PurchaseSuccess extends PurchaseState {
 class PurchaseFailure extends PurchaseState {
   final String message;
   PurchaseFailure(this.message);
+}
+
+class ImageSuccess extends  PurchaseState {
+  final List imageList;
+  ImageSuccess(this.imageList);
+}
+
+class ImageFailure extends  PurchaseState {
+  final String message;
+  ImageFailure(this.message);
 }

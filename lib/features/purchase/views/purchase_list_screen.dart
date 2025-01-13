@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
+import 'package:site_720/core/constants/routes.dart';
 import '../cubit/purchase_cubit.dart';
 
 class PurchaseList extends StatelessWidget {
@@ -59,7 +60,9 @@ class PurchaseList extends StatelessWidget {
                     ],
                   ),
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pushNamed(context, AppRoutes.addPurchase);
+                    },
                     child: const CircleAvatar(
                       radius: 20,
                       backgroundColor: AppColors.lightPrimary,
@@ -89,7 +92,7 @@ class PurchaseList extends StatelessWidget {
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width * .9,
-                    height: MediaQuery.of(context).size.height * .12,
+                    height: MediaQuery.of(context).size.height * .14,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
                       color: Colors.white,
@@ -110,14 +113,15 @@ class PurchaseList extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Row(
+                            const Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Column(
+                                Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "Bedroom",
+                                      "Brick 4I",
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
@@ -130,7 +134,33 @@ class PurchaseList extends StatelessWidget {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
+                                    Text(
+                                      "15 unit",
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                   ],
+                                ),
+                                Text(
+                                  "15-05-2025",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  "₹ 500 ",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                                 Row(
                                   children: [
@@ -178,15 +208,8 @@ class PurchaseList extends StatelessWidget {
                                       ),
                                     ),
                                   ],
-                                )
+                                ),
                               ],
-                            ),
-                            const Text(
-                              "₹ 500 ",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
                             ),
                           ],
                         ),

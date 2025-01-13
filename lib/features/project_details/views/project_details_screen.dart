@@ -330,9 +330,86 @@ class ProjectDetails extends StatelessWidget {
                         ],
                       ),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12.0, horizontal: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(context, AppRoutes.purchase);
+                            },
+                            child: DetailsButtonContainer(
+                              title: "Expense",
+                              color: AppColors.primaryColor,
+                              width: MediaQuery.of(context).size.width * .43,
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(context, AppRoutes.stock);
+                            },
+                            child: DetailsButtonContainer(
+                              title: "Payment Details",
+                              color: AppColors.primaryColor,
+                              width: MediaQuery.of(context).size.width * .43,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12.0, horizontal: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(context, AppRoutes.purchase);
+                            },
+                            child: DetailsButtonContainer(
+                              title: "Estimation",
+                              color: AppColors.primaryColor,
+                              width: MediaQuery.of(context).size.width * .43,
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(context, AppRoutes.stock);
+                            },
+                            child: DetailsButtonContainer(
+                              title: "Consumption",
+                              color: AppColors.primaryColor,
+                              width: MediaQuery.of(context).size.width * .43,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12.0, horizontal: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(context, AppRoutes.purchase);
+                            },
+                            child: DetailsButtonContainer(
+                              title: "Package",
+                              color: AppColors.primaryColor,
+                              width: MediaQuery.of(context).size.width * .43,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     const SizedBox(
                       height: 20,
-                    )
+                    ),
                   ],
                 ),
               ),

@@ -18,5 +18,6 @@ class AppRoutes {
   static const extraWork = '/extraWork';
   static const deductionWork = '/deductionWork';
   static const purchase = '/purchase';
+  static const addPurchase = '/addPurchase';
   static const stock = '/stock';
 }

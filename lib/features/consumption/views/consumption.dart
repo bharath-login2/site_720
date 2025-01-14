@@ -4,19 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/appbar.dart';
-import '../cubit/payment_details_cubit.dart';
-import '../widgets/amount_container.dart';
+import '../../payment_details/widgets/amount_container.dart';
+import '../cubit/consumption_cubit.dart';
 
-class PaymentDetails extends StatelessWidget {
-  const PaymentDetails({super.key});
+class Consumption extends StatelessWidget {
+  const Consumption({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: AppColors.backgroundColor,
-        appBar: simpleAppbar(context, "Payment Details"),
+        appBar: simpleAppbar(context, "Consumption"),
         body: BlocProvider(
-          create: (context) => PaymentDetailsCubit(),
+          create: (context) => ConsumptionCubit(),
           child: ListView.builder(
             shrinkWrap: true,
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -105,18 +105,16 @@ class PaymentDetails extends StatelessWidget {
                               height: 10,
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 AmountContainer(
-                                  title: "Estimated Amount",
+                                  title: "Used Quantity",
                                   amount: "500",
                                 ),
-                                AmountContainer(
-                                  title: "Paid Amount",
-                                  amount: "500",
+                                const SizedBox(
+                                  width: 10,
                                 ),
                                 AmountContainer(
-                                  title: "Balance",
+                                  title: "In Stock",
                                   amount: "500",
                                 ),
                               ],

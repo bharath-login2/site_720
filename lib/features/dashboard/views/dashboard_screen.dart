@@ -170,9 +170,8 @@ class DashboardScreen extends StatelessWidget {
                       children: [
                         InkWell(
                           onTap: () {
-                            Navigator.of(context).pushNamed(
-                                AppRoutes.projectList,
-                                arguments: "");
+                            Navigator.of(context)
+                                .pushNamed(AppRoutes.projectList);
                           },
                           child: DashContainer(
                             title: "Upcoming",

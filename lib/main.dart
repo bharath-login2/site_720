@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/constants/routes.dart';
+import 'package:site_720/features/consumption/views/consumption.dart';
 import 'package:site_720/features/dashboard/views/dashboard_screen.dart';
 import 'package:site_720/features/drawing/views/drawing_screen.dart';
+import 'package:site_720/features/estimation/views/estimation_screen.dart';
 import 'package:site_720/features/expense/views/expense_screen.dart';
 import 'package:site_720/features/extra_work/views/extra_work_screen.dart';
 import 'package:site_720/features/gallery/views/gallery_screen.dart';
@@ -63,10 +65,12 @@ class MyApp extends StatelessWidget {
         '/extraWork': (context) => ExtraWork(),
         '/deductionWork': (context) => DeductionWork(),
         '/purchase': (context) => const PurchaseList(),
-        '/addPurchase': (context) =>  AddPurchase(),
+        '/addPurchase': (context) => AddPurchase(),
         '/stock': (context) => DeductionWork(),
         '/expense': (context) => const Expense(),
         '/paymentDetails': (context) => const PaymentDetails(),
+        '/estimation': (context) => const Estimation(),
+        '/consumption': (context) => const Consumption(),
       },
     );
   }

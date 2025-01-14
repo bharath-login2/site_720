@@ -368,7 +368,8 @@ class ProjectDetails extends StatelessWidget {
                         children: [
                           InkWell(
                             onTap: () {
-                              Navigator.pushNamed(context, AppRoutes.purchase);
+                              Navigator.pushNamed(
+                                  context, AppRoutes.estimation);
                             },
                             child: DetailsButtonContainer(
                               title: "Estimation",
@@ -378,7 +379,7 @@ class ProjectDetails extends StatelessWidget {
                           ),
                           InkWell(
                             onTap: () {
-                              Navigator.pushNamed(context, AppRoutes.stock);
+                              Navigator.pushNamed(context, AppRoutes.consumption);
                             },
                             child: DetailsButtonContainer(
                               title: "Consumption",

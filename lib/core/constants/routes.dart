@@ -22,4 +22,6 @@ class AppRoutes {
   static const stock = '/stock';
   static const expense = '/expense';
   static const paymentDetails = '/paymentDetails';
+  static const estimation = '/estimation';
+  static const consumption = '/consumption';
 }

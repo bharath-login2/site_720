@@ -13,7 +13,7 @@ Widget phaseWidget(context, index, data) {
     children: [
       Padding(
         padding: const EdgeInsets.all(16.0),
-        child: GridView.builder(
+        child: GridView.builder(   
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisSpacing: 5, mainAxisSpacing: 5, crossAxisCount: 3),
           shrinkWrap: true,

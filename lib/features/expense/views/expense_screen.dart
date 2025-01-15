@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
-import 'package:site_720/core/widgets/appbar.dart';
 import '../cubit/expense_cubit.dart';
 
 class Expense extends StatelessWidget {

@@ -94,9 +94,9 @@ class SubContractor extends StatelessWidget {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Row(
+                                      const Row(
                                         children: [
-                                          const Text(
+                                          Text(
                                             "Granite Flooring",
                                             style: TextStyle(
                                               fontSize: 14,

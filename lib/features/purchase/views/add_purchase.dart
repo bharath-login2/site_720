@@ -623,7 +623,7 @@ class AddPurchase extends StatelessWidget {
                                   .addAll(details!.data.productLists);
                             },
                             title: Text(filteredProducts[i].productName),
-                            subtitle: Text("Unit"),
+                            subtitle: const Text("Unit"),
                           );
                         },
                       ),

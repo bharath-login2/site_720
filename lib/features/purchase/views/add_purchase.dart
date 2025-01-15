@@ -434,7 +434,6 @@ class AddPurchase extends StatelessWidget {
                           contentPadding: const EdgeInsets.all(10),
                           labelText: 'Amount',
                           // labelStyle: TextingStyle.font14NormalBlack,
-
                           // fillColor: ColorConstant.greyyy,
                           border: OutlineInputBorder(
                             // borderSide:

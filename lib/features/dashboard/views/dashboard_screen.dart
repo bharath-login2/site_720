@@ -7,8 +7,10 @@ import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/features/dashboard/cubit/dasahboard_cubit.dart';
 import 'package:site_720/features/dashboard/cubit/dashboard_state.dart';
 import 'package:site_720/features/dashboard/widgets/pie_chart.dart';
+import 'package:site_720/features/project_list/views/project_list_screen.dart';
 
 import '../../../core/constants/routes.dart';
+import '../../../core/widgets/buttons.dart';
 import '../../../core/widgets/connectivity_dialog.dart';
 import '../../connectivity/cubit/connectivity_cubit.dart';
 import '../../connectivity/cubit/connectivity_state.dart';
@@ -56,7 +58,7 @@ class DashboardScreen extends StatelessWidget {
           backgroundColor: AppColors.backgroundColor,
           appBar: PreferredSize(
             preferredSize:
-                Size.fromHeight(MediaQuery.of(context).size.height * 0.08),
+                Size.fromHeight(MediaQuery.of(context).size.height * 0.1),
             child: Container(
               decoration: const BoxDecoration(color: AppColors.secondaryColor),
               child: Padding(
@@ -124,12 +126,17 @@ class DashboardScreen extends StatelessWidget {
                       children: [
                         InkWell(
                           onTap: () {
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //       builder: (context) => ProjectList(),
+                            //     ));
                             Navigator.of(context)
                                 .pushNamed(AppRoutes.projectList);
                           },
                           child: DashContainer(
                             title: "Upcoming",
-                            count: "100",
+                            count: "100",        
                           ),
                         ),
                         DashContainer(
@@ -377,149 +384,104 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Future<void> showDateRangeDialog(BuildContext context) async {
+  Future<dynamic> showDateRangeDialog(BuildContext context) {
     return showDialog(
-      barrierColor: Colors.white.withOpacity(.4),
       context: context,
       builder: (context) {
-        return Material(
-          type: MaterialType.transparency,
-          color: Colors.grey.shade200,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Container(
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: const BorderRadius.all(Radius.circular(10)),
-                      border: Border.all()),
-                  height: 200,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: Column(
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          content: SizedBox(
+            height: 300,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(top: 16.0, bottom: 25),
+                    child: Text(
+                      "Select Range",
+                      style: TextStyle(
+                          color: AppColors.primaryColor,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Container(
-                          height: 50,
-                          width: double.infinity,
-                          decoration: const BoxDecoration(
-                              color: AppColors.primaryColor,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10),
-                              )),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                // SizedBox(),
-                                const Text(
-                                  "Select Range",
-                                  style: TextStyle(
-                                      color: AppColors.backgroundColor,
-                                      fontSize: 20),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const CircleAvatar(
-                                    radius: 10,
-                                    backgroundColor: AppColors.backgroundColor,
-                                    foregroundColor: AppColors.primaryColor,
-                                    child: Center(
-                                        child: Icon(
-                                      Icons.close,
-                                      size: 16,
-                                    )),
-                                  ),
-                                )
-                              ],
-                            ),
-                          )),
                       SizedBox(
-                        height: 140,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                SizedBox(
-                                  width: MediaQuery.sizeOf(context).width * .37,
-                                  height: 40,
-                                  child: TextFormField(
-                                    onTap: () async {
-                                      String? selectedDate =
-                                          await selectDate(context);
-                                      if (selectedDate != null) {
-                                        fdate.text = selectedDate;
-                                        if (context.mounted) {
-                                          context
-                                              .read<DashboardCubit>()
-                                              .updateFromDate(selectedDate);
-                                        }
-                                      }
-                                    },
-                                    readOnly: true,
-                                    controller: fdate,
-                                    decoration: const InputDecoration(
-                                        hintText: 'From Date',
-                                        contentPadding: EdgeInsets.all(10),
-                                        border: OutlineInputBorder(),
-                                        suffixIcon: Icon(
-                                          Icons.calendar_today,
-                                          size: 20,
-                                        )),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 40,
-                                  width: MediaQuery.sizeOf(context).width * .37,
-                                  child: TextFormField(
-                                    onTap: () async {
-                                      String? selectedDate =
-                                          await selectDate(context);
-                                      if (selectedDate != null) {
-                                        tdate.text = selectedDate;
-                                        if (context.mounted) {
-                                          context
-                                              .read<DashboardCubit>()
-                                              .updateToDate(selectedDate);
-                                        }
-                                      }
-                                    },
-                                    readOnly: true,
-                                    controller: tdate,
-                                    decoration: const InputDecoration(
-                                        hintText: 'To Date',
-                                        contentPadding: EdgeInsets.all(10),
-                                        border: OutlineInputBorder(),
-                                        suffixIcon: Icon(
-                                          Icons.calendar_today,
-                                          size: 20,
-                                        )),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Container(
-                              height: 40,
-                              width: MediaQuery.sizeOf(context).width * .5,
-                              decoration: BoxDecoration(
-                                  color: AppColors.primaryColor,
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: const Center(
-                                child: Text(
-                                  "Continue",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            )
-                          ],
+                        width: MediaQuery.sizeOf(context).width * .8,
+                        height: 50,
+                        child: TextFormField(
+                          onTap: () async {
+                            String? selectedDate = await selectDate(context);
+                            if (selectedDate != null) {
+                              fdate.text = selectedDate;
+                              if (context.mounted) {
+                                context
+                                    .read<DashboardCubit>()
+                                    .updateFromDate(selectedDate);
+                              }
+                            }
+                          },
+                          readOnly: true,
+                          controller: fdate,
+                          decoration: const InputDecoration(
+                              hintText: 'From Date',
+                              contentPadding: EdgeInsets.all(10),
+                              border: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: AppColors.primaryColor)),
+                              suffixIcon: Icon(Icons.calendar_today,
+                                  size: 20, color: AppColors.primaryColor)),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      SizedBox(
+                        height: 50,
+                        width: MediaQuery.sizeOf(context).width * .8,
+                        child: TextFormField(
+                          onTap: () async {
+                            String? selectedDate = await selectDate(context);
+                            if (selectedDate != null) {
+                              tdate.text = selectedDate;
+                              if (context.mounted) {
+                                context
+                                    .read<DashboardCubit>()
+                                    .updateToDate(selectedDate);
+                              }
+                            }
+                          },
+                          readOnly: true,
+                          controller: tdate,
+                          decoration: const InputDecoration(
+                              // labelText: 'To Date',
+                              hintText: 'To Date',
+                              contentPadding: EdgeInsets.all(10),
+                              border: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: AppColors.primaryColor)),
+                              suffixIcon: Icon(Icons.calendar_today,
+                                  size: 20, color: AppColors.primaryColor)),
                         ),
                       ),
                     ],
-                  )),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  GestureDetector(
+                    onTap: () async {},
+                    child: LargeButton(title: "Continue"),
+                  ),
+                  TextButton(
+                    onPressed: () {},
+                    child: const Text('Close'),
+                  ),
+                ],
+              ),
             ),
           ),
         );

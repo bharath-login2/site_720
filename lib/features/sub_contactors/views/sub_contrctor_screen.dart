@@ -96,28 +96,6 @@ class SubContractor extends StatelessWidget {
                                     children: [
                                       Row(
                                         children: [
-                                          Container(
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
-                                                  border: Border.all()),
-                                              alignment: Alignment.center,
-                                              child: const Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 10.0,
-                                                    vertical: 3.0),
-                                                child: Text(
-                                                  "Ayan",
-                                                  style: TextStyle(
-                                                      fontSize: 10,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: AppColors.coffie),
-                                                ),
-                                              )),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
                                           const Text(
                                             "Granite Flooring",
                                             style: TextStyle(

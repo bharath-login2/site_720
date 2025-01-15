@@ -185,51 +185,12 @@ class ProjectList extends StatelessWidget {
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.only(
-                                        top: 8.0, left: 8.0, right: 8.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const CircleAvatar(
-                                          backgroundColor: Colors.red,
-                                          radius: 5,
-                                        ),
-                                        Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              color: Colors.purple.shade100,
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.grey
-                                                      .withOpacity(0.8),
-                                                  blurRadius: 6,
-                                                  offset: const Offset(1, 1),
-                                                ),
-                                              ],
-                                            ),
-                                            alignment: Alignment.center,
-                                            child: const Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                horizontal: 20.0,
-                                              ),
-                                              child: Text(
-                                                "Upcoming",
-                                                style: TextStyle(
-                                                    fontSize: 10,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white),
-                                              ),
-                                            )),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0),
+                                        left: 8.0, right: 8.0, top: 12),
                                     child: Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Container(
                                             width: 40,
@@ -252,36 +213,67 @@ class ProjectList extends StatelessWidget {
                                               Icons.person,
                                               color: Colors.white,
                                             )),
-                                        const SizedBox(
-                                          width: 10,
+                                        SizedBox(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              .45,
+                                          child: const Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "Taj Mahal",
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              Text(
+                                                "Shajahan",
+                                                style: TextStyle(
+                                                  fontSize: 11,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              Text(
+                                                "22-11-2023 to 01-12-2025",
+                                                style: TextStyle(
+                                                  fontSize: 11,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                        const Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              "Taj Mahal",
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold,
-                                              ),
+                                        Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              color: AppColors.backgroundColor,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.grey
+                                                      .withOpacity(0.8),
+                                                  blurRadius: 6,
+                                                  offset: const Offset(1, 1),
+                                                ),
+                                              ],
                                             ),
-                                            Text(
-                                              "Shajahan",
-                                              style: TextStyle(
-                                                fontSize: 11,
-                                                fontWeight: FontWeight.bold,
+                                            alignment: Alignment.center,
+                                            child: const Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 20.0,
+                                                  vertical: 2.0),
+                                              child: Text(
+                                                "Upcoming",
+                                                style: TextStyle(
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.bold,
+                                                    color:
+                                                        AppColors.primaryColor),
                                               ),
-                                            ),
-                                            Text(
-                                              "22-11-2023 to 01-12-2025",
-                                              style: TextStyle(
-                                                fontSize: 11,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                            )),
                                       ],
                                     ),
                                   ),

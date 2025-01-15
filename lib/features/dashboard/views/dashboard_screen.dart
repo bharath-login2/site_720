@@ -56,7 +56,7 @@ class DashboardScreen extends StatelessWidget {
           backgroundColor: AppColors.backgroundColor,
           appBar: PreferredSize(
             preferredSize:
-                Size.fromHeight(MediaQuery.of(context).size.height * 0.18),
+                Size.fromHeight(MediaQuery.of(context).size.height * 0.08),
             child: Container(
               decoration: const BoxDecoration(color: AppColors.secondaryColor),
               child: Padding(
@@ -104,52 +104,6 @@ class DashboardScreen extends StatelessWidget {
                           ),
                           alignment: Alignment.center,
                           child: const Icon(Icons.person),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * .75,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: AppColors.search,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: TextFormField(
-                            controller: searchController,
-                            decoration: const InputDecoration(
-                              hintText: 'Search...',
-                              contentPadding: EdgeInsets.all(10),
-                              border: InputBorder.none,
-                              prefixIcon: Icon(Icons.search),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: AppColors.coffie,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.8),
-                                blurRadius: 6,
-                                offset: const Offset(1, 1),
-                              ),
-                            ],
-                          ),
-                          alignment: Alignment.center,
-                          child: const Icon(
-                            Icons.tune,
-                            color: Colors.white,
-                          ),
                         ),
                       ],
                     ),

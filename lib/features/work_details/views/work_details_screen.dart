@@ -80,7 +80,7 @@ class WorkDetails extends StatelessWidget {
                               top: 8.0, left: 8.0, right: 8.0, bottom: 8.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Row(
                                 mainAxisAlignment:
@@ -95,8 +95,8 @@ class WorkDetails extends StatelessWidget {
                                   ),
                                   Container(
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        color: Colors.purple.shade100,
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: AppColors.backgroundColor,
                                         boxShadow: [
                                           BoxShadow(
                                             color: Colors.grey.withOpacity(0.8),
@@ -111,37 +111,21 @@ class WorkDetails extends StatelessWidget {
                                           horizontal: 20.0,
                                         ),
                                         child: Text(
-                                          "Not Worked",
-                                          style: TextStyle(
+                                          "Not Worked", 
+                                          style: TextStyle( 
                                               fontSize: 10,
                                               fontWeight: FontWeight.bold,
-                                              color: Colors.white),
+                                              color: AppColors.primaryColor),
                                         ),
                                       )),
                                 ],
                               ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          border: Border.all()),
-                                      alignment: Alignment.center,
-                                      child: const Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 20.0,
-                                        ),
-                                        child: Text(
-                                          "Payment Delay",
-                                          style: TextStyle(
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.bold,
-                                              color: AppColors.coffie),
-                                        ),
-                                      )),
-                                ],
+                              const Text(
+                                "Payment Delay",
+                                style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.coffie),
                               ),
                             ],
                           ),

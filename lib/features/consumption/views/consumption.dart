@@ -50,39 +50,15 @@ class Consumption extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  "Granite Flooring",
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 2, horizontal: 8),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    color: Colors.white,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.8),
-                                        blurRadius: 6,
-                                        offset: const Offset(1, 1),
-                                      ),
-                                    ],
-                                  ),
-                                  child: const Text(
-                                    "Closed",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 12,
-                                        color: Colors.red),
-                                  ),
-                                )
-                              ],
+                            const Text(
+                              "Cement",
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 3,
                             ),
                             const Text(
                               "Phase 2",
@@ -95,7 +71,7 @@ class Consumption extends StatelessWidget {
                               height: 3,
                             ),
                             const Text(
-                              "Brick work",
+                              "Wall",
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,

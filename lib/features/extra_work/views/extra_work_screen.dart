@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
+import '../../../core/widgets/buttons.dart';
+import '../../payment_details/widgets/amount_container.dart';
 import '../cubit/extra_work_cubit.dart';
 
 class ExtraWork extends StatelessWidget {
@@ -84,7 +86,7 @@ class ExtraWork extends StatelessWidget {
           create: (context) => ExtraWorkCubit(),
           child: ListView.builder(
             shrinkWrap: true,
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
             itemCount: 15,
             itemBuilder: (context, index) {
               return Padding(
@@ -95,7 +97,6 @@ class ExtraWork extends StatelessWidget {
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width * .9,
-                    height: MediaQuery.of(context).size.height * .12,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
                       color: Colors.white,
@@ -114,9 +115,9 @@ class ExtraWork extends StatelessWidget {
                             top: 8.0, left: 8.0, right: 8.0, bottom: 8.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 const Column(
@@ -138,61 +139,77 @@ class ExtraWork extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                Row(
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
-                                    Container(
-                                      height: 25,
-                                      width: 25,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: AppColors.lightBlue,
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.withOpacity(0.8),
-                                            blurRadius: 6,
-                                            offset: const Offset(1, 1),
+                                    Row(
+                                      children: [
+                                        Container(
+                                          height: 25,
+                                          width: 25,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            color: AppColors.lightBlue,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey
+                                                    .withOpacity(0.8),
+                                                blurRadius: 6,
+                                                offset: const Offset(1, 1),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                      child: const Icon(
-                                        Icons.edit,
-                                        size: 18,
-                                        color: Colors.white,
-                                      ),
+                                          child: const Icon(
+                                            Icons.edit,
+                                            size: 18,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 7,
+                                        ),
+                                        InkWell(
+                                          onTap: () {
+                                            deleteDialog(context, () {
+                                              Navigator.pop(context);
+                                            });
+                                          },
+                                          child: Container(
+                                            height: 25,
+                                            width: 25,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              color: Colors.red,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.grey
+                                                      .withOpacity(0.8),
+                                                  blurRadius: 6,
+                                                  offset: const Offset(1, 1),
+                                                ),
+                                              ],
+                                            ),
+                                            child: const Icon(
+                                              Icons.delete,
+                                              size: 18,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                     const SizedBox(
-                                      width: 7,
+                                      height: 10,
                                     ),
-                                    Container(
-                                      height: 25,
-                                      width: 25,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: Colors.red,
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.withOpacity(0.8),
-                                            blurRadius: 6,
-                                            offset: const Offset(1, 1),
-                                          ),
-                                        ],
-                                      ),
-                                      child: const Icon(
-                                        Icons.delete,
-                                        size: 18,
-                                        color: Colors.white,
-                                      ),
+                                    AmountContainer(
+                                      title: "Cost",
+                                      amount: "50000 ₹",
                                     ),
                                   ],
                                 )
                               ],
-                            ),
-                            const Text(
-                              "₹ 500 ",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
                             ),
                           ],
                         ),
@@ -208,131 +225,174 @@ class ExtraWork extends StatelessWidget {
 
   Future<void> workDialog(BuildContext context) async {
     return showDialog(
-      barrierColor: Colors.white.withOpacity(.4),
       context: context,
       builder: (context) {
-        return Material(
-          type: MaterialType.transparency,
-          color: Colors.grey.shade200,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          content: SizedBox(
+            height: 350,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(top: 16.0, bottom: 25),
+                    child: Text(
+                      "Add Work",
+                      style: TextStyle(
+                          color: AppColors.primaryColor,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
-                  height: 300,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: Column(
-                    children: [
-                      Container(
-                          height: 50,
-                          width: double.infinity,
-                          decoration: const BoxDecoration(
-                              color: AppColors.primaryColor,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10),
-                              )),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                // SizedBox(),
-                                const Text(
-                                  "Add Work",
-                                  style: TextStyle(
-                                      color: AppColors.backgroundColor,
-                                      fontSize: 16),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: const CircleAvatar(
-                                    radius: 10,
-                                    backgroundColor: AppColors.backgroundColor,
-                                    foregroundColor: AppColors.primaryColor,
-                                    child: Center(
-                                        child: Icon(
-                                      Icons.close,
-                                      size: 16,
-                                    )),
-                                  ),
-                                )
-                              ],
-                            ),
-                          )),
-                      SizedBox(
-                        height: 250,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            SizedBox(
-                              width: MediaQuery.sizeOf(context).width * .8,
-                              height: 40,
-                              child: TextFormField(
-                                controller: work,
-                                decoration: const InputDecoration(
-                                    hintText: 'Work',
-                                    contentPadding: EdgeInsets.all(10),
-                                    border: OutlineInputBorder(),
-                                    prefixIcon: Icon(
-                                      Icons.work,
-                                      size: 20,
-                                    )),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 40,
-                              width: MediaQuery.sizeOf(context).width * .8,
-                              child: TextFormField(
-                                controller: amount,
-                                decoration: const InputDecoration(
-                                    hintText: 'Amount',
-                                    contentPadding: EdgeInsets.all(10),
-                                    border: OutlineInputBorder(),
-                                    prefixIcon: Icon(
-                                      Icons.currency_rupee,
-                                      size: 20,
-                                    )),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 40,
-                              width: MediaQuery.sizeOf(context).width * .8,
-                              child: TextFormField(
-                                controller: description,
-                                decoration: const InputDecoration(
-                                    hintText: 'Description',
-                                    contentPadding: EdgeInsets.all(10),
-                                    border: OutlineInputBorder(),
-                                    prefixIcon: Icon(
-                                      Icons.text_fields,
-                                      size: 20,
-                                    )),
-                              ),
-                            ),
-                            Container(
-                              height: 40,
-                              width: MediaQuery.sizeOf(context).width * .5,
-                              decoration: BoxDecoration(
-                                  color: AppColors.primaryColor,
-                                  borderRadius: BorderRadius.circular(5)),
-                              child: const Center(
-                                child: Text(
-                                  "Add Work",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            )
-                          ],
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.95,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value == "") {
+                          return "Enter work";
+                        } else {
+                          return null;
+                        }
+                      },
+                      onTap: () {},
+                      controller: work,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.all(10),
+                        labelText: 'work',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
                         ),
+                        prefixIcon: const Icon(Icons.badge),
                       ),
-                    ],
-                  )),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.95,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value == "") {
+                          return "Enter Amount";
+                        } else {
+                          return null;
+                        }
+                      },
+                      onTap: () {},
+                      controller: amount,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.all(10),
+                        labelText: 'Amount',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        prefixIcon: const Icon(Icons.currency_rupee),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.95,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value == "") {
+                          return "Enter Description";
+                        }
+                        return null;
+                      },
+                      keyboardType: TextInputType.number,
+                      controller: description,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.all(10),
+                        labelText: 'Description',
+                        // labelStyle: TextingStyle.font14NormalBlack,
+                        // fillColor: ColorConstant.greyyy,
+                        border: OutlineInputBorder(
+                          // borderSide:
+                          //     const BorderSide(color: ColorConstant.greyyy),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        prefixIcon: const Icon(Icons.text_fields),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  GestureDetector(
+                    onTap: () async {},
+                    child: LargeButton(title: "Add"),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      work.clear();
+                      amount.clear();
+                      description.clear();
+                    },
+                    child: const Text('Close'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> deleteDialog(BuildContext context, onTap) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          content: SizedBox(
+            height: 200,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(top: 30.0, bottom: 20),
+                    child: Text(
+                      "Are you sure ?",
+                      style: TextStyle(
+                          color: AppColors.primaryColor,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  GestureDetector(
+                    onTap: onTap,
+                    child: LargeButton(title: "Delete"),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      work.clear();
+                      amount.clear();
+                      description.clear();
+                    },
+                    child: const Text('Close'),
+                  ),
+                ],
+              ),
             ),
           ),
         );

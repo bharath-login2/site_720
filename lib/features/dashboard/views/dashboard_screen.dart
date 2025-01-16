@@ -7,8 +7,6 @@ import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/features/dashboard/cubit/dasahboard_cubit.dart';
 import 'package:site_720/features/dashboard/cubit/dashboard_state.dart';
 import 'package:site_720/features/dashboard/widgets/pie_chart.dart';
-import 'package:site_720/features/project_list/views/project_list_screen.dart';
-
 import '../../../core/constants/routes.dart';
 import '../../../core/widgets/buttons.dart';
 import '../../../core/widgets/connectivity_dialog.dart';
@@ -60,7 +58,14 @@ class DashboardScreen extends StatelessWidget {
             preferredSize:
                 Size.fromHeight(MediaQuery.of(context).size.height * 0.1),
             child: Container(
-              decoration: const BoxDecoration(color: AppColors.secondaryColor),
+              decoration:
+                  BoxDecoration(color: AppColors.secondaryColor, boxShadow: [
+                BoxShadow(
+                    color: Colors.grey.shade300,
+                    offset: Offset.zero,
+                    blurRadius: 1,
+                    spreadRadius: 2)
+              ]),
               child: Padding(
                 padding:
                     const EdgeInsets.only(top: 60.0, left: 16.0, right: 16.0),
@@ -126,17 +131,12 @@ class DashboardScreen extends StatelessWidget {
                       children: [
                         InkWell(
                           onTap: () {
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //       builder: (context) => ProjectList(),
-                            //     ));
                             Navigator.of(context)
                                 .pushNamed(AppRoutes.projectList);
                           },
                           child: DashContainer(
                             title: "Upcoming",
-                            count: "100",        
+                            count: "100",
                           ),
                         ),
                         DashContainer(

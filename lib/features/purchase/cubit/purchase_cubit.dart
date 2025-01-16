@@ -8,7 +8,6 @@ class PurchaseCubit extends Cubit<PurchaseState> {
 
   List imageList = [];
 
-
   void startLoading() {
     emit(PurchaseLoading());
   }
@@ -21,12 +20,8 @@ class PurchaseCubit extends Cubit<PurchaseState> {
     emit(PurchaseFailure(message));
   }
 
-  void updateFromDate(String? date) {
+  void updatePurchasedDate(String? date) {
     emit(state.copyWith(fromDate: date));
-  }
-
-  void updateToDate(String? date) {
-    emit(state.copyWith(toDate: date));
   }
 
   Future<void> addPurchase(String username, String password) async {
@@ -45,6 +40,7 @@ class PurchaseCubit extends Cubit<PurchaseState> {
       emit(PurchaseFailure("An error occurred."));
     }
   }
+
   selectMultiImage(
     ImageSource? source,
   ) async {

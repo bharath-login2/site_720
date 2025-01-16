@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/constants/routes.dart';
+import 'package:site_720/features/payment_details/widgets/amount_container.dart';
 import '../cubit/purchase_cubit.dart';
 
 class PurchaseList extends StatelessWidget {
@@ -134,13 +135,6 @@ class PurchaseList extends StatelessWidget {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    Text(
-                                      "15 unit",
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
                                   ],
                                 ),
                                 Text(
@@ -153,14 +147,19 @@ class PurchaseList extends StatelessWidget {
                               ],
                             ),
                             Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
-                                  "₹ 500 ",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                Row(
+                                  children: [
+                                    AmountContainer(
+                                        title: "Quantity", amount: "15"),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    AmountContainer(
+                                        title: "Amount", amount: "25000"),
+                                  ],
                                 ),
                                 Row(
                                   children: [

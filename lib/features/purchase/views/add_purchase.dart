@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/buttons.dart';
 import 'package:site_720/features/purchase/cubit/purchase_cubit.dart';
@@ -43,236 +44,254 @@ class AddPurchase extends StatelessWidget {
       appBar: simpleAppbar(context, "Add Purchase"),
       body: BlocProvider(
         create: (context) => PurchaseCubit(),
-        child: SingleChildScrollView(
-          child: Form(
-            key: formKey,
-            child: Center(
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * .9,
-                    child: TextFormField(
-                      controller: purchaseDate,
-                      decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        labelText: 'Purchased Date',
-                        prefixIcon: const Icon(
-                          Icons.calendar_today,
-                          color: Colors.grey,
-                          size: 18,
-                        ),
-                        labelStyle:
-                            const TextStyle(color: Colors.grey, fontSize: 14),
-                        contentPadding: const EdgeInsets.only(left: 10),
+        child: BlocConsumer<PurchaseCubit, PurchaseState>(
+          listener: (context, state) {
+           },
+          builder: (context, state) {
+            return SingleChildScrollView(
+              child: Form(
+                key: formKey,
+                child: Center(
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 20,
                       ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * .9,
-                    child: TextFormField(
-                      controller: shopName,
-                      decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        labelText: 'Shop Name',
-                        prefixIcon: const Icon(
-                          Icons.shop_two,
-                          color: Colors.grey,
-                          size: 18,
-                        ),
-                        labelStyle:
-                            const TextStyle(color: Colors.grey, fontSize: 14),
-                        contentPadding: const EdgeInsets.only(left: 10),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * .9,
-                    child: TextFormField(
-                      controller: phoneNumber,
-                      decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          // Custom border
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        labelText: 'Phone Number',
-                        prefixIcon: const Icon(
-                          Icons.phone,
-                          color: Colors.grey,
-                          size: 18,
-                        ),
-                        labelStyle:
-                            const TextStyle(color: Colors.grey, fontSize: 14),
-                        contentPadding: const EdgeInsets.only(left: 10),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 8),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * .9,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            "Add Product",
-                            style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1,
-                                fontFamily: "Lobster",
-                                color: AppColors.primaryColor),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              productsDialog(context);
-                            },
-                            child: Container(
-                                width: 30,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: AppColors.primaryColor,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.8),
-                                      blurRadius: 6,
-                                      offset: const Offset(1, 1),
-                                    ),
-                                  ],
-                                ),
-                                alignment: Alignment.center,
-                                child: const Icon(
-                                  Icons.add,
-                                  color: Colors.white,
-                                )),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  InkWell(
-                    onTap: () async {
-                      imageDialog(context);
-                    },
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * .9,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const SizedBox(width: 10),
-                          const Icon(Icons.image, color: Colors.grey),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: BlocBuilder<PurchaseCubit, PurchaseState>(
-                              builder: (context, state) {
-                                if (state is ImageSuccess) {
-                                  final images = state.imageList;
-                                  return ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: images.length,
-                                    itemBuilder: (context, index) {
-                                      final image = images[index];
-                                      return Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Image.file(
-                                          File(image.path),
-                                          width: 40,
-                                          height: 40,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      );
-                                    },
-                                  );
-                                } else if (state is PurchaseFailure) {
-                                  return Center(
-                                      child: Text(
-                                    state.message,
-                                    style: const TextStyle(color: Colors.red),
-                                  ));
-                                } else {
-                                  return const Text(
-                                    'Choose Image',
-                                    style: TextStyle(color: Colors.grey),
-                                  );
-                                }
-                              },
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * .9,
+                        child: TextFormField(
+                          onTap: () async {
+                            String? selectedDate = await selectDate(context);
+                            purchaseDate.text = selectedDate!;
+                            if (context.mounted) {
+                              context
+                                  .read<PurchaseCubit>()
+                                  .updatePurchasedDate(selectedDate);
+                            }
+                          },
+                          readOnly: true,
+                          controller: purchaseDate,
+                          decoration: InputDecoration(
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5),
                             ),
+                            labelText: 'Purchased Date',
+                            prefixIcon: const Icon(
+                              Icons.calendar_today,
+                              color: Colors.grey,
+                              size: 18,
+                            ),
+                            labelStyle: const TextStyle(
+                                color: Colors.grey, fontSize: 14),
+                            contentPadding: const EdgeInsets.only(left: 10),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * .9,
-                    child: TextFormField(
-                      controller: remarks,
-                      decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                          // Custom border
-                          borderRadius: BorderRadius.circular(5),
                         ),
-                        labelText: 'Remarks',
-                        prefixIcon: const Icon(
-                          Icons.text_fields,
-                          color: Colors.grey,
-                          size: 18,
-                        ),
-                        labelStyle:
-                            const TextStyle(color: Colors.grey, fontSize: 14),
-                        contentPadding: const EdgeInsets.only(left: 10),
                       ),
-                    ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * .9,
+                        child: TextFormField(
+                          controller: shopName,
+                          decoration: InputDecoration(
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            labelText: 'Shop Name',
+                            prefixIcon: const Icon(
+                              Icons.shop_two,
+                              color: Colors.grey,
+                              size: 18,
+                            ),
+                            labelStyle: const TextStyle(
+                                color: Colors.grey, fontSize: 14),
+                            contentPadding: const EdgeInsets.only(left: 10),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * .9,
+                        child: TextFormField(
+                          controller: phoneNumber,
+                          decoration: InputDecoration(
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              // Custom border
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            labelText: 'Phone Number',
+                            prefixIcon: const Icon(
+                              Icons.phone,
+                              color: Colors.grey,
+                              size: 18,
+                            ),
+                            labelStyle: const TextStyle(
+                                color: Colors.grey, fontSize: 14),
+                            contentPadding: const EdgeInsets.only(left: 10),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 8),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width * .9,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                "Add Product",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1,
+                                    fontFamily: "Lobster",
+                                    color: AppColors.primaryColor),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  productsDialog(context);
+                                },
+                                child: Container(
+                                    width: 30,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: AppColors.primaryColor,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.8),
+                                          blurRadius: 6,
+                                          offset: const Offset(1, 1),
+                                        ),
+                                      ],
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: const Icon(
+                                      Icons.add,
+                                      color: Colors.white,
+                                    )),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      InkWell(
+                        onTap: () async {
+                          imageDialog(context);
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * .9,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.black),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const SizedBox(width: 10),
+                              const Icon(Icons.image, color: Colors.grey),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child:
+                                    BlocBuilder<PurchaseCubit, PurchaseState>(
+                                  builder: (context, state) {
+                                    if (state is ImageSuccess) {
+                                      final images = state.imageList;
+                                      return ListView.builder(
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: images.length,
+                                        itemBuilder: (context, index) {
+                                          final image = images[index];
+                                          return Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Image.file(
+                                              File(image.path),
+                                              width: 40,
+                                              height: 40,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    } else if (state is PurchaseFailure) {
+                                      return Center(
+                                          child: Text(
+                                        state.message,
+                                        style:
+                                            const TextStyle(color: Colors.red),
+                                      ));
+                                    } else {
+                                      return const Text(
+                                        'Choose Image',
+                                        style: TextStyle(color: Colors.grey),
+                                      );
+                                    }
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * .9,
+                        child: TextFormField(
+                          controller: remarks,
+                          decoration: InputDecoration(
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              // Custom border
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            labelText: 'Remarks',
+                            prefixIcon: const Icon(
+                              Icons.text_fields,
+                              color: Colors.grey,
+                              size: 18,
+                            ),
+                            labelStyle: const TextStyle(
+                                color: Colors.grey, fontSize: 14),
+                            contentPadding: const EdgeInsets.only(left: 10),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 40,
+                      ),
+                      InkWell(
+                          onTap: () {
+                            context.read<PurchaseCubit>().addPurchase(
+                                  "",
+                                  "",
+                                );
+                          },
+                          child: LargeButton(title: "Submit")),
+                      const SizedBox(
+                        height: 25,
+                      ),
+                    ],
                   ),
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  InkWell(
-                      onTap: () {
-                        context.read<PurchaseCubit>().addPurchase(
-                              "",
-                              "",
-                            );
-                      },
-                      child: LargeButton(title: "Submit")),
-                  const SizedBox(
-                    height: 25,
-                  ),
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );
@@ -286,21 +305,22 @@ class AddPurchase extends StatelessWidget {
         return AlertDialog(
           backgroundColor: Colors.white,
           content: SizedBox(
-            height: 380,
+            height: 420,
             child: Form(
               key: _prodKey,
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    const SizedBox(
-                      height: 12,
-                    ),
-                    const Text(
-                      'Add Product',
-                    ),
-                    const SizedBox(
-                      height: 12,
+                    const Padding(
+                      padding: EdgeInsets.only(top: 16.0, bottom: 25),
+                      child: Text(
+                        "Add Product",
+                        style: TextStyle(
+                            color: AppColors.primaryColor,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width * 0.95,
@@ -376,9 +396,6 @@ class AddPurchase extends StatelessWidget {
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.all(10),
                               labelText: 'Unit',
-                              // labelStyle: TextingStyle.font14NormalBlack,
-
-                              // fillColor: ColorConstant.greyyy,
                               border: OutlineInputBorder(
                                 // borderSide: const BorderSide(
                                 //     color: ColorConstant.greyyy),
@@ -454,6 +471,7 @@ class AddPurchase extends StatelessWidget {
                     ),
                     TextButton(
                       onPressed: () {
+                        Navigator.pop(context);
                         stageController.clear();
                         productController.clear();
                         unitController.clear();
@@ -783,5 +801,17 @@ class AddPurchase extends StatelessWidget {
         );
       },
     );
+  }
+
+  selectDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+    if (pickedDate != null) {
+      return DateFormat('dd-MM-yyyy').format(pickedDate);
+    }
   }
 }

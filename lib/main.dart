@@ -21,6 +21,7 @@ import 'package:site_720/features/sub_contactors/views/sub_contrctor_screen.dart
 import 'features/add_client/views/add_clients.dart';
 import 'features/connectivity/cubit/connectivity_cubit.dart';
 import 'features/deduction_work/views/deduction_work_screen.dart';
+import 'features/forgot_password/views/phone_number_screen.dart';
 import 'features/login/cubit/login_cubit.dart';
 import 'features/login/views/login_screen.dart';
 import 'features/stages/views/stages.dart';
@@ -71,6 +72,7 @@ class MyApp extends StatelessWidget {
         '/paymentDetails': (context) => const PaymentDetails(),
         '/estimation': (context) => const Estimation(),
         '/consumption': (context) => const Consumption(),
+        '/phoneNumber': (context) => PhoneNumberScreen(),
       },
     );
   }

@@ -86,7 +86,7 @@ class LoginScreen extends StatelessWidget {
               const Text(
                 "Enter your login details",
                 style: TextStyle(
-                  fontSize: 14, 
+                  fontSize: 14,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1,
                   fontFamily: "Lobster",
@@ -211,7 +211,7 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: 20),
               InkWell(
                 onTap: () {
-                  // connectivityDialog(context);
+                  Navigator.pushNamed(context, AppRoutes.phoneNumber);
                 },
                 child: const Text(
                   "Forgot Password ?",

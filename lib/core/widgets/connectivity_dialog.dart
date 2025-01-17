@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../constants/colors.dart';
 import 'buttons.dart';
 
 Future<void> connectivityDialog(BuildContext context) async {
@@ -12,7 +11,7 @@ Future<void> connectivityDialog(BuildContext context) async {
         content: SizedBox(
           height: 200,
           child: Center(
-            child: Container(
+            child: SizedBox(
                 // decoration: BoxDecoration(
                 //     color: Colors.white,
                 //     borderRadius: const BorderRadius.all(Radius.circular(10)),

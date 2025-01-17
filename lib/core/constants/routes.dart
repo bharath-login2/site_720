@@ -1,5 +1,3 @@
-
-
 class AppRoutes {
   static const splash = '/splash';
   static const login = '/login';
@@ -24,4 +22,5 @@ class AppRoutes {
   static const paymentDetails = '/paymentDetails';
   static const estimation = '/estimation';
   static const consumption = '/consumption';
+  static const phoneNumber = '/phoneNumber';
 }

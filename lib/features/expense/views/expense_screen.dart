@@ -2,12 +2,20 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:site_720/core/constants/colors.dart';
+import 'package:site_720/core/widgets/buttons.dart';
+import 'package:site_720/features/payment_details/widgets/amount_container.dart';
 import '../cubit/expense_cubit.dart';
 
 class Expense extends StatelessWidget {
-  const Expense({super.key});
-
+  Expense({super.key});
+  TextEditingController work = TextEditingController();
+  TextEditingController amount = TextEditingController();
+  TextEditingController description = TextEditingController();
+  TextEditingController spend_by = TextEditingController();
+  TextEditingController date_on = TextEditingController();
+  TextEditingController spend_amount = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,7 +68,7 @@ class Expense extends StatelessWidget {
                   ),
                   InkWell(
                     onTap: () {
-                      // addStageDialog(context);
+                      addExpenseDialog(context);
                     },
                     child: const CircleAvatar(
                       radius: 20,
@@ -81,7 +89,7 @@ class Expense extends StatelessWidget {
           child: ListView.builder(
             shrinkWrap: true,
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            itemCount: 15,
+            itemCount: 7,
             itemBuilder: (context, index) {
               return Padding(
                 padding: const EdgeInsets.all(6.0),
@@ -105,13 +113,13 @@ class Expense extends StatelessWidget {
                     ),
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width * .7,
-                      child: const Padding(
-                        padding: EdgeInsets.only(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
                             top: 8.0, left: 8.0, right: 8.0, bottom: 8.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Column(
+                            const Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -136,7 +144,7 @@ class Expense extends StatelessWidget {
                                   height: 5,
                                 ),
                                 Text(
-                                  "Created by Pradeesh",
+                                  "Created by me",
                                   style: TextStyle(
                                     fontSize: 10,
                                     fontWeight: FontWeight.bold,
@@ -147,23 +155,27 @@ class Expense extends StatelessWidget {
                             Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
+                                const Text(
                                   "25-10-2024",
                                   style: TextStyle(
                                     fontSize: 10,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 20,
                                 ),
-                                Text(
-                                  "₹ 500000 /-",
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColors.primaryColor),
+                                AmountContainer(
+                                  title: "Cost",
+                                  amount: "50000 ₹",
                                 ),
+                                // Text(
+                                //   "₹ 500000 /-",
+                                //   style: TextStyle(
+                                //       fontSize: 18,
+                                //       fontWeight: FontWeight.bold,
+                                //       color: AppColors.primaryColor),
+                                // ),
                               ],
                             ),
                           ],
@@ -176,5 +188,214 @@ class Expense extends StatelessWidget {
             },
           ),
         ));
+  }
+
+  Future<void> addExpenseDialog(BuildContext context) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          content: SizedBox(
+            height: 465,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(top: 16.0, bottom: 25),
+                    child: Text(
+                      "Add Expense",
+                      style: TextStyle(
+                          color: AppColors.primaryColor,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.95,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value == "") {
+                          return "Enter work";
+                        } else {
+                          return null;
+                        }
+                      },
+                      onTap: () {},
+                      controller: work,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.all(10),
+                        labelText: 'Expense',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        prefixIcon: const Icon(Icons.text_snippet_sharp),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.95,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value == "") {
+                          return "Enter Spend on data";
+                        } else {
+                          return null;
+                        }
+                      },
+                      onTap: () {},
+                      controller: amount,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.all(10),
+                        labelText: 'Spend On',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        prefixIcon: const Icon(Icons.text_fields),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.95,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value == "") {
+                          return "Enter Spend By section";
+                        }
+                        return null;
+                      },
+                      keyboardType: TextInputType.text,
+                      controller: spend_by,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.all(10),
+                        labelText: 'Spend By',
+                        // labelStyle: TextingStyle.font14NormalBlack,
+                        // fillColor: ColorConstant.greyyy,
+                        border: OutlineInputBorder(
+                          // borderSide:
+                          //     const BorderSide(color: ColorConstant.greyyy),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        prefixIcon: const Icon(Icons.text_fields),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.95,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value == "") {
+                          return "Enter proper date";
+                        }
+                        return null;
+                      },
+                      controller: date_on,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.all(10),
+                        labelText: 'Date',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        prefixIcon: const Icon(Icons.calendar_month_outlined),
+                      ),
+                      onTap: () async {
+                        DateTime? pickedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(1900),
+                          lastDate: DateTime(2101),
+                        );
+
+                        if (pickedDate != null) {
+                          String formattedDate =
+                              DateFormat('yyyy-MM-dd').format(pickedDate);
+                          date_on.text = formattedDate;
+                        }
+                      },
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.95,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value == "") {
+                          return "Enter Amount";
+                        }
+                        return null;
+                      },
+                      keyboardType: TextInputType.number,
+                      controller: spend_amount,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.all(10),
+                        labelText: 'Amount Spend',
+                        // labelStyle: TextingStyle.font14NormalBlack,
+                        // fillColor: ColorConstant.greyyy,
+                        border: OutlineInputBorder(
+                          // borderSide:
+                          //     const BorderSide(color: ColorConstant.greyyy),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        prefixIcon: const Icon(Icons.currency_rupee),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Expense added successfully!'),
+                      ));
+                      // await Future.delayed(const Duration(seconds: 0));
+                      Navigator.pop(context);
+                    },
+                    child: LargeButton(title: "Add"),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      work.clear();
+                      amount.clear();
+                      description.clear();
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Close'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }

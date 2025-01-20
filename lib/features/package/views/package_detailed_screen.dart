@@ -3,14 +3,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
+import 'package:site_720/features/package/cubit/package_detailed_cubit.dart';
 import '../../../core/widgets/buttons.dart';
 import '../../payment_details/widgets/amount_container.dart';
-import '../cubit/extra_work_cubit.dart';
 
-class ExtraWork extends StatelessWidget {
-  ExtraWork({super.key});
+
+class PackageDetailed extends StatelessWidget {
+  PackageDetailed({super.key});
   TextEditingController searchController = TextEditingController();
   TextEditingController work = TextEditingController();
+    TextEditingController details = TextEditingController();
   TextEditingController amount = TextEditingController();
   TextEditingController description = TextEditingController();
 
@@ -54,7 +56,7 @@ class ExtraWork extends StatelessWidget {
                         width: 10,
                       ),
                       const Text(
-                        "Extra Work",
+                        "Package",
                         style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -83,7 +85,7 @@ class ExtraWork extends StatelessWidget {
           ),
         ),
         body: BlocProvider(
-          create: (context) => ExtraWorkCubit(),
+          create: (context) => PackageDetailedCubit(),
           child: ListView.builder(
             shrinkWrap: true,
             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
@@ -124,14 +126,14 @@ class ExtraWork extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "Bedroom",
+                                      "Packages",
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
                                           color: AppColors.coffie),
                                     ),
                                     Text(
-                                      "flooring",
+                                      "package Details",
                                       style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold,
@@ -211,8 +213,8 @@ class ExtraWork extends StatelessWidget {
                                       height: 10,
                                     ),
                                     AmountContainer(
-                                      title: "Cost",
-                                      amount: "50000 ₹",
+                                      title: "Package Cost",
+                                      amount: "20000 ₹",
                                     ),
                                   ],
                                 )
@@ -237,7 +239,7 @@ class ExtraWork extends StatelessWidget {
         return AlertDialog(
           backgroundColor: Colors.white,
           content: SizedBox(
-            height: 350,
+            height: 400,
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -245,7 +247,7 @@ class ExtraWork extends StatelessWidget {
                   const Padding(
                     padding: EdgeInsets.only(top: 16.0, bottom: 25),
                     child: Text(
-                      "Add Work",
+                      "Add Package",
                       style: TextStyle(
                           color: AppColors.primaryColor,
                           fontSize: 20,
@@ -269,7 +271,7 @@ class ExtraWork extends StatelessWidget {
                       controller: work,
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(10),
-                        labelText: 'work',
+                        labelText: 'package',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),
@@ -277,9 +279,40 @@ class ExtraWork extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(
+                   const SizedBox(
                     height: 12,
                   ),
+                  
+                 
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.95,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value == "") {
+                          return "Enter work";
+                        } else {
+                          return null;
+                        }
+                      },
+                      onTap: () {},
+                      controller: details,
+                      decoration: InputDecoration(
+                        contentPadding: const EdgeInsets.all(10),
+                        labelText: 'Package Details',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        prefixIcon: const Icon(Icons.text_fields_sharp),
+                      ),
+                    ),
+                  ),
+                   const SizedBox(
+                    height: 12,
+                  ),
+                 
                   Container(
                     width: MediaQuery.of(context).size.width * 0.95,
                     decoration: BoxDecoration(
@@ -294,6 +327,7 @@ class ExtraWork extends StatelessWidget {
                         }
                       },
                       onTap: () {},
+                      keyboardType: TextInputType.number,
                       controller: amount,
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(10),
@@ -305,7 +339,7 @@ class ExtraWork extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(
+                   const SizedBox(
                     height: 12,
                   ),
                   Container(
@@ -320,7 +354,7 @@ class ExtraWork extends StatelessWidget {
                         }
                         return null;
                       },
-                      keyboardType: TextInputType.number,
+                      keyboardType: TextInputType.text,
                       controller: description,
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(10),
@@ -340,7 +374,10 @@ class ExtraWork extends StatelessWidget {
                     height: 20,
                   ),
                   GestureDetector(
-                    onTap: () async {},
+                    onTap: () async {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Package Uploaded Successfully!!')));
+                    Navigator.pop(context);
+                    },
                     child: LargeButton(title: "Add"),
                   ),
                   TextButton(
@@ -348,6 +385,7 @@ class ExtraWork extends StatelessWidget {
                       work.clear();
                       amount.clear();
                       description.clear();
+                      Navigator.pop(context);
                     },
                     child: const Text('Close'),
                   ),

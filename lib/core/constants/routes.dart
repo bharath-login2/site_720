@@ -24,4 +24,5 @@ class AppRoutes {
   static const paymentDetails = '/paymentDetails';
   static const estimation = '/estimation';
   static const consumption = '/consumption';
+  static const package = '/package';
 }

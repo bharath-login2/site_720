@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/appbar.dart';
+import 'package:site_720/features/payment_details/widgets/amount_container.dart';
 import '../cubit/sub_contractor_cubit.dart';
 
 class SubContractor extends StatelessWidget {
@@ -22,17 +23,17 @@ class SubContractor extends StatelessWidget {
         appBar: simpleAppbar(context, "Sub Contractor"),
         body: BlocProvider(
           create: (context) => SubContractorCubit(),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16),
+          child: ListView.builder(
+             itemCount: 8,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: InkWell(
                   child: Container(
-                    height: 40,
+                    width: MediaQuery.of(context).size.width * .9,
                     decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.grey.withOpacity(0.8),
@@ -41,79 +42,54 @@ class SubContractor extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: TextFormField(
-                      controller: searchController,
-                      decoration: const InputDecoration(
-                        hintText: 'Search...',
-                        hintStyle: TextStyle(fontSize: 14),
-                        contentPadding: EdgeInsets.all(12),
-                        border: InputBorder.none,
-                        prefixIcon: Icon(
-                          Icons.search,
-                          size: 20,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  itemCount: 15,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(6.0),
-                      child: InkWell(
-                        onTap: () {
-                          // Navigator.of(context)
-                          //     .pushNamed(AppRoutes.stageHistory);
-                        },
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * .9,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.8),
-                                blurRadius: 3,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: SizedBox(
-                            width: MediaQuery.of(context).size.width * .7,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 8.0, left: 8.0, right: 8.0, bottom: 8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Row(
-                                        children: [
-                                          Text(
-                                            "Granite Flooring",
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * .7,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            top: 8.0, left: 8.0, right: 8.0, bottom: 8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Subcontractor',
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.coffie),
+                                    ),
+                                    SizedBox(height: 10),
+                                    Text(
+                                      'sub text',
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      Row(
-                                        children: [
-                                          Container(
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        InkWell(
+                                          onTap: (){
+                                            
+                                          },
+                                          child: Container(
                                             height: 25,
                                             width: 25,
                                             decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(5),
-                                              color: AppColors.primaryColor,
+                                              color: AppColors.lightBlue,
                                               boxShadow: [
                                                 BoxShadow(
                                                   color: Colors.grey
@@ -126,44 +102,55 @@ class SubContractor extends StatelessWidget {
                                             child: const Icon(
                                               Icons.edit,
                                               size: 18,
-                                              color: Colors.white,
+                                              color:
+                                                  Color.fromARGB(255, 241, 236, 236),
                                             ),
                                           ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  const Text(
-                                    "Created by",
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.bold,
+                                        ),
+                                        SizedBox(width: 7),
+                                        Container(
+                                          height: 25,
+                                          width: 25,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            color: const Color.fromARGB(255, 235, 27, 27),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: const Color.fromARGB(255, 192, 77, 77)
+                                                    .withOpacity(0.8),
+                                                blurRadius: 6,
+                                                offset: const Offset(1, 1),
+                                              ),
+                                            ],
+                                          ),
+                                          child: const Icon(
+                                            Icons.delete,
+                                            size: 18,
+                                            color:
+                                                Color.fromARGB(255, 241, 236, 236),
+                                          ),
+                                        ),
+                                     
+                                      ],
                                     ),
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  const Text(
-                                    "₹ 500000 /-",
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColors.primaryColor),
-                                  ),
-                                ],
-                              ),
+                                       SizedBox(height: 10),
+                                        AmountContainer(
+                                      title: "Cost",
+                                      amount: "50000 ₹",
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                          ),
+                          ],
                         ),
                       ),
-                    );
-                  },
+                    ),
+                  ),
                 ),
-              ],
-            ),
+              );
+            },
           ),
         ));
   }

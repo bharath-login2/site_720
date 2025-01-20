@@ -398,7 +398,7 @@ class ProjectDetails extends StatelessWidget {
                         children: [
                           InkWell(
                             onTap: () {
-                              Navigator.pushNamed(context, AppRoutes.purchase);
+                              Navigator.pushNamed(context, AppRoutes.package);
                             },
                             child: DetailsButtonContainer(
                               title: "Package",

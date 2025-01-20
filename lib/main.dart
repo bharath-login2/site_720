@@ -10,6 +10,7 @@ import 'package:site_720/features/estimation/views/estimation_screen.dart';
 import 'package:site_720/features/expense/views/expense_screen.dart';
 import 'package:site_720/features/extra_work/views/extra_work_screen.dart';
 import 'package:site_720/features/gallery/views/gallery_screen.dart';
+import 'package:site_720/features/package/views/package_detailed_screen.dart';
 import 'package:site_720/features/payment_details/views/payment_details_screen.dart';
 import 'package:site_720/features/project_details/views/project_details_screen.dart';
 import 'package:site_720/features/project_list/views/project_list_screen.dart';
@@ -67,10 +68,11 @@ class MyApp extends StatelessWidget {
         '/purchase': (context) => const PurchaseList(),
         '/addPurchase': (context) => AddPurchase(),
         '/stock': (context) => DeductionWork(),
-        '/expense': (context) => const Expense(),
+        '/expense': (context) =>  Expense(),
         '/paymentDetails': (context) => const PaymentDetails(),
         '/estimation': (context) => const Estimation(),
         '/consumption': (context) => const Consumption(),
+         '/package': (context) =>  PackageDetailed(),
       },
     );
   }

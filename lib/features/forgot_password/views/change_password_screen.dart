@@ -1,20 +1,18 @@
 // ignore_for_file: must_be_immutable
 
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
+import 'package:site_720/core/constants/routes.dart';
 import 'package:site_720/core/widgets/connectivity_dialog.dart';
 import '../../../core/widgets/buttons.dart';
 import '../../../core/widgets/snack_bar.dart';
 import '../../connectivity/cubit/connectivity_cubit.dart';
 import '../../connectivity/cubit/connectivity_state.dart';
 import '../cubit/forgot_password_cubit.dart';
-import 'otp_screen.dart';
 
-class PhoneNumberScreen extends StatelessWidget {
-  PhoneNumberScreen({super.key});
+class ChangePasswordScreen extends StatelessWidget {
+  ChangePasswordScreen({super.key});
 
   final phoneNumberController = TextEditingController();
   bool connStatus = false;
@@ -40,14 +38,8 @@ class PhoneNumberScreen extends StatelessWidget {
             ),
             BlocListener<ForgotPasswordCubit, ForgotPasswordState>(
               listener: (context, state) {
-                if (state is OtpSent) {
-                  // Navigator.pushReplacementNamed(context, AppRoutes.otpScreen);
-                  log(state.otp);
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => OtpScreen(gOtp: state.otp),
-                      ));
+                if (state is ForgotPasswordSuccess) {
+                  Navigator.pushReplacementNamed(context, AppRoutes.otpScreen);
                   snackBar(context, state.message, Colors.green);
                 } else if (state is ForgotPasswordFailure) {
                   snackBar(context, state.message, Colors.red);
@@ -145,9 +137,9 @@ class PhoneNumberScreen extends StatelessWidget {
                                 Colors.red);
                           } else {
                             if (connStatus == true) {
-                              context
-                                  .read<ForgotPasswordCubit>()
-                                  .verifyPhone(phoneNumberController.text);
+                              context.read<ForgotPasswordCubit>().sendOtp(
+                                    phoneNumberController.text,
+                                  );
                             }
                           }
                         }

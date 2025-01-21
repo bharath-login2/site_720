@@ -5,14 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/features/package/cubit/package_detailed_cubit.dart';
 import '../../../core/widgets/buttons.dart';
+import '../../../core/widgets/snack_bar.dart';
 import '../../payment_details/widgets/amount_container.dart';
-
 
 class PackageDetailed extends StatelessWidget {
   PackageDetailed({super.key});
   TextEditingController searchController = TextEditingController();
   TextEditingController work = TextEditingController();
-    TextEditingController details = TextEditingController();
+  TextEditingController details = TextEditingController();
   TextEditingController amount = TextEditingController();
   TextEditingController description = TextEditingController();
 
@@ -147,7 +147,7 @@ class PackageDetailed extends StatelessWidget {
                                     Row(
                                       children: [
                                         InkWell(
-                                             onTap: () {
+                                          onTap: () {
                                             editDialog(context, () {
                                               Navigator.pop(context);
                                             });
@@ -279,11 +279,9 @@ class PackageDetailed extends StatelessWidget {
                       ),
                     ),
                   ),
-                   const SizedBox(
+                  const SizedBox(
                     height: 12,
                   ),
-                  
-                 
                   Container(
                     width: MediaQuery.of(context).size.width * 0.95,
                     decoration: BoxDecoration(
@@ -309,10 +307,9 @@ class PackageDetailed extends StatelessWidget {
                       ),
                     ),
                   ),
-                   const SizedBox(
+                  const SizedBox(
                     height: 12,
                   ),
-                 
                   Container(
                     width: MediaQuery.of(context).size.width * 0.95,
                     decoration: BoxDecoration(
@@ -339,7 +336,7 @@ class PackageDetailed extends StatelessWidget {
                       ),
                     ),
                   ),
-                   const SizedBox(
+                  const SizedBox(
                     height: 12,
                   ),
                   Container(
@@ -375,8 +372,10 @@ class PackageDetailed extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () async {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Package Uploaded Successfully!!')));
-                    Navigator.pop(context);
+                      snackBar(context, 'Package Uploaded Successfully!!',
+                          Colors.black);
+
+                      Navigator.pop(context);
                     },
                     child: LargeButton(title: "Add"),
                   ),
@@ -444,7 +443,6 @@ class PackageDetailed extends StatelessWidget {
       },
     );
   }
-
 
   Future<void> editDialog(BuildContext context, onTap) async {
     return showDialog(

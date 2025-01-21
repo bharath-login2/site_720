@@ -6,6 +6,7 @@ import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/constants/routes.dart';
 import 'package:site_720/core/widgets/connectivity_dialog.dart';
 import '../../../core/widgets/buttons.dart';
+import '../../../core/widgets/snack_bar.dart';
 import '../../connectivity/cubit/connectivity_cubit.dart';
 import '../../connectivity/cubit/connectivity_state.dart';
 import '../cubit/login_cubit.dart';
@@ -37,20 +38,12 @@ class LoginScreen extends StatelessWidget {
           BlocListener<LoginCubit, LoginState>(
             listener: (context, state) {
               if (state is LoginSuccess) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                    backgroundColor: Colors.green,
-                  ),
-                );
+                                            snackBar(context, state.message, Colors.green);
+
                 Navigator.of(context).pushReplacementNamed(AppRoutes.dashboard);
               } else if (state is LoginFailure) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                    backgroundColor: Colors.red,
-                  ),
-                );
+                                            snackBar(context, state.message, Colors.red);
+
               }
             },
           ),
@@ -179,19 +172,11 @@ class LoginScreen extends StatelessWidget {
                       await context.read<ConnectivityCubit>().checkConnection();
                       if (context.mounted) {
                         if (_usernameController.text.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Enter username"),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
+                                                      snackBar(context, "Enter username", Colors.red);
+
                         } else if (_passwordController.text.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Enter password"),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
+                                                      snackBar(context, "Enter Password", Colors.red);
+
                         } else {
                           if (connStatus == true) {
                             context.read<LoginCubit>().login(

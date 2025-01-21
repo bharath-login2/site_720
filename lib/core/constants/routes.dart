@@ -24,4 +24,6 @@ class AppRoutes {
   static const consumption = '/consumption';
   static const package = '/package';
   static const phoneNumber = '/phoneNumber';
+  static const otpScreen = '/otpScreen';
+  static const changePasswordScreen = '/changePasswordScreen';
 }

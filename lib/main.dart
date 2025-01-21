@@ -22,6 +22,8 @@ import 'package:site_720/features/sub_contactors/views/sub_contrctor_screen.dart
 import 'features/add_client/views/add_clients.dart';
 import 'features/connectivity/cubit/connectivity_cubit.dart';
 import 'features/deduction_work/views/deduction_work_screen.dart';
+import 'features/forgot_password/views/change_password_screen.dart';
+import 'features/forgot_password/views/otp_screen.dart';
 import 'features/forgot_password/views/phone_number_screen.dart';
 import 'features/login/cubit/login_cubit.dart';
 import 'features/login/views/login_screen.dart';
@@ -69,12 +71,14 @@ class MyApp extends StatelessWidget {
         '/purchase': (context) => const PurchaseList(),
         '/addPurchase': (context) => AddPurchase(),
         '/stock': (context) => DeductionWork(),
-        '/expense': (context) =>  Expense(),
+        '/expense': (context) => Expense(),
         '/paymentDetails': (context) => const PaymentDetails(),
         '/estimation': (context) => const Estimation(),
         '/consumption': (context) => const Consumption(),
-         '/package': (context) =>  PackageDetailed(),
+        '/package': (context) => PackageDetailed(),
         '/phoneNumber': (context) => PhoneNumberScreen(),
+        // '/otpScreen': (context) => OtpScreen(),
+        '/changePasswordScreen': (context) => ChangePasswordScreen(),
       },
     );
   }

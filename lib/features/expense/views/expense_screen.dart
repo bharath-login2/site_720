@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/buttons.dart';
 import 'package:site_720/features/payment_details/widgets/amount_container.dart';
+import '../../../core/widgets/snack_bar.dart';
 import '../cubit/expense_cubit.dart';
 
 class Expense extends StatelessWidget {
@@ -13,9 +14,9 @@ class Expense extends StatelessWidget {
   TextEditingController work = TextEditingController();
   TextEditingController amount = TextEditingController();
   TextEditingController description = TextEditingController();
-  TextEditingController spend_by = TextEditingController();
-  TextEditingController date_on = TextEditingController();
-  TextEditingController spend_amount = TextEditingController();
+  TextEditingController spendBy = TextEditingController();
+  TextEditingController dateOn = TextEditingController();
+  TextEditingController spendAmount = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -281,7 +282,7 @@ class Expense extends StatelessWidget {
                         return null;
                       },
                       keyboardType: TextInputType.text,
-                      controller: spend_by,
+                      controller: spendBy,
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(10),
                         labelText: 'Spend By',
@@ -311,7 +312,7 @@ class Expense extends StatelessWidget {
                         }
                         return null;
                       },
-                      controller: date_on,
+                      controller: dateOn,
                       readOnly: true,
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(10),
@@ -332,7 +333,7 @@ class Expense extends StatelessWidget {
                         if (pickedDate != null) {
                           String formattedDate =
                               DateFormat('yyyy-MM-dd').format(pickedDate);
-                          date_on.text = formattedDate;
+                          dateOn.text = formattedDate;
                         }
                       },
                     ),
@@ -353,7 +354,7 @@ class Expense extends StatelessWidget {
                         return null;
                       },
                       keyboardType: TextInputType.number,
-                      controller: spend_amount,
+                      controller: spendAmount,
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(10),
                         labelText: 'Amount Spend',
@@ -373,9 +374,8 @@ class Expense extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () async {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text('Expense added successfully!'),
-                      ));
+                                    snackBar(context, "Expense added successfully!", Colors.black);
+
                       // await Future.delayed(const Duration(seconds: 0));
                       Navigator.pop(context);
                     },

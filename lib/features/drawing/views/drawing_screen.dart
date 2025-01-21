@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/buttons.dart';
+import 'package:site_720/core/widgets/snack_bar.dart';
 import '../../../core/widgets/appbar.dart';
 import '../cubit/drawing_state.dart';
 import '../cubit/drawing_cubit.dart';
@@ -24,13 +25,9 @@ class DrawingScreen extends StatelessWidget {
         body: BlocConsumer<DrawingCubit, DrawingState>(
           listener: (context, state) {
             if (state is DrawingSuccess) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message)),
-              );
+              snackBar(context, state.message, Colors.white);
             } else if (state is DrawingFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message)),
-              );
+              snackBar(context, state.message, Colors.white);
             }
           },
           builder: (context, state) {

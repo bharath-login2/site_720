@@ -30,13 +30,10 @@ class GalleryScreen extends StatelessWidget {
         body: BlocConsumer<GalleryCubit, GalleryState>(
           listener: (context, state) {
             if (state is GallerySuccess) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message)),
-              );
+             
             } else if (state is GalleryFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.message)),
-              );
+         
+
             }
           },
           builder: (context, state) {

@@ -4,16 +4,11 @@ abstract class ForgotPasswordState {}
 
 class ForgotPasswordInitial extends ForgotPasswordState {}
 
-class ForgotPasswordPasswordVisibilityChanged extends ForgotPasswordState {
-  final bool isObscure;
-
-  ForgotPasswordPasswordVisibilityChanged(this.isObscure);
-}
-
 class ForgotPasswordLoading extends ForgotPasswordState {}
 
 class ForgotPasswordSuccess extends ForgotPasswordState {
   final String message;
+
   ForgotPasswordSuccess(this.message);
 }
 
@@ -22,3 +17,27 @@ class ForgotPasswordFailure extends ForgotPasswordState {
 
   ForgotPasswordFailure(this.message);
 }
+
+class OtpSent extends ForgotPasswordState {
+  final String message;
+  final String otp;
+
+  OtpSent(this.message, this.otp);
+}
+
+class ForgotPasswordTimerUpdated extends ForgotPasswordState {
+  final int secondsRemaining;
+  final bool isResendButtonEnabled;
+
+  ForgotPasswordTimerUpdated(this.secondsRemaining, this.isResendButtonEnabled);
+}
+
+class ForgotPasswordPasswordVisibilityChanged extends ForgotPasswordState {
+  final bool isObscure;
+
+  ForgotPasswordPasswordVisibilityChanged(this.isObscure);
+}
+
+class OtpVerified extends ForgotPasswordState {}
+
+class OtpVerificationFailed extends ForgotPasswordState {}

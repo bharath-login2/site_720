@@ -23,8 +23,8 @@ import 'features/add_client/views/add_clients.dart';
 import 'features/connectivity/cubit/connectivity_cubit.dart';
 import 'features/deduction_work/views/deduction_work_screen.dart';
 import 'features/forgot_password/views/change_password_screen.dart';
-import 'features/forgot_password/views/otp_screen.dart';
 import 'features/forgot_password/views/phone_number_screen.dart';
+import 'features/home/home.dart';
 import 'features/login/cubit/login_cubit.dart';
 import 'features/login/views/login_screen.dart';
 import 'features/stages/views/stages.dart';
@@ -55,6 +55,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/splash': (context) => const Splash(),
         '/login': (context) => LoginScreen(),
+        '/home': (context) => const MyHomePage(),
         '/dashboard': (context) => DashboardScreen(),
         '/projectList': (context) => ProjectList(),
         '/addCilentScreen': (context) => AddCilentScreen(),

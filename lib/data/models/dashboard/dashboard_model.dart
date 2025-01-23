@@ -48,8 +48,8 @@ class Data {
     });
 
     factory Data.fromJson(Map<String, dynamic> json) => Data(
-        username: json["username"],
-        designation: json["designation"],
+        username: json["username"]??"",
+        designation: json["designation"]??"",
         projectCounts: ProjectCounts.fromJson(json["project_counts"]),
         complaintCounts: List<ComplaintCount>.from(json["complaint_counts"].map((x) => ComplaintCount.fromJson(x))),
         workissuesCounts: List<WorkissuesCount>.from(json["workissues_counts"].map((x) => WorkissuesCount.fromJson(x))),
@@ -74,8 +74,8 @@ class ComplaintCount {
     });
 
     factory ComplaintCount.fromJson(Map<String, dynamic> json) => ComplaintCount(
-        statusName: json["status_name"],
-        count: json["count"],
+        statusName: json["status_name"]??"",
+        count: json["count"]??"",
     );
 
     Map<String, dynamic> toJson() => {
@@ -96,9 +96,9 @@ class ProjectCounts {
     });
 
     factory ProjectCounts.fromJson(Map<String, dynamic> json) => ProjectCounts(
-        upcoming: json["upcoming"],
-        running: json["running"],
-        completed: json["completed"],
+        upcoming: json["upcoming"]??"",
+        running: json["running"]??"",
+        completed: json["completed"]??"",
     );
 
     Map<String, dynamic> toJson() => {
@@ -118,8 +118,8 @@ class WorkissuesCount {
     });
 
     factory WorkissuesCount.fromJson(Map<String, dynamic> json) => WorkissuesCount(
-        workissueName: json["workissue_name"],
-        count: json["count"],
+        workissueName: json["workissue_name"]??"",
+        count: json["count"]??"",
     );
 
     Map<String, dynamic> toJson() => {

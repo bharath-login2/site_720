@@ -58,6 +58,9 @@ class DashboardScreen extends StatelessWidget {
                 return Container(
                   decoration: BoxDecoration(
                       color: AppColors.secondaryColor,
+                      // image: DecorationImage(
+                      //     image: AssetImage("assets/images/appbar.png"),
+                      //     fit: BoxFit.fill),
                       boxShadow: [
                         BoxShadow(
                             color: Colors.grey.shade300,

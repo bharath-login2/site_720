@@ -1,12 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-part 'add_client_state.dart';
+part 'client_state.dart';
 
-class AddClientCubit extends Cubit<AddClientState> {
-  AddClientCubit() : super(AddClientInitial());
-
-  void togglePasswordVisibility(bool isObscure) {
-    emit(AddClientPasswordVisibilityChanged(!isObscure));
-  }
+class ClientsCubit extends Cubit<ClientsState> {
+  ClientsCubit() : super(ClientInitial());
 
   Future<void> addClient(String username, String password) async {
     emit(AddClientLoading());

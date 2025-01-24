@@ -19,7 +19,7 @@ import 'package:site_720/features/purchase/views/purchase_list_screen.dart';
 import 'package:site_720/features/site_note/views/site_note_screen.dart';
 import 'package:site_720/features/splash/views/splash.dart';
 import 'package:site_720/features/sub_contactors/views/sub_contrctor_screen.dart';
-import 'features/add_client/views/add_clients.dart';
+import 'features/clients/views/add_clients.dart';
 import 'features/connectivity/cubit/connectivity_cubit.dart';
 import 'features/deduction_work/views/deduction_work_screen.dart';
 import 'features/forgot_password/views/change_password_screen.dart';
@@ -27,6 +27,7 @@ import 'features/forgot_password/views/phone_number_screen.dart';
 import 'features/home/home.dart';
 import 'features/login/cubit/login_cubit.dart';
 import 'features/login/views/login_screen.dart';
+import 'features/project_list/views/add_projects.dart';
 import 'features/stages/views/stages.dart';
 import 'features/stages/views/stage_history.dart';
 import 'features/work_details/views/work_details_screen.dart';
@@ -55,7 +56,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/splash': (context) => const Splash(),
         '/login': (context) => LoginScreen(),
-        '/home': (context) => const MyHomePage(),
+        '/home': (context) => const Home(),
         '/dashboard': (context) => DashboardScreen(),
         '/projectList': (context) => ProjectList(),
         '/addCilentScreen': (context) => AddCilentScreen(),
@@ -71,7 +72,7 @@ class MyApp extends StatelessWidget {
         '/deductionWork': (context) => DeductionWork(),
         '/purchase': (context) => const PurchaseList(),
         '/addPurchase': (context) => AddPurchase(),
-        '/stock': (context) => DeductionWork(),
+        // '/stock': (context) => DeductionWork(),
         '/expense': (context) => Expense(),
         '/paymentDetails': (context) => const PaymentDetails(),
         '/estimation': (context) => const Estimation(),
@@ -80,6 +81,7 @@ class MyApp extends StatelessWidget {
         '/phoneNumber': (context) => PhoneNumberScreen(),
         // '/otpScreen': (context) => OtpScreen(),
         '/changePasswordScreen': (context) => ChangePasswordScreen(),
+        '/addProjectScreen': (context) => AddProjectScreen(),
       },
     );
   }

@@ -4,23 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/buttons.dart';
-import 'package:site_720/features/add_client/cubit/add_client_cubit.dart';
+import 'package:site_720/features/clients/cubit/client_cubit.dart';
 
 import '../../../core/widgets/appbar.dart';
 
-class AddCilentScreen extends StatelessWidget {
-  AddCilentScreen({super.key});
+class AddProjectScreen extends StatelessWidget {
+  AddProjectScreen({super.key});
   final formKey = GlobalKey<FormState>();
   TextEditingController clientName = TextEditingController();
-  TextEditingController contactPerson = TextEditingController();
-  TextEditingController phoneNumber = TextEditingController();
-  TextEditingController whatsappNumber = TextEditingController();
-  TextEditingController address = TextEditingController();
+  TextEditingController projectName = TextEditingController();
+  TextEditingController referenceNumber = TextEditingController();
+  TextEditingController location = TextEditingController();
+  TextEditingController locationArea = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController companyName = TextEditingController();
   TextEditingController civilId = TextEditingController();
   TextEditingController gstNumber = TextEditingController();
   dynamic status;
+  List filteredClientList = [];
+  String clientId = "";
   List<Map<String, dynamic>> statuses = [
     {"statusId": 101, "statusName": "status 1"},
     {"statusId": 102, "statusName": "status 2"},
@@ -31,7 +33,7 @@ class AddCilentScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: simpleAppbar(context, "Add Client"),
+      appBar: simpleAppbar(context, "Add Project"),
       body: SingleChildScrollView(
         child: Form(
           key: formKey,
@@ -44,7 +46,11 @@ class AddCilentScreen extends StatelessWidget {
                 SizedBox(
                   width: MediaQuery.of(context).size.width * .9,
                   child: TextFormField(
+                    readOnly: true,
                     controller: clientName,
+                    onTap: () {
+                      selectClientDialog(context);
+                    },
                     decoration: InputDecoration(
                       fillColor: Colors.white,
                       filled: true,
@@ -52,7 +58,7 @@ class AddCilentScreen extends StatelessWidget {
                         // Custom border
                         borderRadius: BorderRadius.circular(5),
                       ),
-                      labelText: 'Client name *',
+                      labelText: 'Client *',
                       prefixIcon: const Icon(
                         Icons.person,
                         color: Colors.grey,
@@ -70,14 +76,14 @@ class AddCilentScreen extends StatelessWidget {
                 SizedBox(
                   width: MediaQuery.of(context).size.width * .9,
                   child: TextFormField(
-                    controller: contactPerson,
+                    controller: projectName,
                     decoration: InputDecoration(
                       fillColor: Colors.white,
                       filled: true,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5),
                       ),
-                      labelText: 'Contact person',
+                      labelText: 'Project name',
                       prefixIcon: const Icon(
                         Icons.person,
                         color: Colors.grey,
@@ -94,8 +100,19 @@ class AddCilentScreen extends StatelessWidget {
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * .9,
-                  child: TextFormField(
-                    controller: phoneNumber,
+                  child: DropdownButtonFormField(
+                    value: status,
+                    onChanged: (value) async {
+                      status = value.toString();
+                    },
+                    items: statuses.map((data) {
+                      return DropdownMenuItem<String>(
+                        value: data["statusId"].toString(),
+                        child: Text(
+                          data["statusName"].toString(),
+                        ),
+                      );
+                    }).toList(),
                     decoration: InputDecoration(
                       fillColor: Colors.white,
                       filled: true,
@@ -103,9 +120,62 @@ class AddCilentScreen extends StatelessWidget {
                         // Custom border
                         borderRadius: BorderRadius.circular(5),
                       ),
-                      labelText: 'Phone number *',
+                      labelText: 'Project type',
+                      labelStyle:
+                          const TextStyle(color: Colors.grey, fontSize: 14),
+                      contentPadding: const EdgeInsets.only(left: 10),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * .9,
+                  child: DropdownButtonFormField(
+                    value: status,
+                    onChanged: (value) async {
+                      status = value.toString();
+                    },
+                    items: statuses.map((data) {
+                      return DropdownMenuItem<String>(
+                        value: data["statusId"].toString(),
+                        child: Text(
+                          data["statusName"].toString(),
+                        ),
+                      );
+                    }).toList(),
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      border: OutlineInputBorder(
+                        // Custom border
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      labelText: 'Project category',
+                      labelStyle:
+                          const TextStyle(color: Colors.grey, fontSize: 14),
+                      contentPadding: const EdgeInsets.only(left: 10),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * .9,
+                  child: TextFormField(
+                    controller: referenceNumber,
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      border: OutlineInputBorder(
+                        // Custom border
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      labelText: 'Reference number',
                       prefixIcon: const Icon(
-                        Icons.phone,
+                        Icons.numbers,
                         color: Colors.grey,
                         size: 18,
                       ),
@@ -121,7 +191,7 @@ class AddCilentScreen extends StatelessWidget {
                 SizedBox(
                   width: MediaQuery.of(context).size.width * .9,
                   child: TextFormField(
-                    controller: whatsappNumber,
+                    controller: location,
                     decoration: InputDecoration(
                       fillColor: Colors.white,
                       filled: true,
@@ -129,9 +199,9 @@ class AddCilentScreen extends StatelessWidget {
                         // Custom border
                         borderRadius: BorderRadius.circular(5),
                       ),
-                      labelText: 'Whatsapp number *',
+                      labelText: 'Location',
                       prefixIcon: const Icon(
-                        Icons.message,
+                        Icons.pin_drop,
                         color: Colors.grey,
                         size: 18,
                       ),
@@ -146,8 +216,19 @@ class AddCilentScreen extends StatelessWidget {
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * .9,
-                  child: TextFormField(
-                    controller: address,
+                  child: DropdownButtonFormField(
+                    value: status,
+                    onChanged: (value) async {
+                      status = value.toString();
+                    },
+                    items: statuses.map((data) {
+                      return DropdownMenuItem<String>(
+                        value: data["statusId"].toString(),
+                        child: Text(
+                          data["statusName"].toString(),
+                        ),
+                      );
+                    }).toList(),
                     decoration: InputDecoration(
                       fillColor: Colors.white,
                       filled: true,
@@ -155,7 +236,60 @@ class AddCilentScreen extends StatelessWidget {
                         // Custom border
                         borderRadius: BorderRadius.circular(5),
                       ),
-                      labelText: 'Address',
+                      labelText: 'Package',
+                      labelStyle:
+                          const TextStyle(color: Colors.grey, fontSize: 14),
+                      contentPadding: const EdgeInsets.only(left: 10),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * .9,
+                  child: DropdownButtonFormField(
+                    value: status,
+                    onChanged: (value) async {
+                      status = value.toString();
+                    },
+                    items: statuses.map((data) {
+                      return DropdownMenuItem<String>(
+                        value: data["statusId"].toString(),
+                        child: Text(
+                          data["statusName"].toString(),
+                        ),
+                      );
+                    }).toList(),
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      border: OutlineInputBorder(
+                        // Custom border
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      labelText: 'No of BHK',
+                      labelStyle:
+                          const TextStyle(color: Colors.grey, fontSize: 14),
+                      contentPadding: const EdgeInsets.only(left: 10),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * .9,
+                  child: TextFormField(
+                    controller: locationArea,
+                    decoration: InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      border: OutlineInputBorder(
+                        // Custom border
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      labelText: 'Location Area',
                       prefixIcon: const Icon(
                         Icons.pin_drop,
                         color: Colors.grey,
@@ -267,107 +401,11 @@ class AddCilentScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * .9,
-                  child: DropdownButtonFormField(
-                    value: status,
-                    onChanged: (value) async {
-                      status = value.toString();
-                    },
-                    items: statuses.map((data) {
-                      return DropdownMenuItem<String>(
-                        value: data["statusId"].toString(),
-                        child: Text(
-                          data["statusName"].toString(),
-                        ),
-                      );
-                    }).toList(),
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        // Custom border
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      labelText: 'State',
-                      labelStyle:
-                          const TextStyle(color: Colors.grey, fontSize: 14),
-                      contentPadding: const EdgeInsets.only(left: 10),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * .9,
-                  child: DropdownButtonFormField(
-                    value: status,
-                    onChanged: (value) async {
-                      status = value.toString();
-                    },
-                    items: statuses.map((data) {
-                      return DropdownMenuItem<String>(
-                        value: data["statusId"].toString(),
-                        child: Text(
-                          data["statusName"].toString(),
-                        ),
-                      );
-                    }).toList(),
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        // Custom border
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      labelText: 'District',
-                      labelStyle:
-                          const TextStyle(color: Colors.grey, fontSize: 14),
-                      contentPadding: const EdgeInsets.only(left: 10),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * .9,
-                  child: DropdownButtonFormField(
-                    value: status,
-                    onChanged: (value) async {
-                      status = value.toString();
-                    },
-                    items: statuses.map((data) {
-                      return DropdownMenuItem<String>(
-                        value: data["statusId"].toString(),
-                        child: Text(
-                          data["statusName"].toString(),
-                        ),
-                      );
-                    }).toList(),
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        // Custom border
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      labelText: 'Client type',
-                      labelStyle:
-                          const TextStyle(color: Colors.grey, fontSize: 14),
-                      contentPadding: const EdgeInsets.only(left: 10),
-                    ),
-                  ),
-                ),
-                const SizedBox(
                   height: 25,
                 ),
                 InkWell(
                     onTap: () {
-                      context.read<AddClientCubit>().addClient(
+                      context.read<ClientsCubit>().addClient(
                             "",
                             "",
                           );
@@ -381,6 +419,85 @@ class AddCilentScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Future<dynamic> selectClientDialog(BuildContext context) {
+    return showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            backgroundColor: AppColors.backgroundColor,
+            content: SizedBox(
+              height: MediaQuery.of(context).size.height * .6,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    const Text(
+                      'Clients',
+                      // style: TextingStyle.font18BoldBlack,
+                    ),
+                    const SizedBox(
+                      height: 15,
+                    ),
+                    TextField(
+                      autocorrect: false,
+                      keyboardType: TextInputType.visiblePassword,
+                      autofocus: true,
+                      onChanged: (value) {
+                        setState(() {});
+                      },
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.all(8),
+                        labelText: 'Search',
+                        prefixIcon: Icon(Icons.search),
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * .55,
+                      width: MediaQuery.of(context).size.width * .8,
+                      child: ListView.builder(
+                        // ignore: prefer_const_constructors
+                        physics: BouncingScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: 5,
+                        itemBuilder: (context, i) {
+                          return ListTile(
+                            onTap: () {},
+                            title: const Text(
+                              "Pradeesh",
+                              style: TextStyle(color: AppColors.primaryColor),
+                            ),
+                            subtitle: const Text("C R Manager",
+                                style:
+                                    TextStyle(color: AppColors.primaryColor)),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Close'),
+              ),
+            ],
+          );
+        });
+      },
     );
   }
 }

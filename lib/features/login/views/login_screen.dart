@@ -38,12 +38,11 @@ class LoginScreen extends StatelessWidget {
           BlocListener<LoginCubit, LoginState>(
             listener: (context, state) {
               if (state is LoginSuccess) {
-                                            snackBar(context, state.message, Colors.green);
+                snackBar(context, state.message, Colors.green);
 
-                Navigator.of(context).pushReplacementNamed(AppRoutes.dashboard);
+                Navigator.of(context).pushReplacementNamed(AppRoutes.home);
               } else if (state is LoginFailure) {
-                                            snackBar(context, state.message, Colors.red);
-
+                snackBar(context, state.message, Colors.red);
               }
             },
           ),
@@ -172,11 +171,9 @@ class LoginScreen extends StatelessWidget {
                       await context.read<ConnectivityCubit>().checkConnection();
                       if (context.mounted) {
                         if (_usernameController.text.isEmpty) {
-                                                      snackBar(context, "Enter username", Colors.red);
-
+                          snackBar(context, "Enter username", Colors.red);
                         } else if (_passwordController.text.isEmpty) {
-                                                      snackBar(context, "Enter Password", Colors.red);
-
+                          snackBar(context, "Enter Password", Colors.red);
                         } else {
                           if (connStatus == true) {
                             context.read<LoginCubit>().login(

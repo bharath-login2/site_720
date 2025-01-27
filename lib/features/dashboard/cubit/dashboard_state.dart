@@ -1,3 +1,5 @@
+import '../../../data/models/dashboard/dashboard_model.dart';
+
 class DashboardState {
   final DateTime? fromDate;
   final DateTime? toDate;
@@ -19,8 +21,8 @@ class DashboardInitial extends DashboardState {
 class DashboardLoading extends DashboardState {}
 
 class DashboardSuccess extends DashboardState {
-  final String message;
-  DashboardSuccess(this.message);
+  final DashboardModel response;
+  DashboardSuccess(this.response);
 }
 
 class DashboardFailure extends DashboardState {

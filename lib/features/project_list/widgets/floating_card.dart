@@ -50,7 +50,7 @@ class FloatingCard extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-                Navigator.pushNamed(context, AppRoutes.addCilentScreen);
+                Navigator.pushNamed(context, AppRoutes.addProjectScreen);
               },
               child: Container(
                   width: 40,

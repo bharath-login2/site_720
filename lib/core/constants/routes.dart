@@ -1,6 +1,7 @@
 class AppRoutes {
   static const splash = '/splash';
   static const login = '/login';
+  static const home = '/home';
   static const dashboard = '/dashboard';
   static const profile = '/profile';
   static const projectList = '/projectList';
@@ -26,4 +27,5 @@ class AppRoutes {
   static const phoneNumber = '/phoneNumber';
   static const otpScreen = '/otpScreen';
   static const changePasswordScreen = '/changePasswordScreen';
+  static const addProjectScreen = '/addProjectScreen';
 }

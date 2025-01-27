@@ -1,8 +1,10 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
+import '../../../data/models/dashboard/dashboard_model.dart';
+
 class DashboardPieChart extends StatefulWidget {
-  final List<double> values;
+  final List<ComplaintCount> values;
   final List<Color> colors;
 
   const DashboardPieChart({
@@ -16,16 +18,11 @@ class DashboardPieChart extends StatefulWidget {
 
 class _DashboardPieChartState extends State<DashboardPieChart> {
   int touchedIndex = -1;
-  List names = [
-    "New",
-    "Pending",
-    "Completed",
-    "Rejected",
-  ];
 
   @override
   Widget build(BuildContext context) {
-    double total = widget.values.fold(0, (sum, value) => sum + value);
+    double total =
+        widget.values.fold(0, (sum, value) => sum + int.parse(value.count));
     return AspectRatio(
       aspectRatio: 1.7,
       child: Row(
@@ -70,11 +67,12 @@ class _DashboardPieChartState extends State<DashboardPieChart> {
             child: SizedBox(
               width: MediaQuery.of(context).size.width * .3,
               child: ListView.builder(
-                  itemCount: 4,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: widget.values.length,
                   itemBuilder: (context, index) {
                     return Indicator(
                       color: widget.colors[index],
-                      text: names[index],
+                      text: widget.values[index].statusName,
                       isSquare: false,
                     );
                   }),
@@ -93,8 +91,9 @@ class _DashboardPieChartState extends State<DashboardPieChart> {
       const shadows = [Shadow(color: Colors.black, blurRadius: 2)];
       return PieChartSectionData(
         color: widget.colors[index],
-        value: widget.values[index],
-        title: '${((widget.values[index] / total) * 100).toStringAsFixed(2)} %',
+        value: double.parse(widget.values[index].count),
+        title:
+            '${((double.parse(widget.values[index].count) / total) * 100).toStringAsFixed(2)} %',
         radius: radius,
         titleStyle: TextStyle(
           fontSize: fontSize,

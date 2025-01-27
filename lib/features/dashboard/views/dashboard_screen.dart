@@ -10,6 +10,7 @@ import 'package:site_720/features/dashboard/widgets/pie_chart.dart';
 import '../../../core/constants/routes.dart';
 import '../../../core/widgets/buttons.dart';
 import '../../../core/widgets/connectivity_dialog.dart';
+import '../../../core/widgets/shimmer.dart';
 import '../../connectivity/cubit/connectivity_cubit.dart';
 import '../../connectivity/cubit/connectivity_state.dart';
 import '../widgets/dash_container.dart';
@@ -23,12 +24,7 @@ class DashboardScreen extends StatelessWidget {
   TextEditingController tdate = TextEditingController(
       text: DateFormat('dd-MM-yyyy').format(DateTime.now()));
   bool connStatus = false;
-  List names = [
-    "Company Issue",
-    "Client Issue",
-    "Payment Delay",
-    "General",
-  ];
+
   List colors = [
     Colors.blue,
     Colors.green,
@@ -37,345 +33,733 @@ class DashboardScreen extends StatelessWidget {
   ];
   @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<ConnectivityCubit, ConnectivityState>(
-          listener: (context, state) {
-            if (state is ConnectivityDisconnected) {
-              connStatus = false;
-              connectivityDialog(context);
-            } else {
-              connStatus = true;
-            }
-          },
-        ),
-      ],
-      child: BlocProvider(
-        create: (context) => DashboardCubit(),
+    return BlocProvider(
+      create: (context) => DashboardCubit(fdate.text, tdate.text),
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<ConnectivityCubit, ConnectivityState>(
+            listener: (context, state) {
+              if (state is ConnectivityDisconnected) {
+                connStatus = false;
+                connectivityDialog(context);
+              } else {
+                connStatus = true;
+              }
+            },
+          ),
+        ],
         child: Scaffold(
           backgroundColor: AppColors.backgroundColor,
           appBar: PreferredSize(
             preferredSize:
                 Size.fromHeight(MediaQuery.of(context).size.height * 0.1),
-            child: Container(
-              decoration:
-                  BoxDecoration(color: AppColors.secondaryColor, boxShadow: [
-                BoxShadow(
-                    color: Colors.grey.shade300,
-                    offset: Offset.zero,
-                    blurRadius: 1,
-                    spreadRadius: 2)
-              ]),
-              child: Padding(
-                padding:
-                    const EdgeInsets.only(top: 60.0, left: 16.0, right: 16.0),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: BlocBuilder<DashboardCubit, DashboardState>(
+              builder: (context, state) {
+                return Container(
+                  decoration: BoxDecoration(
+                      color: AppColors.secondaryColor,
+                      // image: DecorationImage(
+                      //     image: AssetImage("assets/images/appbar.png"),
+                      //     fit: BoxFit.fill),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.grey.shade300,
+                            offset: Offset.zero,
+                            blurRadius: 1,
+                            spreadRadius: 2)
+                      ]),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        top: 60.0, left: 16.0, right: 16.0),
+                    child: Column(
                       children: [
-                        const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              "DEMO",
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: AppColors.backgroundColor,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.8),
+                                        blurRadius: 6,
+                                        offset: const Offset(3, 3),
+                                      ),
+                                    ],
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: const Icon(Icons.person),
+                                ),
+                                const SizedBox(
+                                  width: 15,
+                                ),
+                                state is DashboardSuccess
+                                    ? Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            state.response.data.username,
+                                            style: const TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          Text(
+                                            state.response.data.designation,
+                                            style: const TextStyle(
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.bold,
+                                              letterSpacing: 1,
+                                              fontFamily: "Lobster",
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    : Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          shimmerContainer(
+                                              15,
+                                              MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  .3),
+                                          const SizedBox(
+                                            height: 5.0,
+                                          ),
+                                          shimmerContainer(
+                                              11,
+                                              MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  .4),
+                                        ],
+                                      ),
+                              ],
                             ),
-                            Text(
-                              "PRADEESH",
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1,
-                                fontFamily: "Lobster",
+                            InkWell(
+                              onTap: () {
+                                final dashboardCubit =
+                                    BlocProvider.of<DashboardCubit>(context);
+                                showDateRangeDialog(context, dashboardCubit);
+                              },
+                              child: Container(
+                                width: 30,
+                                height: 30,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: AppColors.primaryColor,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.8),
+                                      blurRadius: 6,
+                                      offset: const Offset(3, 3),
+                                    ),
+                                  ],
+                                ),
+                                alignment: Alignment.center,
+                                child: const Icon(
+                                  Icons.calendar_month,
+                                  color: AppColors.lightA,
+                                  size: 16,
+                                ),
                               ),
                             ),
                           ],
                         ),
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: AppColors.backgroundColor,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.8),
-                                blurRadius: 6,
-                                offset: const Offset(3, 3),
-                              ),
-                            ],
-                          ),
-                          alignment: Alignment.center,
-                          child: const Icon(Icons.person),
-                        ),
                       ],
                     ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             ),
           ),
           body: BlocBuilder<DashboardCubit, DashboardState>(
               builder: (context, state) {
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            Navigator.of(context)
-                                .pushNamed(AppRoutes.projectList);
-                          },
-                          child: DashContainer(
-                            title: "Upcoming",
-                            count: "100",
-                          ),
-                        ),
-                        DashContainer(
-                          title: "Running",
-                          count: "500",
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        DashContainer(
-                          title: "Completed",
-                          count: "50",
-                        ),
-                        DashContainer(
-                          title: "Paid",
-                          count: "500/-",
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 16.0, right: 16.0, top: 25),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: AppColors.lightA,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.8),
-                            blurRadius: 3,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          Container(
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(5),
-                                  topRight: Radius.circular(5),
+            final cubit = context.read<DashboardCubit>();
+
+            return RefreshIndicator(
+              onRefresh: () async {
+                cubit.getDashboard(fdate.text, tdate.text);
+              },
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 30.0),
+                      child: state is DashboardSuccess
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                InkWell(
+                                    onTap: () {
+                                      Navigator.of(context)
+                                          .pushNamed(AppRoutes.projectList);
+                                    },
+                                    child: DashContainer(
+                                      title: "Upcoming",
+                                      count: state
+                                          .response.data.projectCounts.upcoming,
+                                    )),
+                                DashContainer(
+                                  title: "Running",
+                                  count:
+                                      state.response.data.projectCounts.running,
                                 ),
-                                color: AppColors.dashContainer,
+                              ],
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                shimmerContainer(
+                                    85, MediaQuery.of(context).size.width * .4),
+                                shimmerContainer(
+                                    85, MediaQuery.of(context).size.width * .4),
+                              ],
+                            ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: state is DashboardSuccess
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                DashContainer(
+                                  title: "Completed",
+                                  count: state
+                                      .response.data.projectCounts.completed,
+                                ),
+                                DashContainer(
+                                  title: "Paid",
+                                  count: "-----/-",
+                                ),
+                              ],
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                shimmerContainer(
+                                    85, MediaQuery.of(context).size.width * .4),
+                                shimmerContainer(
+                                    85, MediaQuery.of(context).size.width * .4),
+                              ],
+                            ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 16.0,
+                        right: 16.0,
+                        top: 25,
+                      ),
+                      child: state is DashboardSuccess
+                          ? Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: AppColors.backgroundColor,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.8),
+                                    blurRadius: 3,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8.0, vertical: 6.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                          "Complaints",
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                            // color: AppColors.coffie,
-                                          ),
+                              child: Column(
+                                children: [
+                                  Container(
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(5),
+                                          topRight: Radius.circular(5),
                                         ),
-                                        Text(
-                                          "from ${fdate.text} To ${tdate.text}",
-                                          style: const TextStyle(
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.bold,
-                                            // color: AppColors.coffie,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        showDateRangeDialog(context);
-                                      },
-                                      child: const Icon(
-                                        Icons.calendar_month,
-                                        color: AppColors.coffie,
+                                        color: AppColors.dashContainer,
                                       ),
-                                    )
-                                  ],
-                                ),
-                              )),
-                          const DashboardPieChart(
-                            values: [60, 40, 50, 100],
-                            colors: [
-                              Colors.blue,
-                              Colors.green,
-                              Colors.orange,
-                              Colors.red,
-                            ],
-                            // labels: ["", "", "", ""],
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        left: 16.0, right: 16.0, top: 25, bottom: 30),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: AppColors.backgroundColor,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.8),
-                            blurRadius: 3,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          Container(
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(5),
-                                  topRight: Radius.circular(5),
-                                ),
-                                color: AppColors.dashContainer,
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8.0, vertical: 6.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                          "Work issues",
-                                          style: TextStyle(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.bold,
-                                            // color: AppColors.coffie,
-                                          ),
-                                        ),
-                                        Text(
-                                          "from ${fdate.text} To ${tdate.text}",
-                                          style: const TextStyle(
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.bold,
-                                            // color: AppColors.coffie,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        showDateRangeDialog(context);
-                                      },
-                                      child: const Icon(
-                                        Icons.calendar_month,
-                                        color: AppColors.coffie,
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              )),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ListView.builder(
-                                padding: EdgeInsets.zero,
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: names.length,
-                                itemBuilder: (context, i) {
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 6.0, horizontal: 8.0),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color:
-                                                  Colors.grey.withOpacity(0.8),
-                                              blurRadius: 3,
-                                              offset: const Offset(3, 3),
-                                            ),
-                                          ],
-                                          color: AppColors.backgroundColor,
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(8))),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 12.0, vertical: 8.0),
-                                        child: Column(
+                                      child: const Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 8.0, vertical: 12.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(2.0),
-                                              child: Row(
-                                                children: [
-                                                  Text(
-                                                    names[i],
-                                                    style: const TextStyle(
-                                                        color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 12),
-                                                  ),
-                                                ],
+                                            Text(
+                                              "Expense",
+                                              style: TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.bold,
+                                                // color: AppColors.coffie,
                                               ),
                                             ),
-                                            LinearProgressIndicator(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              backgroundColor:
-                                                  Colors.grey.shade400,
-                                              value: double.parse("40") / 100,
-                                              valueColor:
-                                                  AlwaysStoppedAnimation<Color>(
-                                                      colors[i]),
-                                              minHeight: 5,
-                                            ),
                                           ],
                                         ),
-                                      ),
-                                    ),
-                                  );
-                                }),
-                          )
-                        ],
-                      ),
+                                      )),
+                                  state.response.data.workissuesCounts
+                                          .isNotEmpty
+                                      ? Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 8.0, vertical: 16),
+                                          child: SizedBox(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                .23,
+                                            child: ListView.builder(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                padding: EdgeInsets.zero,
+                                                shrinkWrap: true,
+                                                physics:
+                                                    const NeverScrollableScrollPhysics(),
+                                                itemCount: state.response.data
+                                                    .workissuesCounts.length,
+                                                itemBuilder: (context, i) {
+                                                  return Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 6.0,
+                                                        horizontal: 6.0),
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.end,
+                                                      children: [
+                                                        Text(
+                                                          (double.parse(state
+                                                                      .response
+                                                                      .data
+                                                                      .workissuesCounts[
+                                                                          i]
+                                                                      .count) *
+                                                                  10)
+                                                              .toString(),
+                                                          style:
+                                                              const TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontSize: 14),
+                                                        ),
+                                                        Container(
+                                                          width: 70,
+                                                          height: double.parse(state
+                                                                  .response
+                                                                  .data
+                                                                  .workissuesCounts[
+                                                                      i]
+                                                                  .count) *
+                                                              20,
+                                                          decoration: BoxDecoration(
+                                                              boxShadow: [
+                                                                BoxShadow(
+                                                                  color: Colors
+                                                                      .grey
+                                                                      .withOpacity(
+                                                                          0.8),
+                                                                  blurRadius: 3,
+                                                                  offset:
+                                                                      const Offset(
+                                                                          3, 3),
+                                                                ),
+                                                              ],
+                                                              color: AppColors
+                                                                  .lightPrimary,
+                                                              borderRadius:
+                                                                  const BorderRadius
+                                                                      .all(
+                                                                      Radius.circular(
+                                                                          8))),
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        Text(
+                                                          state
+                                                              .response
+                                                              .data
+                                                              .workissuesCounts[
+                                                                  i]
+                                                              .workissueName,
+                                                          style:
+                                                              const TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontSize: 12),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                }),
+                                          ),
+                                        )
+                                      : const Padding(
+                                          padding: EdgeInsets.all(25.0),
+                                          child: Text(
+                                            "No Issues !",
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.bold,
+                                              color: AppColors.primaryColor,
+                                            ),
+                                          ),
+                                        )
+                                ],
+                              ),
+                            )
+                          : shimmerContainer(
+                              MediaQuery.of(context).size.height * .4,
+                              MediaQuery.of(context).size.height * .9),
                     ),
-                  )
-                ],
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 16.0, right: 16.0, top: 25),
+                      child: state is DashboardSuccess
+                          ? Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: AppColors.lightA,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.8),
+                                    blurRadius: 3,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                children: [
+                                  Container(
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(5),
+                                          topRight: Radius.circular(5),
+                                        ),
+                                        color: AppColors.dashContainer,
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0, vertical: 6.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                const Text(
+                                                  "Complaints",
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
+                                                    // color: AppColors.coffie,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  "from ${fdate.text} To ${tdate.text}",
+                                                  style: const TextStyle(
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.bold,
+                                                    // color: AppColors.coffie,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            InkWell(
+                                              onTap: () {
+                                                showDateRangeDialog(
+                                                    context, cubit);
+                                              },
+                                              child: const Icon(
+                                                Icons.calendar_month,
+                                                color: AppColors.coffie,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      )),
+                                  state.response.data.complaintCounts.isNotEmpty
+                                      ? DashboardPieChart(
+                                          values: state
+                                              .response.data.complaintCounts,
+                                          colors: const [
+                                            Colors.blue,
+                                            Colors.orange,
+                                            Colors.green,
+                                            Colors.red,
+                                          ],
+                                          // labels: ["", "", "", ""],
+                                        )
+                                      : const Padding(
+                                          padding: EdgeInsets.all(25.0),
+                                          child: Text(
+                                            "No Complaints !",
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.bold,
+                                              color: AppColors.primaryColor,
+                                            ),
+                                          ),
+                                        ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              .4,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              .105,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            color: AppColors.primaryColor,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey
+                                                    .withOpacity(0.8),
+                                                blurRadius: 6,
+                                                offset: const Offset(0, 3),
+                                              ),
+                                            ],
+                                          ),
+                                          alignment: Alignment.center,
+                                          child: const Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                "Complaint History",
+                                                style: TextStyle(
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: AppColors.lightA,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              Icon(
+                                                Icons.arrow_forward,
+                                                color: Colors.white,
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            )
+                          : shimmerContainer(
+                              MediaQuery.of(context).size.height * .3,
+                              MediaQuery.of(context).size.height * .9),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 16.0, right: 16.0, top: 25, bottom: 30),
+                      child: state is DashboardSuccess
+                          ? Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: AppColors.backgroundColor,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.8),
+                                    blurRadius: 3,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                children: [
+                                  Container(
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(5),
+                                          topRight: Radius.circular(5),
+                                        ),
+                                        color: AppColors.dashContainer,
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0, vertical: 6.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                const Text(
+                                                  "Work issues",
+                                                  style: TextStyle(
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.bold,
+                                                    // color: AppColors.coffie,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  "from ${fdate.text} To ${tdate.text}",
+                                                  style: const TextStyle(
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.bold,
+                                                    // color: AppColors.coffie,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            InkWell(
+                                              onTap: () {
+                                                showDateRangeDialog(
+                                                    context, cubit);
+                                              },
+                                              child: const Icon(
+                                                Icons.calendar_month,
+                                                color: AppColors.coffie,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      )),
+                                  state.response.data.workissuesCounts
+                                          .isNotEmpty
+                                      ? Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 8.0, vertical: 16),
+                                          child: ListView.builder(
+                                              padding: EdgeInsets.zero,
+                                              shrinkWrap: true,
+                                              physics:
+                                                  const NeverScrollableScrollPhysics(),
+                                              itemCount: state.response.data
+                                                  .workissuesCounts.length,
+                                              itemBuilder: (context, i) {
+                                                return Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      vertical: 6.0,
+                                                      horizontal: 8.0),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.grey
+                                                                .withOpacity(
+                                                                    0.8),
+                                                            blurRadius: 3,
+                                                            offset:
+                                                                const Offset(
+                                                                    3, 3),
+                                                          ),
+                                                        ],
+                                                        color: AppColors
+                                                            .backgroundColor,
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                .all(
+                                                                Radius.circular(
+                                                                    8))),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal: 12.0,
+                                                          vertical: 8.0),
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .end,
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(2.0),
+                                                            child: Row(
+                                                              children: [
+                                                                Text(
+                                                                  state
+                                                                      .response
+                                                                      .data
+                                                                      .workissuesCounts[
+                                                                          i]
+                                                                      .workissueName,
+                                                                  style: const TextStyle(
+                                                                      color: Colors
+                                                                          .black,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      fontSize:
+                                                                          12),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          LinearProgressIndicator(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        8),
+                                                            backgroundColor:
+                                                                Colors.grey
+                                                                    .shade400,
+                                                            value: double.parse(state
+                                                                    .response
+                                                                    .data
+                                                                    .workissuesCounts[
+                                                                        i]
+                                                                    .count) /
+                                                                100,
+                                                            valueColor:
+                                                                AlwaysStoppedAnimation<
+                                                                        Color>(
+                                                                    colors[i]),
+                                                            minHeight: 5,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              }),
+                                        )
+                                      : const Padding(
+                                          padding: EdgeInsets.all(25.0),
+                                          child: Text(
+                                            "No Issues !",
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.bold,
+                                              color: AppColors.primaryColor,
+                                            ),
+                                          ),
+                                        )
+                                ],
+                              ),
+                            )
+                          : shimmerContainer(
+                              MediaQuery.of(context).size.height * .4,
+                              MediaQuery.of(context).size.height * .9),
+                    )
+                  ],
+                ),
               ),
             );
           }),
@@ -384,7 +768,7 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Future<dynamic> showDateRangeDialog(BuildContext context) {
+  Future<dynamic> showDateRangeDialog(BuildContext context, cubit) {
     return showDialog(
       context: context,
       builder: (context) {
@@ -417,11 +801,7 @@ class DashboardScreen extends StatelessWidget {
                             String? selectedDate = await selectDate(context);
                             if (selectedDate != null) {
                               fdate.text = selectedDate;
-                              if (context.mounted) {
-                                context
-                                    .read<DashboardCubit>()
-                                    .updateFromDate(selectedDate);
-                              }
+                              if (context.mounted) {}
                             }
                           },
                           readOnly: true,
@@ -447,11 +827,7 @@ class DashboardScreen extends StatelessWidget {
                             String? selectedDate = await selectDate(context);
                             if (selectedDate != null) {
                               tdate.text = selectedDate;
-                              if (context.mounted) {
-                                context
-                                    .read<DashboardCubit>()
-                                    .updateToDate(selectedDate);
-                              }
+                              if (context.mounted) {}
                             }
                           },
                           readOnly: true,
@@ -473,11 +849,16 @@ class DashboardScreen extends StatelessWidget {
                     height: 20,
                   ),
                   GestureDetector(
-                    onTap: () async {},
+                    onTap: () async {
+                      cubit.getDashboard(fdate.text, tdate.text);
+                      Navigator.pop(context);
+                    },
                     child: LargeButton(title: "Continue"),
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
                     child: const Text('Close'),
                   ),
                 ],

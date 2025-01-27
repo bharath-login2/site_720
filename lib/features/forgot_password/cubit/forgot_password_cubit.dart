@@ -41,7 +41,7 @@ class ForgotPasswordCubit extends Cubit<ForgotPasswordState> {
     try {
       final random = Random();
       genOtp = (1000 + random.nextInt(9000)).toString();
-      print("OTP====  $genOtp  =====");
+      // print("OTP====  $genOtp  =====");
       emit(OtpSent("Otp sent to your WhatsApp", genOtp));
     } catch (e) {
       emit(ForgotPasswordFailure("Failed to send OTP. Please try again."));

@@ -1,27 +1,23 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../data/models/dashboard/dashboard_model.dart';
+import '../../../data/services/http_services.dart';
 import 'dashboard_state.dart';
 
 class DashboardCubit extends Cubit<DashboardState> {
-  DashboardCubit() : super(DashboardInitial());
+  DashboardCubit(String fDate, String tDate) : super(DashboardInitial()) {
+    getDashboard(fDate, tDate);
+  }
 
-  void startLoading() {
+  Future<void> getDashboard(String fDate, String tDate) async {
     emit(DashboardLoading());
-  }
-
-  void emitSuccess(String message) {
-    emit(DashboardSuccess(message));
-  }
-
-  void emitFailure(String message) {
-    emit(DashboardFailure(message));
-  }
-
-  void updateFromDate(String? date) {
-    emit(state.copyWith(fromDate: date));
-  }
-
-  void updateToDate(String? date) {
-    emit(state.copyWith(toDate: date));
+    try {
+      DashboardModel response = await HttpServices.dashboard(fDate, tDate);
+      if (response.status == true) {
+        emit(DashboardSuccess(response));
+      }
+    } catch (e) {
+      emit(DashboardFailure('Failed to fetch data: ${e.toString()}')); 
+    }
   }
 }

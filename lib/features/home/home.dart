@@ -3,8 +3,8 @@ import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/dialogs.dart';
 import 'package:site_720/features/dashboard/views/dashboard_screen.dart';
 import 'package:site_720/features/project_list/views/project_list_screen.dart';
-
 import '../clients/views/client_list.dart';
+import '../project_list/views/add_projects.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -20,7 +20,7 @@ class _HomeState extends State<Home> {
     DashboardScreen(),
     ProjectList(),
     const ClientList(),
-    ProjectList(),
+    AddProjectScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -67,6 +67,8 @@ class _HomeState extends State<Home> {
           showSelectedLabels: false,
           showUnselectedLabels: false,
           unselectedItemColor: Colors.grey,
+          type: BottomNavigationBarType.fixed,
+          enableFeedback: false,
         ),
       ),
     );

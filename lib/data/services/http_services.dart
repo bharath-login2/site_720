@@ -4,6 +4,7 @@ import 'package:site_720/data/models/project_list/project_list_model.dart';
 
 import '../models/clientlist/client_list_model.dart';
 import '../models/dashboard/dashboard_model.dart';
+import '../models/workdetails/work_detail_model.dart';
 
 class HttpServices {
   static var dev = 'https://dev.login2.in/constructEase/test_dev/v1/api/';
@@ -65,4 +66,21 @@ class HttpServices {
       log(e.toString());
     }
   }
+
+static Future getWorkDetails(projectId) async {
+    try {
+      http.Response response = await http.post(
+          Uri.parse("${baseUrl}get_work_detailed"),
+          body: {
+            "project_id":projectId
+          }
+          );
+      if (response.statusCode == 200) {
+        return workDetailModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
 }

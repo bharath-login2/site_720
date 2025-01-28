@@ -63,7 +63,7 @@ class ProjectList extends StatelessWidget {
                                   children: [
                                     Row(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start, 
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.all(4.0),
@@ -198,7 +198,11 @@ class ProjectList extends StatelessWidget {
                                       ? InkWell(
                                           onTap: () {
                                             Navigator.pushNamed(context,
-                                                AppRoutes.projectDetails);
+                                                AppRoutes.projectDetails,
+                                                arguments: {
+                                                  "id": state.response.data
+                                                      .projectList[index].id
+                                                });
                                           },
                                           child: Container(
                                             width: MediaQuery.of(context)

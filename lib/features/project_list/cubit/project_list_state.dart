@@ -40,3 +40,8 @@ class ImageFailure extends ProjectListState {
   final String message;
   ImageFailure(this.message);
 }
+
+class PriorityUpdated extends ProjectListState {
+  final String value;
+  PriorityUpdated(this.value);
+}

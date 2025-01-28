@@ -3,10 +3,11 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/constants/colors.dart';
+import '../../../core/widgets/shimmer.dart';
 
 class DetailsItem extends StatelessWidget {
   String title;
-  String value;
+  dynamic value;
   IconData icon;
   DetailsItem({
     super.key,
@@ -56,13 +57,16 @@ class DetailsItem extends StatelessWidget {
                     fontWeight: FontWeight.normal,
                   ),
                 ),
-                Text(
-                  value,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                value != null
+                    ? Text(
+                        value.toString(),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    : shimmerContainer(
+                        15, MediaQuery.of(context).size.width * .25),
               ],
             ),
           ],

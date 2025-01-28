@@ -62,7 +62,7 @@ class MyApp extends StatelessWidget {
         '/dashboard': (context) => DashboardScreen(),
         '/projectList': (context) => ProjectList(),
         '/addCilentScreen': (context) => AddCilentScreen(),
-        '/projectDetails': (context) => ProjectDetails(),
+        '/projectDetails': (context) => const ProjectDetails(),
         '/gallery': (context) => GalleryScreen(),
         '/drawing': (context) => DrawingScreen(),
         '/workDetails': (context) => const WorkDetails(),

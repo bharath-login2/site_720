@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:site_720/data/models/project_list/project_list_model.dart';
 
 import '../models/dashboard/dashboard_model.dart';
+import '../models/project_details/project_detais_model.dart';
 
 class HttpServices {
   static var dev = 'https://dev.login2.in/constructEase/test_dev/v1/api/';
@@ -34,7 +35,6 @@ class HttpServices {
     }
   }
 
-
   static Future getProjectList(status, searchKey) async {
     try {
       http.Response response = await http.post(
@@ -53,12 +53,17 @@ class HttpServices {
   }
 
 
-  static Future getStatusList() async {
+  static Future getProjectDetails(projectId) async {
     try {
-      http.Response response = await http.post(
-          Uri.parse("${baseUrl}get_project_list"));
+      http.Response response =
+          await http.post(Uri.parse("${baseUrl}get_project_detailed"),
+          body: ({
+            'token': "",
+            'project_id': projectId
+          })
+          );
       if (response.statusCode == 200) {
-        return projectListModelFromJson(response.body);
+        return projectDetailsModelFromJson(response.body);
       }
     } catch (e) {
       log(e.toString());

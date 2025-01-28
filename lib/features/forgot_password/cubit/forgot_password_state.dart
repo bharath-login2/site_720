@@ -32,10 +32,14 @@ class ForgotPasswordTimerUpdated extends ForgotPasswordState {
   ForgotPasswordTimerUpdated(this.secondsRemaining, this.isResendButtonEnabled);
 }
 
-class ForgotPasswordPasswordVisibilityChanged extends ForgotPasswordState {
+class PasswordVisibilityChanged extends ForgotPasswordState {
   final bool isObscure;
+  PasswordVisibilityChanged(this.isObscure);
+}
 
-  ForgotPasswordPasswordVisibilityChanged(this.isObscure);
+class ConfirmPasswordVisibilityChanged extends ForgotPasswordState {
+  final bool confirmObscure;
+  ConfirmPasswordVisibilityChanged(this.confirmObscure);
 }
 
 class OtpVerified extends ForgotPasswordState {}

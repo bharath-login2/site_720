@@ -487,7 +487,8 @@ class DashboardScreen extends StatelessWidget {
                                             )
                                           ],
                                         ),
-                                      )),
+                                      )
+                                      ),
                                   state.response.data.complaintCounts.isNotEmpty
                                       ? DashboardPieChart(
                                           values: state
@@ -516,49 +517,55 @@ class DashboardScreen extends StatelessWidget {
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                        Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              .4,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              .105,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                            color: AppColors.primaryColor,
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.grey
-                                                    .withOpacity(0.8),
-                                                blurRadius: 6,
-                                                offset: const Offset(0, 3),
-                                              ),
-                                            ],
-                                          ),
-                                          alignment: Alignment.center,
-                                          child: const Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                "Complaint History",
-                                                style: TextStyle(
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: AppColors.lightA,
+                                      InkWell(
+                                        onTap: () {
+                                          Navigator.of(context)
+                                          .pushNamed(AppRoutes.complaintList);
+                                        },
+                                          child: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                .4,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                .105,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              color: AppColors.primaryColor,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.grey
+                                                      .withOpacity(0.8),
+                                                  blurRadius: 6,
+                                                  offset: const Offset(0, 3),
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                width: 10,
-                                              ),
-                                              Icon(
-                                                Icons.arrow_forward,
-                                                color: Colors.white,
-                                              )
-                                            ],
+                                              ],
+                                            ),
+                                            alignment: Alignment.center,
+                                            child: const Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  "Complaint History",
+                                                  style: TextStyle(
+                                                    fontSize: 10,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: AppColors.lightA,
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Icon(
+                                                  Icons.arrow_forward,
+                                                  color: Colors.white,
+                                                )
+                                              ],
+                                            ),
                                           ),
                                         )
                                       ],

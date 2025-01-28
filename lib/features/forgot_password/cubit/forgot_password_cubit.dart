@@ -20,8 +20,13 @@ class ForgotPasswordCubit extends Cubit<ForgotPasswordState> {
   }
 
   void togglePasswordVisibility(bool isObscure) {
-    emit(ForgotPasswordPasswordVisibilityChanged(!isObscure));
+    emit(PasswordVisibilityChanged(!isObscure));
   }
+
+   void confirmPasswordVisibility(bool isObscure) {
+    emit(ConfirmPasswordVisibilityChanged(!isObscure));
+  }
+  
 
   void verifyPhone(String phone) async {
     // if (otp == genOtp) {

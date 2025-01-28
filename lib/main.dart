@@ -20,6 +20,8 @@ import 'package:site_720/features/site_note/views/site_note_screen.dart';
 import 'package:site_720/features/splash/views/splash.dart';
 import 'package:site_720/features/sub_contactors/views/sub_contrctor_screen.dart';
 import 'features/clients/views/add_clients.dart';
+import 'features/complaints/views/add_complaint.dart';
+import 'features/complaints/views/complaint_list.dart';
 import 'features/connectivity/cubit/connectivity_cubit.dart';
 import 'features/deduction_work/views/deduction_work_screen.dart';
 import 'features/forgot_password/views/change_password_screen.dart';
@@ -82,6 +84,8 @@ class MyApp extends StatelessWidget {
         // '/otpScreen': (context) => OtpScreen(),
         '/changePasswordScreen': (context) => ChangePasswordScreen(),
         '/addProjectScreen': (context) => AddProjectScreen(),
+        '/complaintList': (context) =>  ComplaintList(),
+         '/addComplaints': (context) =>  AddComplaint(),
       },
     );
   }

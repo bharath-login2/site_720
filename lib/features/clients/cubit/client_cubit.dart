@@ -1,8 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../data/models/clientlist/client_list_model.dart';
+import '../../../data/services/http_services.dart';
 part 'client_state.dart';
 
 class ClientsCubit extends Cubit<ClientsState> {
-  ClientsCubit() : super(ClientInitial());
+  ClientsCubit() : super(ClientInitial()){
+    getClientList();
+  }
 
   Future<void> addClient(String username, String password) async {
     emit(AddClientLoading());
@@ -20,4 +25,17 @@ class ClientsCubit extends Cubit<ClientsState> {
       emit(AddClientFailure("An error occurred."));
     }
   }
+  Future<void> getClientList() async {
+      emit(ClientDetailsLoading());
+      try {
+        ClientListModel response = await HttpServices.getClientList();
+        
+        if (response.status == true) {
+          emit(ClientDetailsSuccess(response));
+        }
+      } catch (e) {
+        emit(ClientDetailsFailure('Failed to fetch data: ${e.toString()}'));
+      }
+    }
+
 }

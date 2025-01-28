@@ -2,8 +2,10 @@ import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:site_720/data/models/project_list/project_list_model.dart';
 
+import '../models/clientlist/client_list_model.dart';
 import '../models/dashboard/dashboard_model.dart';
 import '../models/project_details/project_detais_model.dart';
+import '../models/workdetails/work_detail_model.dart';
 
 class HttpServices {
   static var dev = 'https://dev.login2.in/constructEase/test_dev/v1/api/';
@@ -54,6 +56,19 @@ class HttpServices {
 
 
   static Future getProjectDetails(projectId) async {
+  static Future getClientList() async {
+    try {
+      http.Response response = await http.post(
+          Uri.parse("${baseUrl}get_client_list"));
+      if (response.statusCode == 200) {
+        return clientListModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+static Future getWorkDetails(projectId) async {
     try {
       http.Response response =
           await http.post(Uri.parse("${baseUrl}get_project_detailed"),
@@ -62,11 +77,19 @@ class HttpServices {
             'project_id': projectId
           })
           );
+      http.Response response = await http.post(
+          Uri.parse("${baseUrl}get_work_detailed"),
+          body: {
+            "project_id":projectId
+          }
+          );
       if (response.statusCode == 200) {
         return projectDetailsModelFromJson(response.body);
+        return workDetailModelFromJson(response.body);
       }
     } catch (e) {
       log(e.toString());
     }
   }
+
 }

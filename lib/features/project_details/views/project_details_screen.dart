@@ -11,7 +11,6 @@ import '../widgets/details_button_container.dart';
 import '../widgets/details_item.dart';
 import '../widgets/floating_profile_card.dart';
 
-
 class ProjectDetails extends StatelessWidget {
   const ProjectDetails({super.key});
 
@@ -195,21 +194,47 @@ class ProjectDetails extends StatelessWidget {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        DetailsButtonContainer(
-                                          title: "View Plan",
-                                          color: AppColors.coffie,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              .4,
+                                        InkWell(
+                                          onTap: () {
+                                            if (state
+                                                is ProjectDetailsSuccess) {
+                                              Navigator.pushNamed(context,
+                                                  AppRoutes.imageViewer,
+                                                  arguments: {
+                                                    "title":"View Plan",
+                                                    "image": state.response.data.planImage
+                                                  });
+                                            }
+                                          },
+                                          child: DetailsButtonContainer(
+                                            title: "View Plan",
+                                            color: AppColors.coffie,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                .4,
+                                          ),
                                         ),
-                                        DetailsButtonContainer(
-                                          title: "View Elevation",
-                                          color: AppColors.coffie,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              .4,
+                                        InkWell(
+                                           onTap: () {
+                                            if (state
+                                                is ProjectDetailsSuccess) {
+                                              Navigator.pushNamed(context,
+                                                  AppRoutes.imageViewer,
+                                                  arguments: {
+                                                    "title":"View Elevation",
+                                                    "image": state.response.data.elevationImage
+                                                  });
+                                            }
+                                          },
+                                          child: DetailsButtonContainer(
+                                            title: "View Elevation",
+                                            color: AppColors.coffie,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                .4,
+                                          ),
                                         ),
                                       ],
                                     ),

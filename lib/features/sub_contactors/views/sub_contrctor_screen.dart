@@ -107,7 +107,7 @@ class SubContractor extends StatelessWidget {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(width: 7),
+                                        const SizedBox(width: 7),
                                         Container(
                                           height: 25,
                                           width: 25,
@@ -134,7 +134,7 @@ class SubContractor extends StatelessWidget {
                                      
                                       ],
                                     ),
-                                       SizedBox(height: 10),
+                                       const SizedBox(height: 10),
                                         AmountContainer(
                                       title: "Cost",
                                       amount: "50000 ₹",

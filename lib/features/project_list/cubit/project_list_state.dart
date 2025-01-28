@@ -30,3 +30,13 @@ class ProjectListFailure extends ProjectListState {
   final String message;
   ProjectListFailure(this.message);
 }
+
+class ImageSuccess extends ProjectListState {
+  final List imageList;
+  ImageSuccess(this.imageList);
+}
+
+class ImageFailure extends ProjectListState {
+  final String message;
+  ImageFailure(this.message);
+}

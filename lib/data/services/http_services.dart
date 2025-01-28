@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:site_720/data/models/project_list/project_list_model.dart';
 
+import '../models/clientlist/client_list_model.dart';
 import '../models/dashboard/dashboard_model.dart';
 
 class HttpServices {
@@ -53,12 +54,12 @@ class HttpServices {
   }
 
 
-  static Future getStatusList() async {
+  static Future getClientList() async {
     try {
       http.Response response = await http.post(
-          Uri.parse("${baseUrl}get_project_list"));
+          Uri.parse("${baseUrl}get_client_list"));
       if (response.statusCode == 200) {
-        return projectListModelFromJson(response.body);
+        return clientListModelFromJson(response.body);
       }
     } catch (e) {
       log(e.toString());

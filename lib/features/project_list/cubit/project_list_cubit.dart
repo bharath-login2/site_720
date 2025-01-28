@@ -23,17 +23,17 @@ class ProjectListCubit extends Cubit<ProjectListState> {
       emit(ProjectListFailure('Failed to fetch data: ${e.toString()}')); 
     }
   }
-  Future<void> getStatusList() async {
-    emit(ProjectListLoading());
-    try {
-      ProjectListModel response = await HttpServices.getStatusList();
-      if (response.status == true) {
-        emit(ProjectListSuccess(response));
-      }
-    } catch (e) {
-      emit(ProjectListFailure('Failed to fetch data: ${e.toString()}')); 
-    }
-  }
+  // Future<void> getStatusList() async {
+  //   emit(ProjectListLoading());
+  //   try {
+  //     ProjectListModel response = await HttpServices.getStatusList();
+  //     if (response.status == true) {
+  //       emit(ProjectListSuccess(response));
+  //     }
+  //   } catch (e) {
+  //     emit(ProjectListFailure('Failed to fetch data: ${e.toString()}')); 
+  //   }
+  // }
   selectMultiImage(
     ImageSource? source,
   ) async {

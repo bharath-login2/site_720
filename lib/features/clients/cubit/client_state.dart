@@ -16,3 +16,17 @@ class AddClientFailure extends ClientsState {
 
   AddClientFailure(this.message);
 }
+class ClientDetailsSuccess extends ClientsState {
+  ClientListModel response;
+
+  ClientDetailsSuccess(this.response);
+}
+class ClientDetailsFailure extends ClientsState {
+  final String message;
+
+  ClientDetailsFailure(this.message);
+}
+
+class ClientDetailsLoading extends ClientsState {
+  ClientDetailsLoading();
+}

@@ -348,7 +348,7 @@ class AddComplaint extends StatelessWidget {
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.5),
                         blurRadius: 8.0,
-                        offset: Offset(0, 4),
+                        offset: const Offset(0, 4),
                       ),
                     ],
                   ),
@@ -477,7 +477,7 @@ class AddComplaint extends StatelessWidget {
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.5),
                         blurRadius: 8.0,
-                        offset: Offset(0, 4),
+                        offset: const Offset(0, 4),
                       ),
                     ],
                   ),
@@ -749,7 +749,7 @@ class AddComplaint extends StatelessWidget {
                       BoxShadow(
                         color: Colors.grey.withOpacity(0.5),
                         blurRadius: 8.0,
-                        offset: Offset(0, 4),
+                        offset: const Offset(0, 4),
                       ),
                     ],
                   ),

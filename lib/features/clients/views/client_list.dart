@@ -279,7 +279,7 @@ class ClientList extends StatelessWidget {
                   },
                 ));
           } else {
-            return SizedBox();
+            return const SizedBox();
           }
         },
       ),

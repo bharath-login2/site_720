@@ -56,7 +56,23 @@ class HttpServices {
 
 
   static Future getProjectDetails(projectId) async {
-  static Future getClientList() async {
+    try {
+      http.Response response =
+          await http.post(Uri.parse("${baseUrl}get_project_detailed"),
+          body: ({
+            'token': "",
+            'project_id': projectId
+          })
+          );
+      if (response.statusCode == 200) {
+        return projectDetailsModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+   static Future getClientList() async {
     try {
       http.Response response = await http.post(
           Uri.parse("${baseUrl}get_client_list"));
@@ -67,16 +83,9 @@ class HttpServices {
       log(e.toString());
     }
   }
-
+ 
 static Future getWorkDetails(projectId) async {
     try {
-      http.Response response =
-          await http.post(Uri.parse("${baseUrl}get_project_detailed"),
-          body: ({
-            'token': "",
-            'project_id': projectId
-          })
-          );
       http.Response response = await http.post(
           Uri.parse("${baseUrl}get_work_detailed"),
           body: {
@@ -84,7 +93,6 @@ static Future getWorkDetails(projectId) async {
           }
           );
       if (response.statusCode == 200) {
-        return projectDetailsModelFromJson(response.body);
         return workDetailModelFromJson(response.body);
       }
     } catch (e) {

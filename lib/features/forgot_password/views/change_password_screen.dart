@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/connectivity_dialog.dart';
-import 'package:site_720/features/login/views/login_screen.dart';
 import '../../../core/widgets/buttons.dart';
 import '../../../core/widgets/snack_bar.dart';
 import '../../connectivity/cubit/connectivity_cubit.dart';
@@ -135,7 +134,7 @@ class ChangePasswordScreen extends StatelessWidget {
                             ),
                           ),
 
-                           SizedBox(height: 10),
+                           const SizedBox(height: 10),
 
 
                            Container(

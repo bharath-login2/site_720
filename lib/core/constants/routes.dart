@@ -30,4 +30,5 @@ class AppRoutes {
   static const addProjectScreen = '/addProjectScreen';
    static const complaintList = '/complaintList';
     static const addComplaints = '/addComplaints';
+    static const imageViewer = '/imageViewer';
 }

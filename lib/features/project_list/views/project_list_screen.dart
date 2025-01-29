@@ -199,7 +199,7 @@ class ProjectList extends StatelessWidget {
                                           onTap: () {
                                             Navigator.pushNamed(context,
                                                 AppRoutes.projectDetails,
-                                                arguments: {
+                                                arguments: {               
                                                   "id": state.response.data
                                                       .projectList[index].id
                                                 });

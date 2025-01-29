@@ -12,6 +12,7 @@ import 'package:site_720/features/extra_work/views/extra_work_screen.dart';
 import 'package:site_720/features/gallery/views/gallery_screen.dart';
 import 'package:site_720/features/package/views/package_detailed_screen.dart';
 import 'package:site_720/features/payment_details/views/payment_details_screen.dart';
+import 'package:site_720/features/project_details/views/image_view_screen.dart';
 import 'package:site_720/features/project_details/views/project_details_screen.dart';
 import 'package:site_720/features/project_list/views/project_list_screen.dart';
 import 'package:site_720/features/purchase/views/add_purchase.dart';
@@ -84,8 +85,9 @@ class MyApp extends StatelessWidget {
         // '/otpScreen': (context) => OtpScreen(),
         '/changePasswordScreen': (context) => ChangePasswordScreen(),
         '/addProjectScreen': (context) => AddProjectScreen(),
-        '/complaintList': (context) =>  ComplaintList(),
-         '/addComplaints': (context) =>  AddComplaint(),
+        '/complaintList': (context) => ComplaintList(),
+        '/addComplaints': (context) => AddComplaint(),
+        '/imageViewer': (context) => const ImageViewer(),
       },
     );
   }

@@ -1,3 +1,4 @@
+import '../../../data/models/workdetails/add_work_model.dart';
 import '../../../data/models/workdetails/work_detail_model.dart';
 
 class WorkDetailsState {
@@ -25,6 +26,13 @@ class WorkDetailsSuccess extends WorkDetailsState {
 
   WorkDetailsSuccess(this.response);
 }
+
+class WorkStatusSuccess extends WorkDetailsState {
+   AddWorkModel response;
+
+  WorkStatusSuccess(this.response);
+}
+
 
 
 class WorkDetailsFailure extends WorkDetailsState {

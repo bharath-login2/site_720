@@ -1,3 +1,5 @@
+import '../../../data/models/extraworklist/extra_work_model.dart';
+
 class ExtraWorkState {
   final DateTime? fromDate;
   final DateTime? toDate;
@@ -19,8 +21,8 @@ class ExtraWorkInitial extends ExtraWorkState {
 class ExtraWorkLoading extends ExtraWorkState {}
 
 class ExtraWorkSuccess extends ExtraWorkState {
-  final String message;
-  ExtraWorkSuccess(this.message);
+    ExtraWorkListModel response;
+  ExtraWorkSuccess(this.response);
 }
 
 class ExtraWorkFailure extends ExtraWorkState {

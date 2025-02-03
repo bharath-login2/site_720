@@ -1,3 +1,5 @@
+import '../../../data/models/purchasebilllist/purchasebill_list_model.dart';
+
 class PurchaseState {
   final DateTime? fromDate;
   final DateTime? toDate;
@@ -17,8 +19,8 @@ class PurchaseInitial extends PurchaseState {}
 class PurchaseLoading extends PurchaseState {}
 
 class PurchaseSuccess extends PurchaseState {
-  final String message;
-  PurchaseSuccess(this.message);
+  PurchaseBillListModel response;
+  PurchaseSuccess(this.response);
 }
 
 class PurchaseFailure extends PurchaseState {

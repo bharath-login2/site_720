@@ -39,11 +39,13 @@ class AddPurchase extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+      final args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, String>;
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       appBar: simpleAppbar(context, "Add Purchase"),
       body: BlocProvider(
-        create: (context) => PurchaseCubit(),
+        create: (context) => PurchaseCubit(args["id"]!),
         child: BlocConsumer<PurchaseCubit, PurchaseState>(
           listener: (context, state) {
            },
@@ -275,14 +277,14 @@ class AddPurchase extends StatelessWidget {
                       const SizedBox(
                         height: 40,
                       ),
-                      InkWell(
-                          onTap: () {
-                            context.read<PurchaseCubit>().addPurchase(
-                                  "",
-                                  "",
-                                );
-                          },
-                          child: LargeButton(title: "Submit")),
+                      // InkWell(
+                      //     onTap: () {
+                      //       context.read<PurchaseCubit>().addPurchase(
+                      //             "",
+                      //             "",
+                      //           );
+                      //     },
+                      //     child: LargeButton(title: "Submit")),
                       const SizedBox(
                         height: 25,
                       ),

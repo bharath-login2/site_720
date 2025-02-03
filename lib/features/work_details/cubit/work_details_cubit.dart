@@ -44,13 +44,13 @@ class WorkDetailsCubit extends Cubit<WorkDetailsState> {
   }
 
     Future<void> getWorkIssues() async {
-   try {
-      AddWorkModel response = await HttpServices.getWorkIssues();
-      if (response.status == true) {
-        emit(WorkStatusSuccess(response));
-      }
-    } catch (e) {
-      emit(WorkDetailsFailure('Failed to fetch data: ${e.toString()}'));
-    }
+  //  try {
+  //     AddWorkModel response = await HttpServices.getWorkIssues();
+  //     if (response.status == true) {
+  //       emit(WorkStatusSuccess(response));
+  //     }
+  //   } catch (e) {
+  //     emit(WorkDetailsFailure('Failed to fetch data: ${e.toString()}'));
+  //   }
   }
 }

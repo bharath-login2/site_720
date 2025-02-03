@@ -185,7 +185,6 @@ class DashboardScreen extends StatelessWidget {
           body: BlocBuilder<DashboardCubit, DashboardState>(
               builder: (context, state) {
             final cubit = context.read<DashboardCubit>();
-
             return RefreshIndicator(
               onRefresh: () async {
                 cubit.getDashboard(fdate.text, tdate.text);
@@ -201,8 +200,11 @@ class DashboardScreen extends StatelessWidget {
                               children: [
                                 InkWell(
                                     onTap: () {
-                                      Navigator.of(context)
-                                          .pushNamed(AppRoutes.projectList);
+                                      Navigator.of(context).pushNamed(
+                                          AppRoutes.projectList,
+                                          arguments: {
+                                            "status": "1",
+                                          });
                                     },
                                     child: DashContainer(
                                       title: "Upcoming",
@@ -210,7 +212,7 @@ class DashboardScreen extends StatelessWidget {
                                           .response.data.projectCounts.upcoming,
                                     )),
                                 DashContainer(
-                                  title: "Running",
+                                  title: "Running", 
                                   count:
                                       state.response.data.projectCounts.running,
                                 ),
@@ -487,8 +489,7 @@ class DashboardScreen extends StatelessWidget {
                                             )
                                           ],
                                         ),
-                                      )
-                                      ),
+                                      )),
                                   state.response.data.complaintCounts.isNotEmpty
                                       ? DashboardPieChart(
                                           values: state
@@ -517,11 +518,11 @@ class DashboardScreen extends StatelessWidget {
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                      InkWell(
-                                        onTap: () {
-                                          Navigator.of(context)
-                                          .pushNamed(AppRoutes.complaintList);
-                                        },
+                                        InkWell(
+                                          onTap: () {
+                                            Navigator.of(context).pushNamed(
+                                                AppRoutes.complaintList);
+                                          },
                                           child: Container(
                                             width: MediaQuery.of(context)
                                                     .size
@@ -717,7 +718,7 @@ class DashboardScreen extends StatelessWidget {
                                                                           12),
                                                                 ),
                                                               ],
-                                                            ),
+                                                            ),      
                                                           ),
                                                           LinearProgressIndicator(
                                                             borderRadius:

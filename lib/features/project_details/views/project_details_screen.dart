@@ -18,8 +18,10 @@ class ProjectDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     final args =
         ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+        String id = args["id"]!;
+
     return BlocProvider(
-      create: (context) => ProjectDetailsCubit(args["id"]!),
+      create: (context) => ProjectDetailsCubit(id),
       child: BlocBuilder<ProjectDetailsCubit, ProjectDetailsState>(
         builder: (context, state) {
           return Scaffold(
@@ -201,8 +203,9 @@ class ProjectDetails extends StatelessWidget {
                                               Navigator.pushNamed(context,
                                                   AppRoutes.imageViewer,
                                                   arguments: {
-                                                    "title":"View Plan",
-                                                    "image": state.response.data.planImage
+                                                    "title": "View Plan",
+                                                    "image": state
+                                                        .response.data.planImage
                                                   });
                                             }
                                           },
@@ -216,14 +219,15 @@ class ProjectDetails extends StatelessWidget {
                                           ),
                                         ),
                                         InkWell(
-                                           onTap: () {
+                                          onTap: () {
                                             if (state
                                                 is ProjectDetailsSuccess) {
                                               Navigator.pushNamed(context,
                                                   AppRoutes.imageViewer,
                                                   arguments: {
-                                                    "title":"View Elevation",
-                                                    "image": state.response.data.elevationImage
+                                                    "title": "View Elevation",
+                                                    "image": state.response.data
+                                                        .elevationImage
                                                   });
                                             }
                                           },
@@ -255,7 +259,8 @@ class ProjectDetails extends StatelessWidget {
                                 InkWell(
                                   onTap: () {
                                     Navigator.pushNamed(
-                                        context, AppRoutes.gallery);
+                                        context, AppRoutes.gallery,
+                                        arguments: {"id": id});
                                   },
                                   child: DetailsButtonContainer(
                                     title: "Gallery",
@@ -267,7 +272,8 @@ class ProjectDetails extends StatelessWidget {
                                 InkWell(
                                   onTap: () {
                                     Navigator.pushNamed(
-                                        context, AppRoutes.workDetails);
+                                        context, AppRoutes.workDetails,
+                                        arguments: {"id": id});
                                   },
                                   child: DetailsButtonContainer(
                                     title: "Work Details",
@@ -288,7 +294,8 @@ class ProjectDetails extends StatelessWidget {
                                 InkWell(
                                   onTap: () {
                                     Navigator.pushNamed(
-                                        context, AppRoutes.drawing);
+                                        context, AppRoutes.drawing,
+                                        arguments: {"id": id});
                                   },
                                   child: DetailsButtonContainer(
                                     title: "Site Drawing",
@@ -300,7 +307,8 @@ class ProjectDetails extends StatelessWidget {
                                 InkWell(
                                   onTap: () {
                                     Navigator.pushNamed(
-                                        context, AppRoutes.siteNote);
+                                        context, AppRoutes.siteNote,
+                                        arguments: {"id": id});
                                   },
                                   child: DetailsButtonContainer(
                                     title: "Site Note",
@@ -321,7 +329,8 @@ class ProjectDetails extends StatelessWidget {
                                 InkWell(
                                   onTap: () {
                                     Navigator.pushNamed(
-                                        context, AppRoutes.stages);
+                                        context, AppRoutes.stages,
+                                        arguments: {"id": id});
                                   },
                                   child: DetailsButtonContainer(
                                     title: "Stages",
@@ -333,10 +342,11 @@ class ProjectDetails extends StatelessWidget {
                                 InkWell(
                                   onTap: () {
                                     Navigator.pushNamed(
-                                        context, AppRoutes.subContractor);
+                                        context, AppRoutes.subContractor,
+                                        arguments: {"id": id});
                                   },
                                   child: DetailsButtonContainer(
-                                    title: "Sub Contractor",
+                                    title: "Contractor",
                                     color: AppColors.primaryColor,
                                     width:
                                         MediaQuery.of(context).size.width * .43,
@@ -354,7 +364,8 @@ class ProjectDetails extends StatelessWidget {
                                 InkWell(
                                   onTap: () {
                                     Navigator.pushNamed(
-                                        context, AppRoutes.extraWork);
+                                        context, AppRoutes.extraWork,
+                                        arguments: {"id": id});
                                   },
                                   child: DetailsButtonContainer(
                                     title: "Extra Work",
@@ -366,7 +377,8 @@ class ProjectDetails extends StatelessWidget {
                                 InkWell(
                                   onTap: () {
                                     Navigator.pushNamed(
-                                        context, AppRoutes.deductionWork);
+                                        context, AppRoutes.deductionWork,
+                                        arguments: {"id": id});
                                   },
                                   child: DetailsButtonContainer(
                                     title: "Deduction Work",
@@ -387,7 +399,8 @@ class ProjectDetails extends StatelessWidget {
                                 InkWell(
                                   onTap: () {
                                     Navigator.pushNamed(
-                                        context, AppRoutes.purchase);
+                                        context, AppRoutes.purchase,
+                                        arguments: {"id": id});
                                   },
                                   child: DetailsButtonContainer(
                                     title: "Purchase",
@@ -399,7 +412,8 @@ class ProjectDetails extends StatelessWidget {
                                 InkWell(
                                   onTap: () {
                                     Navigator.pushNamed(
-                                        context, AppRoutes.stock);
+                                        context, AppRoutes.stock,
+                                        arguments: {"id": id});
                                   },
                                   child: DetailsButtonContainer(
                                     title: "Stock",
@@ -420,7 +434,8 @@ class ProjectDetails extends StatelessWidget {
                                 InkWell(
                                   onTap: () {
                                     Navigator.pushNamed(
-                                        context, AppRoutes.expense);
+                                        context, AppRoutes.expense,
+                                        arguments: {"id": id});
                                   },
                                   child: DetailsButtonContainer(
                                     title: "Expense",
@@ -432,7 +447,8 @@ class ProjectDetails extends StatelessWidget {
                                 InkWell(
                                   onTap: () {
                                     Navigator.pushNamed(
-                                        context, AppRoutes.paymentDetails);
+                                        context, AppRoutes.paymentDetails,
+                                        arguments: {"id": id});
                                   },
                                   child: DetailsButtonContainer(
                                     title: "Payment Details",
@@ -453,7 +469,8 @@ class ProjectDetails extends StatelessWidget {
                                 InkWell(
                                   onTap: () {
                                     Navigator.pushNamed(
-                                        context, AppRoutes.estimation);
+                                        context, AppRoutes.estimation,
+                                        arguments: {"id": id});
                                   },
                                   child: DetailsButtonContainer(
                                     title: "Estimation",
@@ -465,7 +482,8 @@ class ProjectDetails extends StatelessWidget {
                                 InkWell(
                                   onTap: () {
                                     Navigator.pushNamed(
-                                        context, AppRoutes.consumption);
+                                        context, AppRoutes.consumption,
+                                        arguments: {"id": id});
                                   },
                                   child: DetailsButtonContainer(
                                     title: "Consumption",
@@ -486,7 +504,8 @@ class ProjectDetails extends StatelessWidget {
                                 InkWell(
                                   onTap: () {
                                     Navigator.pushNamed(
-                                        context, AppRoutes.package);
+                                        context, AppRoutes.package,
+                                        arguments: {"id": id});
                                   },
                                   child: DetailsButtonContainer(
                                     title: "Package",

@@ -1,27 +1,23 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../data/models/contractorlist/contractor_list_model.dart';
+import '../../../data/services/http_services.dart';
 import 'sub_contractor_state.dart';
 
 class SubContractorCubit extends Cubit<SubContractorState> {
-  SubContractorCubit() : super(SubContractorInitial());
-
-  void startLoading() {
-    emit(SubContractorLoading());
+  SubContractorCubit() : super(SubContractorInitial()){
+    getContractorList();
   }
-
-  void emitSuccess(String message) {
-    emit(SubContractorSuccess(message));
-  }
-
-  void emitFailure(String message) {
-    emit(SubContractorFailure(message));
-  }
-
-  void updateFromDate(String? date) {
-    emit(state.copyWith(fromDate: date));
-  }
-
-  void updateToDate(String? date) {
-    emit(state.copyWith(toDate: date));
-  }
+  Future<void> getContractorList() async {
+      emit(SubContractorLoading());
+      try {
+        ContractorListModel response = await HttpServices.getContractorList();
+        
+        if (response.status == true) {
+          emit(SubContractorSuccess(response));
+        }
+      } catch (e) {
+        emit(SubContractorFailure('Failed to fetch data: ${e.toString()}'));
+      }
+    }
 }

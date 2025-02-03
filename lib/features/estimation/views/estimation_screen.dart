@@ -64,12 +64,12 @@ class Estimation extends StatelessWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       const Text(
-                                        "Product name",
+                                        "Product Name",
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                       const Text(
-                                        "unit",
+                                        "Unit",
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                       ),

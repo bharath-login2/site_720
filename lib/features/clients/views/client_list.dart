@@ -184,7 +184,7 @@ class ClientList extends StatelessWidget {
                                                  color: AppColors.primaryColor, 
                                                 ),
                                                    Text(
-                                                   "${state.response.data[index].place},${state.response.data[index].districtTitle},${state.response.data[index].stateTitle}",
+                                                   state.response.data[index].place,
                                                     style: const TextStyle(
                                                       fontSize: 12,
                                                       fontWeight: FontWeight.bold,
@@ -192,6 +192,17 @@ class ClientList extends StatelessWidget {
                                                   ),
                                                 ],
                                               ),
+                                               Padding(
+                                                 padding: const EdgeInsets.only(left: 12.0),
+                                                 child: Text(
+                                                 "${state.response.data[index].districtTitle},${state.response.data[index].stateTitle}",
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
+                                                    
+                                                  ),
+                                                                                                   ),
+                                               ),
                                             ],
                                           ),
                                         ],

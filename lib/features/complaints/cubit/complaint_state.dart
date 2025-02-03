@@ -1,3 +1,5 @@
+import '../../../data/models/complaint/complaint_list_model.dart';
+
 class ComplaintState {
   final DateTime? fromDate;
   final DateTime? toDate;
@@ -19,8 +21,8 @@ class ComplaintInitial extends ComplaintState {
 class ComplaintLoading extends ComplaintState {}
 
 class ComplaintSuccess extends ComplaintState {
-  final String message;
-  ComplaintSuccess(this.message);
+   ComplaintListModel response;
+  ComplaintSuccess(this.response);
 }
 
 class ComplaintFailure extends ComplaintState {

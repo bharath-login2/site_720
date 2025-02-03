@@ -1,3 +1,5 @@
+import '../../../data/models/contractorlist/contractor_list_model.dart';
+
 class SubContractorState {
   final DateTime? fromDate;
   final DateTime? toDate;
@@ -19,8 +21,8 @@ class SubContractorInitial extends SubContractorState {
 class SubContractorLoading extends SubContractorState {}
 
 class SubContractorSuccess extends SubContractorState {
-  final String message;
-  SubContractorSuccess(this.message);
+   ContractorListModel response;
+  SubContractorSuccess(this.response);
 }
 
 class SubContractorFailure extends SubContractorState {

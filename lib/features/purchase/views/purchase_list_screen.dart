@@ -12,6 +12,9 @@ class PurchaseList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: unused_local_variable
+    final args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, String>;
     return Scaffold(
         backgroundColor: AppColors.backgroundColor,
         appBar: PreferredSize(
@@ -60,16 +63,19 @@ class PurchaseList extends StatelessWidget {
                       ),
                     ],
                   ),
-                  InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, AppRoutes.addPurchase);
-                    },
-                    child: const CircleAvatar(
-                      radius: 20,
-                      backgroundColor: AppColors.lightPrimary,
-                      child: Icon(
-                        Icons.add,
-                        color: Colors.white,
+                  Visibility(
+                    visible: false,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, AppRoutes.addPurchase);
+                      },
+                      child: const CircleAvatar(
+                        radius: 20,
+                        backgroundColor: AppColors.lightPrimary,
+                        child: Icon(
+                          Icons.add,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   )
@@ -79,7 +85,7 @@ class PurchaseList extends StatelessWidget {
           ),
         ),
         body: BlocProvider(
-          create: (context) => PurchaseCubit(),
+          create: (context) => PurchaseCubit(args["id"]!),
           child: ListView.builder(
             shrinkWrap: true,
             padding: const EdgeInsets.symmetric(horizontal: 8.0),

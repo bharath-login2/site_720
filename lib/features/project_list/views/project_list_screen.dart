@@ -184,7 +184,10 @@ class ProjectList extends StatelessWidget {
                             const SizedBox(
                               height: 8,
                             ),
-                            ListView.builder(
+                         if(state is ProjectListFailure) const Padding(
+                           padding: EdgeInsets.all(140.0),
+                           child: Center(child: Text("Empty",style: TextStyle(fontSize: 20),),),
+                         ) else ListView.builder(
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
                               padding: const EdgeInsets.all(8),
@@ -536,7 +539,7 @@ class ProjectList extends StatelessWidget {
                                             ),
                                           ),
                                         )
-                                      : shimmerContainer(
+                                      :shimmerContainer(
                                           MediaQuery.of(context).size.height *
                                               .15,
                                           MediaQuery.of(context).size.width *

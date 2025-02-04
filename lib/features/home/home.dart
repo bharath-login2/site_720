@@ -18,7 +18,9 @@ class _HomeState extends State<Home> {
 
   static final List<Widget> _widgetOptions = <Widget>[
     DashboardScreen(),
-    ProjectList(),
+    ProjectList(
+      fromHome: true,
+    ),
     const ClientList(),
     AddProjectScreen(),
   ];

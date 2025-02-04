@@ -11,7 +11,6 @@ import '../models/purchasebilllist/purchasebill_list_model.dart';
 import '../models/succes_response/success_response.dart';
 import '../models/workdetails/add_work_details_model.dart';
 import '../models/stages/stage_model.dart';
-import '../models/workdetails/add_work_model.dart';
 import '../models/workdetails/work_detail_model.dart';
 
 class HttpServices {
@@ -24,7 +23,7 @@ class HttpServices {
       http.Response response = await http.post(Uri.parse("${baseUrl}login"),
           body: ({'phone_number': mobile, 'password': password}));
       if (response.statusCode == 200) {
-        // return loginmodelFromJson(response.body);
+        // return loginmodelFromJson(response.body); 
       }
     } catch (e) {
       log(e.toString());
@@ -50,7 +49,7 @@ class HttpServices {
           Uri.parse("${baseUrl}get_project_list"),
           body: ({
             'token': "",
-            'status': status == "null" ? "" : status,
+            'status': status == "null" || status == "all" ? "" : status,
             'searchkey': searchKey
           }));
       if (response.statusCode == 200) {
@@ -123,7 +122,7 @@ class HttpServices {
     } catch (e) {
       log(e.toString());
     }
-  }
+  } 
 
   static Future getContractorList() async {
     try {
@@ -149,7 +148,7 @@ class HttpServices {
     } catch (e) {
       log(e.toString());
     }
-  }
+  } 
 
   static Future getPurchaseBillList(projectId) async {
     try {

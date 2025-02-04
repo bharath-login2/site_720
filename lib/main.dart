@@ -61,7 +61,9 @@ class MyApp extends StatelessWidget {
         '/login': (context) => LoginScreen(),
         '/home': (context) => const Home(),
         '/dashboard': (context) => DashboardScreen(),
-        '/projectList': (context) => ProjectList(),
+        '/projectList': (context) => ProjectList(
+              fromHome: false,
+            ),
         '/addCilentScreen': (context) => AddCilentScreen(),
         '/projectDetails': (context) => ProjectDetails(),
         '/gallery': (context) => GalleryScreen(),

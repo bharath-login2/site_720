@@ -203,7 +203,7 @@ class DashboardScreen extends StatelessWidget {
                                       Navigator.of(context).pushNamed(
                                           AppRoutes.projectList,
                                           arguments: {
-                                            "status": "1",
+                                            "status": "upcoming",
                                           });
                                     },
                                     child: DashContainer(
@@ -211,10 +211,19 @@ class DashboardScreen extends StatelessWidget {
                                       count: state
                                           .response.data.projectCounts.upcoming,
                                     )),
-                                DashContainer(
-                                  title: "Running",
-                                  count:
-                                      state.response.data.projectCounts.running,
+                                InkWell(
+                                  onTap: () {
+                                      Navigator.of(context).pushNamed(
+                                          AppRoutes.projectList,
+                                          arguments: {
+                                            "status": "running",
+                                          });
+                                    },
+                                  child: DashContainer(
+                                    title: "Running",
+                                    count:
+                                        state.response.data.projectCounts.running,
+                                  ),
                                 ),
                               ],
                             )
@@ -234,14 +243,33 @@ class DashboardScreen extends StatelessWidget {
                           ? Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                DashContainer(
-                                  title: "Completed",
-                                  count: state
-                                      .response.data.projectCounts.completed,
+                                InkWell(
+                                  onTap: () {
+                                      Navigator.of(context).pushNamed(
+                                          AppRoutes.projectList,
+                                          arguments: {
+                                            "status": "completed",
+                                          });
+                                    },
+                                  child: DashContainer(
+                                    title: "Completed",
+                                    count: state
+                                        .response.data.projectCounts.completed,
+                                  ),
                                 ),
-                                DashContainer(
-                                  title: "Paid",
-                                  count: "-----/-",
+                                InkWell(
+                                  onTap: () {
+                                      Navigator.of(context).pushNamed(
+                                          AppRoutes.projectList,
+                                          arguments: {
+                                            "status": "all",
+                                          });
+                                    },
+                                  child: DashContainer(
+                                    title: "All",   
+                                    count: state
+                                        .response.data.projectCounts.completed,
+                                  ),
                                 ),
                               ],
                             )

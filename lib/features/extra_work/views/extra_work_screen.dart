@@ -18,239 +18,257 @@ class ExtraWork extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-     final args =
+    final args =
         ModalRoute.of(context)!.settings.arguments as Map<String, String>;
-    return Scaffold(
-        backgroundColor: AppColors.backgroundColor,
-        appBar: PreferredSize(
-          preferredSize:
-              Size.fromHeight(MediaQuery.of(context).size.height * 0.2),
-          child: Container(
-            height: MediaQuery.of(context).size.height * .15,
-            width: MediaQuery.of(context).size.width,
-            decoration: const BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage("assets/images/appbar.png"),
-                    fit: BoxFit.fill),
-                color: AppColors.primaryColor,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(25),
-                  bottomRight: Radius.circular(25),
-                )),
-            child: Padding(
-              padding: const EdgeInsets.only(left: 20.0, top: 35, right: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Icon(
-                          Icons.arrow_back_ios,
+    String id = args["id"]!;
+    return BlocProvider(
+      create: (context) => ExtraWorkCubit(id),
+      child: Scaffold(
+          backgroundColor: AppColors.backgroundColor,
+          appBar: PreferredSize(
+            preferredSize:
+                Size.fromHeight(MediaQuery.of(context).size.height * 0.2),
+            child: Container(
+              height: MediaQuery.of(context).size.height * .15,
+              width: MediaQuery.of(context).size.width,
+              decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage("assets/images/appbar.png"),
+                      fit: BoxFit.fill),
+                  color: AppColors.primaryColor,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(25),
+                    bottomRight: Radius.circular(25),
+                  )),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20.0, top: 35, right: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Icon(
+                            Icons.arrow_back_ios,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        const Text(
+                          "Extra Work",
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1,
+                              fontFamily: "Lobster",
+                              color: Colors.white),
+                        ),
+                      ],
+                    ),
+                    InkWell(
+                      onTap: () {
+                        workDialog(context);
+                      },
+                      child: const CircleAvatar(
+                        radius: 20,
+                        backgroundColor: AppColors.lightPrimary,
+                        child: Icon(
+                          Icons.add,
                           color: Colors.white,
                         ),
                       ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      const Text(
-                        "Extra Work",
-                        style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1,
-                            fontFamily: "Lobster",
-                            color: Colors.white),
-                      ),
-                    ],
-                  ),
-                  InkWell(
-                    onTap: () {
-                      workDialog(context);
-                    },
-                    child: const CircleAvatar(
-                      radius: 20,
-                      backgroundColor: AppColors.lightPrimary,
-                      child: Icon(
-                        Icons.add,
-                        color: Colors.white,
-                      ),
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        body: BlocProvider(
-          create: (context) => ExtraWorkCubit(args["id"]!),
-          child: BlocBuilder<ExtraWorkCubit, ExtraWorkState>(
+          body: BlocBuilder<ExtraWorkCubit, ExtraWorkState>(
             builder: (context, state) {
-             
               return ListView.builder(
                 shrinkWrap: true,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
-                itemCount:state is ExtraWorkSuccess  ? state.response.data.length:7,
+                itemCount:
+                    state is ExtraWorkSuccess ? state.response.data.length : 7,
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.all(6.0),
-                    
-                    child:state is ExtraWorkSuccess  ? InkWell(
-                      onTap: () {
-                        // Navigator.of(context).pushNamed(AppRoutes.stageHistory);
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * .9,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.8),
-                              blurRadius: 3,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width * .7,
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 8.0, left: 8.0, right: 8.0, bottom: 8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                     Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                         state.response.data[index].workName,
-                                          style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              color: AppColors.coffie),
-                                        ),
-                                        SizedBox(
-                                           width: MediaQuery.of(context).size.width * .5,
-                                          child: Text(
-                                          
-                                            state.response.data[index].description,
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                    child: state is ExtraWorkSuccess
+                        ? InkWell(
+                            onTap: () {
+                              // Navigator.of(context).pushNamed(AppRoutes.stageHistory);
+                            },
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * .9,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.8),
+                                    blurRadius: 3,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: SizedBox(
+                                width: MediaQuery.of(context).size.width * .7,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 8.0,
+                                      left: 8.0,
+                                      right: 8.0,
+                                      bottom: 8.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                state.response.data[index]
+                                                    .workName,
+                                                style: const TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: AppColors.coffie),
+                                              ),
+                                              SizedBox(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    .5,
+                                                child: Text(
+                                                  state.response.data[index]
+                                                      .description,
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            InkWell(
-                                              onTap: () {
-                                                editDialog(context, () {
-                                                  Navigator.pop(context);
-                                                });
-                                              },
-                                              child: Container(
-                                                height: 25,
-                                                width: 25,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                  color: AppColors.lightBlue,
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.grey
-                                                          .withOpacity(0.8),
-                                                      blurRadius: 6,
-                                                      offset:
-                                                          const Offset(1, 1),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  InkWell(
+                                                    onTap: () {
+                                                      editDialog(context, () {
+                                                        Navigator.pop(context);
+                                                      });
+                                                    },
+                                                    child: Container(
+                                                      height: 25,
+                                                      width: 25,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
+                                                        color:
+                                                            AppColors.lightBlue,
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.grey
+                                                                .withOpacity(
+                                                                    0.8),
+                                                            blurRadius: 6,
+                                                            offset:
+                                                                const Offset(
+                                                                    1, 1),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      child: const Icon(
+                                                        Icons.edit,
+                                                        size: 18,
+                                                        color: Colors.white,
+                                                      ),
                                                     ),
-                                                  ],
-                                                ),
-                                                child: const Icon(
-                                                  Icons.edit,
-                                                  size: 18,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: 7,
-                                            ),
-                                            InkWell(
-                                              onTap: () {
-                                                deleteDialog(context, () {
-                                                  Navigator.pop(context);
-                                                });
-                                              },
-                                              child: Container(
-                                                height: 25,
-                                                width: 25,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                  color: Colors.red,
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.grey
-                                                          .withOpacity(0.8),
-                                                      blurRadius: 6,
-                                                      offset:
-                                                          const Offset(1, 1),
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 7,
+                                                  ),
+                                                  InkWell(
+                                                    onTap: () {
+                                                      deleteDialog(context, () {
+                                                        Navigator.pop(context);
+                                                      });
+                                                    },
+                                                    child: Container(
+                                                      height: 25,
+                                                      width: 25,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
+                                                        color: Colors.red,
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.grey
+                                                                .withOpacity(
+                                                                    0.8),
+                                                            blurRadius: 6,
+                                                            offset:
+                                                                const Offset(
+                                                                    1, 1),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      child: const Icon(
+                                                        Icons.delete,
+                                                        size: 18,
+                                                        color: Colors.white,
+                                                      ),
                                                     ),
-                                                  ],
-                                                ),
-                                                child: const Icon(
-                                                  Icons.delete,
-                                                  size: 18,
-                                                  color: Colors.white,
-                                                ),
+                                                  ),
+                                                ],
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        AmountContainer(
-                                          title: "Cost",
-                                          amount: "${state.response.data[index].amount} ₹",
-                                        ),
-                                      ],
-                                    )
-                                  ],
+                                              const SizedBox(
+                                                height: 10,
+                                              ),
+                                              AmountContainer(
+                                                title: "Cost",
+                                                amount:
+                                                    "${state.response.data[index].amount} ₹",
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
-                    ): state is ExtraWorkFailure ? Center(child: Text(state.message),) 
-                    :shimmerContainer(70, 200),
+                          )
+                        : shimmerContainer(70, 200),
                   );
                 },
               );
-              
             },
-          ),
-        ));
+          )),
+    );
   }
 
   Future<void> workDialog(BuildContext context) async {
@@ -476,5 +494,4 @@ class ExtraWork extends StatelessWidget {
       },
     );
   }
-
 }

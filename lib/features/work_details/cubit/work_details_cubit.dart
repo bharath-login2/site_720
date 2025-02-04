@@ -42,7 +42,7 @@ class WorkDetailsCubit extends Cubit<WorkDetailsState> {
         emit(WorkDetailsFailure(response.message));
       }
     } catch (e) {
-      emit(WorkDetailsFailure('Failed to fetch data: ${e.toString()}'));
+      emit(WorkDetailsFailure('Failed to fetch data: ${e.toString()}')); 
     }
   }
 
@@ -69,6 +69,7 @@ class WorkDetailsCubit extends Cubit<WorkDetailsState> {
       SuccessResponse response = await HttpServices.addWorkDetails(projectId,
           clintId, isWorking, date, noOfLabours, status, description);
       if (response.status == true) {
+        getWorkDetails(projectId);
         emit(AddingSuccess(response.message));
       } else {
         emit(AddingFailure(response.message));

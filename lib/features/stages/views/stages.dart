@@ -52,10 +52,10 @@ class Stages extends StatelessWidget {
                     padding:
                         const EdgeInsets.only(left: 20.0, top: 35, right: 20),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween, 
                       children: [
                         Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center, 
                           children: [
                             InkWell(
                               onTap: () {

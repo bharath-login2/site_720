@@ -72,7 +72,7 @@ class MyApp extends StatelessWidget {
         '/siteNote': (context) => const SiteNote(),
         '/stages': (context) => Stages(),
         '/stageHistory': (context) => StageHistory(),
-        '/subContractor': (context) => SubContractor(),
+        '/contractor': (context) => Contractor(),
         '/extraWork': (context) => ExtraWork(),
         '/deductionWork': (context) => DeductionWork(),
         '/purchase': (context) => const PurchaseList(),

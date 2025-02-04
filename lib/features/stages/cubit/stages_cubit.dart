@@ -17,7 +17,7 @@ class StagesCubit extends Cubit<StagesState> {
       if (response.status == true) {
         emit(StagesSuccess(response));
       } else {
-        emit(StagesFailure('Failed to fetch data}'));
+        emit(StagesFailure('Failed to fetch data}')); 
       }
     } catch (e) {
       emit(StagesFailure('Failed to fetch data: ${e.toString()}'));

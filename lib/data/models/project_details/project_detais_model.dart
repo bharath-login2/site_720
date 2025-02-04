@@ -51,11 +51,11 @@ class Data {
     String companyIssue;
     String companyIssueCount;
     String clientIssue;
-    int clientIssueCount;
+    String clientIssueCount;
     String paymentPending;
-    int paymentPendingCount;
+    String paymentPendingCount;
     String generalIssue;
-    int generalIssueCount;
+    String generalIssueCount;
     String elevationImage;
     String planImage;
 
@@ -88,31 +88,31 @@ class Data {
     });
 
     factory Data.fromJson(Map<String, dynamic> json) => Data(
-        id: json["id"],
-        clientId: json["client_id"],
-        projectName: json["project_name"],
-        projectId: json["project_id"],
-        location: json["location"],
-        locationArea: json["location_area"],
-        cctvId: json["cctv_id"],
-        clientName: json["client_name"],
-        phoneNumber: json["phone_number"],
-        address: json["address"],
-        totalEstimateAmount: json["total_estimate_amount"],
-        startingDate: json["starting_date"],
-        completionDate: json["completion_date"],
-        totalWorked: json["total_worked"],
-        unassignedWorks: json["unassigned_works"],
-        companyIssue: json["company_issue"],
-        companyIssueCount: json["company_issue_count"],
-        clientIssue: json["client_issue"],
-        clientIssueCount: json["client_issue_count"],
-        paymentPending: json["payment_pending"],
-        paymentPendingCount: json["payment_pending_count"],
-        generalIssue: json["general_issue"],
-        generalIssueCount: json["general_issue_count"],
-        elevationImage: json["elevation_image"],
-        planImage: json["plan_image"],
+        id: json["id"]??"",
+        clientId: json["client_id"]??"",
+        projectName: json["project_name"]??"",
+        projectId: json["project_id"]??"",
+        location: json["location"]??"",
+        locationArea: json["location_area"]??"",
+        cctvId: json["cctv_id"]??"",
+        clientName: json["client_name"]??"",
+        phoneNumber: json["phone_number"]??"",
+        address: json["address"]??"",
+        totalEstimateAmount: json["total_estimate_amount"]??"",
+        startingDate: json["starting_date"]??"",
+        completionDate: json["completion_date"]??"",
+        totalWorked: json["total_worked"]??"",
+        unassignedWorks: json["unassigned_works"]??"",
+        companyIssue: json["company_issue"]??"",
+        companyIssueCount: json["company_issue_count"]??"",
+        clientIssue: json["client_issue"]??"",
+        clientIssueCount: json["client_issue_count"]??"",
+        paymentPending: json["payment_pending"]??"",
+        paymentPendingCount: json["payment_pending_count"]??"",
+        generalIssue: json["general_issue"]??"",
+        generalIssueCount: json["general_issue_count"]??"",
+        elevationImage: json["elevation_image"]??"",
+        planImage: json["plan_image"]??"",
     );
 
     Map<String, dynamic> toJson() => {

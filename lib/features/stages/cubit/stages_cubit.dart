@@ -1,27 +1,30 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../data/models/stages/stage_model.dart';
+import '../../../data/services/http_services.dart';
 import 'stages_state.dart';
 
 class StagesCubit extends Cubit<StagesState> {
-  StagesCubit() : super(StagesInitial());
-
-  void startLoading() {
-    emit(StagesLoading());
+  StagesCubit(String projectId) : super(StagesInitial()){
+    getStagesList(projectId);
   }
 
-  void emitSuccess(String message) {
-    emit(StagesSuccess(message));
-  }
+ 
 
-  void emitFailure(String message) {
-    emit(StagesFailure(message));
-  }
+  Future<void> getStagesList(String projectId) async {
+      emit(StagesLoading());
+      try {
+        GetStagesModel response = await HttpServices.getStagesList(projectId);
+        
+        if (response.status == true) {
+          emit(StagesSuccess(response));
+        }else{
+        emit(StagesFailure('Failed to fetch data}'));
+        }
+      } catch (e) {
+        emit(StagesFailure('Failed to fetch data: ${e.toString()}'));
+      }
+    }
 
-  void updateFromDate(String? date) {
-    emit(state.copyWith(fromDate: date));
-  }
-
-  void updateToDate(String? date) {
-    emit(state.copyWith(toDate: date));
-  }
+    
 }

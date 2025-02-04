@@ -9,6 +9,7 @@ import '../models/dashboard/dashboard_model.dart';
 import '../models/extraworklist/extra_work_model.dart';
 import '../models/project_details/project_detais_model.dart';
 import '../models/purchasebilllist/purchasebill_list_model.dart';
+import '../models/stages/stage_model.dart';
 import '../models/workdetails/add_work_model.dart';
 import '../models/workdetails/work_detail_model.dart';
 
@@ -170,6 +171,23 @@ static Future getWorkDetails(projectId) async {
           );
       if (response.statusCode == 200) {
         return purchaseBillListModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+
+  static Future getStagesList(projectId) async {
+    try {
+      http.Response response = await http.post(
+          Uri.parse("${baseUrl}get_stages"),
+          body: {
+            "project_id":projectId
+          }
+          );
+      if (response.statusCode == 200) {
+        return getStagesModelFromJson(response.body);
       }
     } catch (e) {
       log(e.toString());

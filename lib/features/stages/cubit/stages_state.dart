@@ -1,3 +1,5 @@
+import '../../../data/models/stages/stage_model.dart';
+
 class StagesState {
   final DateTime? fromDate;
   final DateTime? toDate;
@@ -19,8 +21,8 @@ class StagesInitial extends StagesState {
 class StagesLoading extends StagesState {}
 
 class StagesSuccess extends StagesState {
-  final String message;
-  StagesSuccess(this.message);
+   GetStagesModel response;
+  StagesSuccess(this.response);
 }
 
 class StagesFailure extends StagesState {

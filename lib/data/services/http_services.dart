@@ -10,6 +10,8 @@ import '../models/project_details/project_detais_model.dart';
 import '../models/purchasebilllist/purchasebill_list_model.dart';
 import '../models/succes_response/success_response.dart';
 import '../models/workdetails/add_work_details_model.dart';
+import '../models/stages/stage_model.dart';
+import '../models/workdetails/add_work_model.dart';
 import '../models/workdetails/work_detail_model.dart';
 
 class HttpServices {
@@ -188,4 +190,21 @@ class HttpServices {
       log(e.toString());
     }
   }
+
+  static Future getStagesList(projectId) async {
+    try {
+      http.Response response = await http.post(
+          Uri.parse("${baseUrl}get_stages"),
+          body: {
+            "project_id":projectId
+          }
+          );
+      if (response.statusCode == 200) {
+        return getStagesModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
 }

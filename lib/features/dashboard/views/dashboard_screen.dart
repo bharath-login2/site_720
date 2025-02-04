@@ -212,7 +212,7 @@ class DashboardScreen extends StatelessWidget {
                                           .response.data.projectCounts.upcoming,
                                     )),
                                 DashContainer(
-                                  title: "Running", 
+                                  title: "Running",
                                   count:
                                       state.response.data.projectCounts.running,
                                 ),
@@ -289,7 +289,7 @@ class DashboardScreen extends StatelessWidget {
                                             horizontal: 8.0, vertical: 12.0),
                                         child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceBetween, 
                                           children: [
                                             Text(
                                               "Expense",
@@ -302,8 +302,7 @@ class DashboardScreen extends StatelessWidget {
                                           ],
                                         ),
                                       )),
-                                  state.response.data.workissuesCounts
-                                          .isNotEmpty
+                                  state.response.data.expenseData.isNotEmpty
                                       ? Padding(
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 8.0, vertical: 16),
@@ -320,7 +319,7 @@ class DashboardScreen extends StatelessWidget {
                                                 physics:
                                                     const NeverScrollableScrollPhysics(),
                                                 itemCount: state.response.data
-                                                    .workissuesCounts.length,
+                                                    .expenseData.length ,
                                                 itemBuilder: (context, i) {
                                                   return Padding(
                                                     padding: const EdgeInsets
@@ -332,13 +331,12 @@ class DashboardScreen extends StatelessWidget {
                                                           MainAxisAlignment.end,
                                                       children: [
                                                         Text(
-                                                          (double.parse(state
-                                                                      .response
-                                                                      .data
-                                                                      .workissuesCounts[
-                                                                          i]
-                                                                      .count) *
-                                                                  10)
+                                                          double.parse(state
+                                                                  .response
+                                                                  .data
+                                                                  .expenseData[
+                                                                      i]
+                                                                  .count)
                                                               .toString(),
                                                           style:
                                                               const TextStyle(
@@ -354,10 +352,10 @@ class DashboardScreen extends StatelessWidget {
                                                           height: double.parse(state
                                                                   .response
                                                                   .data
-                                                                  .workissuesCounts[
+                                                                  .expenseData[
                                                                       i]
-                                                                  .count) *
-                                                              20,
+                                                                  .percentage) *
+                                                              1.3,
                                                           decoration: BoxDecoration(
                                                               boxShadow: [
                                                                 BoxShadow(
@@ -386,9 +384,8 @@ class DashboardScreen extends StatelessWidget {
                                                           state
                                                               .response
                                                               .data
-                                                              .workissuesCounts[
-                                                                  i]
-                                                              .workissueName,
+                                                              .expenseData[i]
+                                                              .expenseName,
                                                           style:
                                                               const TextStyle(
                                                                   color: Colors
@@ -718,7 +715,7 @@ class DashboardScreen extends StatelessWidget {
                                                                           12),
                                                                 ),
                                                               ],
-                                                            ),      
+                                                            ),
                                                           ),
                                                           LinearProgressIndicator(
                                                             borderRadius:

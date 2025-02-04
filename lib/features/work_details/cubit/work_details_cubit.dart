@@ -1,14 +1,15 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:site_720/data/models/succes_response/success_response.dart';
 import 'package:site_720/data/models/workdetails/work_detail_model.dart';
 
-import '../../../data/models/workdetails/add_work_model.dart';
+import '../../../data/models/workdetails/add_work_details_model.dart';
 import '../../../data/services/http_services.dart';
 import 'work_details_state.dart';
 
 class WorkDetailsCubit extends Cubit<WorkDetailsState> {
-  WorkDetailsCubit(String projectId) : super(WorkDetailsInitial()){
+  WorkDetailsCubit(String projectId) : super(WorkDetailsInitial()) {
     getWorkDetails(projectId);
-     getWorkIssues();
+    getWorkIssues();
   }
 
   void startLoading() {
@@ -37,20 +38,43 @@ class WorkDetailsCubit extends Cubit<WorkDetailsState> {
       WorkDetailModel response = await HttpServices.getWorkDetails(projectId);
       if (response.status == true) {
         emit(WorkDetailsSuccess(response));
+      } else {
+        emit(WorkDetailsFailure(response.message));
       }
     } catch (e) {
       emit(WorkDetailsFailure('Failed to fetch data: ${e.toString()}'));
     }
   }
 
-    Future<void> getWorkIssues() async {
-  //  try {
-  //     AddWorkModel response = await HttpServices.getWorkIssues();
-  //     if (response.status == true) {
-  //       emit(WorkStatusSuccess(response));
-  //     }
-  //   } catch (e) {
-  //     emit(WorkDetailsFailure('Failed to fetch data: ${e.toString()}'));
-  //   }
+  Future<void> getWorkIssues() async {
+    try {
+      AddWorkDetailsModel response = await HttpServices.getWorkIssues();
+      if (response.status == true) {
+        emit(WorkStatusSuccess(response));
+      }
+    } catch (e) {
+      emit(WorkDetailsFailure('Failed to fetch data: ${e.toString()}'));
+    }
+  }
+
+  Future<void> addWorkDetails(
+      String projectId,
+      String clintId,
+      String isWorking,
+      String date,
+      String noOfLabours,
+      String status,
+      String description) async {
+    try {
+      SuccessResponse response = await HttpServices.addWorkDetails(projectId,
+          clintId, isWorking, date, noOfLabours, status, description);
+      if (response.status == true) {
+        emit(AddingSuccess(response.message));
+      } else {
+        emit(AddingFailure(response.message));
+      }
+    } catch (e) {
+      emit(AddingFailure('Failed to fetch data: ${e.toString()}'));
+    }
   }
 }

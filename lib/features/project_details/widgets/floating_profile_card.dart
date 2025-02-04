@@ -30,7 +30,7 @@ class FloatingProfileCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
                 width: 50,
@@ -64,11 +64,15 @@ class FloatingProfileCard extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text(
-                  address,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.normal,
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * .6,
+                  child: Text(
+                    address,
+                    // overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.normal,
+                    ),
                   ),
                 ),
                 Text(

@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:site_720/data/models/project_list/project_list_model.dart';
-
 import '../models/clientlist/client_list_model.dart';
 import '../models/complaint/complaint_list_model.dart';
 import '../models/contractorlist/contractor_list_model.dart';
@@ -9,7 +8,8 @@ import '../models/dashboard/dashboard_model.dart';
 import '../models/extraworklist/extra_work_model.dart';
 import '../models/project_details/project_detais_model.dart';
 import '../models/purchasebilllist/purchasebill_list_model.dart';
-import '../models/workdetails/add_work_model.dart';
+import '../models/succes_response/success_response.dart';
+import '../models/workdetails/add_work_details_model.dart';
 import '../models/workdetails/work_detail_model.dart';
 
 class HttpServices {
@@ -59,16 +59,11 @@ class HttpServices {
     }
   }
 
-
   static Future getProjectDetails(projectId) async {
     try {
-      http.Response response =
-          await http.post(Uri.parse("${baseUrl}get_project_detailed"),
-          body: ({
-            'token': "",
-            'project_id': projectId
-          })
-          );
+      http.Response response = await http.post(
+          Uri.parse("${baseUrl}get_project_detailed"),
+          body: ({'token': "", 'project_id': projectId}));
       if (response.statusCode == 200) {
         return projectDetailsModelFromJson(response.body);
       }
@@ -77,10 +72,10 @@ class HttpServices {
     }
   }
 
-   static Future getClientList() async {
+  static Future getClientList() async {
     try {
-      http.Response response = await http.post(
-          Uri.parse("${baseUrl}get_client_list"));
+      http.Response response =
+          await http.post(Uri.parse("${baseUrl}get_client_list"));
       if (response.statusCode == 200) {
         return clientListModelFromJson(response.body);
       }
@@ -88,15 +83,12 @@ class HttpServices {
       log(e.toString());
     }
   }
- 
-static Future getWorkDetails(projectId) async {
+
+  static Future getWorkDetails(projectId) async {
     try {
       http.Response response = await http.post(
           Uri.parse("${baseUrl}get_work_detailed"),
-          body: {
-            "project_id":projectId
-          }
-          );
+          body: {"project_id": projectId});
       if (response.statusCode == 200) {
         return workDetailModelFromJson(response.body);
       }
@@ -108,10 +100,10 @@ static Future getWorkDetails(projectId) async {
   static Future getWorkIssues() async {
     try {
       http.Response response = await http.post(
-          Uri.parse("${baseUrl}get_status_issues"),
-         );
+        Uri.parse("${baseUrl}get_status_issues"),
+      );
       if (response.statusCode == 200) {
-        return addWorkModelFromJson(response.body);
+        return addWorkDetailsModelFromJson(response.body);
       }
     } catch (e) {
       log(e.toString());
@@ -121,8 +113,8 @@ static Future getWorkDetails(projectId) async {
   static Future getComplaintList() async {
     try {
       http.Response response = await http.post(
-          Uri.parse("${baseUrl}get_complaint_list"),
-         );
+        Uri.parse("${baseUrl}get_complaint_list"),
+      );
       if (response.statusCode == 200) {
         return complaintListModelFromJson(response.body);
       }
@@ -134,8 +126,8 @@ static Future getWorkDetails(projectId) async {
   static Future getContractorList() async {
     try {
       http.Response response = await http.post(
-          Uri.parse("${baseUrl}get_contractor_list"),
-         );
+        Uri.parse("${baseUrl}get_contractor_list"),
+      );
       if (response.statusCode == 200) {
         return contractorListModelFromJson(response.body);
       }
@@ -148,10 +140,7 @@ static Future getWorkDetails(projectId) async {
     try {
       http.Response response = await http.post(
           Uri.parse("${baseUrl}get_extrawork_list"),
-          body: {
-            "project_id":projectId
-          }
-          );
+          body: {"project_id": projectId});
       if (response.statusCode == 200) {
         return extraWorkListModelFromJson(response.body);
       }
@@ -164,10 +153,7 @@ static Future getWorkDetails(projectId) async {
     try {
       http.Response response = await http.post(
           Uri.parse("${baseUrl}get_purchase_bill"),
-          body: {
-            "project_id":projectId
-          }
-          );
+          body: {"project_id": projectId});
       if (response.statusCode == 200) {
         return purchaseBillListModelFromJson(response.body);
       }
@@ -176,4 +162,30 @@ static Future getWorkDetails(projectId) async {
     }
   }
 
+  static Future addWorkDetails(
+      String projectId,
+      String clintId,
+      String isWorking,
+      String date,
+      String noOfLabours,
+      String status,
+      String description) async {
+    try {
+      http.Response response =
+          await http.post(Uri.parse("${baseUrl}add_work_details"), body: {
+        "project_id": projectId,
+        "client_id": clintId,
+        "is_working": isWorking,
+        "date": date,
+        "no_of_labours": noOfLabours,
+        "status": status,
+        "description": description,
+      });
+      if (response.statusCode == 200) {
+        return successResponseFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
 }

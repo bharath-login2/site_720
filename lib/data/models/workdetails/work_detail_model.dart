@@ -9,7 +9,7 @@ WorkDetailModel workDetailModelFromJson(String str) => WorkDetailModel.fromJson(
 String workDetailModelToJson(WorkDetailModel data) => json.encode(data.toJson());
 
 class WorkDetailModel {
-    List<Datum> data;
+    List<WorkDetails> data;
     String message;
     bool status;
 
@@ -20,7 +20,7 @@ class WorkDetailModel {
     });
 
     factory WorkDetailModel.fromJson(Map<String, dynamic> json) => WorkDetailModel(
-        data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+        data: List<WorkDetails>.from(json["data"].map((x) => WorkDetails.fromJson(x))),
         message: json["message"],
         status: json["status"],
     );
@@ -32,7 +32,7 @@ class WorkDetailModel {
     };
 }
 
-class Datum {
+class WorkDetails {
     String clientId;
     String isWorking;
     DateTime workDate;
@@ -45,7 +45,7 @@ class Datum {
     String workStatus;
     String workMonthName;
 
-    Datum({
+    WorkDetails({
         required this.clientId,
         required this.isWorking,
         required this.workDate,
@@ -59,7 +59,7 @@ class Datum {
         required this.workMonthName,
     });
 
-    factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+    factory WorkDetails.fromJson(Map<String, dynamic> json) => WorkDetails(
         clientId: json["client_id"]??"",
         isWorking: json["is_working"]??"",
         workDate: DateTime.parse(json["work_date"]??""),

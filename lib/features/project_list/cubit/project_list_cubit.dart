@@ -1,39 +1,49 @@
+import 'dart:developer';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../data/models/project_list/project_data_model.dart';
 import '../../../data/models/project_list/project_list_model.dart';
 import '../../../data/services/http_services.dart';
 import 'project_list_state.dart';
 
 class ProjectListCubit extends Cubit<ProjectListState> {
-  ProjectListCubit(String status, String searchKey) : super(ProjectListInitial()) {
-    getProjectList(status, searchKey);
+  ProjectListCubit(String status, String searchKey, String type)
+      : super(ProjectListInitial()) {
+    if (type == "list") {
+      getProjectList(status, searchKey);
+    } else {
+      getAddDetails();
+    }
   }
 
   List imageList = [];
 
-
   Future<void> getProjectList(String status, String searchKey) async {
     emit(ProjectListLoading());
     try {
-      ProjectListModel response = await HttpServices.getProjectList(status, searchKey);
+      ProjectListModel response =
+          await HttpServices.getProjectList(status, searchKey);
       if (response.status == true) {
         emit(ProjectListSuccess(response));
       }
     } catch (e) {
-      emit(ProjectListFailure('Failed to fetch data: ${e.toString()}')); 
+      emit(ProjectListFailure('Failed to fetch data: ${e.toString()}'));
     }
   }
-  // Future<void> getStatusList() async {
-  //   emit(ProjectListLoading());
-  //   try {
-  //     ProjectListModel response = await HttpServices.getStatusList();
-  //     if (response.status == true) {
-  //       emit(ProjectListSuccess(response));
-  //     }
-  //   } catch (e) {
-  //     emit(ProjectListFailure('Failed to fetch data: ${e.toString()}')); 
-  //   }
-  // }
+
+  Future<void> getAddDetails() async {
+    emit(ProjectDataLoading());
+    try {
+      ProjectDataModel response = await HttpServices.getAddProjectDetails();
+      if (response.status == true) {
+        emit(ProjectDataSuccess(response));
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
   selectMultiImage(
     ImageSource? source,
   ) async {
@@ -56,14 +66,8 @@ class ProjectListCubit extends Cubit<ProjectListState> {
       emit(ImageFailure("Failed to get image, Please Select once again.."));
     }
   }
-   void updateFromDate(String? date) {
-    emit(state.copyWith(fromDate: date));
-  }
 
-  void updateToDate(String? date) {
-    emit(state.copyWith(toDate: date));
-  }
-  updatePriority(String value){
+  updatePriority(String value) {
     emit(PriorityUpdated(value));
-  } 
+  }
 }

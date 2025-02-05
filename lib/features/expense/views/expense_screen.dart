@@ -374,7 +374,8 @@ class Expense extends StatelessWidget {
                   ),
                   GestureDetector(
                     onTap: () async {
-                                    snackBar(context, "Expense added successfully!", Colors.black);
+                      snackBar(
+                          context, "Expense added successfully!", Colors.black);
 
                       // await Future.delayed(const Duration(seconds: 0));
                       Navigator.pop(context);

@@ -1,4 +1,4 @@
-
+import '../../../data/models/project_list/project_data_model.dart';
 import '../../../data/models/project_list/project_list_model.dart';
 
 class ProjectListState {
@@ -15,14 +15,13 @@ class ProjectListState {
   }
 }
 
-class ProjectListInitial extends ProjectListState {
-  
-}
+class ProjectListInitial extends ProjectListState {}
 
 class ProjectListLoading extends ProjectListState {}
+class ProjectDataLoading extends ProjectListState {}
 
 class ProjectListSuccess extends ProjectListState {
-  final ProjectListModel  response;
+  final ProjectListModel response;
   ProjectListSuccess(this.response);
 }
 
@@ -44,4 +43,9 @@ class ImageFailure extends ProjectListState {
 class PriorityUpdated extends ProjectListState {
   final String value;
   PriorityUpdated(this.value);
+}
+
+class ProjectDataSuccess extends ProjectListState {
+  final ProjectDataModel response;
+  ProjectDataSuccess(this.response);
 }

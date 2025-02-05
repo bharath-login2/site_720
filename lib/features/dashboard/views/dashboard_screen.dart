@@ -66,7 +66,7 @@ class DashboardScreen extends StatelessWidget {
                             color: Colors.grey.shade300,
                             offset: Offset.zero,
                             blurRadius: 1,
-                            spreadRadius: 2)
+                            spreadRadius: 2) 
                       ]),
                   child: Padding(
                     padding: const EdgeInsets.only(
@@ -99,7 +99,7 @@ class DashboardScreen extends StatelessWidget {
                                 const SizedBox(
                                   width: 15,
                                 ),
-                                state is DashboardSuccess
+                                state is DashboardSuccess 
                                     ? Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -213,16 +213,16 @@ class DashboardScreen extends StatelessWidget {
                                     )),
                                 InkWell(
                                   onTap: () {
-                                      Navigator.of(context).pushNamed(
-                                          AppRoutes.projectList,
-                                          arguments: {
-                                            "status": "running",
-                                          });
-                                    },
+                                    Navigator.of(context).pushNamed(
+                                        AppRoutes.projectList,
+                                        arguments: {
+                                          "status": "running",
+                                        });
+                                  },
                                   child: DashContainer(
                                     title: "Running",
-                                    count:
-                                        state.response.data.projectCounts.running,
+                                    count: state
+                                        .response.data.projectCounts.running,
                                   ),
                                 ),
                               ],
@@ -245,12 +245,12 @@ class DashboardScreen extends StatelessWidget {
                               children: [
                                 InkWell(
                                   onTap: () {
-                                      Navigator.of(context).pushNamed(
-                                          AppRoutes.projectList,
-                                          arguments: {
-                                            "status": "completed",
-                                          });
-                                    },
+                                    Navigator.of(context).pushNamed(
+                                        AppRoutes.projectList,
+                                        arguments: {
+                                          "status": "completed",
+                                        });
+                                  },
                                   child: DashContainer(
                                     title: "Completed",
                                     count: state
@@ -259,14 +259,14 @@ class DashboardScreen extends StatelessWidget {
                                 ),
                                 InkWell(
                                   onTap: () {
-                                      Navigator.of(context).pushNamed(
-                                          AppRoutes.projectList,
-                                          arguments: {
-                                            "status": "all",
-                                          });
-                                    },
+                                    Navigator.of(context).pushNamed(
+                                        AppRoutes.projectList,
+                                        arguments: {
+                                          "status": "all",
+                                        });
+                                  },
                                   child: DashContainer(
-                                    title: "All",   
+                                    title: "All",
                                     count: state
                                         .response.data.projectCounts.completed,
                                   ),
@@ -317,7 +317,7 @@ class DashboardScreen extends StatelessWidget {
                                             horizontal: 8.0, vertical: 12.0),
                                         child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween, 
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
                                               "Expense",
@@ -347,7 +347,7 @@ class DashboardScreen extends StatelessWidget {
                                                 physics:
                                                     const NeverScrollableScrollPhysics(),
                                                 itemCount: state.response.data
-                                                    .expenseData.length ,
+                                                    .expenseData.length,
                                                 itemBuilder: (context, i) {
                                                   return Padding(
                                                     padding: const EdgeInsets
@@ -383,7 +383,7 @@ class DashboardScreen extends StatelessWidget {
                                                                   .expenseData[
                                                                       i]
                                                                   .percentage) *
-                                                              1.3,
+                                                              1,
                                                           decoration: BoxDecoration(
                                                               boxShadow: [
                                                                 BoxShadow(

@@ -6,7 +6,9 @@ import '../models/complaint/complaint_list_model.dart';
 import '../models/contractorlist/contractor_list_model.dart';
 import '../models/dashboard/dashboard_model.dart';
 import '../models/extraworklist/extra_work_model.dart';
+import '../models/login/login_model.dart';
 import '../models/project_details/project_detais_model.dart';
+import '../models/project_list/project_data_model.dart';
 import '../models/purchasebilllist/purchasebill_list_model.dart';
 import '../models/succes_response/success_response.dart';
 import '../models/workdetails/add_work_details_model.dart';
@@ -18,12 +20,16 @@ class HttpServices {
   static var main = 'https://dev.login2.in/constructEase/test_dev/v1/api/';
   static var baseUrl = dev;
 
-  static Future login(mobile, password) async {
+  static Future login(mobile, password, firebaseId) async {
     try {
       http.Response response = await http.post(Uri.parse("${baseUrl}login"),
-          body: ({'phone_number': mobile, 'password': password}));
+          body: ({
+            'phone_number': mobile,
+            'password': password,
+            "firebase_id": firebaseId
+          }));
       if (response.statusCode == 200) {
-        // return loginmodelFromJson(response.body); 
+        return loginModelFromJson(response.body);
       }
     } catch (e) {
       log(e.toString());
@@ -45,13 +51,13 @@ class HttpServices {
 
   static Future getProjectList(status, searchKey) async {
     try {
-      http.Response response = await http.post(
-          Uri.parse("${baseUrl}get_project_list"),
-          body: ({
-            'token': "",
-            'status': status == "null" || status == "all" ? "" : status,
-            'searchkey': searchKey
-          }));
+      http.Response response =
+          await http.post(Uri.parse("${baseUrl}get_project_list"),
+              body: ({
+                'token': "",
+                'status': status == "null" || status == "all" ? "" : status,
+                'searchkey': searchKey
+              }));
       if (response.statusCode == 200) {
         return projectListModelFromJson(response.body);
       }
@@ -122,7 +128,7 @@ class HttpServices {
     } catch (e) {
       log(e.toString());
     }
-  } 
+  }
 
   static Future getContractorList() async {
     try {
@@ -148,7 +154,7 @@ class HttpServices {
     } catch (e) {
       log(e.toString());
     }
-  } 
+  }
 
   static Future getPurchaseBillList(projectId) async {
     try {
@@ -194,10 +200,7 @@ class HttpServices {
     try {
       http.Response response = await http.post(
           Uri.parse("${baseUrl}get_stages"),
-          body: {
-            "project_id":projectId
-          }
-          );
+          body: {"project_id": projectId});
       if (response.statusCode == 200) {
         return getStagesModelFromJson(response.body);
       }
@@ -206,4 +209,16 @@ class HttpServices {
     }
   }
 
+  static Future getAddProjectDetails() async {
+    try {
+      http.Response response = await http.post(
+        Uri.parse("${baseUrl}project_data"),
+      );
+      if (response.statusCode == 200) {
+        return projectDataModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
 }

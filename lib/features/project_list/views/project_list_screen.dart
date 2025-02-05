@@ -29,7 +29,7 @@ class ProjectList extends StatelessWidget {
       status = sts;
     }
     return BlocProvider(
-      create: (context) => ProjectListCubit(status.toString(), search.text),
+      create: (context) => ProjectListCubit(status.toString(), search.text,"list"),
       child: Scaffold(
           backgroundColor: AppColors.backgroundColor,
           body: BlocBuilder<ProjectListCubit, ProjectListState>(

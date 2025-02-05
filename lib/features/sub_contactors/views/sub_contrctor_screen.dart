@@ -48,7 +48,7 @@ class Contractor extends StatelessWidget {
                             ],
                           ),
                           child: SizedBox(
-                            width: MediaQuery.of(context).size.width * .7,
+                            width: MediaQuery.of(context).size.width * .7, 
                             child: Padding(
                               padding: const EdgeInsets.only(
                                   top: 8.0, left: 8.0, right: 8.0, bottom: 8.0),
@@ -63,7 +63,7 @@ class Contractor extends StatelessWidget {
                                     children: [
                                       Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start, 
                                         children: [
                                           Text(
                                             state.response.data[index].name,

@@ -1,5 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../data/models/login/login_model.dart';
+import '../../../data/services/http_services.dart';
+
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
@@ -12,11 +15,8 @@ class LoginCubit extends Cubit<LoginState> {
   Future<void> login(String username, String password) async {
     emit(LoginLoading());
     try {
-      await Future.delayed(const Duration(seconds: 2));
-
-      final success = username == "1" && password == "1";
-
-      if (success) {
+            LoginModel response = await HttpServices.login(username, password,"");
+      if (response.status == true) {
         emit(LoginSuccess("Login success"));
       } else {
         emit(LoginFailure("Invalid username or password."));

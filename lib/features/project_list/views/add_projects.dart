@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable
 
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,7 +8,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/buttons.dart';
+import 'package:site_720/core/widgets/shimmer.dart';
 import '../../../core/widgets/appbar.dart';
+import '../../../data/models/project_list/project_data_model.dart';
+import '../../payment_details/widgets/amount_container.dart';
 import '../cubit/project_list_cubit.dart';
 import '../cubit/project_list_state.dart';
 
@@ -27,23 +31,26 @@ class AddProjectScreen extends StatelessWidget {
   TextEditingController description = TextEditingController();
   TextEditingController lpoNumber = TextEditingController();
   TextEditingController quotationNumber = TextEditingController();
-  TextEditingController fdate = TextEditingController();
-  TextEditingController tdate = TextEditingController();
+  TextEditingController name = TextEditingController();
+  TextEditingController squareFeet = TextEditingController();
+  TextEditingController rate = TextEditingController();
+  TextEditingController total = TextEditingController();
   final GlobalKey<FormState> budgetKey = GlobalKey<FormState>();
   String priority = "";
-  dynamic status;
-  List filteredClientList = [];
+  dynamic type;
+  dynamic category;
+  dynamic package;
+  dynamic bhk;
+  List<Clients> clientList = [];
+  List<Clients> filteredClientList = [];
   String clientId = "";
-  List<Map<String, dynamic>> statuses = [
-    {"statusId": 101, "statusName": "status 1"},
-    {"statusId": 102, "statusName": "status 2"},
-    {"statusId": 103, "statusName": "status 3"},
-  ];
+  String budgetMethord = 'Fixed Rate';
+  List<Map<String, dynamic>> unitList = [];
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ProjectListCubit("", ""),
+      create: (context) => ProjectListCubit("", "", "add"),
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
         appBar: simpleAppbar(context, "Add Project"),
@@ -52,770 +59,1058 @@ class AddProjectScreen extends StatelessWidget {
             if (state is PriorityUpdated) {
               priority = state.value;
             }
+            if (state is ProjectDataSuccess) {
+              filteredClientList = state.response.data.clientList;
+              clientList = state.response.data.clientList;
+            }
           },
-          child: SingleChildScrollView(
-            child: Form(
-              key: formKey,
-              child: Center(
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * .9,
-                      child: TextFormField(
-                        readOnly: true,
-                        controller: clientName,
-                        onTap: () {
-                          selectClientDialog(context);
-                        },
-                        decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          filled: true,
-                          border: OutlineInputBorder(
-                            // Custom border
-                            borderRadius: BorderRadius.circular(5),
+          child: BlocBuilder<ProjectListCubit, ProjectListState>(
+            builder: (context, state) {
+              if (state is ProjectDataLoading) {
+                return ListView.builder(
+                  itemCount: 10,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(
+                          left: 16.0, right: 16.0, top: 10),
+                      child: shimmerContainer(
+                          55, MediaQuery.of(context).size.width * .8),
+                    );
+                  },
+                );
+              } else if (state is ProjectDataSuccess) {
+                return SingleChildScrollView(
+                  child: Form(
+                    key: formKey,
+                    child: Center(
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 20,
                           ),
-                          labelText: 'Client *',
-                          prefixIcon: const Icon(
-                            Icons.person,
-                            color: Colors.grey,
-                            size: 18,
-                          ),
-                          labelStyle:
-                              const TextStyle(color: Colors.grey, fontSize: 14),
-                          contentPadding: const EdgeInsets.only(left: 10),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * .9,
-                      child: TextFormField(
-                        controller: projectName,
-                        decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          filled: true,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          labelText: 'Project name',
-                          prefixIcon: const Icon(
-                            Icons.person,
-                            color: Colors.grey,
-                            size: 18,
-                          ),
-                          labelStyle:
-                              const TextStyle(color: Colors.grey, fontSize: 14),
-                          contentPadding: const EdgeInsets.only(left: 10),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * .9,
-                      child: DropdownButtonFormField(
-                        value: status,
-                        onChanged: (value) async {
-                          status = value.toString();
-                        },
-                        items: statuses.map((data) {
-                          return DropdownMenuItem<String>(
-                            value: data["statusId"].toString(),
-                            child: Text(
-                              data["statusName"].toString(),
-                            ),
-                          );
-                        }).toList(),
-                        decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          filled: true,
-                          border: OutlineInputBorder(
-                            // Custom border
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          labelText: 'Project type',
-                          labelStyle:
-                              const TextStyle(color: Colors.grey, fontSize: 14),
-                          contentPadding: const EdgeInsets.only(left: 10),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * .9,
-                      child: DropdownButtonFormField(
-                        value: status,
-                        onChanged: (value) async {
-                          status = value.toString();
-                        },
-                        items: statuses.map((data) {
-                          return DropdownMenuItem<String>(
-                            value: data["statusId"].toString(),
-                            child: Text(
-                              data["statusName"].toString(),
-                            ),
-                          );
-                        }).toList(),
-                        decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          filled: true,
-                          border: OutlineInputBorder(
-                            // Custom border
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          labelText: 'Project category',
-                          labelStyle:
-                              const TextStyle(color: Colors.grey, fontSize: 14),
-                          contentPadding: const EdgeInsets.only(left: 10),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * .9,
-                      child: TextFormField(
-                        controller: referenceNumber,
-                        decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          filled: true,
-                          border: OutlineInputBorder(
-                            // Custom border
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          labelText: 'Reference number',
-                          prefixIcon: const Icon(
-                            Icons.numbers,
-                            color: Colors.grey,
-                            size: 18,
-                          ),
-                          labelStyle:
-                              const TextStyle(color: Colors.grey, fontSize: 14),
-                          contentPadding: const EdgeInsets.only(left: 10),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * .9,
-                      child: TextFormField(
-                        controller: location,
-                        decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          filled: true,
-                          border: OutlineInputBorder(
-                            // Custom border
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          labelText: 'Location',
-                          prefixIcon: const Icon(
-                            Icons.pin_drop,
-                            color: Colors.grey,
-                            size: 18,
-                          ),
-                          labelStyle:
-                              const TextStyle(color: Colors.grey, fontSize: 14),
-                          contentPadding: const EdgeInsets.only(left: 10),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * .9,
-                      child: TextFormField(
-                        controller: locationArea,
-                        decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          filled: true,
-                          border: OutlineInputBorder(
-                            // Custom border
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          labelText: 'Location Area',
-                          prefixIcon: const Icon(
-                            Icons.pin_drop,
-                            color: Colors.grey,
-                            size: 18,
-                          ),
-                          labelStyle:
-                              const TextStyle(color: Colors.grey, fontSize: 14),
-                          contentPadding: const EdgeInsets.only(left: 10),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * .9,
-                      child: TextFormField(
-                        controller: locationArea,
-                        decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          filled: true,
-                          border: OutlineInputBorder(
-                            // Custom border
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          labelText: 'CCTV Address',
-                          prefixIcon: const Icon(
-                            Icons.video_camera_front,
-                            color: Colors.grey,
-                            size: 18,
-                          ),
-                          labelStyle:
-                              const TextStyle(color: Colors.grey, fontSize: 14),
-                          contentPadding: const EdgeInsets.only(left: 10),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    BlocBuilder<ProjectListCubit, ProjectListState>(
-                      builder: (context, state) {
-                        return Container(
-                          width: MediaQuery.of(context).size.width * 0.92,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: const Color.fromARGB(255, 255, 255, 255),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color.fromARGB(255, 209, 206, 206)
-                                    .withOpacity(0.8),
-                                blurRadius: 3,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            children: [
-                              Container(
-                                width: double.infinity,
-                                decoration: const BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(5),
-                                    topRight: Radius.circular(5),
-                                  ),
-                                  color: AppColors.primaryColor,
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * .9,
+                            child: TextFormField(
+                              readOnly: true,
+                              controller: clientName,
+                              onTap: () {
+                                selectClientDialog(context).then((_) {
+                                  filteredClientList = [];
+                                  filteredClientList = clientList;
+                                });
+                              },
+                              decoration: InputDecoration(
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: OutlineInputBorder(
+                                  // Custom border
+                                  borderRadius: BorderRadius.circular(5),
                                 ),
-                                child: const Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 30.0, vertical: 12.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                labelText: 'Client *',
+                                prefixIcon: const Icon(
+                                  Icons.person,
+                                  color: Colors.grey,
+                                  size: 18,
+                                ),
+                                labelStyle: const TextStyle(
+                                    color: Colors.grey, fontSize: 14),
+                                contentPadding: const EdgeInsets.only(left: 10),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * .9,
+                            child: TextFormField(
+                              controller: projectName,
+                              decoration: InputDecoration(
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                labelText: 'Project name',
+                                prefixIcon: const Icon(
+                                  Icons.person,
+                                  color: Colors.grey,
+                                  size: 18,
+                                ),
+                                labelStyle: const TextStyle(
+                                    color: Colors.grey, fontSize: 14),
+                                contentPadding: const EdgeInsets.only(left: 10),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * .9,
+                            child: DropdownButtonFormField(
+                              value: type,
+                              onChanged: (value) async {
+                                type = value.toString();
+                              },
+                              items:
+                                  state.response.data.projectList.map((data) {
+                                return DropdownMenuItem<String>(
+                                  value: data.id.toString(),
+                                  child: Text(
+                                    data.projectType.toString(),
+                                  ),
+                                );
+                              }).toList(),
+                              decoration: InputDecoration(
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: OutlineInputBorder(
+                                  // Custom border
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                labelText: 'Project type',
+                                labelStyle: const TextStyle(
+                                    color: Colors.grey, fontSize: 14),
+                                contentPadding: const EdgeInsets.only(left: 10),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * .9,
+                            child: DropdownButtonFormField(
+                              value: category,
+                              onChanged: (value) async {
+                                category = value.toString();
+                              },
+                              items: state.response.data.projectCategory
+                                  .map((data) {
+                                return DropdownMenuItem<String>(
+                                  value: data.id.toString(),
+                                  child: Text(
+                                    data.categoryName.toString(),
+                                  ),
+                                );
+                              }).toList(),
+                              decoration: InputDecoration(
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: OutlineInputBorder(
+                                  // Custom border
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                labelText: 'Project category',
+                                labelStyle: const TextStyle(
+                                    color: Colors.grey, fontSize: 14),
+                                contentPadding: const EdgeInsets.only(left: 10),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * .9,
+                            child: TextFormField(
+                              controller: referenceNumber,
+                              decoration: InputDecoration(
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: OutlineInputBorder(
+                                  // Custom border
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                labelText: 'Reference number',
+                                prefixIcon: const Icon(
+                                  Icons.numbers,
+                                  color: Colors.grey,
+                                  size: 18,
+                                ),
+                                labelStyle: const TextStyle(
+                                    color: Colors.grey, fontSize: 14),
+                                contentPadding: const EdgeInsets.only(left: 10),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * .9,
+                            child: TextFormField(
+                              controller: location,
+                              decoration: InputDecoration(
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: OutlineInputBorder(
+                                  // Custom border
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                labelText: 'Location',
+                                prefixIcon: const Icon(
+                                  Icons.pin_drop,
+                                  color: Colors.grey,
+                                  size: 18,
+                                ),
+                                labelStyle: const TextStyle(
+                                    color: Colors.grey, fontSize: 14),
+                                contentPadding: const EdgeInsets.only(left: 10),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * .9,
+                            child: TextFormField(
+                              controller: locationArea,
+                              decoration: InputDecoration(
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: OutlineInputBorder(
+                                  // Custom border
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                labelText: 'Location Area',
+                                prefixIcon: const Icon(
+                                  Icons.pin_drop,
+                                  color: Colors.grey,
+                                  size: 18,
+                                ),
+                                labelStyle: const TextStyle(
+                                    color: Colors.grey, fontSize: 14),
+                                contentPadding: const EdgeInsets.only(left: 10),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * .9,
+                            child: TextFormField(
+                              controller: locationArea,
+                              decoration: InputDecoration(
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: OutlineInputBorder(
+                                  // Custom border
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                labelText: 'CCTV Address',
+                                prefixIcon: const Icon(
+                                  Icons.video_camera_front,
+                                  color: Colors.grey,
+                                  size: 18,
+                                ),
+                                labelStyle: const TextStyle(
+                                    color: Colors.grey, fontSize: 14),
+                                contentPadding: const EdgeInsets.only(left: 10),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          BlocBuilder<ProjectListCubit, ProjectListState>(
+                            builder: (context, state) {
+                              return Container(
+                                width: MediaQuery.of(context).size.width * 0.92,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color:
+                                      const Color.fromARGB(255, 255, 255, 255),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: const Color.fromARGB(
+                                              255, 209, 206, 206)
+                                          .withOpacity(0.8),
+                                      blurRadius: 3,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      width: double.infinity,
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(5),
+                                          topRight: Radius.circular(5),
+                                        ),
+                                        color: AppColors.primaryColor,
+                                      ),
+                                      child: const Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 30.0, vertical: 12.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "Priority",
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 15, top: 10),
+                                      child: CheckBoxWidget(
+                                          id: "1",
+                                          title: "High",
+                                          value:
+                                              priority == "1" ? true : false),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 15),
+                                      child: CheckBoxWidget(
+                                          id: "2",
+                                          title: "Medium",
+                                          value:
+                                              priority == "2" ? true : false),
+                                    ),
+                                    Padding(
+                                        padding: const EdgeInsets.only(
+                                            bottom: 10.0, left: 15),
+                                        child: CheckBoxWidget(
+                                            id: "3",
+                                            title: "Low",
+                                            value: priority == "3"
+                                                ? true
+                                                : false)),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * .9,
+                            child: DropdownButtonFormField(
+                              value: package,
+                              onChanged: (value) async {
+                                package = value.toString();
+                              },
+                              items: state.response.data.packages.map((data) {
+                                return DropdownMenuItem<String>(
+                                  value: data.id.toString(),
+                                  child: Text(
+                                    data.packageName.toString(),
+                                  ),
+                                );
+                              }).toList(),
+                              decoration: InputDecoration(
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: OutlineInputBorder(
+                                  // Custom border
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                labelText: 'Package',
+                                labelStyle: const TextStyle(
+                                    color: Colors.grey, fontSize: 14),
+                                contentPadding: const EdgeInsets.only(left: 10),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * .9,
+                            child: DropdownButtonFormField(
+                              value: bhk,
+                              onChanged: (value) async {
+                                bhk = value.toString();
+                              },
+                              items: state.response.data.bhk.map((data) {
+                                return DropdownMenuItem<String>(
+                                  value: data.id.toString(),
+                                  child: Text(
+                                    data.name.toString(),
+                                  ),
+                                );
+                              }).toList(),
+                              decoration: InputDecoration(
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: OutlineInputBorder(
+                                  // Custom border
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                labelText: 'No of BHK',
+                                labelStyle: const TextStyle(
+                                    color: Colors.grey, fontSize: 14),
+                                contentPadding: const EdgeInsets.only(left: 10),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * .9,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                SizedBox(
+                                  width: MediaQuery.sizeOf(context).width * .44,
+                                  height: 50,
+                                  child: TextFormField(
+                                    onTap: () async {
+                                      String? selectedDate =
+                                          await selectDate(context);
+                                      if (selectedDate != null) {
+                                        startDate.text = selectedDate;
+                                        if (context.mounted) {}
+                                      }
+                                    },
+                                    readOnly: true,
+                                    controller: startDate,
+                                    decoration: const InputDecoration(
+                                        labelText: 'Start Date',
+                                        contentPadding: EdgeInsets.all(10),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: AppColors.primaryColor)),
+                                        labelStyle: TextStyle(
+                                            color: Colors.grey, fontSize: 14),
+                                        prefixIcon: Icon(Icons.calendar_today,
+                                            size: 18,
+                                            color: AppColors.primaryColor)),
+                                  ),
+                                ),
+                                // const SizedBox(
+                                //   width: 10,
+                                // ),
+                                SizedBox(
+                                  width: MediaQuery.sizeOf(context).width * .44,
+                                  height: 50,
+                                  child: TextFormField(
+                                    onTap: () async {
+                                      String? selectedDate =
+                                          await selectDate(context);
+                                      if (selectedDate != null) {
+                                        completionDate.text = selectedDate;
+                                        if (context.mounted) {}
+                                      }
+                                    },
+                                    readOnly: true,
+                                    controller: completionDate,
+                                    decoration: const InputDecoration(
+                                        labelText: 'Completion Date',
+                                        contentPadding: EdgeInsets.all(10),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: AppColors.primaryColor)),
+                                        labelStyle: TextStyle(
+                                            color: Colors.grey, fontSize: 14),
+                                        suffixIcon: Icon(Icons.calendar_today,
+                                            size: 18,
+                                            color: AppColors.primaryColor)),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          InkWell(
+                            onTap: () async {
+                              imageDialog(context);
+                            },
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * .9,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const SizedBox(width: 10),
+                                  const Icon(Icons.upload_file,
+                                      color: Colors.grey),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: BlocBuilder<ProjectListCubit,
+                                        ProjectListState>(
+                                      builder: (context, state) {
+                                        if (state is ProjectListLoading) {
+                                          return const Center(
+                                              child:
+                                                  CircularProgressIndicator());
+                                        } else if (state is ImageSuccess) {
+                                          final images = state.imageList;
+                                          return ListView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            itemCount: images.length,
+                                            itemBuilder: (context, index) {
+                                              final image = images[index];
+                                              return Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Image.file(
+                                                  File(image.path),
+                                                  width: 40,
+                                                  height: 40,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        } else if (state is ImageFailure) {
+                                          return Center(
+                                              child: Text(
+                                            state.message,
+                                            style: const TextStyle(
+                                                color: Colors.red),
+                                          ));
+                                        } else {
+                                          return const Text(
+                                            'Upload Plan',
+                                            style:
+                                                TextStyle(color: Colors.grey),
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          InkWell(
+                            onTap: () async {
+                              imageDialog(context);
+                            },
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * .9,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const SizedBox(width: 10),
+                                  const Icon(Icons.upload_file,
+                                      color: Colors.grey),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: BlocBuilder<ProjectListCubit,
+                                        ProjectListState>(
+                                      builder: (context, state) {
+                                        if (state is ProjectListLoading) {
+                                          return const Center(
+                                              child:
+                                                  CircularProgressIndicator());
+                                        } else if (state is ImageSuccess) {
+                                          final images = state.imageList;
+                                          return ListView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            itemCount: images.length,
+                                            itemBuilder: (context, index) {
+                                              final image = images[index];
+                                              return Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Image.file(
+                                                  File(image.path),
+                                                  width: 40,
+                                                  height: 40,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        } else if (state is ImageFailure) {
+                                          return Center(
+                                              child: Text(
+                                            state.message,
+                                            style: const TextStyle(
+                                                color: Colors.red),
+                                          ));
+                                        } else {
+                                          return const Text(
+                                            'Upload Elevation',
+                                            style:
+                                                TextStyle(color: Colors.grey),
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Project Details",
+                                  style: TextStyle(
+                                      color: AppColors.primaryColor,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Row(
+                                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Radio<String>(
+                                      value: 'Fixed Rate',
+                                      groupValue: budgetMethord,
+                                      onChanged: (value) {
+                                        budgetMethord = value!;
+                                        (context as Element).markNeedsBuild();
+                                      },
+                                    ),
+                                    const Text("Fixed Rate"),
+                                    Radio<String>(
+                                      value: 'Unit Based Rate',
+                                      groupValue: budgetMethord,
+                                      onChanged: (value) {
+                                        budgetMethord = value!;
+                                        (context as Element).markNeedsBuild();
+                                      },
+                                    ),
+                                    const Text("Unit Based Rate"),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          budgetMethord == "Fixed Rate"
+                              ? SizedBox(
+                                  width: MediaQuery.sizeOf(context).width * .9,
+                                  height: 50,
+                                  child: TextFormField(
+                                    controller: completionDate,
+                                    keyboardType: TextInputType.number,
+                                    decoration: const InputDecoration(
+                                        labelText: 'Fixed rate',
+                                        contentPadding: EdgeInsets.all(10),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: AppColors.primaryColor)),
+                                        labelStyle: TextStyle(
+                                            color: Colors.grey, fontSize: 14),
+                                        prefixIcon: Icon(Icons.money,
+                                            size: 18,
+                                            color: AppColors.primaryColor)),
+                                  ),
+                                )
+                              : Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * .91,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: AppColors.backgroundColor,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.8),
+                                        blurRadius: 3,
+                                        offset: const Offset(0, .5),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
                                     children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                      Container(
+                                          decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(5),
+                                              topRight: Radius.circular(5),
+                                            ),
+                                            color: AppColors.primaryColor,
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 12.0,
+                                                vertical: 12.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                const Text(
+                                                  "Units",
+                                                  style: TextStyle(
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: AppColors.lightA,
+                                                  ),
+                                                ),
+                                                InkWell(
+                                                  onTap: () {
+                                                    addBudgetDialog(context);
+                                                  },
+                                                  child: Container(
+                                                    height: 25,
+                                                    width: 25,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5),
+                                                      color: AppColors.lightA,
+                                                    ),
+                                                    child: const Icon(
+                                                      Icons.add,
+                                                      size: 18,
+                                                      color: AppColors
+                                                          .primaryColor,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )),
+                                      unitList.isNotEmpty
+                                          ? ListView.builder(
+                                              shrinkWrap: true,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8.0),
+                                              itemCount: unitList.length,
+                                              itemBuilder: (context, index) {
+                                                return Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(6.0),
+                                                  child: InkWell(
+                                                    onTap: () {
+                                                      // Navigator.of(context)
+                                                      //     .pushNamed(AppRoutes.stageHistory);
+                                                    },
+                                                    child: Container(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              .9,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
+                                                        color: Colors.white,
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.grey
+                                                                .withOpacity(
+                                                                    0.8),
+                                                            blurRadius: 3,
+                                                            offset:
+                                                                const Offset(
+                                                                    0, 3),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      child: SizedBox(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            .7,
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .only(
+                                                                  top: 8.0,
+                                                                  left: 8.0,
+                                                                  right: 8.0,
+                                                                  bottom: 8.0),
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                unitList[index]
+                                                                    ['name'],
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceEvenly,
+                                                                children: [
+                                                                  SmallContainer(
+                                                                    title:
+                                                                        "Square Feet",
+                                                                    amount: unitList[
+                                                                            index]
+                                                                        [
+                                                                        'squareFeet'],
+                                                                  ),
+                                                                  SmallContainer(
+                                                                    title:
+                                                                        "Rate",
+                                                                    amount: unitList[
+                                                                            index]
+                                                                        [
+                                                                        'rate'],
+                                                                  ),
+                                                                  SmallContainer(
+                                                                    title:
+                                                                        "Total",
+                                                                    amount: unitList[
+                                                                            index]
+                                                                        [
+                                                                        'total'],
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            )
+                                          : const Padding(
+                                              padding: EdgeInsets.all(25.0),
+                                              child: Text(
+                                                "Empty !",
+                                                style: TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: AppColors.primaryColor,
+                                                ),
+                                              ),
+                                            )
+                                    ],
+                                  ),
+                                ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width * .91,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: AppColors.backgroundColor,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.8),
+                                  blurRadius: 3,
+                                  offset: const Offset(0, .5),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              children: [
+                                Container(
+                                    decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(5),
+                                        topRight: Radius.circular(5),
+                                      ),
+                                      color: AppColors.primaryColor,
+                                    ),
+                                    child: const Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 12.0, vertical: 12.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                            "Priority",
+                                            "Project Budget",
                                             style: TextStyle(
-                                              fontSize: 15,
+                                              fontSize: 13,
                                               fontWeight: FontWeight.bold,
-                                              color: Colors.white,
+                                              color: AppColors.lightA,
                                             ),
                                           ),
                                         ],
                                       ),
-                                    ],
+                                    )),
+                                const Padding(
+                                  padding: EdgeInsets.all(25.0),
+                                  child: Text(
+                                    "Empty !",
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.primaryColor,
+                                    ),
                                   ),
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 15, top: 10),
-                                child: CheckBoxWidget(
-                                    id: "1",
-                                    title: "High",
-                                    value: priority == "1" ? true : false),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 15),
-                                child: CheckBoxWidget(
-                                    id: "2",
-                                    title: "Medium",
-                                    value: priority == "2" ? true : false),
-                              ),
-                              Padding(
-                                  padding: const EdgeInsets.only(
-                                      bottom: 10.0, left: 15),
-                                  child: CheckBoxWidget(
-                                      id: "3",
-                                      title: "Low",
-                                      value: priority == "3" ? true : false)),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * .9,
-                      child: DropdownButtonFormField(
-                        value: status,
-                        onChanged: (value) async {
-                          status = value.toString();
-                        },
-                        items: statuses.map((data) {
-                          return DropdownMenuItem<String>(
-                            value: data["statusId"].toString(),
-                            child: Text(
-                              data["statusName"].toString(),
+                                )
+                              ],
                             ),
-                          );
-                        }).toList(),
-                        decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          filled: true,
-                          border: OutlineInputBorder(
-                            // Custom border
-                            borderRadius: BorderRadius.circular(5),
                           ),
-                          labelText: 'Package',
-                          labelStyle:
-                              const TextStyle(color: Colors.grey, fontSize: 14),
-                          contentPadding: const EdgeInsets.only(left: 10),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * .9,
-                      child: DropdownButtonFormField(
-                        value: status,
-                        onChanged: (value) async {
-                          status = value.toString();
-                        },
-                        items: statuses.map((data) {
-                          return DropdownMenuItem<String>(
-                            value: data["statusId"].toString(),
-                            child: Text(
-                              data["statusName"].toString(),
-                            ),
-                          );
-                        }).toList(),
-                        decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          filled: true,
-                          border: OutlineInputBorder(
-                            // Custom border
-                            borderRadius: BorderRadius.circular(5),
+                          const SizedBox(
+                            height: 20,
                           ),
-                          labelText: 'No of BHK',
-                          labelStyle:
-                              const TextStyle(color: Colors.grey, fontSize: 14),
-                          contentPadding: const EdgeInsets.only(left: 10),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * .9,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
                           SizedBox(
-                            width: MediaQuery.sizeOf(context).width * .44,
-                            height: 50,
+                            width: MediaQuery.of(context).size.width * .9,
                             child: TextFormField(
-                              onTap: () async {
-                                String? selectedDate =
-                                    await selectDate(context);
-                                if (selectedDate != null) {
-                                  startDate.text = selectedDate;
-                                  if (context.mounted) {}
-                                }
-                              },
-                              readOnly: true,
-                              controller: startDate,
-                              decoration: const InputDecoration(
-                                  labelText: 'Start Date',
-                                  contentPadding: EdgeInsets.all(10),
-                                  border: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: AppColors.primaryColor)),
-                                  labelStyle: TextStyle(
-                                      color: Colors.grey, fontSize: 14),
-                                  prefixIcon: Icon(Icons.calendar_today,
-                                      size: 18, color: AppColors.primaryColor)),
+                              controller: cost,
+                              decoration: InputDecoration(
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: OutlineInputBorder(
+                                  // Custom border
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                labelText: 'Cost',
+                                prefixIcon: const Icon(
+                                  Icons.currency_rupee,
+                                  color: Colors.grey,
+                                  size: 18,
+                                ),
+                                labelStyle: const TextStyle(
+                                    color: Colors.grey, fontSize: 14),
+                                contentPadding: const EdgeInsets.only(left: 10),
+                              ),
                             ),
                           ),
-                          // const SizedBox(
-                          //   width: 10,
-                          // ),
+                          const SizedBox(
+                            height: 10,
+                          ),
                           SizedBox(
-                            width: MediaQuery.sizeOf(context).width * .44,
-                            height: 50,
+                            width: MediaQuery.of(context).size.width * .9,
                             child: TextFormField(
-                              onTap: () async {
-                                String? selectedDate =
-                                    await selectDate(context);
-                                if (selectedDate != null) {
-                                  completionDate.text = selectedDate;
-                                  if (context.mounted) {}
-                                }
-                              },
-                              readOnly: true,
-                              controller: completionDate,
-                              decoration: const InputDecoration(
-                                  labelText: 'Completion Date',
-                                  contentPadding: EdgeInsets.all(10),
-                                  border: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: AppColors.primaryColor)),
-                                  labelStyle: TextStyle(
-                                      color: Colors.grey, fontSize: 14),
-                                  suffixIcon: Icon(Icons.calendar_today,
-                                      size: 18, color: AppColors.primaryColor)),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    InkWell(
-                      onTap: () async {
-                        imageDialog(context);
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * .9,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const SizedBox(width: 10),
-                            const Icon(Icons.upload_file, color: Colors.grey),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: BlocBuilder<ProjectListCubit,
-                                  ProjectListState>(
-                                builder: (context, state) {
-                                  if (state is ProjectListLoading) {
-                                    return const Center(
-                                        child: CircularProgressIndicator());
-                                  } else if (state is ImageSuccess) {
-                                    final images = state.imageList;
-                                    return ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: images.length,
-                                      itemBuilder: (context, index) {
-                                        final image = images[index];
-                                        return Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Image.file(
-                                            File(image.path),
-                                            width: 40,
-                                            height: 40,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  } else if (state is ProjectListFailure) {
-                                    return Center(
-                                        child: Text(
-                                      state.message,
-                                      style: const TextStyle(color: Colors.red),
-                                    ));
-                                  } else {
-                                    return const Text(
-                                      'Upload Plan',
-                                      style: TextStyle(color: Colors.grey),
-                                    );
-                                  }
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    InkWell(
-                      onTap: () async {
-                        imageDialog(context);
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * .9,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.black),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const SizedBox(width: 10),
-                            const Icon(Icons.upload_file, color: Colors.grey),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: BlocBuilder<ProjectListCubit,
-                                  ProjectListState>(
-                                builder: (context, state) {
-                                  if (state is ProjectListLoading) {
-                                    return const Center(
-                                        child: CircularProgressIndicator());
-                                  } else if (state is ImageSuccess) {
-                                    final images = state.imageList;
-                                    return ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: images.length,
-                                      itemBuilder: (context, index) {
-                                        final image = images[index];
-                                        return Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Image.file(
-                                            File(image.path),
-                                            width: 40,
-                                            height: 40,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        );
-                                      },
-                                    );
-                                  } else if (state is ProjectListFailure) {
-                                    return Center(
-                                        child: Text(
-                                      state.message,
-                                      style: const TextStyle(color: Colors.red),
-                                    ));
-                                  } else {
-                                    return const Text(
-                                      'Upload Elevation',
-                                      style: TextStyle(color: Colors.grey),
-                                    );
-                                  }
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * .91,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: AppColors.backgroundColor,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.8),
-                            blurRadius: 3,
-                            offset: const Offset(0, .5),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          Container(
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(5),
-                                  topRight: Radius.circular(5),
+                              controller: description,
+                              maxLines: 3,
+                              decoration: InputDecoration(
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: OutlineInputBorder(
+                                  // Custom border
+                                  borderRadius: BorderRadius.circular(5),
                                 ),
-                                color: AppColors.primaryColor,
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12.0, vertical: 12.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text(
-                                      "Budget",
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColors.lightA,
-                                      ),
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        addBudgetDialog(context);
-                                      },
-                                      child: Container(
-                                        height: 25,
-                                        width: 25,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          color: AppColors.lightA,
-                                        ),
-                                        child: const Icon(
-                                          Icons.add,
-                                          size: 18,
-                                          color: AppColors.primaryColor,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                labelText: 'Description',
+                                prefixIcon: const Icon(
+                                  Icons.text_fields,
+                                  color: Colors.grey,
+                                  size: 18,
                                 ),
-                              )),
-                          const Padding(
-                            padding: EdgeInsets.all(25.0),
-                            child: Text(
-                              "Empty !",
-                              style: TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.primaryColor,
+                                labelStyle: const TextStyle(
+                                    color: Colors.grey, fontSize: 14),
+                                contentPadding: const EdgeInsets.only(
+                                    left: 10, top: 10, bottom: 10),
                               ),
                             ),
-                          )
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * .9,
+                            child: TextFormField(
+                              controller: lpoNumber,
+                              decoration: InputDecoration(
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: OutlineInputBorder(
+                                  // Custom border
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                labelText: 'LPO Number',
+                                prefixIcon: const Icon(
+                                  Icons.numbers,
+                                  color: Colors.grey,
+                                  size: 18,
+                                ),
+                                labelStyle: const TextStyle(
+                                    color: Colors.grey, fontSize: 14),
+                                contentPadding: const EdgeInsets.only(left: 10),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * .9,
+                            child: TextFormField(
+                              controller: quotationNumber,
+                              decoration: InputDecoration(
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: OutlineInputBorder(
+                                  // Custom border
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                labelText: 'Quotation/work order number',
+                                prefixIcon: const Icon(
+                                  Icons.numbers,
+                                  color: Colors.grey,
+                                  size: 18,
+                                ),
+                                labelStyle: const TextStyle(
+                                    color: Colors.grey, fontSize: 14),
+                                contentPadding: const EdgeInsets.only(left: 10),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 25,
+                          ),
+                          InkWell(
+                              onTap: () {},
+                              child: LargeButton(title: "Submit")),
+                          const SizedBox(
+                            height: 25,
+                          ),
                         ],
                       ),
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * .9,
-                      child: TextFormField(
-                        controller: cost,
-                        decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          filled: true,
-                          border: OutlineInputBorder(
-                            // Custom border
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          labelText: 'Cost',
-                          prefixIcon: const Icon(
-                            Icons.currency_rupee,
-                            color: Colors.grey,
-                            size: 18,
-                          ),
-                          labelStyle:
-                              const TextStyle(color: Colors.grey, fontSize: 14),
-                          contentPadding: const EdgeInsets.only(left: 10),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * .9,
-                      child: TextFormField(
-                        controller: description,
-                        maxLines: 3,
-                        decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          filled: true,
-                          border: OutlineInputBorder(
-                            // Custom border
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          labelText: 'Description',
-                          prefixIcon: const Icon(
-                            Icons.text_fields,
-                            color: Colors.grey,
-                            size: 18,
-                          ),
-                          labelStyle:
-                              const TextStyle(color: Colors.grey, fontSize: 14),
-                          contentPadding: const EdgeInsets.only(
-                              left: 10, top: 10, bottom: 10),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * .9,
-                      child: TextFormField(
-                        controller: lpoNumber,
-                        decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          filled: true,
-                          border: OutlineInputBorder(
-                            // Custom border
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          labelText: 'LPO Number',
-                          prefixIcon: const Icon(
-                            Icons.numbers,
-                            color: Colors.grey,
-                            size: 18,
-                          ),
-                          labelStyle:
-                              const TextStyle(color: Colors.grey, fontSize: 14),
-                          contentPadding: const EdgeInsets.only(left: 10),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * .9,
-                      child: TextFormField(
-                        controller: quotationNumber,
-                        decoration: InputDecoration(
-                          fillColor: Colors.white,
-                          filled: true,
-                          border: OutlineInputBorder(
-                            // Custom border
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          labelText: 'Quotation/work order number',
-                          prefixIcon: const Icon(
-                            Icons.numbers,
-                            color: Colors.grey,
-                            size: 18,
-                          ),
-                          labelStyle:
-                              const TextStyle(color: Colors.grey, fontSize: 14),
-                          contentPadding: const EdgeInsets.only(left: 10),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 25,
-                    ),
-                    InkWell(onTap: () {}, child: LargeButton(title: "Submit")),
-                    const SizedBox(
-                      height: 25,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+                  ),
+                );
+              } else {
+                return const SizedBox();
+              }
+            },
           ),
         ),
       ),
@@ -831,28 +1126,34 @@ class AddProjectScreen extends StatelessWidget {
           return AlertDialog(
             backgroundColor: AppColors.backgroundColor,
             content: SizedBox(
-              height: MediaQuery.of(context).size.height * .6,
+              height: MediaQuery.of(context).size.height * .5,
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    // const SizedBox(
+                    //   height: 15,
+                    // ),
+                    // const Text(
+                    //   'Clients',
+                    //   // style: TextingStyle.font18BoldBlack,
+                    // ),
                     const SizedBox(
-                      height: 15,
-                    ),
-                    const Text(
-                      'Clients',
-                      // style: TextingStyle.font18BoldBlack,
-                    ),
-                    const SizedBox(
-                      height: 15,
+                      height: 30,
                     ),
                     TextField(
                       autocorrect: false,
                       keyboardType: TextInputType.visiblePassword,
                       autofocus: true,
                       onChanged: (value) {
-                        setState(() {});
+                        setState(() {
+                          filteredClientList = clientList
+                              .where((item) => item.clientName
+                                  .toLowerCase()
+                                  .contains(value.toLowerCase()))
+                              .toList();
+                        });
                       },
                       decoration: const InputDecoration(
                         contentPadding: EdgeInsets.all(8),
@@ -868,17 +1169,17 @@ class AddProjectScreen extends StatelessWidget {
                         // ignore: prefer_const_constructors
                         physics: BouncingScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: 5,
+                        itemCount: filteredClientList.length,
                         itemBuilder: (context, i) {
                           return ListTile(
-                            onTap: () {},
-                            title: const Text(
-                              "Pradeesh",
-                              style: TextStyle(color: AppColors.primaryColor),
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            title: Text(
+                              filteredClientList[i].clientName,
+                              style: const TextStyle(
+                                  color: AppColors.primaryColor),
                             ),
-                            subtitle: const Text("C R Manager",
-                                style:
-                                    TextStyle(color: AppColors.primaryColor)),
                           );
                         },
                       ),
@@ -1056,7 +1357,7 @@ class AddProjectScreen extends StatelessWidget {
                     const Padding(
                       padding: EdgeInsets.only(top: 16.0, bottom: 25),
                       child: Text(
-                        "Budget",
+                        "Add Unit",
                         style: TextStyle(
                             color: AppColors.primaryColor,
                             fontSize: 20,
@@ -1071,49 +1372,16 @@ class AddProjectScreen extends StatelessWidget {
                       child: TextFormField(
                         validator: (value) {
                           if (value == "") {
-                            return "Select phase";
+                            return "Enter unit name";
                           } else {
                             return null;
                           }
                         },
-                        onTap: () {
-                          // selectStageDialog(context).then((_) {});
-                        },
-                        readOnly: true,
-                        // controller: stageController,
+                        controller: name,
+                        onTap: () {},
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.all(10),
-                          labelText: 'Select Phase',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 12,
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.95,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value == "") {
-                            return "Enter amount";
-                          } else {
-                            return null;
-                          }
-                        },
-                        onTap: () {
-                          // selectProductsDialog(context).then((_) {});
-                        },
-                        readOnly: true,
-                        // controller: productController,
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.all(10),
-                          labelText: 'Amount',
+                          labelText: 'Name',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5),
                           ),
@@ -1132,14 +1400,25 @@ class AddProjectScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(5),
                           ),
                           child: TextFormField(
-                            // controller: unitController,
-                            readOnly: true,
+                            controller: squareFeet,
+                            validator: (value) {
+                              if (value == "") {
+                                return "Enter square feet";
+                              } else {
+                                return null;
+                              }
+                            },
+                            onChanged: (value) {
+                              total.text = (double.parse(value) *
+                                      double.parse(
+                                          rate.text == "" ? "1" : rate.text))
+                                  .toString();
+                            },
+                            keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.all(10),
-                              labelText: 'Due Date',
+                              labelText: 'Square Feet',
                               border: OutlineInputBorder(
-                                // borderSide: const BorderSide(
-                                //     color: ColorConstant.greyyy),
                                 borderRadius: BorderRadius.circular(5),
                               ),
                             ),
@@ -1151,17 +1430,26 @@ class AddProjectScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(5),
                           ),
                           child: TextFormField(
-                            // controller: qtyController,
+                            validator: (value) {
+                              if (value == "") {
+                                return "Enter rate";
+                              } else {
+                                return null;
+                              }
+                            },
+                            onChanged: (value) {
+                              total.text = (double.parse(value) *
+                                      double.parse(squareFeet.text == ""
+                                          ? "1"
+                                          : squareFeet.text))
+                                  .toString();
+                            },
                             keyboardType: TextInputType.number,
+                            controller: rate,
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.all(10),
-                              labelText: 'Completion Date',
-                              // labelStyle: TextingStyle.font14NormalBlack,
-
-                              // fillColor: ColorConstant.greyyy,
+                              labelText: 'Rate',
                               border: OutlineInputBorder(
-                                // borderSide: const BorderSide(
-                                //     color: ColorConstant.greyyy),
                                 borderRadius: BorderRadius.circular(5),
                               ),
                             ),
@@ -1170,22 +1458,51 @@ class AddProjectScreen extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(
+                      height: 12,
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.95,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: TextFormField(
+                        onTap: () {},
+                        readOnly: true,
+                        controller: total,
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.all(10),
+                          labelText: 'Total',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
                       height: 20,
                     ),
                     GestureDetector(
                       onTap: () async {
-                        if (budgetKey.currentState!.validate()) {}
+                        if (budgetKey.currentState!.validate()) {
+                          unitList.add({
+                            "name": name.text,
+                            "squareFeet": squareFeet.text,
+                            "rate": rate.text,
+                            "total": total.text,
+                          });
+                          name.text = "";
+                          squareFeet.text = "";
+                          rate.text = "";
+                          total.text = "";
+                          log(unitList.toString());
+                        }
+                        Navigator.pop(context);
                       },
                       child: LargeButton(title: "Add"),
                     ),
                     TextButton(
                       onPressed: () {
                         Navigator.pop(context);
-                        // stageController.clear();
-                        // productController.clear();
-                        // unitController.clear();
-                        // qtyController.clear();
-                        // amountController.clear();
                       },
                       child: const Text('Close'),
                     ),

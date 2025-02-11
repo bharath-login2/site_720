@@ -1,8 +1,12 @@
+import '../../../data/models/paymentdetails/paymentdetails_model.dart';
+
 class PaymentDetailsState {
   final DateTime? fromDate;
   final DateTime? toDate;
 
   PaymentDetailsState({this.fromDate, this.toDate});
+
+  get response => null;
 
   PaymentDetailsState copyWith({String? fromDate, String? toDate}) {
     return PaymentDetailsState(
@@ -19,8 +23,8 @@ class PaymentDetailsInitial extends PaymentDetailsState {
 class PaymentDetailsLoading extends PaymentDetailsState {}
 
 class PaymentDetailsSuccess extends PaymentDetailsState {
-  final String message;
-  PaymentDetailsSuccess(this.message);
+final GetPaymentDetails response;
+  PaymentDetailsSuccess(this.response);
 }
 
 class PaymentDetailsFailure extends PaymentDetailsState {

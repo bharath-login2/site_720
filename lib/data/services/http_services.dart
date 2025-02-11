@@ -5,7 +5,9 @@ import '../models/clientlist/client_list_model.dart';
 import '../models/complaint/complaint_list_model.dart';
 import '../models/contractorlist/contractor_list_model.dart';
 import '../models/dashboard/dashboard_model.dart';
+import '../models/expenselist/expenselist_model.dart';
 import '../models/extraworklist/extra_work_model.dart';
+import '../models/paymentdetails/paymentdetails_model.dart';
 import '../models/project_details/project_detais_model.dart';
 import '../models/purchasebilllist/purchasebill_list_model.dart';
 import '../models/succes_response/success_response.dart';
@@ -224,6 +226,39 @@ class HttpServices {
           );
       if (response.statusCode == 200) {
         return getStagesModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+
+  static Future getExpenseList(projectId) async {
+    try {
+      http.Response response = await http.post(
+          Uri.parse("${baseUrl}expense_list"),
+          body: {
+            "project_id":projectId
+          }
+          );
+      if (response.statusCode == 200) {
+        return getExpenseListFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+   static Future getPaymentDetails(projectId) async {
+    try {
+      http.Response response = await http.post(
+          Uri.parse("${baseUrl}get_payment_history"),
+          body: {
+            "project_id":projectId
+          }
+          );
+      if (response.statusCode == 200) {
+        return getPaymentDetailsFromJson(response.body);
       }
     } catch (e) {
       log(e.toString());

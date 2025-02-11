@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data/models/stages/stage_model.dart';
+import '../../../data/models/succes_response/success_response.dart';
 import '../../../data/services/http_services.dart';
 import 'stages_state.dart';
 
@@ -23,4 +24,26 @@ class StagesCubit extends Cubit<StagesState> {
       emit(StagesFailure('Failed to fetch data: ${e.toString()}'));
     }
   } 
+
+
+  Future<void> addStageDetails(
+      String projectId,
+      String clintId,
+      String stage,
+      String startDateController,
+      String endDateController
+    ) async {
+    try {
+      SuccessResponse response = await HttpServices.addStages(projectId,
+          clintId, stage, startDateController, endDateController);
+      if (response.status == true) {
+        getStagesList(projectId);
+        emit(AddedSuccess(response));
+      } else {
+          emit(AddedFailure(response)); 
+      }
+    } catch (e) {
+       emit(StagesFailure('Failed to fetch data: ${e.toString()}'));
+    }
+  }
 }

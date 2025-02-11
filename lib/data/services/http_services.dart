@@ -190,6 +190,30 @@ class HttpServices {
     }
   }
 
+  static Future addStages(
+      String projectId,
+      String clintId,
+      String stages,
+      String startDate,
+      String endDate,
+    ) async {
+    try {
+      http.Response response =
+          await http.post(Uri.parse("${baseUrl}add_stages"), body: {
+        "project_id": projectId,
+        "client_id": clintId,
+        "stages": stages,
+        "startDate": startDate,
+        "endDate": endDate,
+      });
+      if (response.statusCode == 200) {
+        return successResponseFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
   static Future getStagesList(projectId) async {
     try {
       http.Response response = await http.post(

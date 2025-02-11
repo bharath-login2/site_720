@@ -14,7 +14,7 @@ class Estimation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: AppColors.backgroundColor,
-        appBar: simpleAppbar(context, "Estimation"),
+        appBar: simpleAppbar(context, "Estimation",true),
         body: BlocProvider(
           create: (context) => EstimationCubit(),
           child: ListView.builder(

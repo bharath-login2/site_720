@@ -22,7 +22,7 @@ class _HomeState extends State<Home> {
       fromHome: true,
     ),
     const ClientList(),
-    AddProjectScreen(),
+    AddProjectScreen(fromHome: true,),
   ];
 
   void _onItemTapped(int index) {

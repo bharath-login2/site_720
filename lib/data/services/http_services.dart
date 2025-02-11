@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:developer';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:site_720/data/models/project_list/project_list_model.dart';
 import '../models/clientlist/client_list_model.dart';
@@ -8,6 +10,7 @@ import '../models/dashboard/dashboard_model.dart';
 import '../models/extraworklist/extra_work_model.dart';
 import '../models/login/login_model.dart';
 import '../models/project_details/project_detais_model.dart';
+import '../models/project_list/edit_data_model.dart';
 import '../models/project_list/project_data_model.dart';
 import '../models/purchasebilllist/purchasebill_list_model.dart';
 import '../models/succes_response/success_response.dart';
@@ -216,6 +219,83 @@ class HttpServices {
       );
       if (response.statusCode == 200) {
         return projectDataModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  static Future addProject(
+    String clientId,
+    String projectName,
+    String projectType,
+    String projectCategory,
+    String referenceNo,
+    String location,
+    String locationArea,
+    String cctvId,
+    String priority,
+    String packageId,
+    String bhkNo,
+    String startDate,
+    String compDate,
+    List planImg,
+    List elevImg,
+    String fixedRateValue,
+    List<Map<String, dynamic>> unitList,
+    String estBudAmt,
+    String gst,
+    String gstAmt,
+    String totalAmt,
+    String descripion,
+    String ipoNo,
+    String workOrderNo,
+  ) async {
+    try {
+      http.Response response = await http.post(
+        Uri.parse("${baseUrl}add_project"),
+        body: {
+          'token': "",
+          "client_id": "214",
+          "project_name": projectName,
+          "project_type": projectType,
+          "reference_no": referenceNo,
+          "location": location,
+          "location_area": locationArea,
+          "cctv_id": cctvId,
+          "priority": priority,
+          "package_id": packageId,
+          "bhk_no": bhkNo,
+          "start_date": startDate,
+          "comp_date": compDate,
+          "fixed_rate_value": fixedRateValue,
+          "unit_list": jsonEncode(unitList),
+          "est_bud_amt": estBudAmt,
+          "gst": gst,
+          "gst_amt": gstAmt,
+          "total_amt": totalAmt,
+          "description": descripion,
+          "lpo_no": ipoNo,
+          "order_no": workOrderNo,
+          "category_name": projectCategory,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return successResponseFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  static Future editDetails(String projectId) async {
+    try {
+      http.Response response = await http.post(
+          Uri.parse("${baseUrl}edit_datalist"),
+          body: {"project_id": projectId});
+      if (response.statusCode == 200) {
+        return editDataModelFromJson(response.body);
       }
     } catch (e) {
       log(e.toString());

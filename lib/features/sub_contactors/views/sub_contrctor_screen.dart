@@ -20,7 +20,7 @@ class Contractor extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: AppColors.backgroundColor,
-        appBar: simpleAppbar(context, "Contractor"),
+        appBar: simpleAppbar(context, "Contractor",true),
         body: BlocProvider(
           create: (context) => SubContractorCubit(),
           child: BlocBuilder<SubContractorCubit, SubContractorState>(

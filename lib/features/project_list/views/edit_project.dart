@@ -9,16 +9,16 @@ import 'package:intl/intl.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/buttons.dart';
 import 'package:site_720/core/widgets/snack_bar.dart';
-import 'package:site_720/features/project_list/cubit/add_project_cubit.dart';
 import '../../../core/widgets/appbar.dart';
 import '../../../core/widgets/dialogs.dart';
+import '../../../data/models/project_list/edit_data_model.dart';
 import '../../../data/models/project_list/project_data_model.dart';
 import '../../payment_details/widgets/amount_container.dart';
+import '../cubit/edit_project_cubit.dart';
 import '../cubit/project_list_state.dart';
 
-class AddProjectScreen extends StatelessWidget {
-  bool fromHome;
-  AddProjectScreen({super.key, required this.fromHome});
+class EditProjectScreen extends StatelessWidget {
+  EditProjectScreen({super.key});
   final formKey = GlobalKey<FormState>();
   TextEditingController clientName = TextEditingController();
   TextEditingController projectName = TextEditingController();
@@ -74,12 +74,16 @@ class AddProjectScreen extends StatelessWidget {
   String projectId = "add";
   @override
   Widget build(BuildContext context) {
+    final args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+    projectId = args["project_id"]!;
+
     return BlocProvider(
-      create: (context) => AddProjectCubit(),
+      create: (context) => EditProjectCubit(projectId),
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
-        appBar: simpleAppbar(context, "Add Project", fromHome ? false : true),
-        body: BlocListener<AddProjectCubit, ProjectListState>(
+        appBar: simpleAppbar(context, "Edit", true),
+        body: BlocListener<EditProjectCubit, ProjectListState>(
           listener: (context, state) {
             if (state is PriorityUpdated) {
               priority = state.value;
@@ -98,23 +102,67 @@ class AddProjectScreen extends StatelessWidget {
             if (state is ElevationSuccess) {
               elevationImages = state.imageList;
             }
-            if (state is AddProjectSuccess) {
+            if (state is EditProjectSuccess) {
               snackBar(context, state.message, Colors.green);
-              Navigator.pop(context);
             }
-            if (state is AddProjectFailed) {
+            if (state is EditProjectFailed) {
               snackBar(context, state.message, Colors.red);
             }
+            if (state is EditDtailsSuccess) {
+              EditDetails editDetails = state.response.data;
+              clientId = editDetails.clientId;
+              clientName.text = editDetails.clientName;
+              projectName.text = editDetails.projectName;
+              type = editDetails.projectTypeId;
+              category = editDetails.projectCategoryId;
+              referenceNumber.text = editDetails.referenceNo;
+              location.text = editDetails.location;
+              locationArea.text = editDetails.locationArea;
+              cctvAddress.text = editDetails.cctvId;
+              priority = editDetails.priorityId;
+              package = editDetails.packageId;
+              bhk = editDetails.bhkNo;
+              startDate.text = editDetails.startingDate;
+              completionDate.text = editDetails.completionDate;
+              fixedRate.text = editDetails.fixedRate;
+              estBudAmt.text = editDetails.estimatedBudget;
+              gst = editDetails.gstPercentage;
+              gstAmt.text = editDetails.gstAmount;
+              totalAmount = double.parse(editDetails.totalAmount);
+              totalAmt.text = editDetails.totalAmount;
+              description.text = editDetails.projectDescription;
+              lpoNumber.text = editDetails.lpoNo;
+              quotationNumber.text = editDetails.orderNo;
+              if (editDetails.unitList.isNotEmpty) {
+                budgetMethord = "Unit Based Rate";
+              } else {
+                budgetMethord = 'Fixed Rate';
+              }
+              for (int i = 0; i < editDetails.unitList.length; i++) {
+                unitList.add({
+                  "name": editDetails.unitList[i].sqftName,
+                  "squareFeet": editDetails.unitList[i].sqftVal,
+                  "rate": editDetails.unitList[i].sqftRate,
+                  "amount": editDetails.unitList[i].sqftTotal,
+                });
+              }
+              (context as Element).markNeedsBuild();
+            }
           },
-          child: BlocBuilder<AddProjectCubit, ProjectListState>(
+          child: BlocBuilder<EditProjectCubit, ProjectListState>(
             builder: (context, state) {
-              final cubit = context.read<AddProjectCubit>();
+              final cubit = context.read<EditProjectCubit>();
               return SingleChildScrollView(
                 child: Form(
                   key: formKey,
                   child: Center(
                     child: Column(
                       children: [
+                        if (state is EditDtailsLoading)
+                          const Padding(
+                            padding: EdgeInsets.only(top: 10.0),
+                            child: LinearProgressIndicator(),
+                          ),
                         const SizedBox(
                           height: 20,
                         ),
@@ -371,7 +419,7 @@ class AddProjectScreen extends StatelessWidget {
                         const SizedBox(
                           height: 20,
                         ),
-                        BlocBuilder<AddProjectCubit, ProjectListState>(
+                        BlocBuilder<EditProjectCubit, ProjectListState>(
                           builder: (context, state) {
                             return Container(
                               width: MediaQuery.of(context).size.width * 0.92,
@@ -1399,7 +1447,7 @@ class AddProjectScreen extends StatelessWidget {
                         InkWell(
                             onTap: () {
                               if (formKey.currentState!.validate()) {
-                                context.read<AddProjectCubit>().addProject(
+                                context.read<EditProjectCubit>().addProject(
                                     clientId,
                                     projectName.text,
                                     type,
@@ -1418,7 +1466,7 @@ class AddProjectScreen extends StatelessWidget {
                                     fixedRate.text,
                                     unitList,
                                     estBudAmt.text,
-                                    gst ?? "0",
+                                    gst,
                                     gstAmt.text,
                                     totalAmount.toString(),
                                     description.text,
@@ -1619,7 +1667,7 @@ class AddProjectScreen extends StatelessWidget {
                         InkWell(
                           onTap: () async {
                             await context
-                                .read<AddProjectCubit>()
+                                .read<EditProjectCubit>()
                                 .selectMultiImage(ImageSource.camera, type);
                             Navigator.pop(context);
                           },
@@ -1651,7 +1699,7 @@ class AddProjectScreen extends StatelessWidget {
                         InkWell(
                           onTap: () async {
                             await context
-                                .read<AddProjectCubit>()
+                                .read<EditProjectCubit>()
                                 .selectMultiImage(null, type);
                             Navigator.pop(context);
                           },
@@ -1888,7 +1936,7 @@ class AddProjectScreen extends StatelessWidget {
 
   void updateGst() {
     double amt = double.parse(estBudAmt.text);
-    double gstPercent = double.parse(gst ?? "0");
+    double gstPercent = double.parse(gst);
     double gstRate = (amt * gstPercent) / 100;
     gstAmt.text = gstRate.toString();
     totalAmt.text = (amt + gstRate).toString();
@@ -1917,7 +1965,7 @@ class CheckBoxWidget extends StatelessWidget {
           value: value,
           onChanged: (bool? newValue) {
             try {
-              context.read<AddProjectCubit>().updatePriority(id);
+              context.read<EditProjectCubit>().updatePriority(id);
             } catch (e) {
               log(e.toString());
             }

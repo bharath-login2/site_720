@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
@@ -14,7 +13,7 @@ class ImageViewer extends StatelessWidget {
     String image = args["image"]!;
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: simpleAppbar(context, args["title"]!),
+      appBar: simpleAppbar(context, args["title"]!,true),
       body: Center(
         child: PhotoView(
           imageProvider: CachedNetworkImageProvider(image),

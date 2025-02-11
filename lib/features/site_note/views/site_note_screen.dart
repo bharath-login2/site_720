@@ -11,7 +11,7 @@ class SiteNote extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: simpleAppbar(context, "Site Note"),
+      appBar: simpleAppbar(context, "Site Note",true),
     );
   }
 }

@@ -34,7 +34,7 @@ class AddComplaint extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: simpleAppbar(context, "Complaints"),
+      appBar: simpleAppbar(context, "Complaints",true),
       body: SingleChildScrollView(
         child: Form(
           key: formKey,
@@ -64,7 +64,7 @@ class AddComplaint extends StatelessWidget {
                       children: [
                         Container(
                           width: double
-                              .infinity, // Ensures it matches parent width
+                              .infinity,
                           decoration: const BoxDecoration(
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(5),

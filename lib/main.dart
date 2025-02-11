@@ -14,6 +14,7 @@ import 'package:site_720/features/package/views/package_detailed_screen.dart';
 import 'package:site_720/features/payment_details/views/payment_details_screen.dart';
 import 'package:site_720/features/project_details/views/image_view_screen.dart';
 import 'package:site_720/features/project_details/views/project_details_screen.dart';
+import 'package:site_720/features/project_list/views/edit_project.dart';
 import 'package:site_720/features/project_list/views/project_list_screen.dart';
 import 'package:site_720/features/purchase/views/add_purchase.dart';
 import 'package:site_720/features/purchase/views/purchase_list_screen.dart';
@@ -86,10 +87,11 @@ class MyApp extends StatelessWidget {
         '/phoneNumber': (context) => PhoneNumberScreen(),
         // '/otpScreen': (context) => OtpScreen(),
         '/changePasswordScreen': (context) => ChangePasswordScreen(),
-        '/addProjectScreen': (context) => AddProjectScreen(),
+        '/addProjectScreen': (context) => AddProjectScreen(fromHome: false,),
         '/complaintList': (context) => ComplaintList(),
         '/addComplaints': (context) => AddComplaint(),
         '/imageViewer': (context) => const ImageViewer(),
+        '/editProjectScreen': (context) =>  EditProjectScreen(),
       },
     );
   }

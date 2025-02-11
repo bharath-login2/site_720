@@ -14,7 +14,7 @@ class Consumption extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: AppColors.backgroundColor,
-        appBar: simpleAppbar(context, "Consumption"),
+        appBar: simpleAppbar(context, "Consumption",true),
         body: BlocProvider(
           create: (context) => ConsumptionCubit(),
           child: ListView.builder(

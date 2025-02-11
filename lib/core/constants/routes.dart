@@ -28,7 +28,8 @@ class AppRoutes {
   static const otpScreen = '/otpScreen';
   static const changePasswordScreen = '/changePasswordScreen';
   static const addProjectScreen = '/addProjectScreen';
-   static const complaintList = '/complaintList';
-    static const addComplaints = '/addComplaints';
-    static const imageViewer = '/imageViewer';
+  static const editProjectScreen = '/editProjectScreen';
+  static const complaintList = '/complaintList';
+  static const addComplaints = '/addComplaints';
+  static const imageViewer = '/imageViewer';
 }

@@ -14,7 +14,7 @@ class PaymentDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: AppColors.backgroundColor,
-        appBar: simpleAppbar(context, "Payment Details"),
+        appBar: simpleAppbar(context, "Payment Details",true),
         body: BlocProvider(
           create: (context) => PaymentDetailsCubit(),
           child: ListView.builder(

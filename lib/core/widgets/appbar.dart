@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 
 import '../constants/colors.dart';
 
-PreferredSize simpleAppbar(BuildContext context, String title) {
+PreferredSize simpleAppbar(
+    BuildContext context, String title, bool backButton) {
   return PreferredSize(
     preferredSize: Size.fromHeight(MediaQuery.of(context).size.height * 0.2),
     child: Container(
@@ -23,15 +24,16 @@ PreferredSize simpleAppbar(BuildContext context, String title) {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            InkWell(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: const Icon(
-                Icons.arrow_back_ios,
-                color: Colors.white,
+            if (backButton)
+              InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: const Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.white,
+                ),
               ),
-            ),
             const SizedBox(
               width: 10,
             ),

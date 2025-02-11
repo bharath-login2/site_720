@@ -1,3 +1,4 @@
+import '../../../data/models/project_list/edit_data_model.dart';
 import '../../../data/models/project_list/project_data_model.dart';
 import '../../../data/models/project_list/project_list_model.dart';
 
@@ -18,6 +19,7 @@ class ProjectListState {
 class ProjectListInitial extends ProjectListState {}
 
 class ProjectListLoading extends ProjectListState {}
+
 class ProjectDataLoading extends ProjectListState {}
 
 class ProjectListSuccess extends ProjectListState {
@@ -30,9 +32,14 @@ class ProjectListFailure extends ProjectListState {
   ProjectListFailure(this.message);
 }
 
-class ImageSuccess extends ProjectListState {
+class PlanSuccess extends ProjectListState {
   final List imageList;
-  ImageSuccess(this.imageList);
+  PlanSuccess(this.imageList);
+}
+
+class ElevationSuccess extends ProjectListState {
+  final List imageList;
+  ElevationSuccess(this.imageList);
 }
 
 class ImageFailure extends ProjectListState {
@@ -48,4 +55,32 @@ class PriorityUpdated extends ProjectListState {
 class ProjectDataSuccess extends ProjectListState {
   final ProjectDataModel response;
   ProjectDataSuccess(this.response);
+}
+
+class AddProjectSuccess extends ProjectListState {
+  final String message;
+  AddProjectSuccess(this.message);
+}
+
+class AddProjectFailed extends ProjectListState {
+  final String message;
+  AddProjectFailed(this.message);
+}
+
+class EditDtailsSuccess extends ProjectListState {
+  final EditDataModel response;
+  EditDtailsSuccess(this.response);
+}
+
+class EditDtailsLoading extends ProjectListState {
+  EditDtailsLoading();
+}
+class EditProjectSuccess extends ProjectListState {
+  final String message;
+  EditProjectSuccess(this.message);
+}
+
+class EditProjectFailed extends ProjectListState {
+  final String message;
+  EditProjectFailed(this.message);
 }

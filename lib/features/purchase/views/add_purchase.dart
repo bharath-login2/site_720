@@ -43,7 +43,7 @@ class AddPurchase extends StatelessWidget {
         ModalRoute.of(context)!.settings.arguments as Map<String, String>;
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: simpleAppbar(context, "Add Purchase"),
+      appBar: simpleAppbar(context, "Add Purchase",true),
       body: BlocProvider(
         create: (context) => PurchaseCubit(args["id"]!),
         child: BlocConsumer<PurchaseCubit, PurchaseState>(

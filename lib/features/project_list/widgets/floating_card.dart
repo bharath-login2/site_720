@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/routes.dart';
 
 import '../../../core/constants/colors.dart';
+import '../cubit/project_list_cubit.dart';
 
 class FloatingCard extends StatelessWidget {
   final String title;
   final String value;
+  final String search;
+  final status;
 
-  const FloatingCard({super.key, required this.title, required this.value});
+  const FloatingCard(
+      {super.key,
+      required this.title,
+      required this.value,
+      required this.status,
+      required this.search});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +59,12 @@ class FloatingCard extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-                Navigator.pushNamed(context, AppRoutes.addProjectScreen);
+                Navigator.pushNamed(context, AppRoutes.addProjectScreen)
+                    .then((_) {
+                  context
+                      .read<ProjectListCubit>()
+                      .getProjectList(status, search);
+                });
               },
               child: Container(
                   width: 40,

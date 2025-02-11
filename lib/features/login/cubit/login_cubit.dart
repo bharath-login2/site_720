@@ -15,9 +15,9 @@ class LoginCubit extends Cubit<LoginState> {
   Future<void> login(String username, String password) async {
     emit(LoginLoading());
     try {
-            LoginModel response = await HttpServices.login(username, password,"");
+      LoginModel response = await HttpServices.login(username, password, "");
       if (response.status == true) {
-        emit(LoginSuccess("Login success"));
+        emit(LoginSuccess(response.message, response.data.token));
       } else {
         emit(LoginFailure("Invalid username or password."));
       }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:site_720/core/constants/colors.dart';
+import 'package:site_720/core/widgets/dialogs.dart';
 import 'package:site_720/features/dashboard/cubit/dasahboard_cubit.dart';
 import 'package:site_720/features/dashboard/cubit/dashboard_state.dart';
 import 'package:site_720/features/dashboard/widgets/pie_chart.dart';
@@ -66,7 +67,7 @@ class DashboardScreen extends StatelessWidget {
                             color: Colors.grey.shade300,
                             offset: Offset.zero,
                             blurRadius: 1,
-                            spreadRadius: 2) 
+                            spreadRadius: 2)
                       ]),
                   child: Padding(
                     padding: const EdgeInsets.only(
@@ -79,27 +80,32 @@ class DashboardScreen extends StatelessWidget {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Container(
-                                  width: 40,
-                                  height: 40,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    color: AppColors.backgroundColor,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.8),
-                                        blurRadius: 6,
-                                        offset: const Offset(3, 3),
-                                      ),
-                                    ],
+                                InkWell(
+                                  onTap: () {
+                                    logOut(context);
+                                  },
+                                  child: Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: AppColors.backgroundColor,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.8),
+                                          blurRadius: 6,
+                                          offset: const Offset(3, 3),
+                                        ),
+                                      ],
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: const Icon(Icons.person),
                                   ),
-                                  alignment: Alignment.center,
-                                  child: const Icon(Icons.person),
                                 ),
                                 const SizedBox(
                                   width: 15,
                                 ),
-                                state is DashboardSuccess 
+                                state is DashboardSuccess
                                     ? Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -432,7 +438,7 @@ class DashboardScreen extends StatelessWidget {
                                       : const Padding(
                                           padding: EdgeInsets.all(25.0),
                                           child: Text(
-                                            "No Issues !",
+                                            "No Expenses !",
                                             style: TextStyle(
                                               fontSize: 13,
                                               fontWeight: FontWeight.bold,

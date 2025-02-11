@@ -13,7 +13,7 @@ class StageHistory extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: AppColors.backgroundColor,
-        appBar: simpleAppbar(context, "Stage History"),
+        appBar: simpleAppbar(context, "Stage History",true),
         body: SingleChildScrollView(
           child: Column(
             children: [

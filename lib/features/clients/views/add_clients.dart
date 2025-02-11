@@ -31,7 +31,7 @@ class AddCilentScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: simpleAppbar(context, "Add Client"),
+      appBar: simpleAppbar(context, "Add Client",true),
       body: SingleChildScrollView(
         child: Form(
           key: formKey,

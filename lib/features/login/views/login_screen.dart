@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/constants/routes.dart';
+import 'package:site_720/core/utilities/shared_preferences.dart';
 import 'package:site_720/core/widgets/connectivity_dialog.dart';
 import '../../../core/widgets/buttons.dart';
 import '../../../core/widgets/snack_bar.dart';
@@ -39,7 +40,7 @@ class LoginScreen extends StatelessWidget {
             listener: (context, state) {
               if (state is LoginSuccess) {
                 snackBar(context, state.message, Colors.green);
-
+                saveSharedPreference("token", state.token);
                 Navigator.of(context).pushReplacementNamed(AppRoutes.home);
               } else if (state is LoginFailure) {
                 snackBar(context, state.message, Colors.red);

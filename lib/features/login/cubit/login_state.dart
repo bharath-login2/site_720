@@ -14,7 +14,8 @@ class LoginLoading extends LoginState {}
 
 class LoginSuccess extends LoginState {
   final String message;
-  LoginSuccess(this.message);
+  final String token;
+  LoginSuccess(this.message,this.token);
 }
 
 class LoginFailure extends LoginState {

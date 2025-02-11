@@ -29,7 +29,7 @@ class ProjectList extends StatelessWidget {
       status = sts;
     }
     return BlocProvider(
-      create: (context) => ProjectListCubit(status.toString(), search.text,"list"),
+      create: (context) => ProjectListCubit(status.toString(), search.text),
       child: Scaffold(
           backgroundColor: AppColors.backgroundColor,
           body: BlocBuilder<ProjectListCubit, ProjectListState>(
@@ -487,7 +487,20 @@ class ProjectList extends StatelessWidget {
                                                         Row(
                                                           children: [
                                                             InkWell(
-                                                              onTap: () {},
+                                                              onTap: () {
+                                                                Navigator.pushNamed(
+                                                                    context,
+                                                                    AppRoutes
+                                                                        .editProjectScreen,
+                                                                    arguments: {
+                                                                      "project_id": state
+                                                                          .response
+                                                                          .data
+                                                                          .projectList[
+                                                                              index]
+                                                                          .id
+                                                                    });
+                                                              },
                                                               child: Container(
                                                                 height: 25,
                                                                 width: 25,
@@ -586,6 +599,8 @@ class ProjectList extends StatelessWidget {
                           value: state is ProjectListSuccess
                               ? "${state.response.data.projectList.length.toString()}/${state.response.data.totalProjectCount.toString()}"
                               : "0",
+                          status: status,
+                          search: search.text,
                         ),
                       ),
                     ],

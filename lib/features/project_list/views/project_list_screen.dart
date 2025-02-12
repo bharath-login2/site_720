@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/constants/routes.dart';
+import 'package:site_720/core/widgets/dialogs.dart';
 import 'package:site_720/features/project_list/cubit/project_list_state.dart';
 import '../../../core/widgets/buttons.dart';
 import '../../../core/widgets/shimmer.dart';
@@ -538,37 +539,45 @@ class ProjectList extends StatelessWidget {
                                                             ),
                                                             const SizedBox(
                                                                 width: 10),
-                                                            Container(
-                                                              height: 25,
-                                                              width: 25,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            5),
-                                                                color:
-                                                                    Colors.red,
-                                                                boxShadow: [
-                                                                  BoxShadow(
-                                                                    color: Colors
-                                                                        .grey
-                                                                        .withOpacity(
-                                                                            0.8),
-                                                                    blurRadius:
-                                                                        6,
-                                                                    offset:
-                                                                        const Offset(
-                                                                            2,
-                                                                            3),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              child: const Icon(
-                                                                  Icons.delete,
-                                                                  size: 18,
+                                                            InkWell(
+                                                              onTap: () {
+                                                                deleteDialog(
+                                                                    context,
+                                                                    () {});
+                                                              },
+                                                              child: Container(
+                                                                height: 25,
+                                                                width: 25,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              5),
                                                                   color: Colors
-                                                                      .white),
+                                                                      .red,
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                      color: Colors
+                                                                          .grey
+                                                                          .withOpacity(
+                                                                              0.8),
+                                                                      blurRadius:
+                                                                          6,
+                                                                      offset:
+                                                                          const Offset(
+                                                                              2,
+                                                                              3),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                child: const Icon(
+                                                                    Icons
+                                                                        .delete,
+                                                                    size: 18,
+                                                                    color: Colors
+                                                                        .white),
+                                                              ),
                                                             ),
                                                           ],
                                                         ),

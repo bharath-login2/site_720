@@ -1,27 +1,25 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../data/models/expenselist/expenselist_model.dart';
+import '../../../data/services/http_services.dart';
 import 'expense_state.dart';
 
 class ExpenseCubit extends Cubit<ExpenseState> {
-  ExpenseCubit() : super(ExpenseInitial());
-
-  void startLoading() {
+  ExpenseCubit(String projectId) : super(ExpenseInitial()){
+    getExpenseList(projectId);
+  }
+   Future<void> getExpenseList(String projectId) async {
     emit(ExpenseLoading());
-  }
+    try {
+      GetExpenseList response = await HttpServices.getExpenseList(projectId);
 
-  void emitSuccess(String message) {
-    emit(ExpenseSuccess(message));
-  }
-
-  void emitFailure(String message) {
-    emit(ExpenseFailure(message));
-  }
-
-  void updateFromDate(String? date) {
-    emit(state.copyWith(fromDate: date));
-  }
-
-  void updateToDate(String? date) {
-    emit(state.copyWith(toDate: date));
+      if (response.status == true) {
+        emit(ExpenseSuccess(response));
+      } else {
+        emit(ExpenseFailure('Failed to fetch data}')); 
+      }
+    } catch (e) {
+      emit(ExpenseFailure('Failed to fetch data: ${e.toString()}'));
+    }
   }
 }

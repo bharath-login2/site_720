@@ -1,3 +1,5 @@
+import '../../../data/models/expenselist/expenselist_model.dart';
+
 class ExpenseState {
   final DateTime? fromDate;
   final DateTime? toDate;
@@ -19,8 +21,9 @@ class ExpenseInitial extends ExpenseState {
 class ExpenseLoading extends ExpenseState {}
 
 class ExpenseSuccess extends ExpenseState {
-  final String message;
-  ExpenseSuccess(this.message);
+ GetExpenseList response;
+ 
+  ExpenseSuccess(this.response);
 }
 
 class ExpenseFailure extends ExpenseState {

@@ -1,27 +1,26 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../data/models/paymentdetails/paymentdetails_model.dart';
+import '../../../data/services/http_services.dart';
 import 'payment_details_state.dart';
 
 class PaymentDetailsCubit extends Cubit<PaymentDetailsState> {
-  PaymentDetailsCubit() : super(PaymentDetailsInitial());
+  PaymentDetailsCubit(String projectId) : super(PaymentDetailsInitial()){
+    getPaymentDetails(projectId);
+  }
 
-  void startLoading() {
+   Future<void> getPaymentDetails(String projectId) async {
     emit(PaymentDetailsLoading());
-  }
+    try {
+      GetPaymentDetails response = await HttpServices.getPaymentDetails(projectId);
 
-  void emitSuccess(String message) {
-    emit(PaymentDetailsSuccess(message));
-  }
-
-  void emitFailure(String message) {
-    emit(PaymentDetailsFailure(message));
-  }
-
-  void updateFromDate(String? date) {
-    emit(state.copyWith(fromDate: date));
-  }
-
-  void updateToDate(String? date) {
-    emit(state.copyWith(toDate: date));
-  }
+      if (response.status == true) {
+        emit(PaymentDetailsSuccess(response));
+      } else {
+        emit(PaymentDetailsFailure('Failed to fetch data}')); 
+      }
+    } catch (e) {
+      emit(PaymentDetailsFailure('Failed to fetch data: ${e.toString()}'));
+    }
+  } 
 }

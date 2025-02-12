@@ -346,7 +346,9 @@ class ProjectDetails extends StatelessWidget {
                                     onTap: () {
                                       Navigator.pushNamed(
                                           context, AppRoutes.stages,
-                                          arguments: {"id": id});
+                                          arguments: {"id": id, 
+                                           "client_id": clientId
+                                         });
                                     },
                                     child: DetailsButtonContainer(
                                       title: "Stages",

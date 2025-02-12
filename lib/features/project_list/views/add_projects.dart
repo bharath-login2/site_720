@@ -68,8 +68,8 @@ class AddProjectScreen extends StatelessWidget {
     {"value": 18, "name": "18%"},
     {"value": 28, "name": "28%"},
   ];
-  List planImages = [];
-  List elevationImages = [];
+  XFile? planImage;
+  XFile? elevationImage;
   String pageType = "add";
   String projectId = "add";
   @override
@@ -93,10 +93,10 @@ class AddProjectScreen extends StatelessWidget {
               bhkList = state.response.data.bhk;
             }
             if (state is PlanSuccess) {
-              planImages = state.imageList;
+              planImage = state.image;
             }
             if (state is ElevationSuccess) {
-              elevationImages = state.imageList;
+              elevationImage = state.image;
             }
             if (state is AddProjectSuccess) {
               snackBar(context, state.message, Colors.green);
@@ -601,139 +601,126 @@ class AddProjectScreen extends StatelessWidget {
                         const SizedBox(
                           height: 10,
                         ),
-                        InkWell(
-                          onTap: () async {
-                            imageDialog(context, "plan");
-                          },
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * .9,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const SizedBox(width: 10),
-                                const Icon(Icons.upload_file,
-                                    color: Colors.grey),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                    child: planImages.isEmpty
-                                        ? const Text(
-                                            'Upload Plan',
-                                            style:
-                                                TextStyle(color: Colors.grey),
-                                          )
-                                        : ListView.builder(
-                                            scrollDirection: Axis.horizontal,
-                                            itemCount: planImages.length,
-                                            itemBuilder: (context, index) {
-                                              return Stack(
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Image.file(
-                                                      File(planImages[index]
-                                                          .path),
-                                                      width: 40,
-                                                      height: 40,
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                  Positioned(
-                                                    right: 0,
-                                                    child: InkWell(
-                                                        onTap: () {
-                                                          cubit.deletePlan(
-                                                              index);
-                                                        },
-                                                        child: const Icon(
-                                                          Icons.cancel_outlined,
-                                                          color: AppColors
-                                                              .primaryColor,
-                                                          size: 20,
-                                                        )),
-                                                  )
-                                                ],
-                                              );
-                                            },
-                                          )),
+                                const Text(
+                                  'Plan',
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                                const SizedBox(
+                                  height: 3,
+                                ),
+                                InkWell(
+                                  onTap: () async {
+                                    imageDialog(context, "plan");
+                                  },
+                                  child: Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * .4,
+                                    height:
+                                        MediaQuery.of(context).size.width * .4,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Colors.black, width: 1.5),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: Center(
+                                      child: planImage == null
+                                          ? const Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(Icons.upload_file,
+                                                    color: Colors.grey),
+                                                SizedBox(height: 10),
+                                                Text(
+                                                  'Upload Plan',
+                                                  style: TextStyle(
+                                                      color: Colors.grey),
+                                                ),
+                                              ],
+                                            )
+                                          : Image.file(
+                                              File(planImage!.path),
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  .4,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  .4,
+                                              fit: BoxFit.cover,
+                                            ),
+                                    ),
+                                  ),
+                                ),
                               ],
                             ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        InkWell(
-                          onTap: () async {
-                            imageDialog(context, "elevation");
-                          },
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * .9,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const SizedBox(width: 10),
-                                const Icon(Icons.upload_file,
-                                    color: Colors.grey),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                    child: elevationImages.isEmpty
-                                        ? const Text(
-                                            'Upload Elevation',
-                                            style:
-                                                TextStyle(color: Colors.grey),
+                                const Text(
+                                  'Elevation',
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                                const SizedBox(
+                                  height: 3,
+                                ),
+                                InkWell(
+                                  onTap: () async {
+                                    imageDialog(context, "elevation");
+                                  },
+                                  child: Container(
+                                    width:
+                                        MediaQuery.of(context).size.width * .4,
+                                    height:
+                                        MediaQuery.of(context).size.width * .4,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Colors.black, width: 1.5),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: elevationImage == null
+                                        ? const Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(Icons.upload_file,
+                                                  color: Colors.grey),
+                                              SizedBox(height: 10),
+                                              Text(
+                                                'Upload Elevation',
+                                                style: TextStyle(
+                                                    color: Colors.grey),
+                                              )
+                                            ],
                                           )
-                                        : ListView.builder(
-                                            scrollDirection: Axis.horizontal,
-                                            itemCount: elevationImages.length,
-                                            itemBuilder: (context, index) {
-                                              return Stack(
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Image.file(
-                                                      File(
-                                                          elevationImages[index]
-                                                              .path),
-                                                      width: 40,
-                                                      height: 40,
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                  Positioned(
-                                                    right: 0,
-                                                    child: InkWell(
-                                                        onTap: () {
-                                                          cubit.deleteElevation(
-                                                              index);
-                                                        },
-                                                        child: const Icon(
-                                                          Icons.cancel_outlined,
-                                                          color: AppColors
-                                                              .primaryColor,
-                                                          size: 20,
-                                                        )),
-                                                  )
-                                                ],
-                                              );
-                                            },
-                                          )),
+                                        : Image.file(
+                                            File(elevationImage!.path),
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                .4,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                .4,
+                                            fit: BoxFit.cover,
+                                          ),
+                                  ),
+                                ),
                               ],
                             ),
-                          ),
+                          ],
                         ),
                         const SizedBox(
                           height: 20,
@@ -1410,11 +1397,11 @@ class AddProjectScreen extends StatelessWidget {
                                     cctvAddress.text,
                                     priority,
                                     package,
-                                    bhk,
+                                    bhk, 
                                     startDate.text,
                                     completionDate.text,
-                                    planImages,
-                                    elevationImages,
+                                    planImage==null?"":planImage!.path,
+                                    elevationImage==null?"":elevationImage!.path,
                                     fixedRate.text,
                                     unitList,
                                     estBudAmt.text,
@@ -1620,7 +1607,7 @@ class AddProjectScreen extends StatelessWidget {
                           onTap: () async {
                             await context
                                 .read<AddProjectCubit>()
-                                .selectMultiImage(ImageSource.camera, type);
+                                .selectImage(ImageSource.camera, type);
                             Navigator.pop(context);
                           },
                           child: Container(
@@ -1652,7 +1639,7 @@ class AddProjectScreen extends StatelessWidget {
                           onTap: () async {
                             await context
                                 .read<AddProjectCubit>()
-                                .selectMultiImage(null, type);
+                                .selectImage(null, type);
                             Navigator.pop(context);
                           },
                           child: Container(
@@ -1672,7 +1659,7 @@ class AddProjectScreen extends StatelessWidget {
                                 ),
                                 SizedBox(height: 10),
                                 Text(
-                                  "ProjectList",
+                                  "Gallery",
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ],

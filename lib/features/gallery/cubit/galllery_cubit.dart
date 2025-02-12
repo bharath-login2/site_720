@@ -1,9 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../data/models/galery/stage_pro_model.dart';
+import '../../../data/services/http_services.dart';
 import 'gallery_state.dart';
 
 class GalleryCubit extends Cubit<GalleryState> {
-  GalleryCubit() : super(GalleryInitial());
+  GalleryCubit(String projectId) : super(GalleryInitial()) {
+    getStageList(projectId);
+  }
 
   List imageList = [];
 
@@ -39,6 +43,28 @@ class GalleryCubit extends Cubit<GalleryState> {
       }
     } catch (e) {
       emit(ImageFailure("Failed to get image, Please Select once again.."));
+    }
+  }
+
+  Future<void> getStageList(String projectId) async {
+    try {
+      SatgeProModel response = await HttpServices.getStagePro(projectId);
+      if (response.status == true) {
+        emit(StageSuccess(response));
+      }
+    } catch (e) {
+      emit(StageFailure('Failed to fetch data: ${e.toString()}'));
+    }
+  }
+
+   Future<void> postGalery(String projectId) async {
+    try {
+      SatgeProModel response = await HttpServices.getStagePro(projectId);
+      if (response.status == true) {
+        emit(StageSuccess(response));
+      }
+    } catch (e) {
+      emit(StageFailure('Failed to fetch data: ${e.toString()}'));
     }
   }
 }

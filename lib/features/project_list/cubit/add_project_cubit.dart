@@ -11,8 +11,8 @@ class AddProjectCubit extends Cubit<ProjectListState> {
     getAddDetails();
   }
 
-  List planImages = [];
-  List elevationImages = [];
+  XFile? planImages;
+  XFile? elevationImages;
 
   Future<void> getAddDetails() async {
     emit(ProjectDataLoading());
@@ -26,55 +26,47 @@ class AddProjectCubit extends Cubit<ProjectListState> {
     }
   }
 
-  selectMultiImage(ImageSource? source, type) async {
+  selectImage(ImageSource? source, type) async {
     try {
       if (source != null) {
-        final XFile? selectedImages =
+        final XFile? selectedImage =
             await ImagePicker().pickImage(source: source);
 
         if (type == "plan") {
-          if (selectedImages != null) {
-            planImages.add(selectedImages);
+          if (selectedImage != null) {
+            planImages =selectedImage;
           }
-          emit(PlanSuccess(planImages));
+          emit(PlanSuccess(planImages!));
         } else {
-          if (selectedImages != null) {
-            elevationImages.add(selectedImages);
+          if (selectedImage != null) {
+            elevationImages = selectedImage;
           }
-          emit(ElevationSuccess(elevationImages));
+          emit(ElevationSuccess(elevationImages!));
         }
       } else {
-        final List<XFile> images = await ImagePicker().pickMultiImage();
+       if (source != null) {
+        final XFile? selectedImage =
+            await ImagePicker().pickImage(source: source);
 
         if (type == "plan") {
-          if (images.isNotEmpty) {
-            planImages.addAll(images);
+          if (selectedImage != null) {
+            planImages =selectedImage;
           }
-          emit(PlanSuccess(planImages));
+          emit(PlanSuccess(planImages!));
         } else {
-          if (images.isNotEmpty) {
-            elevationImages.addAll(images);
+          if (selectedImage != null) {
+            elevationImages = selectedImage;
           }
-          emit(ElevationSuccess(elevationImages));
+          emit(ElevationSuccess(elevationImages!));
         }
       }
-    } catch (e) {
+    } }catch (e) {
       emit(ImageFailure("Failed to get image, Please Select once again.."));
     }
   }
 
   updatePriority(String value) {
     emit(PriorityUpdated(value));
-  }
-
-  deletePlan(int i) {
-    planImages.removeAt(i);
-    emit(PlanSuccess(planImages));
-  }
-
-  deleteElevation(int i) {
-    elevationImages.removeAt(i);
-    emit(ElevationSuccess(elevationImages));
   }
 
   Future<void> addProject(
@@ -91,8 +83,8 @@ class AddProjectCubit extends Cubit<ProjectListState> {
     String bhkNo,
     String startDate,
     String compDate,
-    List planImg,
-    List elevImg,
+   String planImg,
+   String elevImg,
     String fixedRateValue,
     List<Map<String, dynamic>> unitList,
     String estBudAmt,
@@ -138,6 +130,4 @@ class AddProjectCubit extends Cubit<ProjectListState> {
       emit(AddProjectFailed('Failed to fetch data: ${e.toString()}'));
     }
   }
-
-
 }

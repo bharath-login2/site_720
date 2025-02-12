@@ -5,14 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/shimmer.dart';
 import 'package:site_720/features/complaints/cubit/complaint_cubit.dart';
-import 'package:site_720/features/package/cubit/package_detailed_cubit.dart';
 import '../../../core/constants/routes.dart';
 import '../../../core/widgets/buttons.dart';
-import '../../../core/widgets/snack_bar.dart';
 import '../cubit/complaint_state.dart';
 
 class ComplaintList extends StatelessWidget {
-  ComplaintList({super.key});
+  const ComplaintList({super.key});
 
   @override
   Widget build(BuildContext context) {

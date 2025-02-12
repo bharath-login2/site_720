@@ -2,7 +2,6 @@
 //
 //     final dashboardModel = dashboardModelFromJson(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 DashboardModel dashboardModelFromJson(String str) => DashboardModel.fromJson(json.decode(str));

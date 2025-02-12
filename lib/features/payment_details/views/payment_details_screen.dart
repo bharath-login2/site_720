@@ -133,7 +133,7 @@ class PaymentDetails extends StatelessWidget {
                 },
               ):state is PaymentDetailsLoading?
               ListView.builder(itemBuilder: (context, index) {
-                shimmerContainer(100, 70);
+               return shimmerContainer(100, 70);
               },):const Text("Payment Details Empty");
             },
           ),

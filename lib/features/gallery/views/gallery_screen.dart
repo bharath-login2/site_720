@@ -6,34 +6,34 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/buttons.dart';
+import 'package:site_720/core/widgets/snack_bar.dart';
 import '../../../core/widgets/appbar.dart';
+import '../../../data/models/galery/stage_pro_model.dart';
 import '../cubit/gallery_state.dart';
 import '../cubit/galllery_cubit.dart';
 import '../widgets/phase_widget.dart';
 
 class GalleryScreen extends StatelessWidget {
   GalleryScreen({super.key});
-
+  List<StageListPro> stages = [];
   dynamic phase;
-  List<Map<String, dynamic>> phases = [
-    {"statusId": 101, "statusName": "status 1"},
-    {"statusId": 102, "statusName": "status 2"},
-    {"statusId": 103, "statusName": "status 3"},
-  ];
+  List images = [];
+
   TextEditingController youtubeLink = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+    String projectId = args["id"]!;
     return BlocProvider(
-      create: (context) => GalleryCubit(),
+      create: (context) => GalleryCubit(projectId),
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
         body: BlocConsumer<GalleryCubit, GalleryState>(
           listener: (context, state) {
-            if (state is GallerySuccess) {
-             
-            } else if (state is GalleryFailure) {
-         
-
+            if (state is GallerySuccess) {}
+            if (state is StageSuccess) {
+              stages = state.response.data;
             }
           },
           builder: (context, state) {
@@ -150,10 +150,10 @@ class GalleryScreen extends StatelessWidget {
                 onChanged: (value) {
                   phase = value.toString();
                 },
-                items: phases.map((data) {
+                items: stages.map((data) {
                   return DropdownMenuItem<String>(
-                    value: data["statusId"].toString(),
-                    child: Text(data["statusName"].toString()),
+                    value: data.stageId,
+                    child: Text(data.stageName),
                   );
                 }).toList(),
                 decoration: InputDecoration(
@@ -172,7 +172,14 @@ class GalleryScreen extends StatelessWidget {
             const SizedBox(height: 10),
             InkWell(
               onTap: () async {
-                imageDialog(context);
+                if (images.length < 4) {
+                  imageDialog(context);
+                } else {
+                  snackBar(
+                      context,
+                      "You can only upload up to 3 images for the gallery.",
+                      Colors.red);
+                }
               },
               child: Container(
                 width: MediaQuery.of(context).size.width * .75,
@@ -194,20 +201,36 @@ class GalleryScreen extends StatelessWidget {
                             return const Center(
                                 child: CircularProgressIndicator());
                           } else if (state is ImageSuccess) {
-                            final images = state.imageList;
+                            images = state.imageList;
                             return ListView.builder(
                               scrollDirection: Axis.horizontal,
                               itemCount: images.length,
                               itemBuilder: (context, index) {
                                 final image = images[index];
-                                return Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Image.file(
-                                    File(image.path),
-                                    width: 40,
-                                    height: 40,
-                                    fit: BoxFit.cover,
-                                  ),
+                                return Stack(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Image.file(
+                                        File(image.path),
+                                        width: 40,
+                                        height: 40,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                     Positioned(
+                                        right: 0,
+                                        child: InkWell(
+                                          onTap: () {
+                                            
+                                          },
+                                          child: const Icon(
+                                            Icons.cancel_outlined,
+                                            color: AppColors.primaryColor,
+                                            size: 20,
+                                          ),
+                                        ))
+                                  ],
                                 );
                               },
                             );

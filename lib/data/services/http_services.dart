@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:site_720/data/models/project_list/project_list_model.dart';
 import '../models/clientlist/client_list_model.dart';
 import '../models/complaint/complaint_list_model.dart';
@@ -9,6 +9,7 @@ import '../models/contractorlist/contractor_list_model.dart';
 import '../models/dashboard/dashboard_model.dart';
 import '../models/expenselist/expenselist_model.dart';
 import '../models/extraworklist/extra_work_model.dart';
+import '../models/galery/stage_pro_model.dart';
 import '../models/paymentdetails/paymentdetails_model.dart';
 import '../models/login/login_model.dart';
 import '../models/project_details/project_detais_model.dart';
@@ -202,12 +203,12 @@ class HttpServices {
   }
 
   static Future addStages(
-      String projectId,
-      String clintId,
-      String stages,
-      String startDate,
-      String endDate,
-    ) async {
+    String projectId,
+    String clintId,
+    String stages,
+    String startDate,
+    String endDate,
+  ) async {
     try {
       http.Response response =
           await http.post(Uri.parse("${baseUrl}add_stages"), body: {
@@ -238,15 +239,11 @@ class HttpServices {
     }
   }
 
-
   static Future getExpenseList(projectId) async {
     try {
       http.Response response = await http.post(
           Uri.parse("${baseUrl}expense_list"),
-          body: {
-            "project_id":projectId
-          }
-          );
+          body: {"project_id": projectId});
       if (response.statusCode == 200) {
         return getExpenseListFromJson(response.body);
       }
@@ -255,14 +252,11 @@ class HttpServices {
     }
   }
 
-   static Future getPaymentDetails(projectId) async {
+  static Future getPaymentDetails(projectId) async {
     try {
       http.Response response = await http.post(
           Uri.parse("${baseUrl}get_payment_history"),
-          body: {
-            "project_id":projectId
-          }
-          );
+          body: {"project_id": projectId});
       if (response.statusCode == 200) {
         return getPaymentDetailsFromJson(response.body);
       }
@@ -298,8 +292,8 @@ class HttpServices {
     String bhkNo,
     String startDate,
     String compDate,
-    List planImg,
-    List elevImg,
+    String planImg,
+    String elevImg,
     String fixedRateValue,
     List<Map<String, dynamic>> unitList,
     String estBudAmt,
@@ -311,40 +305,50 @@ class HttpServices {
     String workOrderNo,
   ) async {
     try {
-      http.Response response = await http.post(
-        Uri.parse("${baseUrl}add_project"),
-        body: {
-          'token': "",
-          "client_id": "214",
-          "project_name": projectName,
-          "project_type": projectType,
-          "reference_no": referenceNo,
-          "location": location,
-          "location_area": locationArea,
-          "cctv_id": cctvId,
-          "priority": priority,
-          "package_id": packageId,
-          "bhk_no": bhkNo,
-          "start_date": startDate,
-          "comp_date": compDate,
-          "fixed_rate_value": fixedRateValue,
-          "unit_list": jsonEncode(unitList),
-          "est_bud_amt": estBudAmt,
-          "gst": gst,
-          "gst_amt": gstAmt,
-          "total_amt": totalAmt,
-          "description": descripion,
-          "lpo_no": ipoNo,
-          "order_no": workOrderNo,
-          "category_name": projectCategory,
-        },
-      );
+      var uri = Uri.parse("${baseUrl}add_project");
+      var request = http.MultipartRequest('POST', uri);
+      request.fields['token'] = "";
+      request.fields["client_id"] = clientId;
+      request.fields["project_name"] = projectName;
+      request.fields["project_type"] = projectType;
+      request.fields["reference_no"] = referenceNo;
+      request.fields["location"] = location;
+      request.fields["location_area"] = locationArea;
+      request.fields["cctv_id"] = cctvId;
+      request.fields["priority"] = priority;
+      request.fields["package_id"] = packageId;
+      request.fields["bhk_no"] = bhkNo;
+      request.fields["start_date"] = startDate;
+      request.fields["comp_date"] = compDate;
+      request.fields["fixed_rate_value"] = fixedRateValue;
+      request.fields["est_bud_amt"] = estBudAmt;
+      request.fields["gst"] = gst;
+      request.fields["gst_amt"] = gstAmt;
+      request.fields["total_amt"] = totalAmt;
+      request.fields["description"] = descripion;
+      request.fields["lpo_no"] = ipoNo;
+      request.fields["order_no"] = workOrderNo;
+      request.fields["category_name"] = projectCategory;
+      request.fields["unit_list"] = jsonEncode(unitList);
+      if (planImg != "") {
+        request.files
+            .add(await http.MultipartFile.fromPath('plan_img', planImg));
+      }
+      if (elevImg != "") {
+        request.files
+            .add(await http.MultipartFile.fromPath('elev_img', elevImg));
+      }
+
+      var response = await request.send();
 
       if (response.statusCode == 200) {
-        return successResponseFromJson(response.body);
+        return successResponseFromJson(await response.stream.bytesToString());
+      } else {
+        return {'error': 'Failed to add project'};
       }
     } catch (e) {
       log(e.toString());
+      return {'error': e.toString()};
     }
   }
 
@@ -355,6 +359,113 @@ class HttpServices {
           body: {"project_id": projectId});
       if (response.statusCode == 200) {
         return editDataModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  static Future updateProject(
+    String projectId,
+    String clientId,
+    String projectName,
+    String projectType,
+    String projectCategory,
+    String referenceNo,
+    String location,
+    String locationArea,
+    String cctvId,
+    String priority,
+    String packageId,
+    String bhkNo,
+    String startDate,
+    String compDate,
+    String planImg,
+    String elevImg,
+    String fixedRateValue,
+    List<Map<String, dynamic>> unitList,
+    String estBudAmt,
+    String gst,
+    String gstAmt,
+    String totalAmt,
+    String description,
+    String ipoNo,
+    String workOrderNo,
+  ) async {
+    try {
+      var uri = Uri.parse("${baseUrl}edit_project");
+      var request = http.MultipartRequest('POST', uri);
+
+      request.fields['token'] = "";
+      request.fields["project_id"] = projectId;
+      request.fields["client_id"] = clientId;
+      request.fields["project_name"] = projectName;
+      request.fields["project_type"] = projectType;
+      request.fields["reference_no"] = referenceNo;
+      request.fields["location"] = location;
+      request.fields["location_area"] = locationArea;
+      request.fields["cctv_id"] = cctvId;
+      request.fields["priority"] = priority;
+      request.fields["package_id"] = packageId;
+      request.fields["bhk_no"] = bhkNo;
+      request.fields["start_date"] = startDate;
+      request.fields["comp_date"] = compDate;
+      request.fields["fixed_rate_value"] = fixedRateValue;
+      request.fields["est_bud_amt"] = estBudAmt;
+      request.fields["gst"] = gst;
+      request.fields["gst_amt"] = gstAmt;
+      request.fields["total_amt"] = totalAmt;
+      request.fields["description"] = description;
+      request.fields["lpo_no"] = ipoNo;
+      request.fields["order_no"] = workOrderNo;
+      request.fields["category_name"] = projectCategory;
+      request.fields["unit_list"] = jsonEncode(unitList);
+
+      if (planImg.isNotEmpty) {
+        request.files
+            .add(await http.MultipartFile.fromPath('plan_img', planImg));
+      }
+      if (elevImg.isNotEmpty) {
+        request.files
+            .add(await http.MultipartFile.fromPath('elev_img', elevImg));
+      }
+
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        return successResponseFromJson(await response.stream.bytesToString());
+      } else {
+        return {
+          'error':
+              'Failed to update project, Status Code: ${response.statusCode}'
+        };
+      }
+    } catch (e) {
+      log("Error updating project: ${e.toString()}");
+      return {'error': 'Error updating project: ${e.toString()}'};
+    }
+  }
+
+  static Future deleteProject(String projectId) async {
+    try {
+      http.Response response = await http.post(
+          Uri.parse("${baseUrl}delete_project"),
+          body: ({'token': "", 'project_id': projectId}));
+      if (response.statusCode == 200) {
+        return successResponseFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  static Future getStagePro(String projectId) async {
+    try {
+      http.Response response = await http.post(
+          Uri.parse("${baseUrl}get_stages_pro"),
+          body: ({'project_id': projectId}));
+      if (response.statusCode == 200) {
+        return satgeProModelFromJson(response.body);
       }
     } catch (e) {
       log(e.toString());

@@ -1,3 +1,5 @@
+import 'package:image_picker/image_picker.dart';
+
 import '../../../data/models/project_list/edit_data_model.dart';
 import '../../../data/models/project_list/project_data_model.dart';
 import '../../../data/models/project_list/project_list_model.dart';
@@ -33,13 +35,18 @@ class ProjectListFailure extends ProjectListState {
 }
 
 class PlanSuccess extends ProjectListState {
-  final List imageList;
-  PlanSuccess(this.imageList);
+  final XFile image;
+  PlanSuccess(this.image);
 }
 
 class ElevationSuccess extends ProjectListState {
-  final List imageList;
-  ElevationSuccess(this.imageList);
+  final XFile image;
+  ElevationSuccess(this.image);
+}
+
+class ProjectDeleted extends ProjectListState {
+  final String message;
+  ProjectDeleted(this.message);
 }
 
 class ImageFailure extends ProjectListState {
@@ -75,6 +82,7 @@ class EditDtailsSuccess extends ProjectListState {
 class EditDtailsLoading extends ProjectListState {
   EditDtailsLoading();
 }
+
 class EditProjectSuccess extends ProjectListState {
   final String message;
   EditProjectSuccess(this.message);

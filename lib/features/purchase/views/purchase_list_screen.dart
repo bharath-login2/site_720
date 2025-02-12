@@ -94,13 +94,12 @@ class PurchaseList extends StatelessWidget {
               return state is PurchaseSuccess? ListView.builder(
                 shrinkWrap: true,
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                itemCount: state is PurchaseSuccess? state.response.data.length
-                :4,
+                itemCount: state.response.data.length,
+                
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.all(6.0),
-                    child: state is PurchaseFailure?const Center(child: Text('No Bills'),): 
-                     state is PurchaseSuccess? InkWell(
+                    child: InkWell(
                       onTap: () {
                         // Navigator.of(context).pushNamed(AppRoutes.stageHistory);
                       },
@@ -235,9 +234,7 @@ class PurchaseList extends StatelessWidget {
                           ),
                         ),
                       ),
-                    ):shimmerContainer(
-                            MediaQuery.of(context).size.height * .1,
-                            MediaQuery.of(context).size.width * .9),
+                    )
                   );
                 },
               ):

@@ -14,8 +14,7 @@ import '../widgets/floating_profile_card.dart';
 class ProjectDetails extends StatelessWidget {
   ProjectDetails({super.key});
   String clientId = "";
-  String id = ""; 
-
+  String id = "";
 
   @override
   Widget build(BuildContext context) {
@@ -271,7 +270,10 @@ class ProjectDetails extends StatelessWidget {
                                     onTap: () {
                                       Navigator.pushNamed(
                                           context, AppRoutes.gallery,
-                                          arguments: {"id": id});
+                                          arguments: {
+                                            "id": id,
+                                            "client_id": clientId
+                                          });
                                     },
                                     child: DetailsButtonContainer(
                                       title: "Gallery",
@@ -346,9 +348,10 @@ class ProjectDetails extends StatelessWidget {
                                     onTap: () {
                                       Navigator.pushNamed(
                                           context, AppRoutes.stages,
-                                          arguments: {"id": id, 
-                                           "client_id": clientId
-                                         });
+                                          arguments: {
+                                            "id": id,
+                                            "client_id": clientId
+                                          });
                                     },
                                     child: DetailsButtonContainer(
                                       title: "Stages",

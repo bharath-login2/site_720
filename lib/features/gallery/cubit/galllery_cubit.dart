@@ -1,5 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:site_720/data/models/succes_response/success_response.dart';
+import '../../../data/models/galery/galery_list_model.dart';
 import '../../../data/models/galery/stage_pro_model.dart';
 import '../../../data/services/http_services.dart';
 import 'gallery_state.dart';
@@ -7,21 +9,10 @@ import 'gallery_state.dart';
 class GalleryCubit extends Cubit<GalleryState> {
   GalleryCubit(String projectId) : super(GalleryInitial()) {
     getStageList(projectId);
+    galleryList(projectId);
   }
 
-  List imageList = [];
-
-  void startLoading() {
-    emit(GalleryLoading());
-  }
-
-  void emitSuccess(String message) {
-    emit(GallerySuccess(message));
-  }
-
-  void emitFailure(String message) {
-    emit(GalleryFailure(message));
-  }
+  List<XFile> imageList = [];
 
   selectMultiImage(
     ImageSource? source,
@@ -57,14 +48,36 @@ class GalleryCubit extends Cubit<GalleryState> {
     }
   }
 
-   Future<void> postGalery(String projectId) async {
+  Future<void> postGalery(
+    String projectId,
+    String clientId,
+    String stageId,
+    List<XFile> images,
+    String ytLink,
+  ) async {
     try {
-      SatgeProModel response = await HttpServices.getStagePro(projectId);
+      SuccessResponse response = await HttpServices.postGallery(
+          projectId, clientId, stageId, images, ytLink);
       if (response.status == true) {
-        emit(StageSuccess(response));
+        emit(GalleryPosted(response.message));
+        images.clear();
+        galleryList(projectId);
       }
     } catch (e) {
-      emit(StageFailure('Failed to fetch data: ${e.toString()}'));
+      emit(GalleryFailure('Failed to fetch data: ${e.toString()}'));
+    }
+  }
+
+  Future<void> galleryList(
+    String projectId,
+  ) async {
+    try {
+      GalleryListModel response = await HttpServices.galleryList(projectId);
+      if (response.status == true) {
+        emit(GallerySuccess(response));
+      }
+    } catch (e) {
+      emit(GalleryFailure('Failed to fetch data: ${e.toString()}'));
     }
   }
 }

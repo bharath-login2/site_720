@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:site_720/data/models/galery/galery_list_model.dart';
 import 'package:site_720/data/models/project_list/project_list_model.dart';
 import '../models/clientlist/client_list_model.dart';
 import '../models/complaint/complaint_list_model.dart';
@@ -471,4 +472,50 @@ class HttpServices {
       log(e.toString());
     }
   }
+
+  static Future postGallery(
+    String projectId,
+    String clientId,
+    String stageId,
+    List<XFile> images,
+    String ytLink,
+  ) async {
+    try {
+      var uri = Uri.parse("${baseUrl}add_gallery");
+      var request = http.MultipartRequest('POST', uri);
+
+      request.fields['project_id'] = projectId;
+      request.fields['client_id'] = clientId;
+      request.fields['stage_id'] = stageId;
+      request.fields['yt_link'] = ytLink;
+
+      for (var image in images) {
+        if (image.path.isNotEmpty) {
+          request.files
+              .add(await http.MultipartFile.fromPath('image_list', image.path));
+        }
+      }
+
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        return satgeProModelFromJson(await response.stream.bytesToString());
+      }
+    } catch (e) {
+      log("Error: ${e.toString()}");
+    }
+  }
+   static Future galleryList(String projectId) async {
+    try {
+      http.Response response = await http.post(
+          Uri.parse("${baseUrl}list_gallery"),
+          body: ({'project_id': projectId}));
+      if (response.statusCode == 200) {
+        return galleryListModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
 }

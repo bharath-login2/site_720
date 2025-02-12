@@ -1,3 +1,6 @@
+import 'package:image_picker/image_picker.dart';
+
+import '../../../data/models/galery/galery_list_model.dart';
 import '../../../data/models/galery/stage_pro_model.dart';
 
 class GalleryState {
@@ -9,8 +12,8 @@ class GalleryInitial extends GalleryState {}
 class GalleryLoading extends GalleryState {}
 
 class GallerySuccess extends GalleryState {
-  final String message;
-  GallerySuccess(this.message);
+  final GalleryListModel response;
+  GallerySuccess(this.response);
 }
 
 class GalleryFailure extends GalleryState {
@@ -19,7 +22,7 @@ class GalleryFailure extends GalleryState {
 }
 
 class ImageSuccess extends GalleryState {
-  final List imageList;
+  final List<XFile> imageList;
   ImageSuccess(this.imageList);
 }
 
@@ -36,4 +39,9 @@ class StageSuccess extends GalleryState {
 class StageFailure extends GalleryState {
   final String message;
   StageFailure(this.message);
+}
+
+class GalleryPosted extends GalleryState {
+  final String message;
+  GalleryPosted(this.message);
 }

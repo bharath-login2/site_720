@@ -499,13 +499,14 @@ class HttpServices {
       var response = await request.send();
 
       if (response.statusCode == 200) {
-        return satgeProModelFromJson(await response.stream.bytesToString());
+        return successResponseFromJson(await response.stream.bytesToString());
       }
     } catch (e) {
       log("Error: ${e.toString()}");
     }
   }
-   static Future galleryList(String projectId) async {
+
+  static Future galleryList(String projectId) async {
     try {
       http.Response response = await http.post(
           Uri.parse("${baseUrl}list_gallery"),
@@ -518,4 +519,16 @@ class HttpServices {
     }
   }
 
+  static Future deleteGalery(String id) async {
+    try {
+      http.Response response = await http.post(
+          Uri.parse("${baseUrl}delete_gallery"),
+          body: ({'image_id': id}));
+      if (response.statusCode == 200) {
+        return successResponseFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    } 
+  } 
 }

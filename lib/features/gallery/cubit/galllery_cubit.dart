@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:site_720/data/models/succes_response/success_response.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../../../data/models/galery/galery_list_model.dart';
 import '../../../data/models/galery/stage_pro_model.dart';
 import '../../../data/services/http_services.dart';
@@ -13,6 +14,7 @@ class GalleryCubit extends Cubit<GalleryState> {
   }
 
   List<XFile> imageList = [];
+  late YoutubePlayerController _controller;
 
   selectMultiImage(
     ImageSource? source,
@@ -48,6 +50,11 @@ class GalleryCubit extends Cubit<GalleryState> {
     }
   }
 
+  deleteImage(int i) {
+    imageList.removeAt(i);
+    emit(ImageSuccess(imageList));
+  }
+
   Future<void> postGalery(
     String projectId,
     String clientId,
@@ -78,6 +85,20 @@ class GalleryCubit extends Cubit<GalleryState> {
       }
     } catch (e) {
       emit(GalleryFailure('Failed to fetch data: ${e.toString()}'));
+    }
+  }
+
+  Future<void> deleteGallery(
+    String projectId,
+    String id,
+  ) async {
+    try {
+      SuccessResponse response = await HttpServices.deleteGalery(id);
+      if (response.status == true) {
+        galleryList(projectId);
+      }
+    } catch (e) {
+      emit(GalleryFailure(e.toString()));
     }
   }
 }

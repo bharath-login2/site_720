@@ -45,3 +45,5 @@ class GalleryPosted extends GalleryState {
   final String message;
   GalleryPosted(this.message);
 }
+
+

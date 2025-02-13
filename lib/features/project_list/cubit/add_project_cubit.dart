@@ -34,7 +34,7 @@ class AddProjectCubit extends Cubit<ProjectListState> {
 
         if (type == "plan") {
           if (selectedImage != null) {
-            planImages =selectedImage;
+            planImages = selectedImage;
           }
           emit(PlanSuccess(planImages!));
         } else {
@@ -44,13 +44,12 @@ class AddProjectCubit extends Cubit<ProjectListState> {
           emit(ElevationSuccess(elevationImages!));
         }
       } else {
-       if (source != null) {
         final XFile? selectedImage =
-            await ImagePicker().pickImage(source: source);
+            await ImagePicker().pickImage(source: ImageSource.gallery);
 
         if (type == "plan") {
           if (selectedImage != null) {
-            planImages =selectedImage;
+            planImages = selectedImage;
           }
           emit(PlanSuccess(planImages!));
         } else {
@@ -60,7 +59,7 @@ class AddProjectCubit extends Cubit<ProjectListState> {
           emit(ElevationSuccess(elevationImages!));
         }
       }
-    } }catch (e) {
+    } catch (e) {
       emit(ImageFailure("Failed to get image, Please Select once again.."));
     }
   }
@@ -83,8 +82,8 @@ class AddProjectCubit extends Cubit<ProjectListState> {
     String bhkNo,
     String startDate,
     String compDate,
-   String planImg,
-   String elevImg,
+    String planImg,
+    String elevImg,
     String fixedRateValue,
     List<Map<String, dynamic>> unitList,
     String estBudAmt,

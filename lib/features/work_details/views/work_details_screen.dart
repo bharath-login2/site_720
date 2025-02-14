@@ -42,7 +42,7 @@ class WorkDetailsScreen extends StatelessWidget {
             workList = state.response.data;
           }
           if (state is AddingSuccess) {
-            snackBar(context, state.message, Colors.green);
+            snackBar(context, state.message, AppColors.primaryColor);
           }
           if (state is AddingFailure) {
             snackBar(context, state.message, Colors.red);
@@ -103,8 +103,8 @@ class WorkDetailsScreen extends StatelessWidget {
                           InkWell(
                             onTap: () {
                               if (issuesList.isNotEmpty) {
-                                workDialog(
-                                    context, cubit, issuesList, id, clientId);
+                                workDialog(context, cubit, issuesList, id,
+                                    clientId, "add", "");
                               } else {
                                 snackBar(context, "Something went wrong",
                                     Colors.red);
@@ -320,7 +320,32 @@ class WorkDetailsScreen extends StatelessWidget {
                                                     Row(
                                                       children: [
                                                         InkWell(
-                                                          onTap: () {},
+                                                          onTap: () {
+                                                            isWorking =
+                                                                workList[index]
+                                                                    .isWorking;
+                                                            date.text =
+                                                                workList[index]
+                                                                    .workDate;
+                                                            noOfLabours.text =
+                                                                workList[index]
+                                                                    .laboursNo;
+                                                            selectedStatus =
+                                                                workList[index]
+                                                                    .workStatusId;
+                                                            description.text =
+                                                                workList[index]
+                                                                    .description;
+                                                            workDialog(
+                                                                context,
+                                                                cubit,
+                                                                issuesList,
+                                                                id,
+                                                                clientId,
+                                                                "edit",
+                                                                workList[index]
+                                                                    .id);
+                                                          },
                                                           child: Container(
                                                             height: 25,
                                                             width: 25,
@@ -360,6 +385,11 @@ class WorkDetailsScreen extends StatelessWidget {
                                                           onTap: () {
                                                             deleteDialog(
                                                                 context, () {
+                                                              cubit.deleteWorkDetails(
+                                                                  id,
+                                                                  workList[
+                                                                          index]
+                                                                      .id);
                                                               Navigator.pop(
                                                                   context);
                                                             });
@@ -422,6 +452,8 @@ class WorkDetailsScreen extends StatelessWidget {
     List<WorkIssues> list,
     String projectId,
     String clientId,
+    String type,
+    String workId,
   ) async {
     return showDialog(
       context: context,
@@ -437,11 +469,11 @@ class WorkDetailsScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.only(top: 16.0, bottom: 25),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0, bottom: 25),
                         child: Text(
-                          "Add Work Details",
-                          style: TextStyle(
+                          type == "add" ? "Add Work Details" : "Edit",
+                          style: const TextStyle(
                             color: AppColors.primaryColor,
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -601,18 +633,31 @@ class WorkDetailsScreen extends StatelessWidget {
                       GestureDetector(
                         onTap: () async {
                           if (formKey.currentState!.validate()) {
-                            cubit.addWorkDetails(
-                                projectId,
-                                clientId,
-                                isWorking,
-                                date.text,
-                                noOfLabours.text,
-                                selectedStatus ?? "",
-                                description.text);
+                            if (type == "add") {
+                              cubit.addWorkDetails(
+                                  projectId,
+                                  clientId,
+                                  isWorking,
+                                  date.text,
+                                  noOfLabours.text,
+                                  selectedStatus ?? "",
+                                  description.text);
+                            } else {
+                              cubit.editWorkDetails(
+                                  projectId,
+                                  clientId,
+                                  isWorking,
+                                  date.text,
+                                  noOfLabours.text,
+                                  selectedStatus ?? "",
+                                  description.text,
+                                  workId);
+                            }
                             Navigator.pop(context);
                           }
                         },
-                        child: LargeButton(title: "Add"),
+                        child: LargeButton(
+                            title: type == "add" ? "Add" : "Update"),
                       ),
                       Center(
                         child: TextButton(

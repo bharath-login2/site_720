@@ -88,7 +88,7 @@ class MyApp extends StatelessWidget {
         // '/otpScreen': (context) => OtpScreen(),
         '/changePasswordScreen': (context) => ChangePasswordScreen(),
         '/addProjectScreen': (context) => AddProjectScreen(fromHome: false,),
-        '/complaintList': (context) => ComplaintList(),
+        '/complaintList': (context) => const ComplaintList(),
         '/addComplaints': (context) => AddComplaint(),
         '/imageViewer': (context) => const ImageViewer(),
         '/editProjectScreen': (context) =>  EditProjectScreen(),

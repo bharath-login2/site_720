@@ -108,7 +108,6 @@ class AddProjectScreen extends StatelessWidget {
           },
           child: BlocBuilder<AddProjectCubit, ProjectListState>(
             builder: (context, state) {
-              final cubit = context.read<AddProjectCubit>();
               return SingleChildScrollView(
                 child: Form(
                   key: formKey,
@@ -1397,11 +1396,13 @@ class AddProjectScreen extends StatelessWidget {
                                     cctvAddress.text,
                                     priority,
                                     package,
-                                    bhk, 
+                                    bhk,
                                     startDate.text,
                                     completionDate.text,
-                                    planImage==null?"":planImage!.path,
-                                    elevationImage==null?"":elevationImage!.path,
+                                    planImage == null ? "" : planImage!.path,
+                                    elevationImage == null
+                                        ? ""
+                                        : elevationImage!.path,
                                     fixedRate.text,
                                     unitList,
                                     estBudAmt.text,
@@ -1608,7 +1609,9 @@ class AddProjectScreen extends StatelessWidget {
                             await context
                                 .read<AddProjectCubit>()
                                 .selectImage(ImageSource.camera, type);
-                            Navigator.pop(context);
+                            if (context.mounted) {
+                              Navigator.pop(context);
+                            }
                           },
                           child: Container(
                             height: 100,
@@ -1640,7 +1643,7 @@ class AddProjectScreen extends StatelessWidget {
                             await context
                                 .read<AddProjectCubit>()
                                 .selectImage(null, type);
-                            Navigator.pop(context);
+                          if(context.mounted)  {Navigator.pop(context);}
                           },
                           child: Container(
                             height: 100,

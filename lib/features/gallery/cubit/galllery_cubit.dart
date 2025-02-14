@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:site_720/data/models/succes_response/success_response.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import '../../../data/models/galery/galery_list_model.dart';
 import '../../../data/models/galery/stage_pro_model.dart';
 import '../../../data/services/http_services.dart';
@@ -14,7 +13,6 @@ class GalleryCubit extends Cubit<GalleryState> {
   }
 
   List<XFile> imageList = [];
-  late YoutubePlayerController _controller;
 
   selectMultiImage(
     ImageSource? source,

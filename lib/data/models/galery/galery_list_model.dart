@@ -2,7 +2,6 @@
 //
 //     final galleryListModel = galleryListModelFromJson(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 GalleryListModel galleryListModelFromJson(String str) => GalleryListModel.fromJson(json.decode(str));

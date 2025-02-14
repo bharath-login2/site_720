@@ -156,7 +156,6 @@ class EditProjectScreen extends StatelessWidget {
           },
           child: BlocBuilder<EditProjectCubit, ProjectListState>(
             builder: (context, state) {
-              final cubit = context.read<EditProjectCubit>();
               return SingleChildScrollView(
                 child: Form(
                   key: formKey,
@@ -1690,7 +1689,7 @@ class EditProjectScreen extends StatelessWidget {
                             await context
                                 .read<EditProjectCubit>()
                                 .selectImage(ImageSource.camera, type);
-                            Navigator.pop(context);
+                            if(context.mounted) {  Navigator.pop(context);}
                           },
                           child: Container(
                             height: 100,
@@ -1722,7 +1721,7 @@ class EditProjectScreen extends StatelessWidget {
                             await context
                                 .read<EditProjectCubit>()
                                 .selectImage(null, type);
-                            Navigator.pop(context);
+                             if(context.mounted)  {Navigator.pop(context);}
                           },
                           child: Container(
                             height: 100,

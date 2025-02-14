@@ -23,7 +23,8 @@ class PaymentDetailsInitial extends PaymentDetailsState {
 class PaymentDetailsLoading extends PaymentDetailsState {}
 
 class PaymentDetailsSuccess extends PaymentDetailsState {
-final GetPaymentDetails response;
+ @override
+  GetPaymentDetails response;
   PaymentDetailsSuccess(this.response);
 }
 

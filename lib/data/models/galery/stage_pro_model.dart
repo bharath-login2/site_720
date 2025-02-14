@@ -2,7 +2,6 @@
 //
 //     final satgeProModel = satgeProModelFromJson(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 SatgeProModel satgeProModelFromJson(String str) =>

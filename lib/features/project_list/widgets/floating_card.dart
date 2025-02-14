@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/routes.dart';
@@ -9,9 +11,9 @@ class FloatingCard extends StatelessWidget {
   final String title;
   final String value;
   final String search;
-  final status;
+  dynamic status;
 
-  const FloatingCard(
+  FloatingCard(
       {super.key,
       required this.title,
       required this.value,
@@ -61,9 +63,11 @@ class FloatingCard extends StatelessWidget {
               onTap: () {
                 Navigator.pushNamed(context, AppRoutes.addProjectScreen)
                     .then((_) {
-                  context
-                      .read<ProjectListCubit>()
-                      .getProjectList(status, search);
+                  if (context.mounted) {
+                    context
+                        .read<ProjectListCubit>()
+                        .getProjectList(status, search);
+                  }
                 });
               },
               child: Container(

@@ -391,7 +391,7 @@ class DeductionWork extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                      Padding(
-                      padding: EdgeInsets.only(top: 16.0, bottom: 25),
+                      padding: const EdgeInsets.only(top: 16.0, bottom: 25),
                       child: Text(
                         status =="add"?"Add Deduction Work":"Edit Deduction Work",
                         style: const TextStyle(

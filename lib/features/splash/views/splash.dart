@@ -19,10 +19,12 @@ class _SplashState extends State<Splash> {
   void splashDelay() async {
     await Future.delayed(const Duration(seconds: 3));
     final token = await getSharedPreference("token");
-    if (token == null) {
-      Navigator.pushReplacementNamed(context, AppRoutes.login);
-    } else {
-      Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
+    if (mounted) {
+      if (token == null) {
+        Navigator.pushReplacementNamed(context, AppRoutes.login);
+      } else {
+        Navigator.pushReplacementNamed(context, AppRoutes.home);
+      }
     }
   }
 

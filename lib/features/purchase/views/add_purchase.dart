@@ -735,7 +735,7 @@ class AddPurchase extends StatelessWidget {
                             await context
                                 .read<PurchaseCubit>()
                                 .selectMultiImage(ImageSource.camera);
-                            Navigator.pop(context);
+                            if(context.mounted)  { Navigator.pop(context);}
                           },
                           child: Container(
                             height: 100,
@@ -767,7 +767,7 @@ class AddPurchase extends StatelessWidget {
                             await context
                                 .read<PurchaseCubit>()
                                 .selectMultiImage(null);
-                            Navigator.pop(context);
+                            if(context.mounted)   {Navigator.pop(context);}
                           },
                           child: Container(
                             height: 100,

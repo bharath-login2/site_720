@@ -1,4 +1,5 @@
 import '../../../data/models/extraworklist/extra_work_model.dart';
+import '../../../data/models/succes_response/success_response.dart';
 
 class ExtraWorkState {
   final DateTime? fromDate;
@@ -28,4 +29,14 @@ class ExtraWorkSuccess extends ExtraWorkState {
 class ExtraWorkFailure extends ExtraWorkState {
   final String message;
   ExtraWorkFailure(this.message);
+}
+
+class AddedSuccess extends ExtraWorkState {
+  SuccessResponse  response;
+  AddedSuccess(this.response);
+}
+
+class AddedFailure extends ExtraWorkState {
+  SuccessResponse  response;
+  AddedFailure(this.response);
 }

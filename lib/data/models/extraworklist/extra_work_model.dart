@@ -46,10 +46,10 @@ class ExtraWorkList {
     });
 
     factory ExtraWorkList.fromJson(Map<String, dynamic> json) => ExtraWorkList(
-        id: json["id"],
-        workName: json["work_name"],
-        amount: json["amount"],
-        description: json["description"],
+        id: json["id"]??"",
+        workName: json["work_name"]??"",
+        amount: json["amount"]??"",
+        description: json["description"]??"",
     );
 
     Map<String, dynamic> toJson() => {

@@ -363,7 +363,7 @@ class ProjectDetails extends StatelessWidget {
                                   InkWell(
                                     onTap: () {
                                       Navigator.pushNamed(
-                                          context, AppRoutes.subContractor,
+                                          context, AppRoutes.contractor,
                                           arguments: {"id": id});
                                     },
                                     child: DetailsButtonContainer(
@@ -387,7 +387,10 @@ class ProjectDetails extends StatelessWidget {
                                     onTap: () {
                                       Navigator.pushNamed(
                                           context, AppRoutes.extraWork,
-                                          arguments: {"id": id});
+                                          arguments: {
+                                            "id": id,
+                                            "client_id": clientId
+                                          });
                                     },
                                     child: DetailsButtonContainer(
                                       title: "Extra Work",
@@ -400,7 +403,10 @@ class ProjectDetails extends StatelessWidget {
                                     onTap: () {
                                       Navigator.pushNamed(
                                           context, AppRoutes.deductionWork,
-                                          arguments: {"id": id});
+                                          arguments: {
+                                            "id": id,
+                                            "client_id": clientId
+                                          });
                                     },
                                     child: DetailsButtonContainer(
                                       title: "Deduction Work",

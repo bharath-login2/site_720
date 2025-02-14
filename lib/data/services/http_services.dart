@@ -8,6 +8,8 @@ import '../models/clientlist/client_list_model.dart';
 import '../models/complaint/complaint_list_model.dart';
 import '../models/contractorlist/contractor_list_model.dart';
 import '../models/dashboard/dashboard_model.dart';
+import '../models/deductionwork/deductionlist_model.dart';
+import '../models/deductionwork/phaselist_model.dart';
 import '../models/expenselist/expenselist_model.dart';
 import '../models/extraworklist/extra_work_model.dart';
 import '../models/galery/stage_pro_model.dart';
@@ -157,6 +159,20 @@ class HttpServices {
           body: {"project_id": projectId});
       if (response.statusCode == 200) {
         return extraWorkListModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+
+    static Future getDeductionWorkList(projectId) async {
+    try {
+      http.Response response = await http.post(
+          Uri.parse("${baseUrl}deduction_work_list"),
+          body: {"project_id": projectId});
+      if (response.statusCode == 200) {
+        return getDeductionWorkFromJson(response.body);
       }
     } catch (e) {
       log(e.toString());
@@ -512,6 +528,140 @@ class HttpServices {
           body: ({'project_id': projectId}));
       if (response.statusCode == 200) {
         return galleryListModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+
+  static Future addExtraWork(
+    String projectId,
+    String clintId,
+    String work,
+    String amount,
+    String description,
+  ) async {
+    try {
+      http.Response response =
+          await http.post(Uri.parse("${baseUrl}add_extra_work"), body: {
+        "project_id": projectId,
+        "client_id": clintId,
+        "work": work,
+        "amount": amount,
+        "description": description,
+      });
+      if (response.statusCode == 200) {
+        return successResponseFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+    static Future editExtraWork(
+    String projectId,
+    String clintId,
+    String workId,
+    String work,
+    String amount,
+    String description,
+  ) async {
+    try {
+      http.Response response =
+          await http.post(Uri.parse("${baseUrl}edit_extra_work"), body: {
+        "project_id": projectId,
+        "client_id": clintId,
+        "work_id": workId,
+        "work": work,
+        "amount": amount,
+        "description": description,
+      });
+      if (response.statusCode == 200) {
+        return successResponseFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+
+  static Future deleteExtraWork(
+   
+    String workId,
+   
+  ) async {
+    try {
+      http.Response response =
+          await http.post(Uri.parse("${baseUrl}delete_extrawork"), body: {
+       "work_id": workId,
+     });
+      if (response.statusCode == 200) {
+        return successResponseFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+
+   static Future getPhaseList(projectId) async {
+    try {
+      http.Response response = await http.post(
+          Uri.parse("${baseUrl}get_phase_details"),
+          body: {"project_id": projectId});
+      if (response.statusCode == 200) {
+        return phaseListFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+
+  static Future adddeductionWork(
+    String projectId,
+    String clintId,
+    String work,
+    selectedStatus,
+    String percentage,
+    String amount,
+    String description
+  ) async {
+    try {
+      http.Response response =
+          await http.post(Uri.parse("${baseUrl}add_deduction_work"), body: {
+        "project_id": projectId,
+        "client_id": clintId,
+        "work": work,
+        "phase": selectedStatus,
+        "percentage":percentage,
+        "amount": amount,
+        "description": description,
+      });
+      if (response.statusCode == 200) {
+        return successResponseFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+
+
+   static Future deletedeductionwork(
+    String projectId,
+    String workId,
+    
+  ) async {
+    try {
+      http.Response response =
+          await http.post(Uri.parse("${baseUrl}delete_deduction_work"), body: {
+        "project_id": projectId,
+       "work_id": workId,
+       });
+      if (response.statusCode == 200) {
+        return successResponseFromJson(response.body);
       }
     } catch (e) {
       log(e.toString());

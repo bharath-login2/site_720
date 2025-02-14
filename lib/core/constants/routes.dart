@@ -13,7 +13,7 @@ class AppRoutes {
   static const siteNote = '/siteNote';
   static const stages = '/stages';
   static const stageHistory = '/stageHistory';
-  static const subContractor = '/subContractor';
+  static const contractor = '/contractor';
   static const extraWork = '/extraWork';
   static const deductionWork = '/deductionWork';
   static const purchase = '/purchase';

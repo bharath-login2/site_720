@@ -47,21 +47,19 @@ class EditProjectCubit extends Cubit<ProjectListState> {
           emit(ElevationSuccess(elevationImages!));
         }
       } else {
-        if (source != null) {
-          final XFile? selectedImage =
-              await ImagePicker().pickImage(source: source);
+        final XFile? selectedImage =
+            await ImagePicker().pickImage(source: ImageSource.gallery);
 
-          if (type == "plan") {
-            if (selectedImage != null) {
-              planImages = selectedImage;
-            }
-            emit(PlanSuccess(planImages!));
-          } else {
-            if (selectedImage != null) {
-              elevationImages = selectedImage;
-            }
-            emit(ElevationSuccess(elevationImages!));
+        if (type == "plan") {
+          if (selectedImage != null) {
+            planImages = selectedImage;
           }
+          emit(PlanSuccess(planImages!));
+        } else {
+          if (selectedImage != null) {
+            elevationImages = selectedImage;
+          } 
+          emit(ElevationSuccess(elevationImages!));
         }
       }
     } catch (e) {

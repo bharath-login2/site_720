@@ -38,7 +38,7 @@ class DrawingScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         FloatingAppBar(
-                          title: "Drawing",
+                          title: "Drawing", 
                         ),
                         SizedBox(
                           height: MediaQuery.of(context).size.height * .28,

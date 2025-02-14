@@ -219,6 +219,48 @@ class HttpServices {
     }
   }
 
+  static Future editWorkDetails(
+      String projectId,
+      String clintId,
+      String isWorking,
+      String date,
+      String noOfLabours,
+      String status,
+      String description,
+      String workId) async {
+    try {
+      http.Response response =
+          await http.post(Uri.parse("${baseUrl}edit_work_details"), body: {
+        "work_id": workId,
+        "project_id": projectId,
+        "client_id": clintId,
+        "is_working": isWorking,
+        "date": date,
+        "no_of_labours": noOfLabours,
+        "status": status,
+        "description": description,
+      });
+      if (response.statusCode == 200) {
+        return successResponseFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  static Future deleteWorkDetails(String workId) async {
+    try {
+      http.Response response = await http.post(
+          Uri.parse("${baseUrl}delete_work_details"),
+          body: ({'token': "", 'work_id': workId}));
+      if (response.statusCode == 200) {
+        return successResponseFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
   static Future addStages(
     String projectId,
     String clintId,
@@ -515,13 +557,14 @@ class HttpServices {
       var response = await request.send();
 
       if (response.statusCode == 200) {
-        return satgeProModelFromJson(await response.stream.bytesToString());
+        return successResponseFromJson(await response.stream.bytesToString());
       }
     } catch (e) {
       log("Error: ${e.toString()}");
     }
   }
-   static Future galleryList(String projectId) async {
+
+  static Future galleryList(String projectId) async {
     try {
       http.Response response = await http.post(
           Uri.parse("${baseUrl}list_gallery"),
@@ -534,6 +577,18 @@ class HttpServices {
     }
   }
 
+  static Future deleteGalery(String id) async {
+    try {
+      http.Response response = await http.post(
+          Uri.parse("${baseUrl}delete_gallery"),
+          body: ({'image_id': id}));
+      if (response.statusCode == 200) {
+        return successResponseFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
 
   static Future addExtraWork(
     String projectId,

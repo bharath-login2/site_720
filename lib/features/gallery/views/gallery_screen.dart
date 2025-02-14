@@ -12,7 +12,7 @@ import '../../../data/models/galery/galery_list_model.dart';
 import '../../../data/models/galery/stage_pro_model.dart';
 import '../cubit/gallery_state.dart';
 import '../cubit/galllery_cubit.dart';
-import '../widgets/phase_widget.dart';
+import '../widgets/stage_widget.dart';
 
 class GalleryScreen extends StatelessWidget {
   GalleryScreen({super.key});
@@ -64,7 +64,7 @@ class GalleryScreen extends StatelessWidget {
                           title: "Gallery",
                         ),
                         SizedBox(
-                          height: MediaQuery.of(context).size.height * .35,
+                          height: MediaQuery.of(context).size.height * .38,
                         ),
                         if (galleryList.isNotEmpty)
                           Container(
@@ -104,6 +104,8 @@ class GalleryScreen extends StatelessWidget {
                                           context,
                                           galleryList[index].stageName,
                                           galleryList[index].images,
+                                          galleryList[index].ytLinks,
+                                          cubit,projectId
                                         );
                                       },
                                     ),
@@ -167,7 +169,6 @@ class GalleryScreen extends StatelessWidget {
               ),
               SizedBox(
                 width: MediaQuery.of(context).size.width * .75,
-                height: 40,
                 child: DropdownButtonFormField(
                   value: stageId,
                   onChanged: (value) {
@@ -247,7 +248,9 @@ class GalleryScreen extends StatelessWidget {
                                       Positioned(
                                           right: 0,
                                           child: InkWell(
-                                            onTap: () {},
+                                            onTap: () {
+                                              cubit.deleteImage(index);
+                                            },
                                             child: const Icon(
                                               Icons.cancel_outlined,
                                               color: AppColors.primaryColor,
@@ -262,7 +265,7 @@ class GalleryScreen extends StatelessWidget {
                               return const Text(
                                 'Choose Image',
                                 style: TextStyle(color: Colors.grey),
-                              );
+                              ); 
                             }
                           },
                         ),
@@ -274,9 +277,17 @@ class GalleryScreen extends StatelessWidget {
               const SizedBox(height: 10),
               SizedBox(
                 width: MediaQuery.of(context).size.width * .75,
-                height: 40,
                 child: TextFormField(
                   controller: youtubeLink,
+                  validator: (value) {
+                    if (value != "") {
+                      if (isValidYouTubeUrl(value!)) {
+                      } else {
+                        return "Invalid YouTube URL.";
+                      }
+                    }
+                    return null;
+                  },
                   decoration: InputDecoration(
                     fillColor: Colors.white,
                     filled: true,
@@ -299,7 +310,7 @@ class GalleryScreen extends StatelessWidget {
               const SizedBox(height: 15),
               InkWell(
                   onTap: () {
-                    if (formKey.currentState!.validate() || images.isNotEmpty) {
+                    if (formKey.currentState!.validate() && images.isNotEmpty) {
                       cubit.postGalery(projectId, clientId, stageId, images,
                           youtubeLink.text);
                     } else {
@@ -439,4 +450,11 @@ class GalleryScreen extends StatelessWidget {
       },
     );
   }
+}
+
+bool isValidYouTubeUrl(String url) {
+  final RegExp youtubeRegex = RegExp(
+    r"^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/(watch\?v=)?([a-zA-Z0-9_-]{11})",
+  );
+  return youtubeRegex.hasMatch(url);
 }

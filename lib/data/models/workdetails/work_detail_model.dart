@@ -33,9 +33,10 @@ class WorkDetailModel {
 }
 
 class WorkDetails {
+    String id;
     String clientId;
     String isWorking;
-    DateTime workDate;
+    String workDate;
     String description;
     String workDay;
     String workMonth;
@@ -46,6 +47,7 @@ class WorkDetails {
     String workMonthName;
 
     WorkDetails({
+        required this.id,
         required this.clientId,
         required this.isWorking,
         required this.workDate,
@@ -60,9 +62,10 @@ class WorkDetails {
     });
 
     factory WorkDetails.fromJson(Map<String, dynamic> json) => WorkDetails(
+        id: json["id"]??"",
         clientId: json["client_id"]??"",
         isWorking: json["is_working"]??"",
-        workDate: DateTime.parse(json["work_date"]??""),
+        workDate: json["work_date"]??"",
         description: json["description"]??"",
         workDay: json["work_day"]??"",
         workMonth: json["work_month"]??"",
@@ -74,9 +77,10 @@ class WorkDetails {
     );
 
     Map<String, dynamic> toJson() => {
+        "id": id,
         "client_id": clientId,
         "is_working": isWorking,
-        "work_date": "${workDate.year.toString().padLeft(4, '0')}-${workDate.month.toString().padLeft(2, '0')}-${workDate.day.toString().padLeft(2, '0')}",
+        "work_date": workDate,
         "description": description,
         "work_day": workDay,
         "work_month": workMonth,

@@ -2,6 +2,7 @@
 //
 //     final galleryListModel = galleryListModelFromJson(jsonString);
 
+import 'package:meta/meta.dart';
 import 'dart:convert';
 
 GalleryListModel galleryListModelFromJson(String str) => GalleryListModel.fromJson(json.decode(str));
@@ -35,23 +36,27 @@ class GalleryListModel {
 class GalleryData {
     String stageId;
     String stageName;
+    List<YtLink> ytLinks;
     List<ImageList> images;
 
     GalleryData({
         required this.stageId,
         required this.stageName,
+        required this.ytLinks,
         required this.images,
     });
 
     factory GalleryData.fromJson(Map<String, dynamic> json) => GalleryData(
         stageId: json["stage_id"],
         stageName: json["stage_name"],
+        ytLinks: List<YtLink>.from(json["yt_links"].map((x) => YtLink.fromJson(x))),
         images: List<ImageList>.from(json["images"].map((x) => ImageList.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
         "stage_id": stageId,
         "stage_name": stageName,
+        "yt_links": List<dynamic>.from(ytLinks.map((x) => x.toJson())),
         "images": List<dynamic>.from(images.map((x) => x.toJson())),
     };
 }
@@ -73,5 +78,25 @@ class ImageList {
     Map<String, dynamic> toJson() => {
         "image_id": imageId,
         "file_name": fileName,
+    };
+}
+
+class YtLink {
+    String id;
+    String url;
+
+    YtLink({
+        required this.id,
+        required this.url,
+    });
+
+    factory YtLink.fromJson(Map<String, dynamic> json) => YtLink(
+        id: json["id"],
+        url: json["url"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "id": id,
+        "url": url,
     };
 }

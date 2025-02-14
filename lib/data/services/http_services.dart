@@ -703,6 +703,37 @@ class HttpServices {
   }
 
 
+   static Future editdeductionWork(
+    String projectId,
+    String clintId,
+      String workId,
+    String work,
+    selectedStatus,
+    String percentage,
+    String amount,
+    String description
+  ) async {
+    try {
+      http.Response response =
+          await http.post(Uri.parse("${baseUrl}edit_deduction_work"), body: {
+        "project_id": projectId,
+        "client_id": clintId,
+         "deduction_id": workId,
+        "work": work,
+        "phase": selectedStatus,
+        "percentage":percentage,
+        "amount": amount,
+        "description": description,
+      });
+      if (response.statusCode == 200) {
+        return successResponseFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+
 
    static Future deletedeductionwork(
     String projectId,

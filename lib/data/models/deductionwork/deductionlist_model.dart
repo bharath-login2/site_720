@@ -9,7 +9,7 @@ GetDeductionWork getDeductionWorkFromJson(String str) => GetDeductionWork.fromJs
 String getDeductionWorkToJson(GetDeductionWork data) => json.encode(data.toJson());
 
 class GetDeductionWork {
-    List<Datum> data;
+    List<DeductionWorkist> data;
     String message;
     bool status;
 
@@ -20,7 +20,7 @@ class GetDeductionWork {
     });
 
     factory GetDeductionWork.fromJson(Map<String, dynamic> json) => GetDeductionWork(
-        data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+        data: List<DeductionWorkist>.from(json["data"].map((x) => DeductionWorkist.fromJson(x))),
         message: json["message"],
         status: json["status"],
     );
@@ -32,7 +32,7 @@ class GetDeductionWork {
     };
 }
 
-class Datum {
+class DeductionWorkist {
     String id;
     String workName;
     String percentage;
@@ -43,7 +43,7 @@ class Datum {
     String stageName;
     String phaseName;
 
-    Datum({
+    DeductionWorkist({
         required this.id,
         required this.workName,
         required this.percentage,
@@ -55,7 +55,7 @@ class Datum {
         required this.phaseName,
     });
 
-    factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+    factory DeductionWorkist.fromJson(Map<String, dynamic> json) => DeductionWorkist(
         id: json["id"],
         workName: json["work_name"],
         percentage: json["percentage"],

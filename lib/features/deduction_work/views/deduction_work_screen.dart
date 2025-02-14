@@ -6,6 +6,7 @@ import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/shimmer.dart';
 import 'package:site_720/core/widgets/snack_bar.dart';
 import '../../../core/widgets/buttons.dart';
+import '../../../data/models/deductionwork/deductionlist_model.dart';
 import '../../../data/models/deductionwork/phaselist_model.dart';
 import '../../payment_details/widgets/amount_container.dart';
 import '../cubit/deducion_work_cubit.dart';
@@ -20,6 +21,8 @@ class DeductionWork extends StatelessWidget {
   TextEditingController percentage = TextEditingController();
   TextEditingController description = TextEditingController();
   List<Phases> phaseList = [];
+  List<DeductionWorkist> workList = [];
+
   String? selectedStatus;
 
   @override
@@ -36,13 +39,16 @@ class DeductionWork extends StatelessWidget {
           if (state is PhaselistSuccess) {
             phaseList = state.response.data;
           }
-          if(state is AddedSuccess){
+          if (state is DeductionWorkSuccess) {
+            workList = state.response.data;
+          }
+          if (state is AddedSuccess) {
             snackBar(context, state.response.message, Colors.green);
           }
         },
         child: BlocBuilder<DeductionWorkCubit, DeductionWorkState>(
-              builder: (context, state) {
-                final cubit = context.read<DeductionWorkCubit>();
+          builder: (context, state) {
+            final cubit = context.read<DeductionWorkCubit>();
             return Scaffold(
                 backgroundColor: AppColors.backgroundColor,
                 appBar: PreferredSize(
@@ -95,7 +101,7 @@ class DeductionWork extends StatelessWidget {
                           InkWell(
                             onTap: () {
                               workDialog(context, cubit, phaseList, projectId,
-                                  clientId,"add","add");
+                                  clientId,"", "add", "add");
                             },
                             child: const CircleAvatar(
                               radius: 20,
@@ -111,201 +117,250 @@ class DeductionWork extends StatelessWidget {
                     ),
                   ),
                 ),
-                body: state is DeductionWorkSuccess
-                    ? RefreshIndicator(
-                        onRefresh: () async {
-                          cubit.getDeductionWorkList(projectId);
+                body: state is DeductionWorkLoading
+                    ? ListView.builder(
+                        itemCount: 7,
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(6.0),
+                            child: shimmerContainer(100, 70),
+                          );
                         },
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          itemCount: state.response.data.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(6.0),
-                              child: InkWell(
-                                onTap: () {
-                                  // Navigator.of(context).pushNamed(AppRoutes.stageHistory);
-                                },
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width * .9,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    color: Colors.white,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.8),
-                                        blurRadius: 3,
-                                        offset: const Offset(0, 3),
+                      )
+                    : workList.isNotEmpty
+                        ? RefreshIndicator(
+                            onRefresh: () async {
+                              cubit.getDeductionWorkList(projectId);
+                            },
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              itemCount: workList.length,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: InkWell(
+                                    onTap: () {
+                                      // Navigator.of(context).pushNamed(AppRoutes.stageHistory);
+                                    },
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          .9,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: Colors.white,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.8),
+                                            blurRadius: 3,
+                                            offset: const Offset(0, 3),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                  child: SizedBox(
-                                    width:
-                                        MediaQuery.of(context).size.width * .7,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 8.0,
-                                          left: 8.0,
-                                          right: 8.0,
-                                          bottom: 8.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
+                                      child: SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                .7,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 8.0,
+                                              left: 8.0,
+                                              right: 8.0,
+                                              bottom: 8.0),
+                                          child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Column(
+                                              Row(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
                                                 children: [
-                                                  Text(
-                                                    state.response.data[index]
-                                                        .workName,
-                                                    style: const TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color:
-                                                            AppColors.coffie),
-                                                  ),
-                                                  Text(
-                                                    state.response.data[index]
-                                                        .stageName,
-                                                    style: const TextStyle(
-                                                      fontSize: 10,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    state.response.data[index]
-                                                        .description,
-                                                    style: const TextStyle(
-                                                      fontSize: 10,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
-                                                children: [
-                                                  Row(
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
-                                                      InkWell(
-                                                       onTap: () {
-
-                                                        work.text=state.response.data[index].workName;
-                                                        selectedStatus=state.response.data[index].phaseId;
-                                                        percentage.text = state.response.data[index].percentage;
-                                                         amount.text = state.response.data[index].amount;
-                                                          description.text = state.response.data[index].description;
-                                                      workDialog(context, cubit, phaseList, projectId,
-                                                          clientId , "edit","update");
-                                                    },
-                                                                                child: Container(
-                                                          height: 25,
-                                                          width: 25,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(5),
+                                                      Text(
+                                                        workList[index]
+                                                            .workName,
+                                                        style: const TextStyle(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.bold,
                                                             color: AppColors
-                                                                .lightBlue,
-                                                            boxShadow: [
-                                                              BoxShadow(
-                                                                color: Colors.grey
-                                                                    .withOpacity(
-                                                                        0.8),
-                                                                blurRadius: 6,
-                                                                offset:
-                                                                    const Offset(
-                                                                        1, 1),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          child: const Icon(
-                                                            Icons.edit,
-                                                            size: 18,
-                                                            color: Colors.white,
-                                                          ),
+                                                                .coffie),
+                                                      ),
+                                                      Text(
+                                                        workList[index]
+                                                            .stageName,
+                                                        style: const TextStyle(
+                                                          fontSize: 10,
                                                         ),
                                                       ),
-                                                      const SizedBox(
-                                                        width: 7,
-                                                      ),
-                                                      InkWell(
-                                                      
-                                                        onTap: () {
-                                                            String workId = state.response.data[index].id;
-                                                          deleteDialog(context,cubit,projectId,workId, () {
-                                                            Navigator.pop(
-                                                                context);
-                                                          });
-                                                        },
-                                                        child: Container(
-                                                          height: 25,
-                                                          width: 25,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        5),
-                                                            color: Colors.red,
-                                                            boxShadow: [
-                                                              BoxShadow(
-                                                                color: Colors
-                                                                    .grey
-                                                                    .withOpacity(
-                                                                        0.8),
-                                                                blurRadius: 6,
-                                                                offset:
-                                                                    const Offset(
-                                                                        1, 1),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          child: const Icon(
-                                                            Icons.delete,
-                                                            size: 18,
-                                                            color: Colors.white,
-                                                          ),
+                                                      Text(
+                                                        workList[index]
+                                                            .description,
+                                                        style: const TextStyle(
+                                                          fontSize: 10,
                                                         ),
                                                       ),
                                                     ],
                                                   ),
-                                                  const SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  AmountContainer(
-                                                    title: "Cost",
-                                                    amount:
-                                                        "${state.response.data[index].amount}₹",
-                                                  ),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.end,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          InkWell(
+                                                            onTap: () {
+                                                              work.text =
+                                                                  workList[
+                                                                          index]
+                                                                      .workName;
+                                                              selectedStatus =
+                                                                  workList[
+                                                                          index]
+                                                                      .phaseId;
+                                                              percentage.text =
+                                                                  workList[
+                                                                          index]
+                                                                      .percentage;
+                                                              amount.text =
+                                                                  workList[
+                                                                          index]
+                                                                      .amount;
+                                                              description.text =
+                                                                  workList[
+                                                                          index]
+                                                                      .description;
+                                                                      String workId = workList[
+                                                                          index]
+                                                                      .id;
+                                                              workDialog(
+                                                                  context,
+                                                                  cubit,
+                                                                  phaseList,
+                                                                  projectId,
+                                                                  clientId,
+                                                                   workId,
+                                                                  "edit",
+                                                                  "update");
+                                                            },
+                                                            child: Container(
+                                                              height: 25,
+                                                              width: 25,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            5),
+                                                                color: AppColors
+                                                                    .lightBlue,
+                                                                boxShadow: [
+                                                                  BoxShadow(
+                                                                    color: Colors
+                                                                        .grey
+                                                                        .withOpacity(
+                                                                            0.8),
+                                                                    blurRadius:
+                                                                        6,
+                                                                    offset:
+                                                                        const Offset(
+                                                                            1,
+                                                                            1),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              child: const Icon(
+                                                                Icons.edit,
+                                                                size: 18,
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 7,
+                                                          ),
+                                                          InkWell(
+                                                            onTap: () {
+                                                              String workId =
+                                                                  workList[
+                                                                          index]
+                                                                      .id;
+                                                              deleteDialog(
+                                                                  context,
+                                                                  cubit,
+                                                                  projectId,
+                                                                  workId, () {
+                                                                Navigator.pop(
+                                                                    context);
+                                                              });
+                                                            },
+                                                            child: Container(
+                                                              height: 25,
+                                                              width: 25,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            5),
+                                                                color:
+                                                                    Colors.red,
+                                                                boxShadow: [
+                                                                  BoxShadow(
+                                                                    color: Colors
+                                                                        .grey
+                                                                        .withOpacity(
+                                                                            0.8),
+                                                                    blurRadius:
+                                                                        6,
+                                                                    offset:
+                                                                        const Offset(
+                                                                            1,
+                                                                            1),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              child: const Icon(
+                                                                Icons.delete,
+                                                                size: 18,
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      const SizedBox(
+                                                        height: 10,
+                                                      ),
+                                                      AmountContainer(
+                                                        title: "Cost",
+                                                        amount:
+                                                            "${workList[index].amount}₹",
+                                                      ),
+                                                    ],
+                                                  )
                                                 ],
-                                              )
+                                              ),
                                             ],
                                           ),
-                                        ],
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      )
-                    : state is DeductionWorkLoading
-                        ? ListView.builder(
-                            itemBuilder: (context, index) {
-                             return shimmerContainer(100, 70);
-                            },
+                                );
+                              },
+                            ),
                           )
                         : const Center(
                             child: Text("No Deduction Work Added"),
@@ -317,8 +372,7 @@ class DeductionWork extends StatelessWidget {
   }
 
   Future<void> deleteDialog(BuildContext context, DeductionWorkCubit cubit,
-  String projectId , String workId,
-   onTap) async {
+      String projectId, String workId, onTap) async {
     return showDialog(
       context: context,
       builder: (context) {
@@ -328,7 +382,7 @@ class DeductionWork extends StatelessWidget {
             height: 200,
             child: SingleChildScrollView(
               child: Form(
-                key:formKey,
+                key: formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -346,22 +400,20 @@ class DeductionWork extends StatelessWidget {
                       height: 20,
                     ),
                     GestureDetector(
-                      onTap: () async{
-                           if (formKey.currentState!.validate()) {
-                            cubit.deleteDeductionWork(
-                             projectId,
-                             workId,
-                             
-                            );
-                             Navigator.pop(context);
-                           }
-                        },
+                      onTap: () async {
+                        if (formKey.currentState!.validate()) {
+                          cubit.deleteDeductionWork(
+                            projectId,
+                            workId,
+                          );
+                          Navigator.pop(context);
+                        }
+                      },
                       child: LargeButton(title: "Delete"),
                     ),
                     TextButton(
                       onPressed: () {
-                        
-                          Navigator.pop(context);
+                        Navigator.pop(context);
                       },
                       child: const Text('Close'),
                     ),
@@ -375,8 +427,15 @@ class DeductionWork extends StatelessWidget {
     );
   }
 
-  Future<void> workDialog(BuildContext context, DeductionWorkCubit cubit,
-      List<Phases> list, String projectId, String clientId , String status,String buttontype) async {
+  Future<void> workDialog(
+      BuildContext context,
+      DeductionWorkCubit cubit,
+      List<Phases> list,
+      String projectId,
+      String clientId,
+      String workId,
+      String status,
+      String buttontype) async {
     return showDialog(
       context: context,
       builder: (context) {
@@ -390,10 +449,12 @@ class DeductionWork extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                     Padding(
+                    Padding(
                       padding: EdgeInsets.only(top: 16.0, bottom: 25),
                       child: Text(
-                        status =="add"?"Add Deduction Work":"Edit Deduction Work",
+                        status == "add"
+                            ? "Add Deduction Work"
+                            : "Edit Deduction Work",
                         style: const TextStyle(
                             color: AppColors.primaryColor,
                             fontSize: 20,
@@ -556,23 +617,35 @@ class DeductionWork extends StatelessWidget {
                     GestureDetector(
                       onTap: () async {
                         if (formKey.currentState!.validate()) {
-                          cubit.addDeductionworkList(
+                          if (status =="add"){cubit.addDeductionworkList(
                               projectId,
                               clientId,
                               work.text,
                               selectedStatus,
                               percentage.text,
                               amount.text,
+                              description.text);} 
+                              else{
+                                cubit.editDeductionworkList(
+                              projectId,
+                              clientId,
+                              workId,
+                              work.text,
+                              selectedStatus,
+                              percentage.text,
+                              amount.text,
                               description.text);
+                              }
                         }
-                         work.clear();
-                         selectedStatus=null;
-                         percentage.clear();
-                          amount.clear();
-                          description.clear();
-                          Navigator.pop(context);
+                        work.clear();
+                        selectedStatus = null;
+                        percentage.clear();
+                        amount.clear();
+                        description.clear();
+                        Navigator.pop(context);
                       },
-                      child: LargeButton(title: buttontype=="add"?"Add":"Update"),
+                      child: LargeButton(
+                          title: buttontype == "add" ? "Add" : "Update"),
                     ),
                     TextButton(
                       onPressed: () {

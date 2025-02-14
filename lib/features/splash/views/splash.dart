@@ -22,7 +22,7 @@ class _SplashState extends State<Splash> {
     if (token == null) {
       Navigator.pushReplacementNamed(context, AppRoutes.login);
     } else {
-      Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
+      Navigator.pushReplacementNamed(context, AppRoutes.home);
     }
   }
 

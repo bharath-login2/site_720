@@ -8,8 +8,8 @@ import 'deduction_work_state.dart';
 
 class DeductionWorkCubit extends Cubit<DeductionWorkState> {
   DeductionWorkCubit(String projectId) : super(DeductionWorkInitial()){
-    getDeductionWorkList(projectId);
     getPhaseList(projectId);
+    getDeductionWorkList(projectId);
   }
 
  Future<void> getDeductionWorkList(String projectId) async {
@@ -22,7 +22,6 @@ class DeductionWorkCubit extends Cubit<DeductionWorkState> {
         emit(DeductionWorkSuccess(response));
       } else {
         emit(DeductionWorkFailure('Failed to fetch data}'));
-        // emit(ExtraWorkSuccess(response));
       }
     } catch (e) {
       emit(DeductionWorkFailure('Failed to fetch data: ${e.toString()}'));
@@ -31,11 +30,9 @@ class DeductionWorkCubit extends Cubit<DeductionWorkState> {
 
 
   Future<void> getPhaseList(String projectId) async {
-    emit(DeductionWorkLoading());
     try {
       PhaseList response =
           await HttpServices.getPhaseList(projectId);
-
       if (response.status == true) {
         emit(PhaselistSuccess(response));
       } else {
@@ -57,6 +54,31 @@ class DeductionWorkCubit extends Cubit<DeductionWorkState> {
     try {
       SuccessResponse response = await HttpServices.adddeductionWork(projectId,
           clintId, work,selectedStatus, percentage, amount, description);
+      if (response.status == true) {
+        getDeductionWorkList(projectId);
+        emit(AddedSuccess(response));
+      } else {
+          emit(AddedFailure(response)); 
+      }
+    } catch (e) {
+       emit(DeductionWorkFailure('Failed to fetch data: ${e.toString()}'));
+    }
+  }
+
+
+  Future<void> editDeductionworkList(
+      String projectId,
+      String clintId,
+      String workId,
+      String work,
+      selectedStatus,
+      String percentage,
+      String amount,
+      String description
+    ) async {
+    try {
+      SuccessResponse response = await HttpServices.editdeductionWork(projectId,
+          clintId,workId, work,selectedStatus, percentage, amount, description);
       if (response.status == true) {
         getDeductionWorkList(projectId);
         emit(AddedSuccess(response));

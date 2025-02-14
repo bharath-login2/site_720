@@ -522,7 +522,6 @@ class ExtraWork extends StatelessWidget {
                           cubit.deleteExtraWork(
                            projectId,
                            workId,
-                           
                           );
                            Navigator.pop(context);
                          }

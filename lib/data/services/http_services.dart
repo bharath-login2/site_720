@@ -19,6 +19,7 @@ import '../models/project_details/project_detais_model.dart';
 import '../models/project_list/edit_data_model.dart';
 import '../models/project_list/project_data_model.dart';
 import '../models/purchasebilllist/purchasebill_list_model.dart';
+import '../models/site_drawings/drawing_list.dart';
 import '../models/succes_response/success_response.dart';
 import '../models/workdetails/add_work_details_model.dart';
 import '../models/stages/stage_model.dart';
@@ -165,8 +166,7 @@ class HttpServices {
     }
   }
 
-
-    static Future getDeductionWorkList(projectId) async {
+  static Future getDeductionWorkList(projectId) async {
     try {
       http.Response response = await http.post(
           Uri.parse("${baseUrl}deduction_work_list"),
@@ -614,7 +614,7 @@ class HttpServices {
     }
   }
 
-    static Future editExtraWork(
+  static Future editExtraWork(
     String projectId,
     String clintId,
     String workId,
@@ -640,17 +640,14 @@ class HttpServices {
     }
   }
 
-
   static Future deleteExtraWork(
-   
     String workId,
-   
   ) async {
     try {
       http.Response response =
           await http.post(Uri.parse("${baseUrl}delete_extrawork"), body: {
-       "work_id": workId,
-     });
+        "work_id": workId,
+      });
       if (response.statusCode == 200) {
         return successResponseFromJson(response.body);
       }
@@ -659,8 +656,7 @@ class HttpServices {
     }
   }
 
-
-   static Future getPhaseList(projectId) async {
+  static Future getPhaseList(projectId) async {
     try {
       http.Response response = await http.post(
           Uri.parse("${baseUrl}get_phase_details"),
@@ -673,16 +669,14 @@ class HttpServices {
     }
   }
 
-
   static Future adddeductionWork(
-    String projectId,
-    String clintId,
-    String work,
-    selectedStatus,
-    String percentage,
-    String amount,
-    String description
-  ) async {
+      String projectId,
+      String clintId,
+      String work,
+      selectedStatus,
+      String percentage,
+      String amount,
+      String description) async {
     try {
       http.Response response =
           await http.post(Uri.parse("${baseUrl}add_deduction_work"), body: {
@@ -690,7 +684,7 @@ class HttpServices {
         "client_id": clintId,
         "work": work,
         "phase": selectedStatus,
-        "percentage":percentage,
+        "percentage": percentage,
         "amount": amount,
         "description": description,
       });
@@ -702,26 +696,24 @@ class HttpServices {
     }
   }
 
-
-   static Future editdeductionWork(
-    String projectId,
-    String clintId,
+  static Future editdeductionWork(
+      String projectId,
+      String clintId,
       String workId,
-    String work,
-    selectedStatus,
-    String percentage,
-    String amount,
-    String description
-  ) async {
+      String work,
+      selectedStatus,
+      String percentage,
+      String amount,
+      String description) async {
     try {
       http.Response response =
           await http.post(Uri.parse("${baseUrl}edit_deduction_work"), body: {
         "project_id": projectId,
         "client_id": clintId,
-         "deduction_id": workId,
+        "deduction_id": workId,
         "work": work,
         "phase": selectedStatus,
-        "percentage":percentage,
+        "percentage": percentage,
         "amount": amount,
         "description": description,
       });
@@ -733,19 +725,16 @@ class HttpServices {
     }
   }
 
-
-
-   static Future deletedeductionwork(
+  static Future deletedeductionwork(
     String projectId,
     String workId,
-    
   ) async {
     try {
       http.Response response =
           await http.post(Uri.parse("${baseUrl}delete_deduction_work"), body: {
         "project_id": projectId,
-       "work_id": workId,
-       });
+        "work_id": workId,
+      });
       if (response.statusCode == 200) {
         return successResponseFromJson(response.body);
       }
@@ -754,4 +743,48 @@ class HttpServices {
     }
   }
 
+  static Future getDrawingList(
+    String projectId,
+  ) async {
+    try {
+      http.Response response =
+          await http.post(Uri.parse("${baseUrl}list_site_drawings"), body: {
+        "project_id": projectId,
+      });
+      if (response.statusCode == 200) {
+        return siteDrawingsListFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+   static Future uploadDrawings(
+    String projectId,
+    String clientId,
+    XFile image,
+    String remark,
+  ) async {
+    try {
+      var uri = Uri.parse("${baseUrl}add_site_drawings");
+      var request = http.MultipartRequest('POST', uri);
+
+      request.fields['project_id'] = projectId;
+      request.fields['client_id'] = clientId;
+      request.fields['remarks'] = remark; 
+
+        if (image.path.isNotEmpty) {
+          request.files
+              .add(await http.MultipartFile.fromPath('file_name', image.path));
+        }
+
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        return successResponseFromJson(await response.stream.bytesToString());
+      }
+    } catch (e) {
+      log("Error: ${e.toString()}"); 
+    }
+  }
 }

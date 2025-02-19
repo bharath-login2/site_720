@@ -6,28 +6,36 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/buttons.dart';
-import 'package:site_720/core/widgets/snack_bar.dart';
 import '../../../core/widgets/appbar.dart';
+import '../../../core/widgets/dialogs.dart';
+import '../../../data/models/site_drawings/drawing_list.dart';
 import '../cubit/drawing_state.dart';
 import '../cubit/drawing_cubit.dart';
-import '../widgets/phase_widget.dart';
 
 class DrawingScreen extends StatelessWidget {
   DrawingScreen({super.key});
-
+  String projectId = "";
+  String clientId = "";
   TextEditingController remark = TextEditingController();
+  List<Drawings> drawingList = [];
+  XFile? image;
+
   @override
   Widget build(BuildContext context) {
+    final args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+    projectId = args["id"]!;
+    clientId = args["client_id"]!;
     return BlocProvider(
-      create: (context) => DrawingCubit(),
+      create: (context) => DrawingCubit(projectId),
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
         body: BlocConsumer<DrawingCubit, DrawingState>(
           listener: (context, state) {
             if (state is DrawingSuccess) {
-              snackBar(context, state.message, Colors.white);
-            } else if (state is DrawingFailure) {
-              snackBar(context, state.message, Colors.white);
+              drawingList = state.response.data;
+            } else if (state is ImageSuccess) {
+              image = state.image;
             }
           },
           builder: (context, state) {
@@ -38,57 +46,98 @@ class DrawingScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         FloatingAppBar(
-                          title: "Drawing", 
+                          title: "Drawing",
                         ),
                         SizedBox(
-                          height: MediaQuery.of(context).size.height * .28,
+                          height: image == null
+                              ? MediaQuery.of(context).size.height * .28
+                              : MediaQuery.of(context).size.height * .42,
                         ),
-                        Container(
-                          width: MediaQuery.of(context).size.width * .92,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: AppColors.lightA,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.8),
-                                blurRadius: 3,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 16.0),
-                            child: Column(
-                              children: [
-                                const Text(
-                                  "Phases",
-                                  style: TextStyle(
-                                    color: AppColors.primaryColor,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 16.0),
+                          child: ListView.builder(
+                            padding: EdgeInsets.zero,
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: drawingList.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 16.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    color: AppColors.lightA,  
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.8),
+                                        blurRadius: 3,
+                                        offset: const Offset(0, 3),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                .35,
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            fit: BoxFit.fitWidth,
+                                            image: NetworkImage(
+                                                drawingList[index].fileName),
+                                          ),
+                                          border: Border.all(
+                                            color: AppColors.lightA,
+                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        margin: const EdgeInsets.all(8),
+                                      ),
+                                      if (drawingList[index].remarks != "")
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 16.0,
+                                              right: 16.0,
+                                              top: 4.0,
+                                              bottom: 8.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                drawingList[index].remarks,
+                                                style: const TextStyle(
+                                                  color: AppColors.primaryColor,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              InkWell(
+                                                onTap: () {
+                                                  deleteDialog(context, () {
+                                                    // cubit.deleteGallery(projectId, images[i].imageId);
+                                                    Navigator.pop(context);
+                                                  });
+                                                },
+                                                child: const Icon(
+                                                  Icons.delete,
+                                                  color: Colors.red,
+                                                  size: 22,
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                    ],
                                   ),
                                 ),
-                                SingleChildScrollView(
-                                  child: ListView.builder(
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount: 5,
-                                    itemBuilder: (context, index) {
-                                      return phaseWidget(
-                                        context,
-                                        index,
-                                        "",
-                                      );
-                                    },
-                                  ),
-                                )
-                              ],
-                            ),
+                              );
+                            },
                           ),
                         ),
-                        const SizedBox(height: 20),
                       ],
                     ),
                   ),
@@ -106,7 +155,9 @@ class DrawingScreen extends StatelessWidget {
     );
   }
 
-  Container floatingCard(BuildContext context) {
+  Container floatingCard(
+    BuildContext context,
+  ) {
     return Container(
       width: MediaQuery.of(context).size.width * .9,
       decoration: BoxDecoration(
@@ -142,7 +193,6 @@ class DrawingScreen extends StatelessWidget {
               },
               child: Container(
                 width: MediaQuery.of(context).size.width * .75,
-                height: 60,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.black),
                   borderRadius: BorderRadius.circular(5),
@@ -154,44 +204,23 @@ class DrawingScreen extends StatelessWidget {
                     const Icon(Icons.image, color: Colors.grey),
                     const SizedBox(width: 10),
                     Expanded(
-                      child: BlocBuilder<DrawingCubit, DrawingState>(
-                        builder: (context, state) {
-                          if (state is DrawingLoading) {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          } else if (state is ImageSuccess) {
-                            final images = state.imageList;
-                            return ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: images.length,
-                              itemBuilder: (context, index) {
-                                final image = images[index];
-                                return Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Image.file(
-                                    File(image.path),
-                                    width: 40,
-                                    height: 40,
-                                    fit: BoxFit.cover,
-                                  ),
-                                );
-                              },
-                            );
-                          } else if (state is DrawingFailure) {
-                            return Center(
+                        child: image != null
+                            ? Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Image.file(
+                                  File(image!.path),
+                                  height:
+                                      MediaQuery.of(context).size.height * .2,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 20.0),
                                 child: Text(
-                              state.message,
-                              style: const TextStyle(color: Colors.red),
-                            ));
-                          } else {
-                            return const Text(
-                              'Choose Image',
-                              style: TextStyle(color: Colors.grey),
-                            );
-                          }
-                        },
-                      ),
-                    ),
+                                  'Choose Image',
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                              )),
                   ],
                 ),
               ),
@@ -199,7 +228,6 @@ class DrawingScreen extends StatelessWidget {
             const SizedBox(height: 10),
             SizedBox(
               width: MediaQuery.of(context).size.width * .75,
-              height: 40,
               child: TextFormField(
                 controller: remark,
                 decoration: InputDecoration(
@@ -221,7 +249,13 @@ class DrawingScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 15),
-            MediumButton(title: "Submit"),
+            InkWell(
+                onTap: () async {
+                  await context
+                      .read<DrawingCubit>()
+                      .uploadDrawings(projectId, clientId, image!, remark.text);
+                },
+                child: MediumButton(title: "Submit")),
             const SizedBox(height: 4),
           ],
         ),
@@ -283,7 +317,7 @@ class DrawingScreen extends StatelessWidget {
                           onTap: () async {
                             await context
                                 .read<DrawingCubit>()
-                                .selectMultiImage(ImageSource.camera);
+                                .selectImage(ImageSource.camera);
                             Navigator.pop(context);
                           },
                           child: Container(
@@ -315,7 +349,7 @@ class DrawingScreen extends StatelessWidget {
                           onTap: () async {
                             await context
                                 .read<DrawingCubit>()
-                                .selectMultiImage(null);
+                                .selectImage(ImageSource.gallery);
                             Navigator.pop(context);
                           },
                           child: Container(
@@ -335,7 +369,7 @@ class DrawingScreen extends StatelessWidget {
                                 ),
                                 SizedBox(height: 10),
                                 Text(
-                                  "Drawing",
+                                  "Gallery",
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ],

@@ -1,44 +1,52 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../data/models/site_drawings/drawing_list.dart';
+import '../../../data/services/http_services.dart';
 import 'drawing_state.dart';
 
 class DrawingCubit extends Cubit<DrawingState> {
-  DrawingCubit() : super(DrawingInitial());
-
-  List imageList = [];
-
-  void startLoading() {
-    emit(DrawingLoading());
+  DrawingCubit(String projectId) : super(DrawingInitial()) {
+    getDrawingList(projectId);
   }
 
-  void emitSuccess(String message) {
-    emit(DrawingSuccess(message));
-  }
+  XFile? image;
 
-  void emitFailure(String message) {
-    emit(DrawingFailure(message));
-  }
-
-  selectMultiImage(
-    ImageSource? source,
+  selectImage(
+    ImageSource source,
   ) async {
     try {
-      if (source != null) {
-        final XFile? selectedImages =
-            await ImagePicker().pickImage(source: source);
-        if (selectedImages != null) {
-          imageList.add(selectedImages);
-        }
-        emit(ImageSuccess(imageList));
-      } else {
-        final List<XFile> images = await ImagePicker().pickMultiImage();
-        if (images.isNotEmpty) {
-          imageList.addAll(images);
-        }
-        emit(ImageSuccess(imageList));
+      final XFile? selectedImage =
+          await ImagePicker().pickImage(source: source);
+      if (selectedImage != null) {
+        image = selectedImage;
       }
+      emit(ImageSuccess(image!));
     } catch (e) {
       emit(ImageFailure("Failed to get image, Please Select once again.."));
+    }
+  }
+
+  Future<void> getDrawingList(String projectId) async {
+    try {
+      SiteDrawingsList response = await HttpServices.getDrawingList(projectId);
+      if (response.status == true) {
+        emit(DrawingSuccess(response));
+      } else {}
+    } catch (e) {
+      emit(DrawingFailure('Failed to fetch data: ${e.toString()}'));
+    }
+  }
+
+  Future<void> uploadDrawings(
+      String projectId, String clientId, XFile image, String remark) async {
+    try {
+      SiteDrawingsList response =
+          await HttpServices.uploadDrawings(projectId, clientId, image, remark);
+      if (response.status == true) {
+        getDrawingList(projectId);
+      } else {}
+    } catch (e) {
+      emit(DrawingFailure('Failed to fetch data: ${e.toString()}'));
     }
   }
 }

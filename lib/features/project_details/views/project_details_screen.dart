@@ -312,7 +312,10 @@ class ProjectDetails extends StatelessWidget {
                                     onTap: () {
                                       Navigator.pushNamed(
                                           context, AppRoutes.drawing,
-                                          arguments: {"id": id});
+                                          arguments: {
+                                            "id": id,
+                                            "client_id": clientId
+                                          });
                                     },
                                     child: DetailsButtonContainer(
                                       title: "Site Drawing",

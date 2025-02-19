@@ -57,7 +57,7 @@ Widget stageWidget(context, String title, List<ImageList> images,
                             deleteDialog(context, () {
                               cubit.deleteGallery(projectId, images[i].imageId);
                               Navigator.pop(context);
-                            }); 
+                            });
                           },
                           child: const Icon(
                             Icons.cancel_outlined,

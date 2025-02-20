@@ -10,6 +10,9 @@ class StagesCubit extends Cubit<StagesState> {
     getStagesList(projectId);
   }
 
+  List<GetStages> items = [];
+  List<GetStages> filteredItems = [];
+
   Future<void> getStagesList(String projectId) async {
     emit(StagesLoading());
     try {
@@ -17,33 +20,36 @@ class StagesCubit extends Cubit<StagesState> {
 
       if (response.status == true) {
         emit(StagesSuccess(response));
+        items = response.data;
       } else {
-        emit(StagesFailure('Failed to fetch data}')); 
+        emit(StagesFailure('Failed to fetch data}'));
       }
     } catch (e) {
       emit(StagesFailure('Failed to fetch data: ${e.toString()}'));
     }
-  } 
+  }
 
-
-  Future<void> addStageDetails(
-      String projectId,
-      String clintId,
-      String stage,
-      String startDateController,
-      String endDateController
-    ) async {
+  Future<void> addStageDetails(String projectId, String clintId, String stage,
+      String startDateController, String endDateController) async {
     try {
-      SuccessResponse response = await HttpServices.addStages(projectId,
-          clintId, stage, startDateController, endDateController);
+      SuccessResponse response = await HttpServices.addStages(
+          projectId, clintId, stage, startDateController, endDateController);
       if (response.status == true) {
         getStagesList(projectId);
         emit(AddedSuccess(response));
       } else {
-          emit(AddedFailure(response)); 
+        emit(AddedFailure(response));
       }
     } catch (e) {
-       emit(StagesFailure('Failed to fetch data: ${e.toString()}'));
+      emit(StagesFailure('Failed to fetch data: ${e.toString()}'));
     }
+  }
+
+  void filterSearch(String query) {
+    filteredItems = items
+        .where((item) =>
+            item.stageName.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+    emit(SearchResult(filteredItems));
   }
 }

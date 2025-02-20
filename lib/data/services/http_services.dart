@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:site_720/data/models/galery/galery_list_model.dart';
 import 'package:site_720/data/models/project_list/project_list_model.dart';
 import '../models/clientlist/client_list_model.dart';
+import '../models/complaint/complaint_details_model.dart';
 import '../models/complaint/complaint_list_model.dart';
 import '../models/contractorlist/contractor_list_model.dart';
 import '../models/dashboard/dashboard_model.dart';
@@ -759,7 +760,7 @@ class HttpServices {
     }
   }
 
-   static Future uploadDrawings(
+  static Future uploadDrawings(
     String projectId,
     String clientId,
     XFile image,
@@ -771,12 +772,12 @@ class HttpServices {
 
       request.fields['project_id'] = projectId;
       request.fields['client_id'] = clientId;
-      request.fields['remarks'] = remark; 
+      request.fields['remarks'] = remark;
 
-        if (image.path.isNotEmpty) {
-          request.files
-              .add(await http.MultipartFile.fromPath('file_name', image.path));
-        }
+      if (image.path.isNotEmpty) {
+        request.files
+            .add(await http.MultipartFile.fromPath('site_drawing', image.path));
+      }
 
       var response = await request.send();
 
@@ -784,7 +785,37 @@ class HttpServices {
         return successResponseFromJson(await response.stream.bytesToString());
       }
     } catch (e) {
-      log("Error: ${e.toString()}"); 
+      log("Error: ${e.toString()}");
+    }
+  }
+
+  static Future deleteDrawing(
+    String siteId,
+  ) async {
+    try {
+      http.Response response =
+          await http.post(Uri.parse("${baseUrl}delete_site_drawings"), body: {
+        "site_id": siteId,
+      });
+      if (response.statusCode == 200) {
+        return successResponseFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+   static Future getComplaintDetails(
+  ) async {
+    try {
+      http.Response response =
+          await http.post(Uri.parse("${baseUrl}complaints_details_n"), body: {
+      });
+      if (response.statusCode == 200) {
+        return complaintDetailsModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
     }
   }
 }

@@ -1,5 +1,7 @@
 // ignore_for_file: must_be_immutable
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
@@ -7,9 +9,14 @@ import 'package:site_720/core/widgets/buttons.dart';
 import 'package:site_720/features/clients/cubit/client_cubit.dart';
 
 import '../../../core/widgets/appbar.dart';
+import '../cubit/add_complaint_cubit.dart';
 
 class AddComplaint extends StatelessWidget {
   bool isChecked = false;
+  String complaintType = "";
+  String reportedBy = "";
+  String natureOfComplaint = "";
+  String complaintStatus = "";
   AddComplaint({super.key});
   final formKey = GlobalKey<FormState>();
   TextEditingController clientName = TextEditingController();
@@ -34,7 +41,7 @@ class AddComplaint extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: simpleAppbar(context, "Complaints",true),
+      appBar: simpleAppbar(context, "Complaints", true),
       body: SingleChildScrollView(
         child: Form(
           key: formKey,
@@ -63,8 +70,7 @@ class AddComplaint extends StatelessWidget {
                     child: Column(
                       children: [
                         Container(
-                          width: double
-                              .infinity,
+                          width: double.infinity,
                           decoration: const BoxDecoration(
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(5),
@@ -78,130 +84,33 @@ class AddComplaint extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Complaint Type*",
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
+                                Text(
+                                  "Complaint Type*",
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
                                 ),
+
                               ],
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(
-                              15.0), 
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment
-                                .start, 
-                            children: [
-                              Checkbox(
-                                value:
-                                    false, 
-                                onChanged: (bool? newValue) {
-                                 
-                                },
-                              ),
-                              const Expanded(
-                                child: Text(
-                                  "A: medium-level issues that might require discussion with project coordinators and Supervisor",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 59, 58, 58),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(
-                              15.0), 
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment
-                                .start, 
-                            children: [
-                              Checkbox(
-                                value:
-                                    false,
-                                onChanged: (bool? newValue) {
-                                  
-                                },
-                              ),
-                              const Expanded(
-                                child: Text(
-                                  "B: major cases requiring the involvement of key personnel, including Project Managers, Accounts Managers, and Administration:",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 59, 58, 58),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(
-                              15.0), 
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment
-                                .start,
-                            children: [
-                              Checkbox(
-                                value:
-                                    false, 
-                                onChanged: (bool? newValue) {
-                                  
-                                },
-                              ),
-                              const Expanded(
-                                child: Text(
-                                  "C: (Major cases requiring involvement of key personnel including Case Managers, Managers, and HR.)",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 59, 58, 58),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(
-                              15.0), 
-                          child: Row(
-                            // crossAxisAlignment: CrossAxisAlignment.start, 
-                            children: [
-                              Checkbox(
-                                value:
-                                    false,
-                                onChanged: (bool? newValue) {
-                                 
-                                },
-                              ),
-                              const Expanded(
-                                child: Text(
-                                  "Others",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 0, 0, 0),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: 5,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.only(left: 15, top: 5),
+                              child: CheckBoxWidget(
+                                  id: "1",
+                                  title: "High",
+                                  value: complaintType == "1" ? true : false),
+                            );
+                          },
+                        )
                       ],
                     ),
                   ),
@@ -212,7 +121,7 @@ class AddComplaint extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
-                    // width: MediaQuery.of(context).size.width * 0.95, 
+                    // width: MediaQuery.of(context).size.width * 0.95,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
                       color: const Color.fromARGB(255, 255, 255, 255),
@@ -228,8 +137,7 @@ class AddComplaint extends StatelessWidget {
                     child: Column(
                       children: [
                         Container(
-                          width: double
-                              .infinity,
+                          width: double.infinity,
                           decoration: const BoxDecoration(
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(5),
@@ -261,77 +169,26 @@ class AddComplaint extends StatelessWidget {
                           ),
                         ),
                         Padding(
-                          padding:
-                              const EdgeInsets.only(bottom: 10.0, left: 15),
-                          child: Row(
-                            // crossAxisAlignment: CrossAxisAlignment
-                            //     .start,
-                            children: [
-                              Checkbox(
-                                value: false,
-                                onChanged: (bool? newValue) {},
-                              ),
-                              const Expanded(
-                                child: Text(
-                                  "CLIENT",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 59, 58, 58),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                          padding: const EdgeInsets.only(left: 15, top: 10),
+                          child: CheckBoxWidget(
+                              id: "1",
+                              title: "High",
+                              value: reportedBy == "1" ? true : false),
                         ),
                         Padding(
-                          padding:
-                              const EdgeInsets.only(bottom: 10.0, left: 15),
-                          child: Row(
-                            // crossAxisAlignment: CrossAxisAlignment
-                            //     .start,
-                            children: [
-                              Checkbox(
-                                value: false,
-                                onChanged: (bool? newValue) {},
-                              ),
-                              const Expanded(
-                                child: Text(
-                                  "ADMIN",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 59, 58, 58),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                          padding: const EdgeInsets.only(left: 15),
+                          child: CheckBoxWidget(
+                              id: "2",
+                              title: "Medium",
+                              value: reportedBy == "2" ? true : false),
                         ),
                         Padding(
-                          padding:
-                              const EdgeInsets.only(bottom: 10.0, left: 15),
-                          child: Row(
-                            //  crossAxisAlignment: CrossAxisAlignment
-                            //  .start,
-                            children: [
-                              Checkbox(
-                                value: false,
-                                onChanged: (bool? newValue) {},
-                              ),
-                              const Expanded(
-                                child: Text(
-                                  "SUPERVISOR",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 59, 58, 58),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                            padding:
+                                const EdgeInsets.only(bottom: 10.0, left: 15),
+                            child: CheckBoxWidget(
+                                id: "3",
+                                title: "Low",
+                                value: reportedBy == "3" ? true : false)),
                       ],
                     ),
                   ),
@@ -585,8 +442,7 @@ class AddComplaint extends StatelessWidget {
                     child: Column(
                       children: [
                         Container(
-                          width: double
-                              .infinity, 
+                          width: double.infinity,
                           decoration: const BoxDecoration(
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(5),
@@ -618,123 +474,27 @@ class AddComplaint extends StatelessWidget {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 5.0, left: 15),
-                          child: Row(
-                            // crossAxisAlignment: CrossAxisAlignment
-                            //     .start,
-                            children: [
-                              Checkbox(
-                                value: false,
-                                onChanged: (bool? newValue) {},
-                              ),
-                              const Expanded(
-                                child: Text(
-                                  "Construction",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 59, 58, 58),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                          padding: const EdgeInsets.only(left: 15, top: 10),
+                          child: CheckBoxWidget(
+                              id: "1",
+                              title: "High",
+                              value: natureOfComplaint == "1" ? true : false),
                         ),
                         Padding(
-                          padding:
-                              const EdgeInsets.only(bottom: 10.0, left: 15),
-                          child: Row(
-                            // crossAxisAlignment: CrossAxisAlignment
-                            //     .start,
-                            children: [
-                              Checkbox(
-                                value: false,
-                                onChanged: (bool? newValue) {},
-                              ),
-                              const Expanded(
-                                child: Text(
-                                  "Service Related",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 59, 58, 58),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                          padding: const EdgeInsets.only(left: 15),
+                          child: CheckBoxWidget(
+                              id: "2",
+                              title: "Medium",
+                              value: natureOfComplaint == "2" ? true : false),
                         ),
                         Padding(
-                          padding:
-                              const EdgeInsets.only(bottom: 10.0, left: 15),
-                          child: Row(
-                            //  crossAxisAlignment: CrossAxisAlignment
-                            //  .start,
-                            children: [
-                              Checkbox(
-                                value: false,
-                                onChanged: (bool? newValue) {},
-                              ),
-                              const Expanded(
-                                child: Text(
-                                  "Staff Behavior",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 59, 58, 58),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 5.0, left: 15),
-                          child: Row(
-                            //  crossAxisAlignment: CrossAxisAlignment
-                            //  .start,
-                            children: [
-                              Checkbox(
-                                value: false,
-                                onChanged: (bool? newValue) {},
-                              ),
-                              const Expanded(
-                                child: Text(
-                                  "Rate Issue",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 59, 58, 58),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(bottom: 10.0, left: 15),
-                          child: Row(
-                            //  crossAxisAlignment: CrossAxisAlignment
-                            //  .start,
-                            children: [
-                              Checkbox(
-                                value: false,
-                                onChanged: (bool? newValue) {},
-                              ),
-                              const Expanded(
-                                child: Text(
-                                  "Other",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 59, 58, 58),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                            padding:
+                                const EdgeInsets.only(bottom: 10.0, left: 15),
+                            child: CheckBoxWidget(
+                                id: "3",
+                                title: "Low",
+                                value:
+                                    natureOfComplaint == "3" ? true : false)),
                       ],
                     ),
                   ),
@@ -857,7 +617,7 @@ class AddComplaint extends StatelessWidget {
                         child: TextFormField(
                           controller: projectName,
                           keyboardType: TextInputType.text,
-                          maxLines: 5, 
+                          maxLines: 5,
                           decoration: InputDecoration(
                             fillColor: Colors.white,
                             filled: true,
@@ -883,7 +643,7 @@ class AddComplaint extends StatelessWidget {
                           // width: MediaQuery.of(context).size.width * 0.95,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
-                            color: const Color.fromARGB(255, 255, 255, 255),
+                            color: const Color.fromARGB(255, 255, 255, 255),  
                             boxShadow: [
                               BoxShadow(
                                 color: const Color.fromARGB(255, 209, 206, 206)
@@ -896,8 +656,7 @@ class AddComplaint extends StatelessWidget {
                           child: Column(
                             children: [
                               Container(
-                                width: double
-                                    .infinity,
+                                width: double.infinity,
                                 decoration: const BoxDecoration(
                                   borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(5),
@@ -931,106 +690,31 @@ class AddComplaint extends StatelessWidget {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(
-                                    bottom: 5.0, left: 15),
-                                child: Row(
-                                  // crossAxisAlignment: CrossAxisAlignment
-                                  //     .start,
-                                  children: [
-                                    Checkbox(
-                                      value: false,
-                                      onChanged: (bool? newValue) {},
-                                    ),
-                                    const Expanded(
-                                      child: Text(
-                                        "New",
-                                        style: TextStyle(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.bold,
-                                          color:
-                                              Color.fromARGB(255, 59, 58, 58),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                padding:
+                                    const EdgeInsets.only(left: 15, top: 10),
+                                child: CheckBoxWidget(
+                                    id: "1",
+                                    title: "High",
+                                    value:
+                                        complaintStatus == "1" ? true : false),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(
-                                    bottom: 10.0, left: 15),
-                                child: Row(
-                                  // crossAxisAlignment: CrossAxisAlignment
-                                  //     .start,
-                                  children: [
-                                    Checkbox(
-                                      value: false,
-                                      onChanged: (bool? newValue) {},
-                                    ),
-                                    const Expanded(
-                                      child: Text(
-                                        "Pending",
-                                        style: TextStyle(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.bold,
-                                          color:
-                                              Color.fromARGB(255, 59, 58, 58),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                padding: const EdgeInsets.only(left: 15),
+                                child: CheckBoxWidget(
+                                    id: "2",
+                                    title: "Medium",
+                                    value:
+                                        complaintStatus == "2" ? true : false),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(
-                                    bottom: 10.0, left: 15),
-                                child: Row(
-                                  //  crossAxisAlignment: CrossAxisAlignment
-                                  //  .start,
-                                  children: [
-                                    Checkbox(
-                                      value: false,
-                                      onChanged: (bool? newValue) {},
-                                    ),
-                                    const Expanded(
-                                      child: Text(
-                                        "Rejected",
-                                        style: TextStyle(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.bold,
-                                          color:
-                                              Color.fromARGB(255, 59, 58, 58),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    bottom: 5.0, left: 15),
-                                child: Row(
-                                  //  crossAxisAlignment: CrossAxisAlignment
-                                  //  .start,
-                                  children: [
-                                    Checkbox(
-                                      value: false,
-                                      onChanged: (bool? newValue) {},
-                                    ),
-                                    const Expanded(
-                                      child: Text(
-                                        "Closed",
-                                        style: TextStyle(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.bold,
-                                          color:
-                                              Color.fromARGB(255, 59, 58, 58),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              
+                                  padding: const EdgeInsets.only(
+                                      bottom: 10.0, left: 15),
+                                  child: CheckBoxWidget(
+                                      id: "3",
+                                      title: "Low",
+                                      value: complaintStatus == "3"
+                                          ? true
+                                          : false)),
                             ],
                           ),
                         ),
@@ -1056,6 +740,49 @@ class AddComplaint extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class CheckBoxWidget extends StatelessWidget {
+  const CheckBoxWidget({
+    super.key,
+    required this.id,
+    required this.title,
+    required this.value,
+  });
+
+  final bool value;
+  final String id;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      // crossAxisAlignment: CrossAxisAlignment
+      //     .start,
+      children: [
+        Checkbox(
+          value: value,
+          onChanged: (bool? newValue) {
+            try {
+              context.read<AddComplaintCubit>().updateComplaintType(id);
+            } catch (e) {
+              log(e.toString());
+            }
+          },
+        ),
+        Expanded(
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: Color.fromARGB(255, 59, 58, 58),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

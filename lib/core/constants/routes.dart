@@ -10,7 +10,6 @@ class AppRoutes {
   static const gallery = '/gallery';
   static const drawing = '/drawing';
   static const workDetails = '/workDetails';
-  static const siteNote = '/siteNote';
   static const stages = '/stages';
   static const stageHistory = '/stageHistory';
   static const contractor = '/contractor';

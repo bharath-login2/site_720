@@ -327,11 +327,11 @@ class ProjectDetails extends StatelessWidget {
                                   InkWell(
                                     onTap: () {
                                       Navigator.pushNamed(
-                                          context, AppRoutes.siteNote,
+                                          context, AppRoutes.package,
                                           arguments: {"id": id});
                                     },
                                     child: DetailsButtonContainer(
-                                      title: "Site Note",
+                                      title: "Package",
                                       color: AppColors.primaryColor,
                                       width: MediaQuery.of(context).size.width *
                                           .43,
@@ -521,29 +521,6 @@ class ProjectDetails extends StatelessWidget {
                                     },
                                     child: DetailsButtonContainer(
                                       title: "Consumption",
-                                      color: AppColors.primaryColor,
-                                      width: MediaQuery.of(context).size.width *
-                                          .43,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0, horizontal: 16.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      Navigator.pushNamed(
-                                          context, AppRoutes.package,
-                                          arguments: {"id": id});
-                                    },
-                                    child: DetailsButtonContainer(
-                                      title: "Package",
                                       color: AppColors.primaryColor,
                                       width: MediaQuery.of(context).size.width *
                                           .43,

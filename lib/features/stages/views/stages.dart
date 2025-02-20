@@ -8,13 +8,19 @@ import 'package:site_720/core/widgets/snack_bar.dart';
 
 import '../../../core/constants/routes.dart';
 import '../../../core/widgets/buttons.dart';
+import '../../../core/widgets/connectivity_dialog.dart';
 import '../../../core/widgets/shimmer.dart';
+import '../../../data/models/stages/stage_model.dart';
+import '../../connectivity/cubit/connectivity_cubit.dart';
+import '../../connectivity/cubit/connectivity_state.dart';
 import '../cubit/stages_cubit.dart';
 import '../cubit/stages_state.dart';
 
 class Stages extends StatelessWidget {
   Stages({super.key});
+  bool connStatus = false;
   final formKey = GlobalKey<FormState>();
+  List<GetStages> stages = [];
   TextEditingController searchController = TextEditingController();
   TextEditingController stage = TextEditingController();
   TextEditingController days = TextEditingController();
@@ -33,18 +39,37 @@ class Stages extends StatelessWidget {
     String clientId = args["client_id"] ?? "";
     return BlocProvider(
       create: (context) => StagesCubit(projectId),
-      child: BlocBuilder<StagesCubit, StagesState>(
-        builder: (context, state) {
-          final cubit = context.read<StagesCubit>();
-          return BlocListener<StagesCubit, StagesState>(
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<ConnectivityCubit, ConnectivityState>(
             listener: (context, state) {
+              if (state is ConnectivityDisconnected) {
+                connStatus = false;
+                connectivityDialog(context);
+              } else {
+                connStatus = true;
+              }
+            },
+          ),
+          BlocListener<StagesCubit, StagesState>(
+            listener: (context, state) {
+              if (state is StagesSuccess) {
+                stages = state.response.data;
+              } else if (state is SearchResult) {
+                stages = state.filteredList;
+              }
               if (state is AddedSuccess) {
                 snackBar(context, "Stage Added Successfully", Colors.green);
               } else if (state is AddedFailure) {
                 snackBar(context, "Adding Stage Failed", Colors.green);
               }
             },
-            child: Scaffold(
+          ),
+        ],
+        child: BlocBuilder<StagesCubit, StagesState>(
+          builder: (context, state) {
+            final cubit = context.read<StagesCubit>();
+            return Scaffold(
                 backgroundColor: AppColors.backgroundColor,
                 appBar: PreferredSize(
                   preferredSize:
@@ -158,6 +183,9 @@ class Stages extends StatelessWidget {
                               ],
                             ),
                             child: TextFormField(
+                              onChanged: (value) {
+                                cubit.filterSearch(value);
+                              },
                               controller: searchController,
                               decoration: const InputDecoration(
                                 hintText: 'Search...',
@@ -176,302 +204,241 @@ class Stages extends StatelessWidget {
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          itemCount: state is StagesSuccess
-                              ? state.response.data.length
-                              : 4,
+                          itemCount: stages.length,
                           itemBuilder: (context, index) {
                             return Padding(
                               padding: const EdgeInsets.all(6.0),
-                              child: state is StagesFailure
-                                  ? const SizedBox()
-                                  : state is StagesSuccess
-                                      ? InkWell(
-                                          onTap: () {
-                                            // Navigator.of(context)
-                                            //     .pushNamed(AppRoutes.stageHistory);
-                                          },
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
+                              child: state is StagesLoading
+                                  ? shimmerContainer(
+                                      MediaQuery.of(context).size.height * .1,
+                                      MediaQuery.of(context).size.width * .9)
+                                  : InkWell(
+                                      onTap: () {
+                                        // Navigator.of(context)
+                                        //     .pushNamed(AppRoutes.stageHistory);
+                                      },
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
                                                 .9,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
+                                        height:
+                                            MediaQuery.of(context).size.height *
                                                 .1,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                              color: Colors.white,
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.grey
-                                                      .withOpacity(0.8),
-                                                  blurRadius: 3,
-                                                  offset: const Offset(0, 3),
-                                                ),
-                                              ],
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.8),
+                                              blurRadius: 3,
+                                              offset: const Offset(0, 3),
                                             ),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Container(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            .2,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5),
-                                                      image: const DecorationImage(
-                                                          image: AssetImage(
-                                                              "assets/images/appbar.png"),
-                                                          fit: BoxFit.cover),
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                          color: Colors.grey
-                                                              .withOpacity(0.8),
-                                                          blurRadius: 6,
-                                                          offset: const Offset(
-                                                              1, 1),
-                                                        ),
-                                                      ],
+                                          ],
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    .2,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                  image: const DecorationImage(
+                                                      image: AssetImage(
+                                                          "assets/images/appbar.png"),
+                                                      fit: BoxFit.cover),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.8),
+                                                      blurRadius: 6,
+                                                      offset:
+                                                          const Offset(1, 1),
                                                     ),
-                                                    alignment: Alignment.center,
-                                                    child: Column(
+                                                  ],
+                                                ),
+                                                alignment: Alignment.center,
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      stages[index].estDays,
+                                                      style: const TextStyle(
+                                                          fontSize: 20,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: AppColors
+                                                              .backgroundColor),
+                                                    ),
+                                                    const Text(
+                                                      "Est Days",
+                                                      style: TextStyle(
+                                                          fontSize: 10,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: AppColors
+                                                              .backgroundColor),
+                                                    )
+                                                  ],
+                                                )),
+                                            SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  .7,
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 8.0,
+                                                    left: 8.0,
+                                                    right: 8.0,
+                                                    bottom: 8.0),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceAround,
+                                                  children: [
+                                                    Row(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
-                                                              .center,
+                                                              .spaceBetween,
                                                       children: [
                                                         Text(
-                                                          state
-                                                              .response
-                                                              .data[index]
-                                                              .estDays,
+                                                          stages[index]
+                                                              .stageName,
                                                           style: const TextStyle(
-                                                              fontSize: 20,
+                                                              fontSize: 16,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold,
                                                               color: AppColors
-                                                                  .backgroundColor),
-                                                        ),
-                                                        const Text(
-                                                          "Est Days",
-                                                          style: TextStyle(
-                                                              fontSize: 10,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              color: AppColors
-                                                                  .backgroundColor),
-                                                        )
-                                                      ],
-                                                    )),
-                                                SizedBox(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      .7,
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 8.0,
-                                                            left: 8.0,
-                                                            right: 8.0,
-                                                            bottom: 8.0),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceAround,
-                                                      children: [
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Text(
-                                                              state
-                                                                  .response
-                                                                  .data[index]
-                                                                  .stageName,
-                                                              style: const TextStyle(
-                                                                  fontSize: 16,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color: AppColors
-                                                                      .coffie),
-                                                            ),
-                                                            Row(
-                                                              children: [
-                                                                Container(
-                                                                  height: 25,
-                                                                  width: 25,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    borderRadius:
-                                                                        BorderRadius
-                                                                            .circular(5),
-                                                                    color: AppColors
-                                                                        .primaryColor,
-                                                                    boxShadow: [
-                                                                      BoxShadow(
-                                                                        color: Colors
-                                                                            .grey
-                                                                            .withOpacity(0.8),
-                                                                        blurRadius:
-                                                                            6,
-                                                                        offset: const Offset(
-                                                                            1,
-                                                                            1),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                  child:
-                                                                      const Icon(
-                                                                    Icons.edit,
-                                                                    size: 18,
-                                                                    color: Colors
-                                                                        .white,
-                                                                  ),
-                                                                ),
-                                                                const SizedBox(
-                                                                  width: 7,
-                                                                ),
-                                                                Container(
-                                                                  height: 25,
-                                                                  width: 25,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    borderRadius:
-                                                                        BorderRadius
-                                                                            .circular(5),
-                                                                    color: AppColors
-                                                                        .lightBlue,
-                                                                    boxShadow: [
-                                                                      BoxShadow(
-                                                                        color: Colors
-                                                                            .grey
-                                                                            .withOpacity(0.8),
-                                                                        blurRadius:
-                                                                            6,
-                                                                        offset: const Offset(
-                                                                            1,
-                                                                            1),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                  child:
-                                                                      const Icon(
-                                                                    Icons
-                                                                        .analytics_outlined,
-                                                                    size: 18,
-                                                                    color: Colors
-                                                                        .white,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            )
-                                                          ],
+                                                                  .coffie),
                                                         ),
                                                         Row(
-                                                          // mainAxisAlignment:
-                                                          //     MainAxisAlignment.spaceBetween,
                                                           children: [
-                                                            const Text(
-                                                              "Created by",
-                                                              style: TextStyle(
-                                                                fontSize: 10,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
+                                                            Container(
+                                                              height: 25,
+                                                              width: 25,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            5),
+                                                                color: AppColors
+                                                                    .primaryColor,
+                                                                boxShadow: [
+                                                                  BoxShadow(
+                                                                    color: Colors
+                                                                        .grey
+                                                                        .withOpacity(
+                                                                            0.8),
+                                                                    blurRadius:
+                                                                        6,
+                                                                    offset:
+                                                                        const Offset(
+                                                                            1,
+                                                                            1),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              child: const Icon(
+                                                                Icons.edit,
+                                                                size: 18,
+                                                                color: Colors
+                                                                    .white,
                                                               ),
                                                             ),
-                                                            const SizedBox(
-                                                              width: 5,
-                                                            ),
-                                                            Container(
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              12),
-                                                                  color: AppColors
-                                                                      .coffie,
-                                                                  boxShadow: [
-                                                                    BoxShadow(
-                                                                      color: Colors
-                                                                          .grey
-                                                                          .withOpacity(
-                                                                              0.8),
-                                                                      blurRadius:
-                                                                          6,
-                                                                      offset:
-                                                                          const Offset(
-                                                                              1,
-                                                                              1),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                alignment:
-                                                                    Alignment
-                                                                        .center,
-                                                                child: Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                          .symmetric(
-                                                                    horizontal:
-                                                                        10.0,
-                                                                  ),
-                                                                  child: Text(
-                                                                    state
-                                                                        .response
-                                                                        .data[
-                                                                            index]
-                                                                        .username,
-                                                                    style: const TextStyle(
-                                                                        fontSize:
-                                                                            10,
-                                                                        fontWeight:
-                                                                            FontWeight
-                                                                                .bold,
-                                                                        color: Colors
-                                                                            .white),
-                                                                  ),
-                                                                )),
                                                           ],
-                                                        ),
+                                                        )
                                                       ],
                                                     ),
-                                                  ),
+                                                    Row(
+                                                      // mainAxisAlignment:
+                                                      //     MainAxisAlignment.spaceBetween,
+                                                      children: [
+                                                        const Text(
+                                                          "Created by",
+                                                          style: TextStyle(
+                                                            fontSize: 10,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 5,
+                                                        ),
+                                                        Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          12),
+                                                              color: AppColors
+                                                                  .coffie,
+                                                              boxShadow: [
+                                                                BoxShadow(
+                                                                  color: Colors
+                                                                      .grey
+                                                                      .withOpacity(
+                                                                          0.8),
+                                                                  blurRadius: 6,
+                                                                  offset:
+                                                                      const Offset(
+                                                                          1, 1),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            alignment: Alignment
+                                                                .center,
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                horizontal:
+                                                                    10.0,
+                                                              ),
+                                                              child: Text(
+                                                                stages[index]
+                                                                    .username,
+                                                                style: const TextStyle(
+                                                                    fontSize:
+                                                                        10,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    color: Colors
+                                                                        .white),
+                                                              ),
+                                                            )),
+                                                      ],
+                                                    ),
+                                                  ],
                                                 ),
-                                              ],
+                                              ),
                                             ),
-                                          ),
-                                        )
-                                      : shimmerContainer(
-                                          MediaQuery.of(context).size.height *
-                                              .1,
-                                          MediaQuery.of(context).size.width *
-                                              .9),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                             );
                           },
                         ),
                       ],
                     ),
                   ),
-                )),
-          );
-        },
+                ));
+          },
+        ),
       ),
     );
   }
@@ -488,7 +455,7 @@ class Stages extends StatelessWidget {
         return AlertDialog(
           backgroundColor: Colors.white,
           content: SizedBox(
-            height: 400,
+            height: 360,
             child: SingleChildScrollView(
               child: Form(
                 key: formKey,

@@ -6,9 +6,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/buttons.dart';
+import 'package:site_720/core/widgets/shimmer.dart';
 import '../../../core/widgets/appbar.dart';
+import '../../../core/widgets/connectivity_dialog.dart';
 import '../../../core/widgets/dialogs.dart';
+import '../../../core/widgets/snack_bar.dart';
 import '../../../data/models/site_drawings/drawing_list.dart';
+import '../../connectivity/cubit/connectivity_cubit.dart';
+import '../../connectivity/cubit/connectivity_state.dart';
 import '../cubit/drawing_state.dart';
 import '../cubit/drawing_cubit.dart';
 
@@ -19,6 +24,7 @@ class DrawingScreen extends StatelessWidget {
   TextEditingController remark = TextEditingController();
   List<Drawings> drawingList = [];
   XFile? image;
+  bool connStatus = false;
 
   @override
   Widget build(BuildContext context) {
@@ -28,128 +34,166 @@ class DrawingScreen extends StatelessWidget {
     clientId = args["client_id"]!;
     return BlocProvider(
       create: (context) => DrawingCubit(projectId),
-      child: Scaffold(
-        backgroundColor: AppColors.backgroundColor,
-        body: BlocConsumer<DrawingCubit, DrawingState>(
-          listener: (context, state) {
-            if (state is DrawingSuccess) {
-              drawingList = state.response.data;
-            } else if (state is ImageSuccess) {
-              image = state.image;
-            }
-          },
-          builder: (context, state) {
-            return SingleChildScrollView(
-              child: Stack(
-                children: [
-                  SizedBox(
-                    child: Column(
-                      children: [
-                        FloatingAppBar(
-                          title: "Drawing",
-                        ),
-                        SizedBox(
-                          height: image == null
-                              ? MediaQuery.of(context).size.height * .28
-                              : MediaQuery.of(context).size.height * .42,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 16.0),
-                          child: ListView.builder(
-                            padding: EdgeInsets.zero,
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: drawingList.length,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 16.0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12),
-                                    color: AppColors.lightA,  
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.8),
-                                        blurRadius: 3,
-                                        offset: const Offset(0, 3),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                .35,
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            fit: BoxFit.fitWidth,
-                                            image: NetworkImage(
-                                                drawingList[index].fileName),
-                                          ),
-                                          border: Border.all(
+      child: BlocListener<ConnectivityCubit, ConnectivityState>(
+        listener: (context, state) {
+          if (state is ConnectivityDisconnected) {
+            connStatus = false;
+            connectivityDialog(context);
+          } else {
+            connStatus = true;
+          }
+        },
+        child: Scaffold(
+          backgroundColor: AppColors.backgroundColor,
+          body: BlocConsumer<DrawingCubit, DrawingState>(
+            listener: (context, state) {
+              if (state is DrawingSuccess) {
+                drawingList = state.response.data;
+              } else if (state is ImageSuccess) {
+                image = state.image;
+              } else if (state is UploadSuccess) {
+                image = null;
+                snackBar(context, "Drawing Uploaded", Colors.green);
+              }
+            },
+            builder: (context, state) {
+              final cubit = context.read<DrawingCubit>();
+
+              return SingleChildScrollView(
+                child: Stack(
+                  children: [
+                    SizedBox(
+                      child: Column(
+                        children: [
+                          FloatingAppBar(
+                            title: "Drawing",
+                          ),
+                          SizedBox(
+                            height: image == null
+                                ? MediaQuery.of(context).size.height * .28
+                                : MediaQuery.of(context).size.height * .42,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 16.0),
+                            child: ListView.builder(
+                              padding: EdgeInsets.zero,
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: drawingList.length,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(bottom: 16.0),
+                                  child: state is DrawingLoading
+                                      ? shimmerContainer(
+                                          MediaQuery.of(context).size.height *
+                                              .35,
+                                          MediaQuery.of(context).size.width *
+                                              .9,
+                                        )
+                                      : Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
                                             color: AppColors.lightA,
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                        ),
-                                        margin: const EdgeInsets.all(8),
-                                      ),
-                                      if (drawingList[index].remarks != "")
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 16.0,
-                                              right: 16.0,
-                                              top: 4.0,
-                                              bottom: 8.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                drawingList[index].remarks,
-                                                style: const TextStyle(
-                                                  color: AppColors.primaryColor,
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey
+                                                    .withOpacity(0.8),
+                                                blurRadius: 3,
+                                                offset: const Offset(0, 3),
                                               ),
-                                              InkWell(
-                                                onTap: () {
-                                                  deleteDialog(context, () {
-                                                    // cubit.deleteGallery(projectId, images[i].imageId);
-                                                    Navigator.pop(context);
-                                                  });
-                                                },
-                                                child: const Icon(
-                                                  Icons.delete,
-                                                  color: Colors.red,
-                                                  size: 22,
+                                            ],
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    .35,
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    fit: BoxFit.fitWidth,
+                                                    image: NetworkImage(
+                                                        drawingList[index]
+                                                            .fileName),
+                                                  ),
+                                                  border: Border.all(
+                                                    color: AppColors.lightA,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
                                                 ),
-                                              )
+                                                margin: const EdgeInsets.all(8),
+                                              ),
+                                              if (drawingList[index].remarks !=
+                                                  "")
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 16.0,
+                                                          right: 16.0,
+                                                          top: 4.0,
+                                                          bottom: 8.0),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        drawingList[index]
+                                                            .remarks,
+                                                        style: const TextStyle(
+                                                          color: AppColors
+                                                              .primaryColor,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      InkWell(
+                                                        onTap: () {
+                                                          deleteDialog(context,
+                                                              () {
+                                                            cubit.deleteDrawing(
+                                                                projectId,
+                                                                drawingList[
+                                                                        index]
+                                                                    .id);
+                                                            Navigator.pop(
+                                                                context);
+                                                          });
+                                                        },
+                                                        child: const Icon(
+                                                          Icons.delete,
+                                                          color: Colors.red,
+                                                          size: 22,
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
                                             ],
                                           ),
                                         ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
+                                );
+                              },
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  Positioned(
-                    top: MediaQuery.of(context).size.height * 0.16,
-                    left: MediaQuery.of(context).size.width * 0.05,
-                    child: floatingCard(context),
-                  ),
-                ],
-              ),
-            );
-          },
+                    Positioned(
+                      top: MediaQuery.of(context).size.height * 0.16,
+                      left: MediaQuery.of(context).size.width * 0.05,
+                      child: floatingCard(context),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

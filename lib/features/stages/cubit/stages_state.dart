@@ -42,3 +42,8 @@ class StagesFailure extends StagesState {
   final String message;
   StagesFailure(this.message);
 }
+
+class SearchResult extends StagesState {
+     List<GetStages> filteredList;
+  SearchResult(this.filteredList);
+}

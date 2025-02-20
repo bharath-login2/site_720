@@ -18,7 +18,6 @@ import 'package:site_720/features/project_list/views/edit_project.dart';
 import 'package:site_720/features/project_list/views/project_list_screen.dart';
 import 'package:site_720/features/purchase/views/add_purchase.dart';
 import 'package:site_720/features/purchase/views/purchase_list_screen.dart';
-import 'package:site_720/features/site_note/views/site_note_screen.dart';
 import 'package:site_720/features/splash/views/splash.dart';
 import 'package:site_720/features/sub_contactors/views/sub_contrctor_screen.dart';
 import 'features/clients/views/add_clients.dart';
@@ -70,7 +69,6 @@ class MyApp extends StatelessWidget {
         '/gallery': (context) => GalleryScreen(),
         '/drawing': (context) => DrawingScreen(),
         '/workDetails': (context) => WorkDetailsScreen(),
-        '/siteNote': (context) => const SiteNote(),
         '/stages': (context) => Stages(),
         '/stageHistory': (context) => StageHistory(),
         '/contractor': (context) => Contractor(),

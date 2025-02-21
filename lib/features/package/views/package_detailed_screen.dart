@@ -3,10 +3,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
+import 'package:site_720/core/widgets/shimmer.dart';
 import 'package:site_720/features/package/cubit/package_detailed_cubit.dart';
 import '../../../core/widgets/buttons.dart';
 import '../../../core/widgets/snack_bar.dart';
 import '../../payment_details/widgets/amount_container.dart';
+import '../cubit/package_details_state.dart';
 
 class PackageDetailed extends StatelessWidget {
   PackageDetailed({super.key});
@@ -18,6 +20,10 @@ class PackageDetailed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+    String projectId = args["id"]!;
+    String clientId = args["client_id"]!;
     return Scaffold(
         backgroundColor: AppColors.backgroundColor,
         appBar: PreferredSize(
@@ -85,148 +91,164 @@ class PackageDetailed extends StatelessWidget {
           ),
         ),
         body: BlocProvider(
-          create: (context) => PackageDetailedCubit(),
-          child: ListView.builder(
-            shrinkWrap: true,
-            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
-            itemCount: 15,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.all(6.0),
-                child: InkWell(
-                  onTap: () {
-                    // Navigator.of(context).pushNamed(AppRoutes.stageHistory);
-                  },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * .9,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.8),
-                          blurRadius: 3,
-                          offset: const Offset(0, 3),
+          create: (context) => PackageDetailedCubit(projectId),
+          child: BlocBuilder<PackageDetailedCubit, PackageDetailedState>(
+            builder: (context, state) {
+              return state is PackageDetailedSuccess?
+               ListView.builder(
+                shrinkWrap: true,
+                padding:
+                const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+                itemCount: state.response.data.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(6.0),
+                    child: InkWell(
+                      onTap: () {
+                        // Navigator.of(context).pushNamed(AppRoutes.stageHistory);
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * .9,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.8),
+                              blurRadius: 3,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * .7,
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            top: 8.0, left: 8.0, right: 8.0, bottom: 8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width * .7,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 8.0, left: 8.0, right: 8.0, bottom: 8.0),
+                            child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Column(
+                                Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      "Packages",
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: AppColors.coffie),
-                                    ),
-                                    Text(
-                                      "package Details",
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Row(
+                                     Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        InkWell(
-                                          onTap: () {
-                                            editDialog(context, () {
-                                              Navigator.pop(context);
-                                            });
-                                          },
-                                          child: Container(
-                                            height: 25,
-                                            width: 25,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                              color: AppColors.lightBlue,
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.grey
-                                                      .withOpacity(0.8),
-                                                  blurRadius: 6,
-                                                  offset: const Offset(1, 1),
-                                                ),
-                                              ],
-                                            ),
-                                            child: const Icon(
-                                              Icons.edit,
-                                              size: 18,
-                                              color: Colors.white,
-                                            ),
-                                          ),
+                                        Text(
+                                         state.response.data[index].packageName,
+                                          style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: AppColors.coffie),
                                         ),
-                                        const SizedBox(
-                                          width: 7,
-                                        ),
-                                        InkWell(
-                                          onTap: () {
-                                            deleteDialog(context, () {
-                                              Navigator.pop(context);
-                                            });
-                                          },
-                                          child: Container(
-                                            height: 25,
-                                            width: 25,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                              color: Colors.red,
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.grey
-                                                      .withOpacity(0.8),
-                                                  blurRadius: 6,
-                                                  offset: const Offset(1, 1),
-                                                ),
-                                              ],
-                                            ),
-                                            child: const Icon(
-                                              Icons.delete,
-                                              size: 18,
-                                              color: Colors.white,
-                                            ),
+                                         Text(
+                                          state.response.data[index].description,
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                       ],
                                     ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    AmountContainer(
-                                      title: "Package Cost",
-                                      amount: "20000 ₹",
-                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            InkWell(
+                                              onTap: () {
+                                                editDialog(context, () {
+                                                  Navigator.pop(context);
+                                                });
+                                              },
+                                              child: Container(
+                                                height: 25,
+                                                width: 25,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                  color: AppColors.lightBlue,
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.8),
+                                                      blurRadius: 6,
+                                                      offset:
+                                                          const Offset(1, 1),
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: const Icon(
+                                                  Icons.edit,
+                                                  size: 18,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 7,
+                                            ),
+                                            InkWell(
+                                              onTap: () {
+                                                deleteDialog(context, () {
+                                                  Navigator.pop(context);
+                                                });
+                                              },
+                                              child: Container(
+                                                height: 25,
+                                                width: 25,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                  color: Colors.red,
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.8),
+                                                      blurRadius: 6,
+                                                      offset:
+                                                          const Offset(1, 1),
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: const Icon(
+                                                  Icons.delete,
+                                                  size: 18,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        AmountContainer(
+                                          title: "Package Cost",
+                                          amount: "20000 ₹",
+                                        ),
+                                      ],
+                                    )
                                   ],
-                                )
+                                ),
                               ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-              );
+                  );
+                },
+              ):state is PackageDetailedLoading?
+              ListView.builder(itemBuilder: (context, index) {
+                shimmerContainer(700, 100);
+              },):const Center(
+                            child: Text("No Packages Added"),
+                          );
             },
           ),
         ));

@@ -1,3 +1,5 @@
+import '../../../data/models/packagelist/packagelist_model.dart';
+
 class PackageDetailedState {
   final DateTime? fromDate;
   final DateTime? toDate;
@@ -19,8 +21,8 @@ class PackageDetailedInitial extends PackageDetailedState {
 class PackageDetailedLoading extends PackageDetailedState {}
 
 class PackageDetailedSuccess extends PackageDetailedState {
-  final String message;
-  PackageDetailedSuccess(this.message);
+  GetPackageList response;
+  PackageDetailedSuccess(this.response);
 }
 
 class PackageDetailedFailure extends PackageDetailedState {

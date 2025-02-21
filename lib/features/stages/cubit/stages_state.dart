@@ -2,6 +2,7 @@
 import 'package:site_720/data/models/succes_response/success_response.dart';
 
 import '../../../data/models/stages/stage_model.dart';
+import '../../../data/models/stages/stagephase_model.dart';
 
 class StagesState {
   final DateTime? fromDate;
@@ -31,6 +32,11 @@ class StagesSuccess extends StagesState {
 class AddedSuccess extends StagesState {
   SuccessResponse  response;
   AddedSuccess(this.response);
+}
+
+class PhaselistSuccess extends StagesState {
+  StagePhaseList response;
+  PhaselistSuccess(this.response);
 }
 
 class AddedFailure extends StagesState {

@@ -328,7 +328,10 @@ class ProjectDetails extends StatelessWidget {
                                     onTap: () {
                                       Navigator.pushNamed(
                                           context, AppRoutes.package,
-                                          arguments: {"id": id});
+                                          arguments: {
+                                            "id": id,
+                                            "client_id":clientId
+                                            });
                                     },
                                     child: DetailsButtonContainer(
                                       title: "Package",

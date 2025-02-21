@@ -199,10 +199,15 @@ class Expense extends StatelessWidget {
                   );
                 },
               ):state is ExpenseLoading ? ListView.builder(itemBuilder: (context, index) {
-                return shimmerContainer(100, 70);
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: shimmerContainer(100, 70),
+                );
               },
               ):
-              const SizedBox(child: Text("Expense List Is Empty!!"),);
+             const Center(
+                  child: Text("No Expense Added"),
+                );
             },
           ),
         ));

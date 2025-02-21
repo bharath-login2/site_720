@@ -1,12 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data/models/stages/stage_model.dart';
+import '../../../data/models/stages/stagephase_model.dart';
 import '../../../data/models/succes_response/success_response.dart';
 import '../../../data/services/http_services.dart';
 import 'stages_state.dart';
 
 class StagesCubit extends Cubit<StagesState> {
   StagesCubit(String projectId) : super(StagesInitial()) {
+    getPhaseNew(projectId);
     getStagesList(projectId);
   }
 
@@ -29,11 +31,40 @@ class StagesCubit extends Cubit<StagesState> {
     }
   }
 
-  Future<void> addStageDetails(String projectId, String clintId, String stage,
+    Future<void> getPhaseNew(String projectId) async {
+    try {
+      StagePhaseList response =
+          await HttpServices.getPhaseNew(projectId);
+      if (response.status == true) {
+        emit(PhaselistSuccess(response));
+      } else {
+      }
+    } catch (e) {
+      emit(StagesFailure('Failed to fetch data: ${e.toString()}'));
+    }
+  }
+
+  Future<void> addStageDetails(String projectId, String clintId,selectedStatus, String stage,
       String startDateController, String endDateController) async {
     try {
       SuccessResponse response = await HttpServices.addStages(
-          projectId, clintId, stage, startDateController, endDateController);
+          projectId, clintId,selectedStatus, stage, startDateController, endDateController);
+      if (response.status == true) {
+        getStagesList(projectId);
+        emit(AddedSuccess(response));
+      } else {
+        emit(AddedFailure(response));
+      }
+    } catch (e) {
+      emit(StagesFailure('Failed to fetch data: ${e.toString()}'));
+    }
+  }
+
+   Future<void> editStageDetails(String projectId, String clintId,String stageId, selectedStatus, String stage,
+      String startDateController, String endDateController) async {
+    try {
+      SuccessResponse response = await HttpServices.editStages(
+          projectId, clintId,stageId,selectedStatus, stage, startDateController, endDateController);
       if (response.status == true) {
         getStagesList(projectId);
         emit(AddedSuccess(response));

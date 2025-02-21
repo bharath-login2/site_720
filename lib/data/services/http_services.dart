@@ -14,6 +14,7 @@ import '../models/deductionwork/phaselist_model.dart';
 import '../models/expenselist/expenselist_model.dart';
 import '../models/extraworklist/extra_work_model.dart';
 import '../models/galery/stage_pro_model.dart';
+import '../models/packagelist/packagelist_model.dart';
 import '../models/paymentdetails/paymentdetails_model.dart';
 import '../models/login/login_model.dart';
 import '../models/project_details/project_detais_model.dart';
@@ -21,6 +22,7 @@ import '../models/project_list/edit_data_model.dart';
 import '../models/project_list/project_data_model.dart';
 import '../models/purchasebilllist/purchasebill_list_model.dart';
 import '../models/site_drawings/drawing_list.dart';
+import '../models/stages/stagephase_model.dart';
 import '../models/succes_response/success_response.dart';
 import '../models/workdetails/add_work_details_model.dart';
 import '../models/stages/stage_model.dart';
@@ -262,9 +264,24 @@ class HttpServices {
     }
   }
 
+
+  static Future getPhaseNew(projectId) async {
+    try {
+      http.Response response = await http.post(
+          Uri.parse("${baseUrl}phase_list_new"),
+          body: {"project_id": projectId});
+      if (response.statusCode == 200) {
+        return stagePhaseListFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
   static Future addStages(
     String projectId,
     String clintId,
+    selectedStatus,
     String stages,
     String startDate,
     String endDate,
@@ -274,6 +291,36 @@ class HttpServices {
           await http.post(Uri.parse("${baseUrl}add_stages"), body: {
         "project_id": projectId,
         "client_id": clintId,
+        "phase_id":selectedStatus,
+        "stages": stages,
+        "startDate": startDate,
+        "endDate": endDate,
+      });
+      if (response.statusCode == 200) {
+        return successResponseFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+
+  static Future editStages(
+    String projectId,
+    String clintId,
+    String stageId,
+    selectedStatus,
+    String stages,
+    String startDate,
+    String endDate,
+  ) async {
+    try {
+      http.Response response =
+          await http.post(Uri.parse("${baseUrl}edit_stages"), body: {
+        "project_id": projectId,
+        "client_id": clintId,
+         "stage_id": stageId,
+        "phase_id":selectedStatus,
         "stages": stages,
         "startDate": startDate,
         "endDate": endDate,
@@ -813,6 +860,19 @@ class HttpServices {
       });
       if (response.statusCode == 200) {
         return complaintDetailsModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+    static Future getPackageList(projectId) async {
+    try {
+      http.Response response = await http.post(
+          Uri.parse("${baseUrl}package_data"),
+          body: {"project_id": projectId});
+      if (response.statusCode == 200) {
+        return getPackageListFromJson(response.body);
       }
     } catch (e) {
       log(e.toString());

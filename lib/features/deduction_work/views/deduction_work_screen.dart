@@ -101,7 +101,7 @@ class DeductionWork extends StatelessWidget {
                           InkWell(
                             onTap: () {
                               workDialog(context, cubit, phaseList, projectId,
-                                  clientId,"", "add", "add");
+                                  clientId, "", "add", "add");
                             },
                             child: const CircleAvatar(
                               radius: 20,
@@ -239,7 +239,8 @@ class DeductionWork extends StatelessWidget {
                                                                   workList[
                                                                           index]
                                                                       .description;
-                                                                      String workId = workList[
+                                                              String workId =
+                                                                  workList[
                                                                           index]
                                                                       .id;
                                                               workDialog(
@@ -248,7 +249,7 @@ class DeductionWork extends StatelessWidget {
                                                                   phaseList,
                                                                   projectId,
                                                                   clientId,
-                                                                   workId,
+                                                                  workId,
                                                                   "edit",
                                                                   "update");
                                                             },
@@ -449,7 +450,7 @@ class DeductionWork extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                     Padding(
+                    Padding(
                       padding: const EdgeInsets.only(top: 16.0, bottom: 25),
                       child: Text(
                         status == "add"
@@ -617,25 +618,26 @@ class DeductionWork extends StatelessWidget {
                     GestureDetector(
                       onTap: () async {
                         if (formKey.currentState!.validate()) {
-                          if (status =="add"){cubit.addDeductionworkList(
-                              projectId,
-                              clientId,
-                              work.text,
-                              selectedStatus,
-                              percentage.text,
-                              amount.text,
-                              description.text);} 
-                              else{
-                                cubit.editDeductionworkList(
-                              projectId,
-                              clientId,
-                              workId,
-                              work.text,
-                              selectedStatus,
-                              percentage.text,
-                              amount.text,
-                              description.text);
-                              }
+                          if (status == "add") {
+                            cubit.addDeductionworkList(
+                                projectId,
+                                clientId,
+                                work.text,
+                                selectedStatus,
+                                percentage.text,
+                                amount.text,
+                                description.text);
+                          } else {
+                            cubit.editDeductionworkList(
+                                projectId,
+                                clientId,
+                                workId,
+                                work.text,
+                                selectedStatus,
+                                percentage.text,
+                                amount.text,
+                                description.text);
+                          }
                         }
                         work.clear();
                         selectedStatus = null;

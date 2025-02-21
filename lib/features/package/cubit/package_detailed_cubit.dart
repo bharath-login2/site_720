@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/features/package/cubit/package_details_state.dart';
 
-import '../../../data/models/packagelist/packagelist_model.dart';
+import '../../../data/models/package/package_model.dart';
 import '../../../data/services/http_services.dart';
 
 

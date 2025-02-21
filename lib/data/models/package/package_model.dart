@@ -42,7 +42,7 @@ class PackageList {
         required this.id,
         required this.packageName,
         required this.amount,
-        required this.description,
+        required this.description, 
     });
 
     factory PackageList.fromJson(Map<String, dynamic> json) => PackageList(

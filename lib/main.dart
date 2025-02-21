@@ -19,6 +19,7 @@ import 'package:site_720/features/project_list/views/project_list_screen.dart';
 import 'package:site_720/features/purchase/views/add_purchase.dart';
 import 'package:site_720/features/purchase/views/purchase_list_screen.dart';
 import 'package:site_720/features/splash/views/splash.dart';
+import 'package:site_720/features/stock/views/stock.dart';
 import 'package:site_720/features/sub_contactors/views/sub_contrctor_screen.dart';
 import 'features/clients/views/add_clients.dart';
 import 'features/complaints/views/add_complaint.dart';
@@ -76,7 +77,7 @@ class MyApp extends StatelessWidget {
         '/deductionWork': (context) => DeductionWork(),
         '/purchase': (context) => const PurchaseList(),
         '/addPurchase': (context) => AddPurchase(),
-        // '/stock': (context) => DeductionWork(),
+        '/stock': (context) => Stock(),
         '/expense': (context) => Expense(),
         '/paymentDetails': (context) => const PaymentDetails(),
         '/estimation': (context) => const Estimation(),

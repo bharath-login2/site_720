@@ -1,4 +1,4 @@
-import '../../../data/models/packagelist/packagelist_model.dart';
+import '../../../data/models/package/package_model.dart';
 
 class PackageDetailedState {
   final DateTime? fromDate;

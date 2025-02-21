@@ -23,7 +23,18 @@ class ComplaintTypeUpdated extends ComplaintState {
   final String value;
   ComplaintTypeUpdated(this.value);
 }
-
+class ReportedByUpdated extends ComplaintState {
+  final String value;
+  ReportedByUpdated(this.value);
+}
+class NatureUpdated extends ComplaintState {
+  final String value;
+  NatureUpdated(this.value);
+}
+class StatusUpdated extends ComplaintState {
+  final String value;
+  StatusUpdated(this.value);
+}
 class ComplaintDetailsFetched extends ComplaintState {
   final ComplaintDetailsModel response;
   ComplaintDetailsFetched(this.response);

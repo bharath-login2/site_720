@@ -1838,7 +1838,7 @@ class AddProjectScreen extends StatelessWidget {
                             double rate =
                                 double.tryParse(unit["rate"] ?? "0") ?? 0;
                             double amount =
-                                double.tryParse(unit["amount"] ?? "0") ?? 0;
+                                double.tryParse(unit["amount"] ?? "0") ?? 0; 
 
                             totalSqFt += squareFeet;
                             totalRate += rate;

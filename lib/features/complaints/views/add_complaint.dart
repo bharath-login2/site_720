@@ -21,24 +21,22 @@ class AddComplaint extends StatelessWidget {
   String complaintStatus = "";
   AddComplaint({super.key});
   final formKey = GlobalKey<FormState>();
-  TextEditingController clientName = TextEditingController();
-  TextEditingController projectName = TextEditingController();
-  TextEditingController referenceNumber = TextEditingController();
-  TextEditingController location = TextEditingController();
-  TextEditingController locationArea = TextEditingController();
+  TextEditingController customerName = TextEditingController();
+  TextEditingController customerNumber = TextEditingController();
   TextEditingController email = TextEditingController();
-  TextEditingController companyName = TextEditingController();
-  TextEditingController civilId = TextEditingController();
-  TextEditingController gstNumber = TextEditingController();
+  TextEditingController incidentDate = TextEditingController();
+  TextEditingController complaintDescription = TextEditingController();
+  TextEditingController remarks = TextEditingController();
   dynamic selectedStaff;
   List filteredClientList = [];
   String clientId = "";
-
   List<ReportedBy> reportedByList = [];
   List<ComplaintNature> complaintNatureList = [];
   List<ComplaintStatus> complaintStatusList = [];
   List<ComplaintType> complaintTypesList = [];
   List<Staff> staffList = [];
+  List selectedParticipants = [];
+  String selectedStaffName = "";
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +57,18 @@ class AddComplaint extends StatelessWidget {
                   staffList = state.response.data.staff;
                 } else if (state is ComplaintTypeUpdated) {
                   complaintType = state.value;
+                } else if (state is ReportedByUpdated) {
+                  reportedBy = state.value;
+                } else if (state is NatureUpdated) {
+                  natureOfComplaint = state.value;
+                } else if (state is StatusUpdated) {
+                  complaintStatus = state.value;
+                } else if (state is StatusUpdated) {
+                  selectedParticipants.add({
+                    "id": selectedStaff,
+                    "staff_name": selectedStaffName,
+                    "remarks": remarks.text,
+                  });
                 }
               },
             )
@@ -283,7 +293,7 @@ class AddComplaint extends StatelessWidget {
                                 width: MediaQuery.of(context).size.width * 0.9,
                                 child: TextFormField(
                                   readOnly: true,
-                                  controller: clientName,
+                                  controller: customerName,
                                   onTap: () {
                                     // selectClientDialog(context);
                                   },
@@ -310,7 +320,7 @@ class AddComplaint extends StatelessWidget {
                               SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.9,
                                 child: TextFormField(
-                                  controller: projectName,
+                                  controller: customerNumber,
                                   keyboardType: TextInputType.number,
                                   decoration: InputDecoration(
                                     fillColor: Colors.white,
@@ -335,7 +345,7 @@ class AddComplaint extends StatelessWidget {
                               SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.9,
                                 child: TextFormField(
-                                  controller: projectName,
+                                  controller: customerNumber,
                                   keyboardType: TextInputType.emailAddress,
                                   decoration: InputDecoration(
                                     fillColor: Colors.white,
@@ -383,7 +393,7 @@ class AddComplaint extends StatelessWidget {
                                 width: MediaQuery.of(context).size.width * 0.9,
                                 child: TextFormField(
                                   readOnly: true,
-                                  controller: clientName,
+                                  controller: customerName,
                                   onTap: () async {
                                     DateTime? selectedDate =
                                         await showDatePicker(
@@ -393,7 +403,7 @@ class AddComplaint extends StatelessWidget {
                                       lastDate: DateTime(2101),
                                     );
                                     if (selectedDate != null) {
-                                      clientName.text =
+                                      customerName.text =
                                           "${selectedDate.toLocal()}"
                                               .split(' ')[0];
                                     }
@@ -429,7 +439,7 @@ class AddComplaint extends StatelessWidget {
                                           lastDate: DateTime(2101),
                                         );
                                         if (selectedDate != null) {
-                                          clientName.text =
+                                          customerName.text =
                                               "${selectedDate.toLocal()}"
                                                   .split(' ')[0];
                                         }
@@ -442,7 +452,7 @@ class AddComplaint extends StatelessWidget {
                               SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.9,
                                 child: TextFormField(
-                                  controller: projectName,
+                                  controller: customerNumber,
                                   keyboardType: TextInputType.text,
                                   decoration: InputDecoration(
                                     fillColor: Colors.white,
@@ -532,7 +542,7 @@ class AddComplaint extends StatelessWidget {
                                         id: complaintNatureList[index].id,
                                         title: complaintNatureList[index]
                                             .natureName,
-                                        value: complaintType ==
+                                        value: natureOfComplaint ==
                                                 complaintNatureList[index].id
                                             ? true
                                             : false,
@@ -596,90 +606,37 @@ class AddComplaint extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(height: 10),
-                              Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 11.0),
-                                    child: SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.77,
-                                      child: DropdownButtonFormField<String>(
-                                        value: selectedStaff,
-                                        onChanged: (value) async {
-                                          selectedStaff = value.toString();
-                                        },
-                                        items: staffList.map((data) {
-                                          return DropdownMenuItem<String>(
-                                            value: data.id.toString(),
-                                            child: Text(
-                                              data.staffName.toString(),
-                                            ),
-                                          );
-                                        }).toList(),
-                                        decoration: InputDecoration(
-                                          fillColor: Colors.white,
-                                          filled: true,
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                          ),
-                                          labelText: 'Select Staff',
-                                          labelStyle: const TextStyle(
-                                              color: Colors.grey, fontSize: 14),
-                                          contentPadding:
-                                              const EdgeInsets.only(left: 10),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-
-                                  const SizedBox(width: 10),
-
-                                  ElevatedButton(
-                                    onPressed: () {},
-                                    style: ElevatedButton.styleFrom(
-                                        minimumSize: const Size(40, 40),
-                                        padding: const EdgeInsets.all(8),
-                                        backgroundColor: Colors.grey[400],
-                                        iconColor: Colors.black),
-                                    child: const Icon(Icons.add, size: 20),
-                                  ),
-
-                                  //const SizedBox(width: 10),
-
-                                  //  ElevatedButton(
-                                  //   onPressed: () {
-
-                                  //   },
-                                  //   style: ElevatedButton.styleFrom(
-                                  //     minimumSize: const Size(40, 40),
-                                  //     padding: const EdgeInsets.all(8),
-                                  //     backgroundColor: const Color.fromARGB(255, 221, 101, 101),
-                                  //     iconColor:Colors.black
-                                  //   ),
-                                  //   child: const Icon(Icons.delete, size: 20),
-                                  // ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
                               SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.9,
-                                child: TextFormField(
-                                  controller: projectName,
-                                  keyboardType: TextInputType.text,
-                                  maxLines: 5,
+                                child: DropdownButtonFormField<String>(
+                                  value: selectedStaff,
+                                  onChanged: (value) async {
+                                    selectedStaff = value.toString();
+                                    Staff? selectedStaffObj =
+                                        staffList.firstWhere(
+                                      (staff) => staff.id == value,
+                                      orElse: () =>
+                                          Staff(id: "", staffName: ""),
+                                    );
+
+                                    selectedStaffName =
+                                        selectedStaffObj.staffName;
+                                  },
+                                  items: staffList.map((data) {
+                                    return DropdownMenuItem<String>(
+                                      value: data.id,
+                                      child: Text(
+                                        data.staffName.toString(),
+                                      ),
+                                    );
+                                  }).toList(),
                                   decoration: InputDecoration(
                                     fillColor: Colors.white,
                                     filled: true,
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(5),
                                     ),
-                                    labelText: 'Enter Remark',
-                                    prefixIcon: const Icon(
-                                      Icons.text_fields_outlined,
-                                      color: Color.fromARGB(255, 15, 15, 15),
-                                      size: 18,
-                                    ),
+                                    labelText: 'Select Staff',
                                     labelStyle: const TextStyle(
                                         color: Colors.grey, fontSize: 14),
                                     contentPadding:
@@ -687,7 +644,78 @@ class AddComplaint extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.65,
+                                    child: TextFormField(
+                                      controller: remarks,
+                                      keyboardType: TextInputType.text,
+                                      maxLines: 4,
+                                      decoration: InputDecoration(
+                                        fillColor: Colors.white,
+                                        filled: true,
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                        labelText: 'Enter Remark',
+                                        prefixIcon: const Icon(
+                                          Icons.text_fields_outlined,
+                                          color:
+                                              Color.fromARGB(255, 15, 15, 15),
+                                          size: 18,
+                                        ),
+                                        labelStyle: const TextStyle(
+                                            color: Colors.grey, fontSize: 14),
+                                        contentPadding:
+                                            const EdgeInsets.only(left: 10),
+                                      ),
+                                    ),
+                                  ),
+                                  InkWell(
+                                      onTap: () {}, child: addButton(context))
+                                ],
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(top: 10.0),
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: selectedParticipants.length,
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(top: 5),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          color: AppColors.primaryColor,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.8),
+                                              blurRadius: 6,
+                                              offset: const Offset(1, 1),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            Text(selectedParticipants[index]
+                                                ["staff_name"])
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              const SizedBox(height: 10),
                             ],
                           ),
                         ),
@@ -745,7 +773,7 @@ class AddComplaint extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 20,
                                 ),
                                 ListView.builder(
@@ -760,7 +788,7 @@ class AddComplaint extends StatelessWidget {
                                         id: complaintStatusList[index].id,
                                         title: complaintStatusList[index]
                                             .statusName,
-                                        value: complaintType ==
+                                        value: complaintStatus ==
                                                 complaintStatusList[index].id
                                             ? true
                                             : false,
@@ -775,13 +803,7 @@ class AddComplaint extends StatelessWidget {
                         ),
                         const SizedBox(height: 35),
                         InkWell(
-                            onTap: () {
-                              context.read<ClientsCubit>().addClient(
-                                    "",
-                                    "",
-                                  );
-                            },
-                            child: LargeButton(title: "Submit")),
+                            onTap: () {}, child: LargeButton(title: "Submit")),
                         const SizedBox(
                           height: 25,
                         ),
@@ -795,6 +817,33 @@ class AddComplaint extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Container addButton(BuildContext context) {
+    return Container(
+        width: MediaQuery.of(context).size.width * .23,
+        height: MediaQuery.of(context).size.height * .1,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          color: AppColors.primaryColor,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.8),
+              blurRadius: 6,
+              offset: const Offset(1, 1),
+            ),
+          ],
+        ),
+        alignment: Alignment.center,
+        child: const Text(
+          "Add",
+          style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1,
+              fontFamily: "Lobster",
+              color: Colors.white),
+        ));
   }
 }
 
@@ -814,6 +863,7 @@ class CheckBoxWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var cubit = context.read<AddComplaintCubit>();
     return Row(
       // crossAxisAlignment: CrossAxisAlignment
       //     .start,
@@ -822,7 +872,15 @@ class CheckBoxWidget extends StatelessWidget {
           value: value,
           onChanged: (bool? newValue) {
             try {
-              context.read<AddComplaintCubit>().updateComplaintType(id);
+              if (type == "type") {
+                cubit.updateComplaintType(id);
+              } else if (type == "reportedBy") {
+                cubit.updateReportedby(id);
+              } else if (type == "nature") {
+                cubit.updatNature(id);
+              } else if (type == "status") {
+                cubit.updateStatus(id);
+              }
             } catch (e) {
               log(e.toString());
             }

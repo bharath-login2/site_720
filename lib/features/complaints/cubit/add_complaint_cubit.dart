@@ -24,4 +24,16 @@ class AddComplaintCubit extends Cubit<ComplaintState> {
   updateComplaintType(String value) {
     emit(ComplaintTypeUpdated(value));
   }
+
+  updateReportedby(String value) {
+    emit(ReportedByUpdated(value));
+  }
+
+  updatNature(String value) {
+    emit(NatureUpdated(value));
+  }
+
+  updateStatus(String value) {
+    emit(StatusUpdated(value));
+  }
 }

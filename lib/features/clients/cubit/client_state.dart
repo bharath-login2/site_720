@@ -1,4 +1,5 @@
-part of 'client_cubit.dart';
+import '../../../data/models/clientlist/client_list_model.dart';
+import '../../../data/models/clientlist/state_list_model.dart';
 
 abstract class ClientsState {}
 
@@ -16,11 +17,13 @@ class AddClientFailure extends ClientsState {
 
   AddClientFailure(this.message);
 }
+
 class ClientDetailsSuccess extends ClientsState {
   ClientListModel response;
 
   ClientDetailsSuccess(this.response);
 }
+
 class ClientDetailsFailure extends ClientsState {
   final String message;
 
@@ -29,4 +32,10 @@ class ClientDetailsFailure extends ClientsState {
 
 class ClientDetailsLoading extends ClientsState {
   ClientDetailsLoading();
+}
+
+class StateListFetched extends ClientsState {
+  StateListModel response;
+
+  StateListFetched(this.response);
 }

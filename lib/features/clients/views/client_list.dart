@@ -6,6 +6,7 @@ import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/constants/routes.dart';
 import '../../../core/widgets/dialogs.dart';
 import '../cubit/client_cubit.dart';
+import '../cubit/client_state.dart';
 
 class ClientList extends StatelessWidget {
   const ClientList({super.key});

@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/buttons.dart';
-import 'package:site_720/features/clients/cubit/client_cubit.dart';
-
+import 'package:site_720/features/clients/cubit/add_client_cubit.dart';
+import 'package:site_720/features/clients/cubit/client_state.dart';
 import '../../../core/widgets/appbar.dart';
+import '../../../data/models/clientlist/state_list_model.dart';
 
 class AddCilentScreen extends StatelessWidget {
   AddCilentScreen({super.key});
@@ -20,363 +21,376 @@ class AddCilentScreen extends StatelessWidget {
   TextEditingController companyName = TextEditingController();
   TextEditingController civilId = TextEditingController();
   TextEditingController gstNumber = TextEditingController();
-  dynamic status;
+  String? selectedState;
+  String? selectedDistrict;
+  String? selectedType;
   List<Map<String, dynamic>> statuses = [
     {"statusId": 1, "statusName": "Normal"},
     {"statusId": 2, "statusName": "Premium"},
   ];
-
+  List<States> stateList = [];
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
-      appBar: simpleAppbar(context, "Add Client", true),
-      body: SingleChildScrollView(
-        child: Form(
-          key: formKey,
-          child: Center(
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 20,
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * .9,
-                  child: TextFormField(
-                    controller: clientName,
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        // Custom border
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      labelText: 'Client name *',
-                      prefixIcon: const Icon(
-                        Icons.person,
-                        color: Colors.grey,
-                        size: 18,
-                      ),
-                      labelStyle:
-                          const TextStyle(color: Colors.grey, fontSize: 14),
-                      contentPadding: const EdgeInsets.only(left: 10),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * .9,
-                  child: TextFormField(
-                    controller: contactPerson,
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      labelText: 'Contact person',
-                      prefixIcon: const Icon(
-                        Icons.person,
-                        color: Colors.grey,
-                        size: 18,
-                      ),
-                      labelStyle:
-                          const TextStyle(color: Colors.grey, fontSize: 14),
-                      contentPadding: const EdgeInsets.only(left: 10),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * .9,
-                  child: TextFormField(
-                    controller: phoneNumber,
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        // Custom border
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      labelText: 'Phone number *',
-                      prefixIcon: const Icon(
-                        Icons.phone,
-                        color: Colors.grey,
-                        size: 18,
-                      ),
-                      labelStyle:
-                          const TextStyle(color: Colors.grey, fontSize: 14),
-                      contentPadding: const EdgeInsets.only(left: 10),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * .9,
-                  child: TextFormField(
-                    controller: whatsappNumber,
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        // Custom border
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      labelText: 'Whatsapp number *',
-                      prefixIcon: const Icon(
-                        Icons.message,
-                        color: Colors.grey,
-                        size: 18,
-                      ),
-                      labelStyle:
-                          const TextStyle(color: Colors.grey, fontSize: 14),
-                      contentPadding: const EdgeInsets.only(left: 10),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * .9,
-                  child: TextFormField(
-                    controller: address,
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        // Custom border
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      labelText: 'Address',
-                      prefixIcon: const Icon(
-                        Icons.pin_drop,
-                        color: Colors.grey,
-                        size: 18,
-                      ),
-                      labelStyle:
-                          const TextStyle(color: Colors.grey, fontSize: 14),
-                      contentPadding: const EdgeInsets.only(left: 10),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * .9,
-                  child: TextFormField(
-                    controller: email,
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        // Custom border
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      labelText: 'Email',
-                      prefixIcon: const Icon(
-                        Icons.email,
-                        color: Colors.grey,
-                        size: 18,
-                      ),
-                      labelStyle:
-                          const TextStyle(color: Colors.grey, fontSize: 14),
-                      contentPadding: const EdgeInsets.only(left: 10),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * .9,
-                  child: TextFormField(
-                    controller: companyName,
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        // Custom border
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      labelText: 'Company name',
-                      prefixIcon: const Icon(
-                        Icons.location_city,
-                        color: Colors.grey,
-                        size: 18,
-                      ),
-                      labelStyle:
-                          const TextStyle(color: Colors.grey, fontSize: 14),
-                      contentPadding: const EdgeInsets.only(left: 10),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * .9,
-                  child: TextFormField(
-                    controller: civilId,
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        // Custom border
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      labelText: 'Civil ID',
-                      labelStyle:
-                          const TextStyle(color: Colors.grey, fontSize: 14),
-                      contentPadding: const EdgeInsets.only(left: 10),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * .9,
-                  child: TextFormField(
-                    controller: gstNumber,
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        // Custom border
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      labelText: 'GST Number',
-                      prefixIcon: const Icon(
-                        Icons.person,
-                        color: Colors.grey,
-                        size: 18,
-                      ),
-                      labelStyle:
-                          const TextStyle(color: Colors.grey, fontSize: 14),
-                      contentPadding: const EdgeInsets.only(left: 10),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * .9,
-                  child: DropdownButtonFormField(
-                    value: status,
-                    onChanged: (value) async {
-                      status = value.toString();
-                    },
-                    items: statuses.map((data) {
-                      return DropdownMenuItem<String>(
-                        value: data["statusId"].toString(),
-                        child: Text(
-                          data["statusName"].toString(),
+    return BlocProvider(
+      create: (context) => AddClientsCubit(),
+      child: Scaffold(
+        backgroundColor: AppColors.backgroundColor,
+        appBar: simpleAppbar(context, "Add Client", true),
+        body: MultiBlocListener(
+          listeners: [
+            BlocListener<AddClientsCubit, ClientsState>(
+              listener: (context, state) {
+                if (state is StateListFetched) {
+                  stateList = state.response.data;
+                }
+              },
+            )
+          ],
+          child: BlocBuilder<AddClientsCubit, ClientsState>(
+            builder: (context, state) {
+              return SingleChildScrollView(
+                child: Form(
+                  key: formKey,
+                  child: Center(
+                    child: Column(
+                      children: [
+                        const SizedBox(
+                          height: 20,
                         ),
-                      );
-                    }).toList(),
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        // Custom border
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      labelText: 'State',
-                      labelStyle:
-                          const TextStyle(color: Colors.grey, fontSize: 14),
-                      contentPadding: const EdgeInsets.only(left: 10),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * .9,
-                  child: DropdownButtonFormField(
-                    value: status,
-                    onChanged: (value) async {
-                      status = value.toString();
-                    },
-                    items: statuses.map((data) {
-                      return DropdownMenuItem<String>(
-                        value: data["statusId"].toString(),
-                        child: Text(
-                          data["statusName"].toString(),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * .9,
+                          child: TextFormField(
+                            controller: clientName,
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              filled: true,
+                              border: OutlineInputBorder(
+                                // Custom border
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              labelText: 'Client name *',
+                              prefixIcon: const Icon(
+                                Icons.person,
+                                color: Colors.grey,
+                                size: 18,
+                              ),
+                              labelStyle: const TextStyle(
+                                  color: Colors.grey, fontSize: 14),
+                              contentPadding: const EdgeInsets.only(left: 10),
+                            ),
+                          ),
                         ),
-                      );
-                    }).toList(),
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        // Custom border
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      labelText: 'District',
-                      labelStyle:
-                          const TextStyle(color: Colors.grey, fontSize: 14),
-                      contentPadding: const EdgeInsets.only(left: 10),
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * .9,
-                  child: DropdownButtonFormField(
-                    value: status,
-                    onChanged: (value) async {
-                      status = value.toString();
-                    },
-                    items: statuses.map((data) {
-                      return DropdownMenuItem<String>(
-                        value: data["statusId"].toString(),
-                        child: Text(
-                          data["statusName"].toString(),
+                        const SizedBox(
+                          height: 10,
                         ),
-                      );
-                    }).toList(),
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        // Custom border
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      labelText: 'Client type',
-                      labelStyle:
-                          const TextStyle(color: Colors.grey, fontSize: 14),
-                      contentPadding: const EdgeInsets.only(left: 10),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * .9,
+                          child: TextFormField(
+                            controller: contactPerson,
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              filled: true,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              labelText: 'Contact person',
+                              prefixIcon: const Icon(
+                                Icons.person,
+                                color: Colors.grey,
+                                size: 18,
+                              ),
+                              labelStyle: const TextStyle(
+                                  color: Colors.grey, fontSize: 14),
+                              contentPadding: const EdgeInsets.only(left: 10),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * .9,
+                          child: TextFormField(
+                            controller: phoneNumber,
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              filled: true,
+                              border: OutlineInputBorder(
+                                // Custom border
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              labelText: 'Phone number *',
+                              prefixIcon: const Icon(
+                                Icons.phone,
+                                color: Colors.grey,
+                                size: 18,
+                              ),
+                              labelStyle: const TextStyle(
+                                  color: Colors.grey, fontSize: 14),
+                              contentPadding: const EdgeInsets.only(left: 10),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * .9,
+                          child: TextFormField(
+                            controller: whatsappNumber,
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              filled: true,
+                              border: OutlineInputBorder(
+                                // Custom border
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              labelText: 'Whatsapp number *',
+                              prefixIcon: const Icon(
+                                Icons.message,
+                                color: Colors.grey,
+                                size: 18,
+                              ),
+                              labelStyle: const TextStyle(
+                                  color: Colors.grey, fontSize: 14),
+                              contentPadding: const EdgeInsets.only(left: 10),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * .9,
+                          child: TextFormField(
+                            controller: address,
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              filled: true,
+                              border: OutlineInputBorder(
+                                // Custom border
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              labelText: 'Address',
+                              prefixIcon: const Icon(
+                                Icons.pin_drop,
+                                color: Colors.grey,
+                                size: 18,
+                              ),
+                              labelStyle: const TextStyle(
+                                  color: Colors.grey, fontSize: 14),
+                              contentPadding: const EdgeInsets.only(left: 10),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * .9,
+                          child: TextFormField(
+                            controller: email,
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              filled: true,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              labelText: 'Email',
+                              prefixIcon: const Icon(
+                                Icons.email,
+                                color: Colors.grey,
+                                size: 18,
+                              ),
+                              labelStyle: const TextStyle(
+                                  color: Colors.grey, fontSize: 14),
+                              contentPadding: const EdgeInsets.only(left: 10),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * .9,
+                          child: TextFormField(
+                            controller: companyName,
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              filled: true,
+                              border: OutlineInputBorder(
+                                // Custom border
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              labelText: 'Company name',
+                              prefixIcon: const Icon(
+                                Icons.location_city,
+                                color: Colors.grey,
+                                size: 18,
+                              ),
+                              labelStyle: const TextStyle(
+                                  color: Colors.grey, fontSize: 14),
+                              contentPadding: const EdgeInsets.only(left: 10),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * .9,
+                          child: TextFormField(
+                            controller: civilId,
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              filled: true,
+                              border: OutlineInputBorder(
+                                // Custom border
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              labelText: 'Civil ID',
+                              labelStyle: const TextStyle(
+                                  color: Colors.grey, fontSize: 14),
+                              contentPadding: const EdgeInsets.only(left: 10),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * .9,
+                          child: TextFormField(
+                            controller: gstNumber,
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              filled: true,
+                              border: OutlineInputBorder(
+                                // Custom border
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              labelText: 'GST Number',
+                              prefixIcon: const Icon(
+                                Icons.person,
+                                color: Colors.grey,
+                                size: 18,
+                              ),
+                              labelStyle: const TextStyle(
+                                  color: Colors.grey, fontSize: 14),
+                              contentPadding: const EdgeInsets.only(left: 10),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                       SizedBox(
+                          width: MediaQuery.of(context).size.width * .9,
+                          child: DropdownButtonFormField(
+                            value: selectedState,
+                            onChanged: (value) async {
+                              selectedState = value.toString();
+                            },
+                            items: stateList.map((data) {
+                              return DropdownMenuItem<String>(
+                                value: data.stateId.toString(),
+                                child: Text(
+                                  data.stateTitle.toString(),
+                                ),
+                              );
+                            }).toList(),
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              filled: true,
+                              border: OutlineInputBorder(
+                                // Custom border
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              labelText: 'State',
+                              labelStyle: const TextStyle(
+                                  color: Colors.grey, fontSize: 14),
+                              contentPadding: const EdgeInsets.only(left: 10),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * .9,
+                          child: DropdownButtonFormField(
+                            value: selectedState,
+                            onChanged: (value) async {
+                              selectedState = value.toString();
+                            },
+                            items: statuses.map((data) {
+                              return DropdownMenuItem<String>(
+                                value: data["statusId"].toString(),
+                                child: Text(
+                                  data["statusName"].toString(),
+                                ),
+                              );
+                            }).toList(),
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              filled: true,
+                              border: OutlineInputBorder(
+                                // Custom border
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              labelText: 'District',
+                              labelStyle: const TextStyle(
+                                  color: Colors.grey, fontSize: 14),
+                              contentPadding: const EdgeInsets.only(left: 10),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * .9,
+                          child: DropdownButtonFormField(
+                            value: selectedState,
+                            onChanged: (value) async {
+                              selectedState = value.toString();
+                            },
+                            items: statuses.map((data) {
+                              return DropdownMenuItem<String>(
+                                value: data["statusId"].toString(),
+                                child: Text(
+                                  data["statusName"].toString(),
+                                ),
+                              );
+                            }).toList(),
+                            decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              filled: true,
+                              border: OutlineInputBorder(
+                                // Custom border
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              labelText: 'Client type',
+                              labelStyle: const TextStyle(
+                                  color: Colors.grey, fontSize: 14),
+                              contentPadding: const EdgeInsets.only(left: 10),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 25,
+                        ),
+                        InkWell(
+                            onTap: () {}, child: LargeButton(title: "Submit")),
+                        const SizedBox(
+                          height: 25,
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 25,
-                ),
-                InkWell(
-                    onTap: () {
-                      context.read<ClientsCubit>().addClient(
-                            "",
-                            "",
-                          );
-                    },
-                    child: LargeButton(title: "Submit")),
-                const SizedBox(
-                  height: 25,
-                ),
-              ],
-            ),
+              );
+            },
           ),
         ),
       ),

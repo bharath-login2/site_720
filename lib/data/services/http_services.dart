@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:site_720/data/models/galery/galery_list_model.dart';
 import 'package:site_720/data/models/project_list/project_list_model.dart';
 import '../models/clientlist/client_list_model.dart';
+import '../models/clientlist/state_list_model.dart';
 import '../models/complaint/complaint_details_model.dart';
 import '../models/complaint/complaint_list_model.dart';
 import '../models/contractorlist/contractor_list_model.dart';
@@ -819,7 +820,7 @@ class HttpServices {
 
       request.fields['project_id'] = projectId;
       request.fields['client_id'] = clientId;
-      request.fields['remarks'] = remark; 
+      request.fields['remarks'] = remark;
 
       if (image.path.isNotEmpty) {
         request.files
@@ -889,7 +890,8 @@ class HttpServices {
       log(e.toString());
     }
   }
-   static Future getConsumeList(projectId) async {
+
+  static Future getConsumeList(projectId) async {
     try {
       http.Response response = await http.post(
           Uri.parse("${baseUrl}stock_consumption_view"),
@@ -901,4 +903,16 @@ class HttpServices {
       log(e.toString());
     }
   }
+
+  static Future getStates() async {
+    try {
+      http.Response response =
+          await http.post(Uri.parse("${baseUrl}state_list"));
+      if (response.statusCode == 200) {
+        return stateListModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  } 
 }

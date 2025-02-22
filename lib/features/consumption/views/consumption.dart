@@ -30,7 +30,7 @@ class Consumption extends StatelessWidget {
               ListView.builder(
                 shrinkWrap: true,
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                itemCount: 15,
+                itemCount: state.response.data.length,
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.all(6.0),
@@ -60,9 +60,9 @@ class Consumption extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
-                                  "Cement",
-                                  style: TextStyle(
+                                 Text(
+                                  state.response.data[index].materialName,
+                                  style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -70,23 +70,14 @@ class Consumption extends StatelessWidget {
                                 const SizedBox(
                                   height: 3,
                                 ),
-                                const Text(
-                                  "Phase 2",
-                                  style: TextStyle(
+                                 Text(
+                                  state.response.data[index].supplierName,
+                                  style: const TextStyle(
                                     fontSize: 10,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const SizedBox(
-                                  height: 3,
-                                ),
-                                const Text(
-                                  "Wall",
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                               
                                 const SizedBox(
                                   height: 10,
                                 ),
@@ -94,14 +85,14 @@ class Consumption extends StatelessWidget {
                                   children: [
                                     AmountContainer(
                                       title: "Used Quantity",
-                                      amount: "500",
+                                      amount: state.response.data[index].quantity,
                                     ),
                                     const SizedBox(
                                       width: 10,
                                     ),
                                     AmountContainer(
-                                      title: "In Stock",
-                                      amount: "500",
+                                      title: "Unit Price",
+                                      amount:  "₹ ${state.response.data[index].unitPrice}",
                                     ),
                                   ],
                                 ),
@@ -122,7 +113,7 @@ class Consumption extends StatelessWidget {
                   child: shimmerContainer(100, 70),
                 );
               },): const Center(
-                            child: Text("No Consumption Added"),
+                            child: Text(""),
                           );
             },
           ),

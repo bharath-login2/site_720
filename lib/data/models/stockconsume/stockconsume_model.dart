@@ -37,12 +37,14 @@ class StockConsume {
     String supplierName;
     String unitPrice;
     String quantity;
+    String totalAmount;
 
     StockConsume({
         required this.materialName,
         required this.supplierName,
         required this.unitPrice,
         required this.quantity,
+        required this.totalAmount,
     });
 
     factory StockConsume.fromJson(Map<String, dynamic> json) => StockConsume(
@@ -50,6 +52,7 @@ class StockConsume {
         supplierName: json["supplier_name"]??"",
         unitPrice: json["unit_price"]??"",
         quantity: json["quantity"]??"",
+        totalAmount: json["total_amount"]??"",
     );
 
     Map<String, dynamic> toJson() => {

@@ -24,97 +24,107 @@ class Consumption extends StatelessWidget {
           create: (context) => ConsumptionCubit(projectId),
           child: BlocBuilder<ConsumptionCubit, ConsumptionState>(
             builder: (context, state) {
-
-              return state is ConsumptionSuccess?
-              
-              ListView.builder(
-                shrinkWrap: true,
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                itemCount: state.response.data.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: InkWell(
-                      onTap: () {
-                        // Navigator.of(context)
-                        //     .pushNamed(AppRoutes.stageHistory);
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * .9,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.8),
-                              blurRadius: 3,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width * .7,
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 8.0, left: 8.0, right: 8.0, bottom: 8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                 Text(
-                                  state.response.data[index].materialName,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
+              return state is ConsumptionSuccess
+                  ? ListView.builder(
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      itemCount: state.response.data.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: InkWell(
+                            onTap: () {
+                              // Navigator.of(context)
+                              //     .pushNamed(AppRoutes.stageHistory);
+                            },
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * .9,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.8),
+                                    blurRadius: 3,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: SizedBox(
+                                width: MediaQuery.of(context).size.width * .7,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 8.0,
+                                      left: 8.0,
+                                      right: 8.0,
+                                      bottom: 8.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        state.response.data[index].materialName,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 3,
+                                      ),
+                                      Text(
+                                        state.response.data[index].supplierName,
+                                        style: const TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          AmountContainer(
+                                            title: "Used Quantity",
+                                            amount: state
+                                                .response.data[index].quantity,
+                                          ),
+                                          AmountContainer(
+                                            title: "Unit Price",
+                                            amount:
+                                                "₹ ${state.response.data[index].unitPrice}",
+                                          ),
+                                          AmountContainer(
+                                            title: "Unit Price",
+                                            amount:
+                                                "₹ ${state.response.data[index].unitPrice}",
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                const SizedBox(
-                                  height: 3,
-                                ),
-                                 Text(
-                                  state.response.data[index].supplierName,
-                                  style: const TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                               
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  children: [
-                                    AmountContainer(
-                                      title: "Used Quantity",
-                                      amount: state.response.data[index].quantity,
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    AmountContainer(
-                                      title: "Unit Price",
-                                      amount:  "₹ ${state.response.data[index].unitPrice}",
-                                    ),
-                                  ],
-                                ),
-                              ],
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ):state is ConsumptionLoading?
-              ListView.builder(
-                itemCount: 7,
-                itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: shimmerContainer(100, 70),
-                );
-              },): const Center(
-                            child: Text(""),
-                          );
+                        );
+                      },
+                    )
+                  : state is ConsumptionLoading
+                      ? ListView.builder(
+                          itemCount: 7,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: shimmerContainer(100, 70),
+                            );
+                          },
+                        )
+                      : const Center(
+                          child: Text(""),
+                        );
             },
           ),
         ));

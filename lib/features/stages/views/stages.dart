@@ -142,8 +142,15 @@ class Stages extends StatelessWidget {
                               ),
                               InkWell(
                                 onTap: () {
-                                  addStageDialog(context, cubit, phaseList,
-                                      projectId, clientId,"","Add Stage","Add");
+                                  addStageDialog(
+                                      context,
+                                      cubit,
+                                      phaseList,
+                                      projectId,
+                                      clientId,
+                                      "",
+                                      "Add Stage",
+                                      "Add");
                                 },
                                 child: const CircleAvatar(
                                   radius: 20,
@@ -205,7 +212,7 @@ class Stages extends StatelessWidget {
                         ),
                         state is StagesLoading
                             ? ListView.builder(
-                              itemCount: 7,
+                                itemCount: 7,
                                 itemBuilder: (context, index) {
                                   return Padding(
                                     padding: const EdgeInsets.all(8.0),
@@ -372,22 +379,33 @@ class Stages extends StatelessWidget {
                                                                   child:
                                                                       InkWell(
                                                                     onTap: () {
-                                                                      selectedPhase = stages[index].phaseId;
+                                                                      selectedPhase =
+                                                                          stages[index]
+                                                                              .phaseId;
                                                                       stage.text =
-                                                                       stages[
-                                                                          index]
-                                                                      .stageName;
-                                                                      startDateController.text = DateFormat('dd/MM/yyyy').format(stages[index].startDate);
-                                                                        endDateController.text = DateFormat('dd/MM/yyyy').format(stages[index].endDate);
-                                                                      String stageId = stages[index].stageId;
+                                                                          stages[index]
+                                                                              .stageName;
+                                                                      startDateController
+                                                                          .text = DateFormat(
+                                                                              'dd/MM/yyyy')
+                                                                          .format(
+                                                                              stages[index].startDate);
+                                                                      endDateController
+                                                                          .text = DateFormat(
+                                                                              'dd/MM/yyyy')
+                                                                          .format(
+                                                                              stages[index].endDate);
+                                                                      String
+                                                                          stageId =
+                                                                          stages[index]
+                                                                              .stageId;
                                                                       addStageDialog(
                                                                           context,
                                                                           cubit,
                                                                           phaseList,
-                                                                        
                                                                           projectId,
                                                                           clientId,
-                                                                            stageId,
+                                                                          stageId,
                                                                           "Edit Stage",
                                                                           "Update");
                                                                     },
@@ -526,6 +544,7 @@ class Stages extends StatelessWidget {
     String button,
   ) async {
     return showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -538,12 +557,10 @@ class Stages extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                     Padding(
+                    Padding(
                       padding: const EdgeInsets.only(top: 16.0, bottom: 25),
                       child: Text(
-                         title == "Add Stage"
-                            ? "Add Stage"
-                            : "Edit Stage",
+                        title == "Add Stage" ? "Add Stage" : "Edit Stage",
                         style: const TextStyle(
                             color: AppColors.primaryColor,
                             fontSize: 20,
@@ -623,26 +640,26 @@ class Stages extends StatelessWidget {
                       child: TextFormField(
                         validator: (value) {
                           if (value == "") {
-                            return "Enter start date"; // Error message if no date is selected
+                            return "Enter start date"; 
                           }
                           return null;
                         },
                         controller: startDateController,
                         readOnly:
-                            true, // Makes the TextFormField read-only so that the user can only select a date
+                            true, 
                         onTap: () async {
                           DateTime? selectedDate = await showDatePicker(
                             context: context,
                             initialDate: DateTime.now(),
                             firstDate:
-                                DateTime(1900), // Set the first valid date
-                            lastDate: DateTime(2101), // Set the last valid date
+                                DateTime(1900),
+                            lastDate: DateTime(2101),
                           );
                           if (selectedDate != null) {
-                            // If a date is selected, format it and set it in the TextFormField
+                         
                             String formattedDate =
                                 "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}";
-                            // Set the selected date as the value of the TextFormField
+                    
                             startDateController.text = formattedDate;
                           }
                         },
@@ -673,20 +690,20 @@ class Stages extends StatelessWidget {
                         },
                         controller: endDateController,
                         readOnly:
-                            true, // Makes the TextFormField read-only so that the user can only select a date
+                            true,
                         onTap: () async {
                           DateTime? selectedDate = await showDatePicker(
                             context: context,
                             initialDate: DateTime.now(),
                             firstDate:
-                                DateTime(1900), // Set the first valid date
-                            lastDate: DateTime(2101), // Set the last valid date
+                                DateTime(1900), 
+                            lastDate: DateTime(2101),
                           );
                           if (selectedDate != null) {
-                            // If a date is selected, format it and set it in the TextFormField
+                          
                             String formattedDate =
                                 "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}";
-                            // Set the selected date as the value of the TextFormField
+                          
                             endDateController.text = formattedDate;
                           }
                         },
@@ -708,25 +725,26 @@ class Stages extends StatelessWidget {
                     GestureDetector(
                       onTap: () async {
                         if (formKey.currentState!.validate()) {
-                          if(title =="Add Stage" ){cubit.addStageDetails(
-                            projectId,
-                            clientId,
-                            selectedPhase,
-                            stage.text,
-                            startDateController.text,
-                            endDateController.text,
-                          );}else{
+                          if (title == "Add Stage") {
+                            cubit.addStageDetails(
+                              projectId,
+                              clientId,
+                              selectedPhase,
+                              stage.text,
+                              startDateController.text,
+                              endDateController.text,
+                            );
+                          } else {
                             cubit.editStageDetails(
-                            projectId,
-                            clientId,
-                            stageId,
-                            selectedPhase,
-                            stage.text,
-                            startDateController.text,
-                            endDateController.text,
-                          );
+                              projectId,
+                              clientId,
+                              stageId,
+                              selectedPhase,
+                              stage.text,
+                              startDateController.text,
+                              endDateController.text,
+                            );
                           }
-                          
                           selectedPhase = null;
                           stage.clear();
                           startDateController.clear();
@@ -734,12 +752,13 @@ class Stages extends StatelessWidget {
                           Navigator.pop(context);
                         }
                       },
-                      child: LargeButton(title: button =="Add"?"Add":"Update"),
+                      child: LargeButton(
+                          title: button == "Add" ? "Add" : "Update"),
                     ),
                     TextButton(
                       onPressed: () {
                         stage.clear();
-
+                        selectedPhase = null;
                         startDateController.clear();
                         endDateController.clear();
                         Navigator.pop(context);

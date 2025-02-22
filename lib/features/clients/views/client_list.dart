@@ -58,20 +58,20 @@ class ClientList extends StatelessWidget {
                               ),
                             ],
                           ),
-                          // InkWell(
-                          //   onTap: () {
-                          //     Navigator.pushNamed(
-                          //         context, AppRoutes.addCilentScreen);
-                          //   },
-                          //   child: const CircleAvatar(
-                          //     radius: 20,
-                          //     backgroundColor: AppColors.lightPrimary,
-                          //     child: Icon(
-                          //       Icons.add,
-                          //       color: Colors.white,
-                          //     ),
-                          //   ),
-                          // )
+                          InkWell(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, AppRoutes.addCilentScreen);
+                            },
+                            child: const CircleAvatar(
+                              radius: 20,
+                              backgroundColor: AppColors.lightPrimary,
+                              child: Icon(
+                                Icons.add,
+                                color: Colors.white,
+                              ),
+                            ),
+                          )
                         ],
                       ),
                     ),

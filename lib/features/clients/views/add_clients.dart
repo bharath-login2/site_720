@@ -22,16 +22,15 @@ class AddCilentScreen extends StatelessWidget {
   TextEditingController gstNumber = TextEditingController();
   dynamic status;
   List<Map<String, dynamic>> statuses = [
-    {"statusId": 101, "statusName": "status 1"},
-    {"statusId": 102, "statusName": "status 2"},
-    {"statusId": 103, "statusName": "status 3"},
+    {"statusId": 1, "statusName": "Normal"},
+    {"statusId": 2, "statusName": "Premium"},
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: simpleAppbar(context, "Add Client",true),
+      appBar: simpleAppbar(context, "Add Client", true),
       body: SingleChildScrollView(
         child: Form(
           key: formKey,

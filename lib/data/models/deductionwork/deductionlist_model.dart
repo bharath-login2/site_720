@@ -56,15 +56,15 @@ class DeductionWorkist {
     });
 
     factory DeductionWorkist.fromJson(Map<String, dynamic> json) => DeductionWorkist(
-        id: json["id"],
-        workName: json["work_name"],
-        percentage: json["percentage"],
-        phaseId: json["phase_id"],
-        amount: json["amount"],
-        description: json["description"],
+        id: json["id"]??"",
+        workName: json["work_name"]??"",
+        percentage: json["percentage"]??"",
+        phaseId: json["phase_id"]??"",
+        amount: json["amount"]??"",
+        description: json["description"]??"",
         createdAt: DateTime.parse(json["created_at"]),
-        stageName: json["stage_name"],
-        phaseName: json["phase_name"],
+        stageName: json["stage_name"]??"",
+        phaseName: json["phase_name"]??"",
     );
 
     Map<String, dynamic> toJson() => {

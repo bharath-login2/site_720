@@ -31,7 +31,7 @@ class ExtraWork extends StatelessWidget {
           final cubit = context.read<ExtraWorkCubit>();
           return BlocListener<ExtraWorkCubit, ExtraWorkState>(
             listener: (context, state) {
-              if(state is AddedSuccess){
+              if (state is AddedSuccess) {
                 snackBar(context, state.response.message, Colors.green);
               }
             },
@@ -86,8 +86,9 @@ class ExtraWork extends StatelessWidget {
                           ),
                           InkWell(
                             onTap: () {
-                               String workId = "";
-                              workDialog(context, cubit, projectId, clientId,workId,"add","add");
+                              String workId = "";
+                              workDialog(context, cubit, projectId, clientId,
+                                  workId, "add", "add");
                             },
                             child: const CircleAvatar(
                               radius: 20,
@@ -199,12 +200,32 @@ class ExtraWork extends StatelessWidget {
                                                       children: [
                                                         InkWell(
                                                           onTap: () {
-                                                            String workId =state.response.data[index].id;
-                                                            work.text = state.response.data[index].workName;
-                                                            amount.text=state.response.data[index].amount;
-                                                            description.text=state.response.data[index].description;
-                                                            workDialog(context,
-                                                                cubit,projectId,clientId,workId,"edit","update");
+                                                            String workId =
+                                                                state
+                                                                    .response
+                                                                    .data[index]
+                                                                    .id;
+                                                            work.text = state
+                                                                .response
+                                                                .data[index]
+                                                                .workName;
+                                                            amount.text = state
+                                                                .response
+                                                                .data[index]
+                                                                .amount;
+                                                            description.text =
+                                                                state
+                                                                    .response
+                                                                    .data[index]
+                                                                    .description;
+                                                            workDialog(
+                                                                context,
+                                                                cubit,
+                                                                projectId,
+                                                                clientId,
+                                                                workId,
+                                                                "edit",
+                                                                "update");
                                                           },
                                                           child: Container(
                                                             height: 25,
@@ -243,9 +264,16 @@ class ExtraWork extends StatelessWidget {
                                                         ),
                                                         InkWell(
                                                           onTap: () {
-                                                             String workId =state.response.data[index].id;
+                                                            String workId =
+                                                                state
+                                                                    .response
+                                                                    .data[index]
+                                                                    .id;
                                                             deleteDialog(
-                                                                context,cubit,projectId,workId, () {
+                                                                context,
+                                                                cubit,
+                                                                projectId,
+                                                                workId, () {
                                                               Navigator.pop(
                                                                   context);
                                                             });
@@ -306,14 +334,17 @@ class ExtraWork extends StatelessWidget {
                       )
                     : state is ExtraWorkLoading
                         ? ListView.builder(
+                            itemCount: 7,
                             itemBuilder: (context, index) {
-                              return shimmerContainer(100, 70);
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: shimmerContainer(100, 70),
+                              );
                             },
                           )
                         : const Center(
                             child: Text("No extra works"),
-                          )
-                          ),
+                          )),
           );
         },
       ),
@@ -321,20 +352,18 @@ class ExtraWork extends StatelessWidget {
   }
 
   Future<void> workDialog(
-    BuildContext context,
-    ExtraWorkCubit cubit,
-    String projectId,
-    String clientId,
-    String workID,
-    String status,
-    String button
-  ) async {
+      BuildContext context,
+      ExtraWorkCubit cubit,
+      String projectId,
+      String clientId,
+      String workID,
+      String status,
+      String button) async {
     return showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
-          
           backgroundColor: Colors.white,
           content: SizedBox(
             height: 350,
@@ -344,10 +373,10 @@ class ExtraWork extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                     Padding(
+                    Padding(
                       padding: const EdgeInsets.only(top: 16.0, bottom: 25),
                       child: Text(
-                       status =="add"? "Add Work":"Edit",
+                        status == "add" ? "Add Work" : "Edit",
                         style: const TextStyle(
                             color: AppColors.primaryColor,
                             fontSize: 20,
@@ -443,21 +472,23 @@ class ExtraWork extends StatelessWidget {
                     GestureDetector(
                       onTap: () async {
                         if (formKey.currentState!.validate()) {
-                         if(status=="add"){ cubit.addExtraWork(
-                            projectId,
-                            clientId,
-                            work.text,
-                            amount.text,
-                            description.text,
-                          );}else{
-                             cubit.editExtraWork(
-                            projectId,
-                            clientId,
-                            workID,
-                            work.text,
-                            amount.text,
-                            description.text,
-                          );
+                          if (status == "add") {
+                            cubit.addExtraWork(
+                              projectId,
+                              clientId,
+                              work.text,
+                              amount.text,
+                              description.text,
+                            );
+                          } else {
+                            cubit.editExtraWork(
+                              projectId,
+                              clientId,
+                              workID,
+                              work.text,
+                              amount.text,
+                              description.text,
+                            );
                           }
                           work.clear();
                           amount.clear();
@@ -465,14 +496,15 @@ class ExtraWork extends StatelessWidget {
                           Navigator.pop(context);
                         }
                       },
-                      child: LargeButton(title:button =="add"?"Add":"Update"),
+                      child: LargeButton(
+                          title: button == "add" ? "Add" : "Update"),
                     ),
                     TextButton(
                       onPressed: () {
                         work.clear();
                         amount.clear();
                         description.clear();
-                          Navigator.pop(context);
+                        Navigator.pop(context);
                       },
                       child: const Text('Close'),
                     ),
@@ -486,12 +518,10 @@ class ExtraWork extends StatelessWidget {
     );
   }
 
-  Future<void> deleteDialog(
-    BuildContext context,ExtraWorkCubit cubit,String projectId , String workId, onTap)
-     async {
+  Future<void> deleteDialog(BuildContext context, ExtraWorkCubit cubit,
+      String projectId, String workId, onTap) async {
     return showDialog(
       context: context,
-    
       builder: (context) {
         return AlertDialog(
           backgroundColor: Colors.white,
@@ -499,7 +529,7 @@ class ExtraWork extends StatelessWidget {
             height: 200,
             child: SingleChildScrollView(
               child: Form(
-                key:formKey,
+                key: formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -517,14 +547,14 @@ class ExtraWork extends StatelessWidget {
                       height: 20,
                     ),
                     GestureDetector(
-                      onTap: () async{
-                         if (formKey.currentState!.validate()) {
+                      onTap: () async {
+                        if (formKey.currentState!.validate()) {
                           cubit.deleteExtraWork(
-                           projectId,
-                           workId,
+                            projectId,
+                            workId,
                           );
-                           Navigator.pop(context);
-                         }
+                          Navigator.pop(context);
+                        }
                       },
                       child: LargeButton(title: "Delete"),
                     ),
@@ -546,6 +576,4 @@ class ExtraWork extends StatelessWidget {
       },
     );
   }
-
- 
 }

@@ -37,19 +37,22 @@ class Stocks {
     String supplierName;
     String unitPrice;
     String quantity;
+    String totalAmount;
 
     Stocks({
         required this.materialName,
         required this.supplierName,
         required this.unitPrice,
         required this.quantity,
+        required this.totalAmount,
     });
 
     factory Stocks.fromJson(Map<String, dynamic> json) => Stocks(
-        materialName: json["material_name"],
-        supplierName: json["supplier_name"],
-        unitPrice: json["unit_price"],
-        quantity: json["quantity"],
+        materialName: json["material_name"]??"",
+        supplierName: json["supplier_name"]??"",
+        unitPrice: json["unit_price"]??"",
+        quantity: json["quantity"]??"",
+        totalAmount: json["total_amount"]??"",
     );
 
     Map<String, dynamic> toJson() => {

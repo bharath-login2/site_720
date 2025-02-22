@@ -19,122 +19,167 @@ class PaymentDetails extends StatelessWidget {
     String projectId = args["id"]!;
     return Scaffold(
         backgroundColor: AppColors.backgroundColor,
-        appBar: simpleAppbar(context, "Payment Details",true),
+        appBar: simpleAppbar(context, "Payment Details", true),
         body: BlocProvider(
           create: (context) => PaymentDetailsCubit(projectId),
           child: BlocBuilder<PaymentDetailsCubit, PaymentDetailsState>(
             builder: (context, state) {
-          return  state  is PaymentDetailsSuccess?
-               ListView.builder(
-                shrinkWrap: true,
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                itemCount: state.response.data.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: InkWell(
-                      onTap: () {
-                        // Navigator.of(context)
-                        //     .pushNamed(AppRoutes.stageHistory);
+              final cubit = context.read<PaymentDetailsCubit>();
+              return state is PaymentDetailsSuccess
+                  ? RefreshIndicator(
+                      onRefresh: () async {
+                        cubit.getPaymentDetails(projectId);
                       },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * .9,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.8),
-                              blurRadius: 3,
-                              offset: const Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width * .7,
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 8.0, left: 8.0, right: 8.0, bottom: 8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                     Text(
-                                      state.response.data[index].stageName,
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        itemCount: state.response.data.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(6.0),
+                            child: InkWell(
+                              onTap: () {
+                                // Navigator.of(context)
+                                //     .pushNamed(AppRoutes.stageHistory);
+                              },
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * .9,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.8),
+                                      blurRadius: 3,
+                                      offset: const Offset(0, 3),
                                     ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 2, horizontal: 8),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: Colors.white,
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.withOpacity(0.8),
-                                            blurRadius: 6,
-                                            offset: const Offset(1, 1),
-                                          ),
-                                        ],
-                                      ),
-                                      child:  
-                                      Text(
-                                        state.response.data[index].paymentStatus,
-                                        style:  TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12,
-                                            color:state.response.data[index].paymentStatus=="Open"? Colors.green:state.response.data[index].paymentStatus=="Partially Paid"?Colors.amber:state.response.data[index].paymentStatus=="Close"?Colors.red:Colors.deepOrange),
-                                      ),
-                                    )
                                   ],
                                 ),
-                                 Text(
-                                   state.response.data[index].phaseName,
-                                  style: const TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
+                                child: SizedBox(
+                                  width: MediaQuery.of(context).size.width * .7,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 8.0,
+                                        left: 8.0,
+                                        right: 8.0,
+                                        bottom: 8.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              state.response.data[index]
+                                                  .stageName,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 2,
+                                                      horizontal: 8),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                                color: Colors.white,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.8),
+                                                    blurRadius: 6,
+                                                    offset: const Offset(1, 1),
+                                                  ),
+                                                ],
+                                              ),
+                                              child: Text(
+                                                state.response.data[index]
+                                                    .paymentStatus,
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 12,
+                                                    color: state
+                                                                .response
+                                                                .data[index]
+                                                                .paymentStatus ==
+                                                            "Open"
+                                                        ? Colors.green
+                                                        : state
+                                                                    .response
+                                                                    .data[index]
+                                                                    .paymentStatus ==
+                                                                "Partially Paid"
+                                                            ? Colors.amber
+                                                            : state
+                                                                        .response
+                                                                        .data[
+                                                                            index]
+                                                                        .paymentStatus ==
+                                                                    "Close"
+                                                                ? Colors.red
+                                                                : Colors
+                                                                    .deepOrange),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                        Text(
+                                          state.response.data[index].phaseName,
+                                          style: const TextStyle(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            AmountContainer(
+                                              title: "Estimated Amount",
+                                              amount:
+                                                  "${state.response.data[index].amount} ₹",
+                                            ),
+                                            AmountContainer(
+                                              title: "Paid Amount",
+                                              amount:
+                                                  "${state.response.data[index].paidAmount} ₹",
+                                            ),
+                                            AmountContainer(
+                                              title: "Balance",
+                                              amount:
+                                                  "${state.response.data[index].balanceAmount} ₹",
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                               
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    AmountContainer(
-                                      title: "Estimated Amount",
-                                      amount: "${state.response.data[index].amount} ₹",
-                                    ),
-                                    AmountContainer(
-                                      title: "Paid Amount",
-                                      amount: "${state.response.data[index].paidAmount} ₹",
-                                    ),
-                                    AmountContainer(
-                                      title: "Balance",
-                                      amount: "${state.response.data[index].balanceAmount} ₹",
-                                    ),
-                                  ],
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
+                          );
+                        },
                       ),
-                    ),
-                  );
-                },
-              ):state is PaymentDetailsLoading?
-              ListView.builder(itemBuilder: (context, index) {
-               return shimmerContainer(100, 70);
-              },):const Text("Payment Details Empty");
+                    )
+                  : state is PaymentDetailsLoading
+                      ? ListView.builder(
+                          itemCount: 7,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: shimmerContainer(100, 70),
+                            );
+                          },
+                        )
+                      : const Center(child: Text("Payment Details Empty"));
             },
           ),
         ));

@@ -373,7 +373,7 @@ class ProjectDetails extends StatelessWidget {
                                           arguments: {"id": id});
                                     },
                                     child: DetailsButtonContainer(
-                                      title: "Contractor",
+                                      title: "Contractors",
                                       color: AppColors.primaryColor,
                                       width: MediaQuery.of(context).size.width *
                                           .43,

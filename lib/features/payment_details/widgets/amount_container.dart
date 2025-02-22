@@ -82,7 +82,7 @@ class SmallContainer extends StatelessWidget {
                     const TextStyle(fontSize: 9, color: AppColors.primaryColor),
               ),
               Text(
-                amount,
+                amount, 
                 style: const TextStyle(color: AppColors.primaryColor),
               ),
             ],

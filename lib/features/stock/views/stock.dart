@@ -93,7 +93,7 @@ class Stock extends StatelessWidget {
                                     children: [
                                       Text(
                                         stockList[index].materialName,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -103,7 +103,7 @@ class Stock extends StatelessWidget {
                                       ),
                                       Text(
                                         stockList[index].supplierName,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 10,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -112,17 +112,21 @@ class Stock extends StatelessWidget {
                                         height: 10,
                                       ),
                                       Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           AmountContainer(
                                             title: "Unit Price",
                                             amount: stockList[index].unitPrice,
                                           ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
                                           AmountContainer(
                                             title: "In Stock",
                                             amount: stockList[index].quantity,
+                                          ),
+                                          AmountContainer(
+                                            title: "Total Amount",
+                                            amount:
+                                                stockList[index].totalAmount,
                                           ),
                                         ],
                                       ),
@@ -137,7 +141,7 @@ class Stock extends StatelessWidget {
                     ),
                   );
                 } else {
-                  return Center(
+                  return const Center(
                     child: Text("Stock is Empty"),
                   );
                 }

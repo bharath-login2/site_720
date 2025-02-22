@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/appbar.dart';
+import '../../../core/widgets/shimmer.dart';
 import '../cubit/sub_contractor_cubit.dart';
 import '../cubit/sub_contractor_state.dart';
 
@@ -20,14 +21,22 @@ class Contractor extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: AppColors.backgroundColor,
-        appBar: simpleAppbar(context, "Contractor", true),
+        appBar: simpleAppbar(context, "Contractors", true),
         body: BlocProvider(
           create: (context) => SubContractorCubit(),
           child: BlocBuilder<SubContractorCubit, SubContractorState>(
-            builder: (context, state) {
+            builder: (context, state) { 
               final cubit = context.read<SubContractorCubit>();
               if (state is SubContractorLoading) {
-                return const Center(child: CircularProgressIndicator());
+                return ListView.builder(
+                  itemCount: 7,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: shimmerContainer(100, 70),
+                    );
+                  },
+                );
               } else if (state is SubContractorSuccess) {
                 return RefreshIndicator(
                   onRefresh: () async {
@@ -52,144 +61,60 @@ class Contractor extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            child: SizedBox(
-                              width: MediaQuery.of(context).size.width * .7,
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 8.0,
-                                    left: 8.0,
-                                    right: 8.0,
-                                    bottom: 8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              state.response.data[index].name,
-                                              style: const TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: AppColors.coffie),
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 8.0, left: 8.0, right: 8.0, bottom: 8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        state.response.data[index].name,
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.coffie),
+                                      ),
+                                      const SizedBox(height: 5),
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.phone,
+                                            size: 16,
+                                            color: AppColors.primaryColor,
+                                          ),
+                                          Text(
+                                            state.response.data[index].phone,
+                                            style: const TextStyle(
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.bold,
                                             ),
-                                            const SizedBox(height: 10),
-                                            Row(
-                                              children: [
-                                                const Icon(
-                                                  Icons.phone,
-                                                  size: 16,
-                                                  color: AppColors.primaryColor,
-                                                ),
-                                                Text(
-                                                  state.response.data[index]
-                                                      .phone,
-                                                  style: const TextStyle(
-                                                    fontSize: 11,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ],
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 5),
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.location_pin,
+                                            size: 16,
+                                            color: AppColors.primaryColor,
+                                          ),
+                                          Text(
+                                            state.response.data[index].address,
+                                            style: const TextStyle(
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.bold,
                                             ),
-                                            const SizedBox(height: 10),
-                                            Row(
-                                              children: [
-                                                const Icon(
-                                                  Icons.location_pin,
-                                                  size: 16,
-                                                  color: AppColors.primaryColor,
-                                                ),
-                                                Text(
-                                                  state.response.data[index]
-                                                      .address,
-                                                  style: const TextStyle(
-                                                    fontSize: 11,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                InkWell(
-                                                  onTap: () {},
-                                                  child: Container(
-                                                    height: 25,
-                                                    width: 25,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5),
-                                                      color:
-                                                          AppColors.lightBlue,
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                          color: Colors.grey
-                                                              .withOpacity(0.8),
-                                                          blurRadius: 6,
-                                                          offset: const Offset(
-                                                              1, 1),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    child: const Icon(
-                                                      Icons.edit,
-                                                      size: 18,
-                                                      color: Color.fromARGB(
-                                                          255, 241, 236, 236),
-                                                    ),
-                                                  ),
-                                                ),
-                                                const SizedBox(width: 7),
-                                                Container(
-                                                  height: 25,
-                                                  width: 25,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
-                                                    color: const Color.fromARGB(
-                                                        255, 235, 27, 27),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: const Color
-                                                                .fromARGB(255,
-                                                                192, 77, 77)
-                                                            .withOpacity(0.8),
-                                                        blurRadius: 6,
-                                                        offset:
-                                                            const Offset(1, 1),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  child: const Icon(
-                                                    Icons.delete,
-                                                    size: 18,
-                                                    color: Color.fromARGB(
-                                                        255, 241, 236, 236),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
                           ),

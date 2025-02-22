@@ -259,8 +259,12 @@ class PurchaseList extends StatelessWidget {
                     )
                   : state is PurchaseLoading
                       ? ListView.builder(
+                          itemCount: 7,
                           itemBuilder: (context, index) {
-                            return shimmerContainer(100, 70);
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: shimmerContainer(100, 70),
+                            );
                           },
                         )
                       : const Center(

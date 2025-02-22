@@ -10,7 +10,7 @@ import 'package:site_720/features/estimation/views/estimation_screen.dart';
 import 'package:site_720/features/expense/views/expense_screen.dart';
 import 'package:site_720/features/extra_work/views/extra_work_screen.dart';
 import 'package:site_720/features/gallery/views/gallery_screen.dart';
-import 'package:site_720/features/package/views/package_detailed_screen.dart';
+import 'package:site_720/features/package/views/package.dart';
 import 'package:site_720/features/payment_details/views/payment_details_screen.dart';
 import 'package:site_720/features/project_details/views/image_view_screen.dart';
 import 'package:site_720/features/project_details/views/project_details_screen.dart';
@@ -82,15 +82,17 @@ class MyApp extends StatelessWidget {
         '/paymentDetails': (context) => const PaymentDetails(),
         '/estimation': (context) => const Estimation(),
         '/consumption': (context) => const Consumption(),
-        '/package': (context) => PackageDetailed(),
+        '/package': (context) => Package(),
         '/phoneNumber': (context) => PhoneNumberScreen(),
         // '/otpScreen': (context) => OtpScreen(),
         '/changePasswordScreen': (context) => ChangePasswordScreen(),
-        '/addProjectScreen': (context) => AddProjectScreen(fromHome: false,),
+        '/addProjectScreen': (context) => AddProjectScreen(
+              fromHome: false,
+            ),
         '/complaintList': (context) => const ComplaintList(),
         '/addComplaints': (context) => AddComplaint(),
         '/imageViewer': (context) => const ImageViewer(),
-        '/editProjectScreen': (context) =>  EditProjectScreen(),
+        '/editProjectScreen': (context) => EditProjectScreen(),
       },
     );
   }

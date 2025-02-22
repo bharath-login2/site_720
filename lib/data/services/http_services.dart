@@ -265,7 +265,6 @@ class HttpServices {
     }
   }
 
-
   static Future getPhaseNew(projectId) async {
     try {
       http.Response response = await http.post(
@@ -292,7 +291,7 @@ class HttpServices {
           await http.post(Uri.parse("${baseUrl}add_stages"), body: {
         "project_id": projectId,
         "client_id": clintId,
-        "phase_id":selectedStatus,
+        "phase_id": selectedStatus,
         "stages": stages,
         "startDate": startDate,
         "endDate": endDate,
@@ -304,7 +303,6 @@ class HttpServices {
       log(e.toString());
     }
   }
-
 
   static Future editStages(
     String projectId,
@@ -320,8 +318,8 @@ class HttpServices {
           await http.post(Uri.parse("${baseUrl}edit_stages"), body: {
         "project_id": projectId,
         "client_id": clintId,
-         "stage_id": stageId,
-        "phase_id":selectedStatus,
+        "stage_id": stageId,
+        "phase_id": selectedStatus,
         "stages": stages,
         "startDate": startDate,
         "endDate": endDate,
@@ -853,12 +851,10 @@ class HttpServices {
     }
   }
 
-   static Future getComplaintDetails(
-  ) async {
+  static Future getComplaintDetails() async {
     try {
-      http.Response response =
-          await http.post(Uri.parse("${baseUrl}complaints_details_n"), body: {
-      });
+      http.Response response = await http
+          .post(Uri.parse("${baseUrl}complaints_details_n"), body: {});
       if (response.statusCode == 200) {
         return complaintDetailsModelFromJson(response.body);
       }
@@ -867,19 +863,20 @@ class HttpServices {
     }
   }
 
-    static Future getPackageList(projectId) async {
+  static Future getPackage(projectId) async {
     try {
       http.Response response = await http.post(
           Uri.parse("${baseUrl}package_data"),
           body: {"project_id": projectId});
       if (response.statusCode == 200) {
-        return getPackageListFromJson(response.body);
+        return packageModelFromJson(response.body);
       }
     } catch (e) {
       log(e.toString());
     }
   }
-   static Future getStockList(projectId) async {
+
+  static Future getStockList(projectId) async {
     try {
       http.Response response = await http.post(
           Uri.parse("${baseUrl}stock_list_view"),

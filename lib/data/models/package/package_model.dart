@@ -1,61 +1,33 @@
 // To parse this JSON data, do
 //
-//     final getPackageList = getPackageListFromJson(jsonString);
+//     final packageModel = packageModelFromJson(jsonString);
 
 import 'dart:convert';
 
-GetPackageList getPackageListFromJson(String str) => GetPackageList.fromJson(json.decode(str));
+PackageModel packageModelFromJson(String str) => PackageModel.fromJson(json.decode(str));
 
-String getPackageListToJson(GetPackageList data) => json.encode(data.toJson());
+String packageModelToJson(PackageModel data) => json.encode(data.toJson());
 
-class GetPackageList {
-    List<PackageList> data;
-    String message;
+class PackageModel {
     bool status;
+    String message;
+    String pdfUrl;
 
-    GetPackageList({
-        required this.data,
-        required this.message,
+    PackageModel({
         required this.status,
+        required this.message,
+        required this.pdfUrl,
     });
 
-    factory GetPackageList.fromJson(Map<String, dynamic> json) => GetPackageList(
-        data: List<PackageList>.from(json["data"].map((x) => PackageList.fromJson(x))),
-        message: json["message"],
+    factory PackageModel.fromJson(Map<String, dynamic> json) => PackageModel(
         status: json["status"],
+        message: json["message"],
+        pdfUrl: json["pdf_url"],
     );
 
     Map<String, dynamic> toJson() => {
-        "data": List<dynamic>.from(data.map((x) => x.toJson())),
-        "message": message,
         "status": status,
-    };
-}
-
-class PackageList {
-    String id;
-    String packageName;
-    String amount;
-    String description;
-
-    PackageList({
-        required this.id,
-        required this.packageName,
-        required this.amount,
-        required this.description, 
-    });
-
-    factory PackageList.fromJson(Map<String, dynamic> json) => PackageList(
-        id: json["id"]??"",
-        packageName: json["package_name"]??"",
-        amount: json["amount"]??"",
-        description: json["description"]??"",
-    );
-
-    Map<String, dynamic> toJson() => {
-        "id": id,
-        "package_name": packageName,
-        "amount": amount,
-        "description": description,
+        "message": message,
+        "pdf_url": pdfUrl,
     };
 }

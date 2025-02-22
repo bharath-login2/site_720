@@ -127,7 +127,7 @@ class Stock extends StatelessWidget {
                                             title: "Total Amount",
                                             amount:
                                                 stockList[index].totalAmount,
-                                          ),
+                                          )    ,
                                         ],
                                       ),
                                     ],

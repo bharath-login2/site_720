@@ -819,7 +819,7 @@ class HttpServices {
 
       request.fields['project_id'] = projectId;
       request.fields['client_id'] = clientId;
-      request.fields['remarks'] = remark;
+      request.fields['remarks'] = remark; 
 
       if (image.path.isNotEmpty) {
         request.files

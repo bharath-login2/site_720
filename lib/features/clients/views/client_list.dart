@@ -58,20 +58,20 @@ class ClientList extends StatelessWidget {
                               ),
                             ],
                           ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                  context, AppRoutes.addCilentScreen);
-                            },
-                            child: const CircleAvatar(
-                              radius: 20,
-                              backgroundColor: AppColors.lightPrimary,
-                              child: Icon(
-                                Icons.add,
-                                color: Colors.white,
-                              ),
-                            ),
-                          )
+                          // InkWell(
+                          //   onTap: () {
+                          //     Navigator.pushNamed(
+                          //         context, AppRoutes.addCilentScreen);
+                          //   },
+                          //   child: const CircleAvatar(
+                          //     radius: 20,
+                          //     backgroundColor: AppColors.lightPrimary,
+                          //     child: Icon(
+                          //       Icons.add,
+                          //       color: Colors.white,
+                          //     ),
+                          //   ),
+                          // )
                         ],
                       ),
                     ),
@@ -148,12 +148,13 @@ class ClientList extends StatelessWidget {
                                           const SizedBox(
                                             width: 10,
                                           ),
-                                           Column(
+                                          Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                state.response.data[index].clientName,
+                                                state.response.data[index]
+                                                    .clientName,
                                                 style: const TextStyle(
                                                     fontSize: 16,
                                                     fontWeight: FontWeight.bold,
@@ -161,123 +162,128 @@ class ClientList extends StatelessWidget {
                                               ),
                                               Row(
                                                 children: [
-                                                   const Icon(
-                                                  Icons.phone,
-                                                  size: 16, 
-                                                  color: AppColors.primaryColor, 
-                                                ),
+                                                  const Icon(
+                                                    Icons.phone,
+                                                    size: 16,
+                                                    color:
+                                                        AppColors.primaryColor,
+                                                  ),
                                                   Text(
-                                                    state.response.data[index].phoneNumber,
+                                                    state.response.data[index]
+                                                        .phoneNumber,
                                                     style: const TextStyle(
                                                       fontSize: 12,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
                                                   ),
                                                 ],
                                               ),
-                                             
                                               Row(
                                                 children: [
                                                   const Icon(
-                                                  Icons.location_on,
-                                                  size: 16, 
-                                                 color: AppColors.primaryColor, 
-                                                ),
-                                                   Text(
-                                                   state.response.data[index].place,
+                                                    Icons.location_on,
+                                                    size: 16,
+                                                    color:
+                                                        AppColors.primaryColor,
+                                                  ),
+                                                  Text(
+                                                    state.response.data[index]
+                                                        .place,
                                                     style: const TextStyle(
                                                       fontSize: 12,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                     ),
                                                   ),
                                                 ],
                                               ),
-                                               Padding(
-                                                 padding: const EdgeInsets.only(left: 12.0),
-                                                 child: Text(
-                                                 "${state.response.data[index].districtTitle},${state.response.data[index].stateTitle}",
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 12.0),
+                                                child: Text(
+                                                  "${state.response.data[index].districtTitle},${state.response.data[index].stateTitle}",
                                                   style: const TextStyle(
                                                     fontSize: 12,
                                                     fontWeight: FontWeight.bold,
-                                                    
                                                   ),
-                                                                                                   ),
-                                               ),
+                                                ),
+                                              ),
                                             ],
                                           ),
                                         ],
                                       ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              InkWell(
-                                                onTap: () {},
-                                                child: Container(
-                                                  height: 25,
-                                                  width: 25,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
-                                                    color: AppColors.lightBlue,
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.grey
-                                                            .withOpacity(0.8),
-                                                        blurRadius: 6,
-                                                        offset:
-                                                            const Offset(1, 1),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  child: const Icon(
-                                                    Icons.edit,
-                                                    size: 18,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                width: 7,
-                                              ),
-                                              InkWell(
-                                                onTap: () {
-                                                  deleteDialog(context, () {
-                                                    Navigator.pop(context);
-                                                  });
-                                                },
-                                                child: Container(
-                                                  height: 25,
-                                                  width: 25,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
-                                                    color: Colors.red,
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.grey
-                                                            .withOpacity(0.8),
-                                                        blurRadius: 6,
-                                                        offset:
-                                                            const Offset(1, 1),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  child: const Icon(
-                                                    Icons.delete,
-                                                    size: 18,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      )
+                                      // Column(
+                                      //   crossAxisAlignment:
+                                      //       CrossAxisAlignment.end,
+                                      //   children: [
+                                      //     Row(
+                                      //       children: [
+                                      //         InkWell(
+                                      //           onTap: () {},
+                                      //           child: Container(
+                                      //             height: 25,
+                                      //             width: 25,
+                                      //             decoration: BoxDecoration(
+                                      //               borderRadius:
+                                      //                   BorderRadius.circular(
+                                      //                       5),
+                                      //               color: AppColors.lightBlue,
+                                      //               boxShadow: [
+                                      //                 BoxShadow(
+                                      //                   color: Colors.grey
+                                      //                       .withOpacity(0.8),
+                                      //                   blurRadius: 6,
+                                      //                   offset:
+                                      //                       const Offset(1, 1),
+                                      //                 ),
+                                      //               ],
+                                      //             ),
+                                      //             child: const Icon(
+                                      //               Icons.edit,
+                                      //               size: 18,
+                                      //               color: Colors.white,
+                                      //             ),
+                                      //           ),
+                                      //         ),
+                                      //         const SizedBox(
+                                      //           width: 7,
+                                      //         ),
+                                      //         InkWell(
+                                      //           onTap: () {
+                                      //             deleteDialog(context, () {
+                                      //               Navigator.pop(context);
+                                      //             });
+                                      //           },
+                                      //           child: Container(
+                                      //             height: 25,
+                                      //             width: 25,
+                                      //             decoration: BoxDecoration(
+                                      //               borderRadius:
+                                      //                   BorderRadius.circular(
+                                      //                       5),
+                                      //               color: Colors.red,
+                                      //               boxShadow: [
+                                      //                 BoxShadow(
+                                      //                   color: Colors.grey
+                                      //                       .withOpacity(0.8),
+                                      //                   blurRadius: 6,
+                                      //                   offset:
+                                      //                       const Offset(1, 1),
+                                      //                 ),
+                                      //               ],
+                                      //             ),
+                                      //             child: const Icon(
+                                      //               Icons.delete,
+                                      //               size: 18,
+                                      //               color: Colors.white,
+                                      //             ),
+                                      //           ),
+                                      //         ),
+                                      //       ],
+                                      //     ),
+                                      //   ],
+                                      // )
                                     ],
                                   ),
                                 ],

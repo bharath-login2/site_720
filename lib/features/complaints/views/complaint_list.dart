@@ -67,20 +67,20 @@ class ComplaintList extends StatelessWidget {
                             ),
                           ],
                         ),
-                        InkWell(
-                          onTap: () {
-                            Navigator.of(context)
-                                .pushNamed(AppRoutes.addComplaints);
-                          },
-                          child: const CircleAvatar(
-                            radius: 20,
-                            backgroundColor: AppColors.lightPrimary,
-                            child: Icon(
-                              Icons.add,
-                              color: Colors.white,
-                            ),
-                          ),
-                        )
+                        // InkWell(
+                        //   onTap: () {
+                        //     Navigator.of(context)
+                        //         .pushNamed(AppRoutes.addComplaints);
+                        //   },
+                        //   child: const CircleAvatar(
+                        //     radius: 20,
+                        //     backgroundColor: AppColors.lightPrimary,
+                        //     child: Icon(
+                        //       Icons.add,
+                        //       color: Colors.white,
+                        //     ),
+                        //   ),
+                        // )
                       ],
                     ),
                   ),
@@ -189,82 +189,82 @@ class ComplaintList extends StatelessWidget {
                                                 ),
                                             ],
                                           ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  InkWell(
-                                                    onTap: () {},
-                                                    child: Container(
-                                                      height: 25,
-                                                      width: 25,
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                        color:
-                                                            AppColors.lightBlue,
-                                                        boxShadow: [
-                                                          BoxShadow(
-                                                            color: Colors.grey
-                                                                .withOpacity(
-                                                                    0.8),
-                                                            blurRadius: 6,
-                                                            offset:
-                                                                const Offset(
-                                                                    1, 1),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      child: const Icon(
-                                                        Icons.edit,
-                                                        size: 18,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 7,
-                                                  ),
-                                                  InkWell(
-                                                    onTap: () {
-                                                      deleteDialog(context, () {
-                                                        Navigator.pop(context);
-                                                      });
-                                                    },
-                                                    child: Container(
-                                                      height: 25,
-                                                      width: 25,
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                        color: Colors.red,
-                                                        boxShadow: [
-                                                          BoxShadow(
-                                                            color: Colors.grey
-                                                                .withOpacity(
-                                                                    0.8),
-                                                            blurRadius: 6,
-                                                            offset:
-                                                                const Offset(
-                                                                    1, 1),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      child: const Icon(
-                                                        Icons.delete,
-                                                        size: 18,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          )
+                                          // Column(
+                                          //   crossAxisAlignment:
+                                          //       CrossAxisAlignment.end,
+                                          //   children: [
+                                          // Row(
+                                          //   children: [
+                                          //     InkWell(
+                                          //       onTap: () {},
+                                          //       child: Container(
+                                          //         height: 25,
+                                          //         width: 25,
+                                          //         decoration: BoxDecoration(
+                                          //           borderRadius:
+                                          //               BorderRadius
+                                          //                   .circular(5),
+                                          //           color:
+                                          //               AppColors.lightBlue,
+                                          //           boxShadow: [
+                                          //             BoxShadow(
+                                          //               color: Colors.grey
+                                          //                   .withOpacity(
+                                          //                       0.8),
+                                          //               blurRadius: 6,
+                                          //               offset:
+                                          //                   const Offset(
+                                          //                       1, 1),
+                                          //             ),
+                                          //           ],
+                                          //         ),
+                                          //         child: const Icon(
+                                          //           Icons.edit,
+                                          //           size: 18,
+                                          //           color: Colors.white,
+                                          //         ),
+                                          //       ),
+                                          //     ),
+                                          //     const SizedBox(
+                                          //       width: 7,
+                                          //     ),
+                                          //     InkWell(
+                                          //       onTap: () {
+                                          //         deleteDialog(context, () {
+                                          //           Navigator.pop(context);
+                                          //         });
+                                          //       },
+                                          //       child: Container(
+                                          //         height: 25,
+                                          //         width: 25,
+                                          //         decoration: BoxDecoration(
+                                          //           borderRadius:
+                                          //               BorderRadius
+                                          //                   .circular(5),
+                                          //           color: Colors.red,
+                                          //           boxShadow: [
+                                          //             BoxShadow(
+                                          //               color: Colors.grey
+                                          //                   .withOpacity(
+                                          //                       0.8),
+                                          //               blurRadius: 6,
+                                          //               offset:
+                                          //                   const Offset(
+                                          //                       1, 1),
+                                          //             ),
+                                          //           ],
+                                          //         ),
+                                          //         child: const Icon(
+                                          //           Icons.delete,
+                                          //           size: 18,
+                                          //           color: Colors.white,
+                                          //         ),
+                                          //       ),
+                                          //     ),
+                                          //   ],
+                                          // ),
+                                          //   ],
+                                          // )
                                         ],
                                       ),
                                     ],

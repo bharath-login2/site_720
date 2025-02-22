@@ -24,6 +24,7 @@ import '../models/purchasebilllist/purchasebill_list_model.dart';
 import '../models/site_drawings/drawing_list.dart';
 import '../models/stages/stagephase_model.dart';
 import '../models/stock/stock_list.dart';
+import '../models/stockconsume/stockconsume_model.dart';
 import '../models/succes_response/success_response.dart';
 import '../models/workdetails/add_work_details_model.dart';
 import '../models/stages/stage_model.dart';
@@ -883,6 +884,18 @@ class HttpServices {
           body: {"project_id": projectId});
       if (response.statusCode == 200) {
         return stockListModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+   static Future getConsumeList(projectId) async {
+    try {
+      http.Response response = await http.post(
+          Uri.parse("${baseUrl}stock_consumption_view"),
+          body: {"project_id": projectId});
+      if (response.statusCode == 200) {
+        return stockConsumeModelFromJson(response.body);
       }
     } catch (e) {
       log(e.toString());

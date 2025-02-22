@@ -1,3 +1,5 @@
+import '../../../data/models/stockconsume/stockconsume_model.dart';
+
 class ConsumptionState {
   final DateTime? fromDate;
   final DateTime? toDate;
@@ -19,8 +21,8 @@ class ConsumptionInitial extends ConsumptionState {
 class ConsumptionLoading extends ConsumptionState {}
 
 class ConsumptionSuccess extends ConsumptionState {
-  final String message;
-  ConsumptionSuccess(this.message);
+   StockConsumeModel response;
+  ConsumptionSuccess(this.response);
 }
 
 class ConsumptionFailure extends ConsumptionState {

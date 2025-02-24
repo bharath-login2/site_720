@@ -5,15 +5,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/buttons.dart';
 import 'package:site_720/core/widgets/snack_bar.dart';
-import 'package:site_720/features/clients/cubit/add_client_cubit.dart';
 import 'package:site_720/features/clients/cubit/client_state.dart';
 import '../../../core/widgets/appbar.dart';
+import '../../../data/models/clientlist/client_details.dart';
 import '../../../data/models/clientlist/client_type_list.dart';
 import '../../../data/models/clientlist/district_list.dart';
 import '../../../data/models/clientlist/state_list_model.dart';
+import '../cubit/edit_client_cubit.dart';
 
-class AddCilentScreen extends StatelessWidget {
-  AddCilentScreen({super.key});
+class EditCilentScreen extends StatelessWidget {
+  EditCilentScreen({super.key});
   final formKey = GlobalKey<FormState>();
   TextEditingController clientName = TextEditingController();
   TextEditingController contactPerson = TextEditingController();
@@ -25,21 +26,24 @@ class AddCilentScreen extends StatelessWidget {
   TextEditingController civilId = TextEditingController();
   TextEditingController gstNumber = TextEditingController();
   String? selectedState;
-  dynamic selectedDistrict;
+  String? selectedDistrict;
   String? selectedType;
   List<States> stateList = [];
   List<Districts> districtList = [];
   List<ClientTypes> clientTypes = [];
   @override
   Widget build(BuildContext context) {
+    final args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+    String clientId = args["client_id"]!;
     return BlocProvider(
-      create: (context) => AddClientsCubit(),
+      create: (context) => EditClientsCubit(clientId),
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
-        appBar: simpleAppbar(context, "Add Client", true), 
+        appBar: simpleAppbar(context, "Edit Client", true),
         body: MultiBlocListener(
           listeners: [
-            BlocListener<AddClientsCubit, ClientsState>(
+            BlocListener<EditClientsCubit, ClientsState>(
               listener: (context, state) {
                 if (state is StateListFetched) {
                   stateList = state.response.data;
@@ -47,18 +51,35 @@ class AddCilentScreen extends StatelessWidget {
                   clientTypes = state.response.data;
                 } else if (state is DistrictListFetched) {
                   districtList = state.response.data;
-                } else if (state is AddClientSuccess) {
+                } else if (state is EditClientSuccess) {
                   snackBar(context, state.message, Colors.green);
                   Navigator.pop(context);
-                } else if (state is AddClientFailure) {
+                } else if (state is EditClientFailure) {
                   snackBar(context, state.message, Colors.red);
+                } else if (state is EditDetailsSuccess) {
+                  clientName.text = state.response.data.clientName;
+                  contactPerson.text = state.response.data.contactPerson;
+                  phoneNumber.text = state.response.data.phoneNumber;
+                  whatsappNumber.text = state.response.data.whatsappNumber;
+                  companyName.text = state.response.data.companyName;
+                  email.text = state.response.data.emailId;
+                  address.text = state.response.data.address;
+                  civilId.text = state.response.data.civilId;
+                  gstNumber.text = state.response.data.gstNo;
+                  if (state.response.data.stateId != "") {
+                    selectedState = state.response.data.stateId;
+                  }
+                  if (state.response.data.districtId != "") {
+                    selectedDistrict = state.response.data.districtId;
+                  }
+                  selectedType = state.response.data.clinetTypeId;
                 }
               },
             )
           ],
-          child: BlocBuilder<AddClientsCubit, ClientsState>(
+          child: BlocBuilder<EditClientsCubit, ClientsState>(
             builder: (context, state) {
-              final cubit = context.read<AddClientsCubit>();
+              final cubit = context.read<EditClientsCubit>();
               return SingleChildScrollView(
                 child: Form(
                   key: formKey,
@@ -205,7 +226,7 @@ class AddCilentScreen extends StatelessWidget {
                                 // Custom border
                                 borderRadius: BorderRadius.circular(5),
                               ),
-                              labelText: 'Address',
+                              labelText: 'Editress',
                               prefixIcon: const Icon(
                                 Icons.pin_drop,
                                 color: Colors.grey,
@@ -421,7 +442,8 @@ class AddCilentScreen extends StatelessWidget {
                         InkWell(
                             onTap: () {
                               if (formKey.currentState!.validate()) {
-                                cubit.addClient(
+                                cubit.editClient(
+                                    clientId,
                                     clientName.text,
                                     contactPerson.text,
                                     phoneNumber.text,
@@ -436,7 +458,7 @@ class AddCilentScreen extends StatelessWidget {
                                     selectedType ?? "");
                               }
                             },
-                            child: LargeButton(title: "Submit")),
+                            child: LargeButton(title: "Update")),
                         const SizedBox(
                           height: 25,
                         ),

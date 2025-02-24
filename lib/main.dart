@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/constants/routes.dart';
+import 'package:site_720/features/clients/views/edit_client.dart';
 import 'package:site_720/features/consumption/views/consumption.dart';
 import 'package:site_720/features/dashboard/views/dashboard_screen.dart';
 import 'package:site_720/features/drawing/views/drawing_screen.dart';
@@ -66,6 +67,7 @@ class MyApp extends StatelessWidget {
               fromHome: false,
             ),
         '/addCilentScreen': (context) => AddCilentScreen(),
+        '/editCilentScreen': (context) => EditCilentScreen(),
         '/projectDetails': (context) => ProjectDetails(),
         '/gallery': (context) => GalleryScreen(),
         '/drawing': (context) => DrawingScreen(),

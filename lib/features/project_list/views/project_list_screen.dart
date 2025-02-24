@@ -122,7 +122,8 @@ class ProjectList extends StatelessWidget {
                                         ],
                                       ),
                                       const CircleAvatar(
-                                        backgroundColor: AppColors.coffie,
+                                        backgroundColor: AppColors.lightA,
+                                        child: Icon(Icons.person),
                                       )
                                     ],
                                   ),

@@ -7,6 +7,7 @@ class AppRoutes {
   static const projectList = '/projectList';
   static const projectDetails = '/projectDetails';
   static const addCilentScreen = '/addCilentScreen';
+  static const editCilentScreen = '/editCilentScreen';
   static const gallery = '/gallery';
   static const drawing = '/drawing';
   static const workDetails = '/workDetails';

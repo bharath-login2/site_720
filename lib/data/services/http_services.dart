@@ -2,9 +2,13 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:site_720/core/utilities/shared_preferences.dart';
 import 'package:site_720/data/models/galery/galery_list_model.dart';
 import 'package:site_720/data/models/project_list/project_list_model.dart';
+import '../models/clientlist/client_details.dart';
 import '../models/clientlist/client_list_model.dart';
+import '../models/clientlist/client_type_list.dart';
+import '../models/clientlist/district_list.dart';
 import '../models/clientlist/state_list_model.dart';
 import '../models/complaint/complaint_details_model.dart';
 import '../models/complaint/complaint_list_model.dart';
@@ -40,7 +44,7 @@ class HttpServices {
     try {
       http.Response response = await http.post(Uri.parse("${baseUrl}login"),
           body: ({
-            'phone_number': mobile,
+            'user_name': mobile,
             'password': password,
             "firebase_id": firebaseId
           }));
@@ -53,10 +57,15 @@ class HttpServices {
   }
 
   static Future dashboard(fromDate, toDate) async {
+    log(await getSharedPreference('token'));
     try {
-      http.Response response = await http.post(
-          Uri.parse("${baseUrl}get_dashboard"),
-          body: ({'token': "", 'from_date': fromDate, 'to_date': toDate}));
+      http.Response response =
+          await http.post(Uri.parse("${baseUrl}get_dashboard"),
+              body: ({
+                'token': await getSharedPreference('token'),
+                'from_date': fromDate,
+                'to_date': toDate
+              }));
       if (response.statusCode == 200) {
         return dashboardModelFromJson(response.body);
       }
@@ -70,7 +79,7 @@ class HttpServices {
       http.Response response =
           await http.post(Uri.parse("${baseUrl}get_project_list"),
               body: ({
-                'token': "",
+                'token': await getSharedPreference('token'),
                 'status': status == "null" || status == "all" ? "" : status,
                 'searchkey': searchKey
               }));
@@ -86,7 +95,10 @@ class HttpServices {
     try {
       http.Response response = await http.post(
           Uri.parse("${baseUrl}get_project_detailed"),
-          body: ({'token': "", 'project_id': projectId}));
+          body: ({
+            'token': await getSharedPreference('token'),
+            'project_id': projectId
+          }));
       if (response.statusCode == 200) {
         return projectDetailsModelFromJson(response.body);
       }
@@ -97,8 +109,9 @@ class HttpServices {
 
   static Future getClientList() async {
     try {
-      http.Response response =
-          await http.post(Uri.parse("${baseUrl}get_client_list"));
+      http.Response response = await http.post(
+          Uri.parse("${baseUrl}get_client_list"),
+          body: ({'token': await getSharedPreference('token')}));
       if (response.statusCode == 200) {
         return clientListModelFromJson(response.body);
       }
@@ -109,9 +122,11 @@ class HttpServices {
 
   static Future getWorkDetails(projectId) async {
     try {
-      http.Response response = await http.post(
-          Uri.parse("${baseUrl}get_work_detailed"),
-          body: {"project_id": projectId});
+      http.Response response = await http
+          .post(Uri.parse("${baseUrl}get_work_detailed"), body: {
+        'token': await getSharedPreference('token'),
+        "project_id": projectId
+      });
       if (response.statusCode == 200) {
         return workDetailModelFromJson(response.body);
       }
@@ -123,8 +138,8 @@ class HttpServices {
   static Future getWorkIssues() async {
     try {
       http.Response response = await http.post(
-        Uri.parse("${baseUrl}get_status_issues"),
-      );
+          Uri.parse("${baseUrl}get_status_issues"),
+          body: ({'token': await getSharedPreference('token')}));
       if (response.statusCode == 200) {
         return addWorkDetailsModelFromJson(response.body);
       }
@@ -136,8 +151,8 @@ class HttpServices {
   static Future getComplaintList() async {
     try {
       http.Response response = await http.post(
-        Uri.parse("${baseUrl}get_complaint_list"),
-      );
+          Uri.parse("${baseUrl}get_complaint_list"),
+          body: ({'token': await getSharedPreference('token')}));
       if (response.statusCode == 200) {
         return complaintListModelFromJson(response.body);
       }
@@ -149,8 +164,8 @@ class HttpServices {
   static Future getContractorList() async {
     try {
       http.Response response = await http.post(
-        Uri.parse("${baseUrl}get_contractor_list"),
-      );
+          Uri.parse("${baseUrl}get_contractor_list"),
+          body: ({'token': await getSharedPreference('token')}));
       if (response.statusCode == 200) {
         return contractorListModelFromJson(response.body);
       }
@@ -161,9 +176,11 @@ class HttpServices {
 
   static Future getExtraWorkList(projectId) async {
     try {
-      http.Response response = await http.post(
-          Uri.parse("${baseUrl}get_extrawork_list"),
-          body: {"project_id": projectId});
+      http.Response response =
+          await http.post(Uri.parse("${baseUrl}get_extrawork_list"), body: {
+        "project_id": projectId,
+        'token': await getSharedPreference('token'),
+      });
       if (response.statusCode == 200) {
         return extraWorkListModelFromJson(response.body);
       }
@@ -174,9 +191,11 @@ class HttpServices {
 
   static Future getDeductionWorkList(projectId) async {
     try {
-      http.Response response = await http.post(
-          Uri.parse("${baseUrl}deduction_work_list"),
-          body: {"project_id": projectId});
+      http.Response response = await http
+          .post(Uri.parse("${baseUrl}deduction_work_list"), body: {
+        'token': await getSharedPreference('token'),
+        "project_id": projectId
+      });
       if (response.statusCode == 200) {
         return getDeductionWorkFromJson(response.body);
       }
@@ -187,9 +206,11 @@ class HttpServices {
 
   static Future getPurchaseBillList(projectId) async {
     try {
-      http.Response response = await http.post(
-          Uri.parse("${baseUrl}get_purchase_bill"),
-          body: {"project_id": projectId});
+      http.Response response = await http
+          .post(Uri.parse("${baseUrl}get_purchase_bill"), body: {
+        'token': await getSharedPreference('token'),
+        "project_id": projectId
+      });
       if (response.statusCode == 200) {
         return purchaseBillListModelFromJson(response.body);
       }
@@ -209,6 +230,7 @@ class HttpServices {
     try {
       http.Response response =
           await http.post(Uri.parse("${baseUrl}add_work_details"), body: {
+        'token': await getSharedPreference('token'),
         "project_id": projectId,
         "client_id": clintId,
         "is_working": isWorking,
@@ -237,6 +259,7 @@ class HttpServices {
     try {
       http.Response response =
           await http.post(Uri.parse("${baseUrl}edit_work_details"), body: {
+        'token': await getSharedPreference('token'),
         "work_id": workId,
         "project_id": projectId,
         "client_id": clintId,
@@ -258,7 +281,10 @@ class HttpServices {
     try {
       http.Response response = await http.post(
           Uri.parse("${baseUrl}delete_work_details"),
-          body: ({'token': "", 'work_id': workId}));
+          body: ({
+            'token': await getSharedPreference('token'),
+            'work_id': workId
+          }));
       if (response.statusCode == 200) {
         return successResponseFromJson(response.body);
       }
@@ -269,9 +295,11 @@ class HttpServices {
 
   static Future getPhaseNew(projectId) async {
     try {
-      http.Response response = await http.post(
-          Uri.parse("${baseUrl}phase_list_new"),
-          body: {"project_id": projectId});
+      http.Response response = await http
+          .post(Uri.parse("${baseUrl}phase_list_new"), body: {
+        'token': await getSharedPreference('token'),
+        "project_id": projectId
+      });
       if (response.statusCode == 200) {
         return stagePhaseListFromJson(response.body);
       }
@@ -291,6 +319,7 @@ class HttpServices {
     try {
       http.Response response =
           await http.post(Uri.parse("${baseUrl}add_stages"), body: {
+        'token': await getSharedPreference('token'),
         "project_id": projectId,
         "client_id": clintId,
         "phase_id": selectedStatus,
@@ -318,6 +347,7 @@ class HttpServices {
     try {
       http.Response response =
           await http.post(Uri.parse("${baseUrl}edit_stages"), body: {
+        'token': await getSharedPreference('token'),
         "project_id": projectId,
         "client_id": clintId,
         "stage_id": stageId,
@@ -336,9 +366,11 @@ class HttpServices {
 
   static Future getStagesList(projectId) async {
     try {
-      http.Response response = await http.post(
-          Uri.parse("${baseUrl}get_stages"),
-          body: {"project_id": projectId});
+      http.Response response = await http
+          .post(Uri.parse("${baseUrl}get_stages"), body: {
+        'token': await getSharedPreference('token'),
+        "project_id": projectId
+      });
       if (response.statusCode == 200) {
         return getStagesModelFromJson(response.body);
       }
@@ -349,9 +381,11 @@ class HttpServices {
 
   static Future getExpenseList(projectId) async {
     try {
-      http.Response response = await http.post(
-          Uri.parse("${baseUrl}expense_list"),
-          body: {"project_id": projectId});
+      http.Response response = await http
+          .post(Uri.parse("${baseUrl}expense_list"), body: {
+        'token': await getSharedPreference('token'),
+        "project_id": projectId
+      });
       if (response.statusCode == 200) {
         return getExpenseListFromJson(response.body);
       }
@@ -362,9 +396,11 @@ class HttpServices {
 
   static Future getPaymentDetails(projectId) async {
     try {
-      http.Response response = await http.post(
-          Uri.parse("${baseUrl}get_payment_history"),
-          body: {"project_id": projectId});
+      http.Response response = await http
+          .post(Uri.parse("${baseUrl}get_payment_history"), body: {
+        'token': await getSharedPreference('token'),
+        "project_id": projectId
+      });
       if (response.statusCode == 200) {
         return getPaymentDetailsFromJson(response.body);
       }
@@ -376,8 +412,8 @@ class HttpServices {
   static Future getAddProjectDetails() async {
     try {
       http.Response response = await http.post(
-        Uri.parse("${baseUrl}project_data"),
-      );
+          Uri.parse("${baseUrl}project_data"),
+          body: ({'token': await getSharedPreference('token')}));
       if (response.statusCode == 200) {
         return projectDataModelFromJson(response.body);
       }
@@ -415,7 +451,7 @@ class HttpServices {
     try {
       var uri = Uri.parse("${baseUrl}add_project");
       var request = http.MultipartRequest('POST', uri);
-      request.fields['token'] = "";
+      request.fields['token'] = await getSharedPreference('token');
       request.fields["client_id"] = clientId;
       request.fields["project_name"] = projectName;
       request.fields["project_type"] = projectType;
@@ -462,9 +498,11 @@ class HttpServices {
 
   static Future editDetails(String projectId) async {
     try {
-      http.Response response = await http.post(
-          Uri.parse("${baseUrl}edit_datalist"),
-          body: {"project_id": projectId});
+      http.Response response = await http
+          .post(Uri.parse("${baseUrl}edit_datalist"), body: {
+        'token': await getSharedPreference('token'),
+        "project_id": projectId
+      });
       if (response.statusCode == 200) {
         return editDataModelFromJson(response.body);
       }
@@ -504,7 +542,7 @@ class HttpServices {
       var uri = Uri.parse("${baseUrl}edit_project");
       var request = http.MultipartRequest('POST', uri);
 
-      request.fields['token'] = "";
+      request.fields['token'] = await getSharedPreference('token');
       request.fields["project_id"] = projectId;
       request.fields["client_id"] = clientId;
       request.fields["project_name"] = projectName;
@@ -558,7 +596,10 @@ class HttpServices {
     try {
       http.Response response = await http.post(
           Uri.parse("${baseUrl}delete_project"),
-          body: ({'token': "", 'project_id': projectId}));
+          body: ({
+            'token': await getSharedPreference('token'),
+            'project_id': projectId
+          }));
       if (response.statusCode == 200) {
         return successResponseFromJson(response.body);
       }
@@ -571,7 +612,10 @@ class HttpServices {
     try {
       http.Response response = await http.post(
           Uri.parse("${baseUrl}get_stages_pro"),
-          body: ({'project_id': projectId}));
+          body: ({
+            'token': await getSharedPreference('token'),
+            'project_id': projectId
+          }));
       if (response.statusCode == 200) {
         return satgeProModelFromJson(response.body);
       }
@@ -591,6 +635,7 @@ class HttpServices {
       var uri = Uri.parse("${baseUrl}add_gallery");
       var request = http.MultipartRequest('POST', uri);
 
+      request.fields['token'] = await getSharedPreference('token');
       request.fields['project_id'] = projectId;
       request.fields['client_id'] = clientId;
       request.fields['stage_id'] = stageId;
@@ -617,7 +662,10 @@ class HttpServices {
     try {
       http.Response response = await http.post(
           Uri.parse("${baseUrl}list_gallery"),
-          body: ({'project_id': projectId}));
+          body: ({
+            'token': await getSharedPreference('token'),
+            'project_id': projectId
+          }));
       if (response.statusCode == 200) {
         return galleryListModelFromJson(response.body);
       }
@@ -630,7 +678,10 @@ class HttpServices {
     try {
       http.Response response = await http.post(
           Uri.parse("${baseUrl}delete_gallery"),
-          body: ({'image_id': id}));
+          body: ({
+            'token': await getSharedPreference('token'),
+            'image_id': id
+          }));
       if (response.statusCode == 200) {
         return successResponseFromJson(response.body);
       }
@@ -649,6 +700,7 @@ class HttpServices {
     try {
       http.Response response =
           await http.post(Uri.parse("${baseUrl}add_extra_work"), body: {
+        'token': await getSharedPreference('token'),
         "project_id": projectId,
         "client_id": clintId,
         "work": work,
@@ -674,6 +726,7 @@ class HttpServices {
     try {
       http.Response response =
           await http.post(Uri.parse("${baseUrl}edit_extra_work"), body: {
+        'token': await getSharedPreference('token'),
         "project_id": projectId,
         "client_id": clintId,
         "work_id": workId,
@@ -695,6 +748,7 @@ class HttpServices {
     try {
       http.Response response =
           await http.post(Uri.parse("${baseUrl}delete_extrawork"), body: {
+        'token': await getSharedPreference('token'),
         "work_id": workId,
       });
       if (response.statusCode == 200) {
@@ -707,9 +761,11 @@ class HttpServices {
 
   static Future getPhaseList(projectId) async {
     try {
-      http.Response response = await http.post(
-          Uri.parse("${baseUrl}get_phase_details"),
-          body: {"project_id": projectId});
+      http.Response response = await http
+          .post(Uri.parse("${baseUrl}get_phase_details"), body: {
+        'token': await getSharedPreference('token'),
+        "project_id": projectId
+      });
       if (response.statusCode == 200) {
         return phaseListFromJson(response.body);
       }
@@ -729,6 +785,7 @@ class HttpServices {
     try {
       http.Response response =
           await http.post(Uri.parse("${baseUrl}add_deduction_work"), body: {
+        'token': await getSharedPreference('token'),
         "project_id": projectId,
         "client_id": clintId,
         "work": work,
@@ -757,6 +814,7 @@ class HttpServices {
     try {
       http.Response response =
           await http.post(Uri.parse("${baseUrl}edit_deduction_work"), body: {
+        'token': await getSharedPreference('token'),
         "project_id": projectId,
         "client_id": clintId,
         "deduction_id": workId,
@@ -781,6 +839,7 @@ class HttpServices {
     try {
       http.Response response =
           await http.post(Uri.parse("${baseUrl}delete_deduction_work"), body: {
+        'token': await getSharedPreference('token'),
         "project_id": projectId,
         "work_id": workId,
       });
@@ -798,6 +857,7 @@ class HttpServices {
     try {
       http.Response response =
           await http.post(Uri.parse("${baseUrl}list_site_drawings"), body: {
+        'token': await getSharedPreference('token'),
         "project_id": projectId,
       });
       if (response.statusCode == 200) {
@@ -817,7 +877,7 @@ class HttpServices {
     try {
       var uri = Uri.parse("${baseUrl}add_site_drawings");
       var request = http.MultipartRequest('POST', uri);
-
+      request.fields['token'] = await getSharedPreference('token');
       request.fields['project_id'] = projectId;
       request.fields['client_id'] = clientId;
       request.fields['remarks'] = remark;
@@ -843,6 +903,7 @@ class HttpServices {
     try {
       http.Response response =
           await http.post(Uri.parse("${baseUrl}delete_site_drawings"), body: {
+        'token': await getSharedPreference('token'),
         "site_id": siteId,
       });
       if (response.statusCode == 200) {
@@ -855,8 +916,10 @@ class HttpServices {
 
   static Future getComplaintDetails() async {
     try {
-      http.Response response = await http
-          .post(Uri.parse("${baseUrl}complaints_details_n"), body: {});
+      http.Response response =
+          await http.post(Uri.parse("${baseUrl}complaints_details_n"), body: {
+        'token': await getSharedPreference('token'),
+      });
       if (response.statusCode == 200) {
         return complaintDetailsModelFromJson(response.body);
       }
@@ -867,9 +930,11 @@ class HttpServices {
 
   static Future getPackage(projectId) async {
     try {
-      http.Response response = await http.post(
-          Uri.parse("${baseUrl}package_data"),
-          body: {"project_id": projectId});
+      http.Response response = await http
+          .post(Uri.parse("${baseUrl}package_data"), body: {
+        'token': await getSharedPreference('token'),
+        "project_id": projectId
+      });
       if (response.statusCode == 200) {
         return packageModelFromJson(response.body);
       }
@@ -880,9 +945,11 @@ class HttpServices {
 
   static Future getStockList(projectId) async {
     try {
-      http.Response response = await http.post(
-          Uri.parse("${baseUrl}stock_list_view"),
-          body: {"project_id": projectId});
+      http.Response response = await http
+          .post(Uri.parse("${baseUrl}stock_list_view"), body: {
+        'token': await getSharedPreference('token'),
+        "project_id": projectId
+      });
       if (response.statusCode == 200) {
         return stockListModelFromJson(response.body);
       }
@@ -893,9 +960,11 @@ class HttpServices {
 
   static Future getConsumeList(projectId) async {
     try {
-      http.Response response = await http.post(
-          Uri.parse("${baseUrl}stock_consumption_view"),
-          body: {"project_id": projectId});
+      http.Response response = await http
+          .post(Uri.parse("${baseUrl}stock_consumption_view"), body: {
+        'token': await getSharedPreference('token'),
+        "project_id": projectId
+      });
       if (response.statusCode == 200) {
         return stockConsumeModelFromJson(response.body);
       }
@@ -906,13 +975,134 @@ class HttpServices {
 
   static Future getStates() async {
     try {
-      http.Response response =
-          await http.post(Uri.parse("${baseUrl}state_list"));
+      http.Response response = await http.post(
+          Uri.parse("${baseUrl}state_list"),
+          body: ({'token': await getSharedPreference('token')}));
       if (response.statusCode == 200) {
         return stateListModelFromJson(response.body);
       }
     } catch (e) {
       log(e.toString());
     }
-  } 
+  }
+
+  static Future getDistricts(stateId) async {
+    try {
+      http.Response response = await http
+          .post(Uri.parse("${baseUrl}district_list"), body: {
+        'token': await getSharedPreference('token'),
+        "state_id": stateId
+      });
+      if (response.statusCode == 200) {
+        return districtListModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  static Future getClientTypes() async {
+    try {
+      http.Response response = await http.post(
+          Uri.parse("${baseUrl}client_type_list"),
+          body: ({'token': await getSharedPreference('token')}));
+      if (response.statusCode == 200) {
+        return clientTypeListModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  static Future addClient(
+      String clientName,
+      String contactPerson,
+      String phoneNumber,
+      String whatsappNumber,
+      String companyName,
+      String emailId,
+      String address,
+      String civil,
+      String gstNo,
+      String stateId,
+      String districtId,
+      String clientTypeId) async {
+    try {
+      http.Response response =
+          await http.post(Uri.parse("${baseUrl}add_client"), body: {
+        'token': await getSharedPreference('token'),
+        "client_name": clientName,
+        "contact_person": contactPerson,
+        "phone_number": phoneNumber,
+        "whatsapp_number": whatsappNumber,
+        "company_name": companyName,
+        "email_id": emailId,
+        "address": address,
+        "civil_id": civil,
+        "gst_no": gstNo,
+        "state_id": stateId,
+        "district_id": districtId,
+        "client_type_id": clientTypeId,
+      });
+      if (response.statusCode == 200) {
+        return successResponseFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+   static Future getClientDetails(clientId) async {
+    try {
+      http.Response response = await http
+          .post(Uri.parse("${baseUrl}edit_details_client"), body: {
+        'token': await getSharedPreference('token'),
+        "client_id": clientId
+      });
+      if (response.statusCode == 200) {
+        return clientDetailsModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  static Future editClient(
+      String clientId,
+      String clientName,
+      String contactPerson,
+      String phoneNumber,
+      String whatsappNumber,
+      String companyName,
+      String emailId,
+      String address,
+      String civil,
+      String gstNo,
+      String stateId,
+      String districtId,
+      String clientTypeId) async {
+    try {
+      http.Response response =
+          await http.post(Uri.parse("${baseUrl}add_client"), body: {
+        'token': await getSharedPreference('token'),
+        "client_name": clientName,
+        "contact_person": contactPerson,
+        "phone_number": phoneNumber,
+        "whatsapp_number": whatsappNumber,
+        "company_name": companyName,
+        "email_id": emailId,
+        "address": address,
+        "civil_id": civil,
+        "gst_no": gstNo,
+        "state_id": stateId,
+        "district_id": districtId,
+        "client_type_id": clientTypeId,
+      });
+      if (response.statusCode == 200) {
+        return successResponseFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
 }

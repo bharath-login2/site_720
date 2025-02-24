@@ -19,7 +19,7 @@ class LoginCubit extends Cubit<LoginState> {
       if (response.status == true) {
         emit(LoginSuccess(response.message, response.data.token));
       } else {
-        emit(LoginFailure("Invalid username or password."));
+        emit(LoginFailure(response.message));
       }
     } catch (e) {
       emit(LoginFailure("An error occurred."));

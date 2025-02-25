@@ -1,4 +1,3 @@
-import 'package:site_720/data/models/succes_response/success_response.dart';
 
 import '../../../data/models/clientlist/client_details.dart';
 import '../../../data/models/clientlist/client_list_model.dart';

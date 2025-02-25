@@ -1,4 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
@@ -22,6 +23,7 @@ import 'package:site_720/features/purchase/views/purchase_list_screen.dart';
 import 'package:site_720/features/splash/views/splash.dart';
 import 'package:site_720/features/stock/views/stock.dart';
 import 'package:site_720/features/sub_contactors/views/sub_contrctor_screen.dart';
+import 'package:site_720/firebase_options.dart';
 import 'features/clients/views/add_clients.dart';
 import 'features/complaints/views/add_complaint.dart';
 import 'features/complaints/views/complaint_list.dart';
@@ -37,7 +39,9 @@ import 'features/stages/views/stages.dart';
 import 'features/stages/views/stage_history.dart';
 import 'features/work_details/views/work_details_screen.dart';
 
-void main() {
+Future<void> main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(MultiBlocProvider(providers: [
     BlocProvider(create: (_) => ConnectivityCubit(Connectivity())),
     BlocProvider(create: (_) => LoginCubit()),

@@ -7,7 +7,6 @@ import 'package:site_720/core/widgets/buttons.dart';
 import 'package:site_720/core/widgets/snack_bar.dart';
 import 'package:site_720/features/clients/cubit/client_state.dart';
 import '../../../core/widgets/appbar.dart';
-import '../../../data/models/clientlist/client_details.dart';
 import '../../../data/models/clientlist/client_type_list.dart';
 import '../../../data/models/clientlist/district_list.dart';
 import '../../../data/models/clientlist/state_list_model.dart';

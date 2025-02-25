@@ -1084,7 +1084,7 @@ class HttpServices {
     try {
       http.Response response =
           await http.post(Uri.parse("${baseUrl}edit_client"), body: { 
-        'token': await getSharedPreference('token'),
+        'token': await getSharedPreference('token'), 
         "client_id": clientId,
         "client_name": clientName,
         "contact_person": contactPerson,

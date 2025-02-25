@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/dialogs.dart';
 import 'package:site_720/features/dashboard/views/dashboard_screen.dart';
-import 'package:site_720/features/project_list/views/project_list_screen.dart';
 import '../clients/views/client_list.dart';
 import '../project_list/views/add_projects.dart';
+import '../task_management/views/task_list.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -18,11 +18,11 @@ class _HomeState extends State<Home> {
 
   static final List<Widget> _widgetOptions = <Widget>[
     DashboardScreen(),
-    ProjectList(
+    TaskList(),
+    const ClientList(),
+    AddProjectScreen(
       fromHome: true,
     ),
-    const ClientList(),
-    AddProjectScreen(fromHome: true,),
   ];
 
   void _onItemTapped(int index) {

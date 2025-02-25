@@ -72,7 +72,9 @@ class EditCilentScreen extends StatelessWidget {
                   if (state.response.data.districtId != "") {
                     selectedDistrict = state.response.data.districtId;
                   }
-                  selectedType = state.response.data.clinetTypeId;
+                  if (state.response.data.clinetTypeId != "") {
+                    selectedType = state.response.data.clinetTypeId;
+                  }
                 }
               },
             )
@@ -226,7 +228,7 @@ class EditCilentScreen extends StatelessWidget {
                                 // Custom border
                                 borderRadius: BorderRadius.circular(5),
                               ),
-                              labelText: 'Editress',
+                              labelText: 'Address',
                               prefixIcon: const Icon(
                                 Icons.pin_drop,
                                 color: Colors.grey,

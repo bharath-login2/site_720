@@ -105,7 +105,7 @@ class EditClientsCubit extends Cubit<ClientsState> {
         emit(EditClientSuccess(response.message));
       } else {
         emit(EditClientFailure(response.message));
-      }
+      } 
     } catch (e) {
       emit(EditClientFailure('Failed to fetch data: ${e.toString()}'));
     }

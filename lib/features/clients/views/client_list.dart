@@ -268,10 +268,8 @@ class ClientList extends StatelessWidget {
                                                         "client_id": state
                                                             .response
                                                             .data[index]
-                                                            .clientName
-                                                      }).then((_) {
-                                                    cubit.getClientList();
-                                                  });
+                                                            .id
+                                                      });
                                                 },
                                                 child: Container(
                                                   height: 25,

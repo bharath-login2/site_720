@@ -1052,7 +1052,7 @@ class HttpServices {
     }
   }
 
-   static Future getClientDetails(clientId) async {
+  static Future getClientDetails(clientId) async {
     try {
       http.Response response = await http
           .post(Uri.parse("${baseUrl}edit_details_client"), body: {
@@ -1083,8 +1083,9 @@ class HttpServices {
       String clientTypeId) async {
     try {
       http.Response response =
-          await http.post(Uri.parse("${baseUrl}add_client"), body: {
+          await http.post(Uri.parse("${baseUrl}edit_client"), body: { 
         'token': await getSharedPreference('token'),
+        "client_id": clientId,
         "client_name": clientName,
         "contact_person": contactPerson,
         "phone_number": phoneNumber,

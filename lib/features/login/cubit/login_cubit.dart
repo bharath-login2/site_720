@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import '../../../core/utilities/shared_preferences.dart';
 import '../../../data/models/login/login_model.dart';
 import '../../../data/services/http_services.dart';
 
@@ -14,8 +14,9 @@ class LoginCubit extends Cubit<LoginState> {
 
   Future<void> login(String username, String password) async {
     emit(LoginLoading());
+    final firebaseToken = await getSharedPreference("firebase_token");
     try {
-      LoginModel response = await HttpServices.login(username, password, "");
+      LoginModel response = await HttpServices.login(username, password, firebaseToken);
       if (response.status == true) {
         emit(LoginSuccess(response.message, response.data.token));
       } else {

@@ -1,4 +1,4 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
+ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,17 +34,19 @@ import 'features/forgot_password/views/phone_number_screen.dart';
 import 'features/home/home.dart';
 import 'features/login/cubit/login_cubit.dart';
 import 'features/login/views/login_screen.dart';
+import 'features/notifications/cubit/notification_cubit.dart';
 import 'features/project_list/views/add_projects.dart';
 import 'features/stages/views/stages.dart';
 import 'features/stages/views/stage_history.dart';
 import 'features/work_details/views/work_details_screen.dart';
 
-Future<void> main() async{
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(MultiBlocProvider(providers: [
     BlocProvider(create: (_) => ConnectivityCubit(Connectivity())),
     BlocProvider(create: (_) => LoginCubit()),
+    BlocProvider(create: (_) => NotificationCubit()..setupFCM()),
   ], child: const MyApp()));
 }
 

@@ -20,6 +20,7 @@ class LoginScreen extends StatelessWidget {
   bool connStatus = false;
   bool isObscure = true;
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

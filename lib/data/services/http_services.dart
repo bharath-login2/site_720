@@ -1084,8 +1084,8 @@ class HttpServices {
       String clientTypeId) async {
     try {
       http.Response response =
-          await http.post(Uri.parse("${baseUrl}edit_client"), body: { 
-        'token': await getSharedPreference('token'), 
+          await http.post(Uri.parse("${baseUrl}edit_client"), body: {
+        'token': await getSharedPreference('token'),
         "client_id": clientId,
         "client_name": clientName,
         "contact_person": contactPerson,
@@ -1108,11 +1108,26 @@ class HttpServices {
     }
   }
 
-   static Future getTaskList() async {
+  static Future getTaskList() async {
     try {
-      http.Response response = await http
-          .post(Uri.parse("${baseUrl}get_task_list"), body: {
+      http.Response response =
+          await http.post(Uri.parse("${baseUrl}get_task_list"), body: {
         'token': await getSharedPreference('token'),
+      });
+      if (response.statusCode == 200) {
+        return getTaskListFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  static Future getTaskDetails(String taskId) async {
+    try {
+      http.Response response =
+          await http.post(Uri.parse("${baseUrl}get_task_details"), body: {
+        'token': await getSharedPreference('token'),
+        'task_id': taskId,
       });
       if (response.statusCode == 200) {
         return getTaskListFromJson(response.body);

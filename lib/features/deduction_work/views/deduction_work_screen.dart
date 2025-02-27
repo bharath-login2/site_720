@@ -345,10 +345,11 @@ class DeductionWork extends StatelessWidget {
                                                         height: 10,
                                                       ),
                                                       AmountContainer(
-                                                        title: "Cost",
-                                                        amount:
-                                                            "${workList[index].amount}₹",
-                                                      ),
+                                                          title: "Cost",
+                                                          amount:
+                                                              "${workList[index].amount}₹",
+                                                          valueColor: AppColors
+                                                              .primaryColor),
                                                     ],
                                                   )
                                                 ],

@@ -37,6 +37,7 @@ import 'features/login/views/login_screen.dart';
 import 'features/project_list/views/add_projects.dart';
 import 'features/stages/views/stages.dart';
 import 'features/stages/views/stage_history.dart';
+import 'features/task_management/views/task_details.dart';
 import 'features/work_details/views/work_details_screen.dart';
 
 Future<void> main() async{
@@ -99,6 +100,7 @@ class MyApp extends StatelessWidget {
         '/addComplaints': (context) => AddComplaint(),
         '/imageViewer': (context) => const ImageViewer(),
         '/editProjectScreen': (context) => EditProjectScreen(),
+         '/taskDetails': (context) => TaskDetails(),
       },
     );
   }

@@ -87,20 +87,23 @@ class Consumption extends StatelessWidget {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           AmountContainer(
-                                            title: "Used Quantity",
-                                            amount: state
-                                                .response.data[index].quantity,
-                                          ),
+                                              title: "Used Quantity",
+                                              amount: state.response.data[index]
+                                                  .quantity,
+                                              valueColor:
+                                                  AppColors.primaryColor),
                                           AmountContainer(
-                                            title: "Unit Price",
-                                            amount:
-                                                "₹ ${state.response.data[index].unitPrice}",
-                                          ),
+                                              title: "Unit Price",
+                                              amount:
+                                                  "₹ ${state.response.data[index].unitPrice}",
+                                              valueColor:
+                                                  AppColors.primaryColor),
                                           AmountContainer(
-                                            title: "Unit Price",
-                                            amount:
-                                                "₹ ${state.response.data[index].unitPrice}",
-                                          ),
+                                              title: "Unit Price",
+                                              amount:
+                                                  "₹ ${state.response.data[index].unitPrice}",
+                                              valueColor:
+                                                  AppColors.primaryColor),
                                         ],
                                       ),
                                     ],

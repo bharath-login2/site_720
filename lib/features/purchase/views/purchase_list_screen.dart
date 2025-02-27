@@ -182,14 +182,18 @@ class PurchaseList extends StatelessWidget {
                                                 AmountContainer(
                                                     title: "Quantity",
                                                     amount: state.response
-                                                        .data[index].quantity),
+                                                        .data[index].quantity,
+                                                    valueColor:
+                                                        AppColors.primaryColor),
                                                 const SizedBox(
                                                   width: 10,
                                                 ),
                                                 AmountContainer(
                                                     title: "Amount",
                                                     amount:
-                                                        "₹ ${state.response.data[index].grandTotal}"),
+                                                        "₹ ${state.response.data[index].grandTotal}",
+                                                    valueColor:
+                                                        AppColors.primaryColor),
                                               ],
                                             ),
                                             Row(

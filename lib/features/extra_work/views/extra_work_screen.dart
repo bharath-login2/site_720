@@ -318,6 +318,7 @@ class ExtraWork extends StatelessWidget {
                                                       title: "Cost",
                                                       amount:
                                                           "${state.response.data[index].amount} ₹",
+                                                            valueColor:  AppColors.primaryColor
                                                     ),
                                                   ],
                                                 )

@@ -189,6 +189,7 @@ class Expense extends StatelessWidget {
                                             title: "Cost",
                                             amount:
                                                 "${state.response.data[index].billAmount} ₹",
+                                            valueColor:  AppColors.primaryColor
                                           ),
                                           // Text(
                                           //   "₹ 500000 /-",

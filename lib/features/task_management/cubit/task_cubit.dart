@@ -1,4 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../data/models/tasklist/tasklist_model.dart';
+import '../../../data/services/http_services.dart';
 import 'task_state.dart';
 
 class TaskCubit extends Cubit<TaskState> {
@@ -7,15 +9,15 @@ class TaskCubit extends Cubit<TaskState> {
   }
 
   Future<void> getTaskList() async {
-    // emit(TaskLoading());
+    emit(TaskLoading());
     try {
-      // TaskListModel response = await HttpServices.getTaskList(projectId);
+      GetTaskList response = await HttpServices.getTaskList();
 
-      // if (response.status == true) {
-      //   emit(TaskSuccess(response));
-      // }else{
-      // emit(TaskFailure('Failed to fetch data}'));
-      // }
+      if (response.status == true) {
+        emit(TaskSuccess(response));
+      }else{
+      emit(TaskFailure('Failed to fetch data}'));
+      }
     } catch (e) {
       emit(TaskFailure('Failed to fetch data: ${e.toString()}'));
     }

@@ -32,4 +32,5 @@ class AppRoutes {
   static const complaintList = '/complaintList';
   static const addComplaints = '/addComplaints';
   static const imageViewer = '/imageViewer';
+   static const taskDetails = '/taskDetails';
 }

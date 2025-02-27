@@ -1,4 +1,6 @@
 
+import '../../../data/models/tasklist/tasklist_model.dart';
+
 class TaskState {
   TaskState();
 }
@@ -8,7 +10,7 @@ class TaskInitial extends TaskState {}
 class TaskLoading extends TaskState {}
 
 class TaskSuccess extends TaskState {
-  final  response;
+  GetTaskList response;
   TaskSuccess(this.response);
 }
 

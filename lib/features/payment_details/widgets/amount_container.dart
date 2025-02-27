@@ -6,10 +6,12 @@ import 'package:site_720/core/constants/colors.dart';
 class AmountContainer extends StatelessWidget {
   String title;
   String amount;
+  Color valueColor;
   AmountContainer({
     super.key,
     required this.title,
     required this.amount,
+    required this.valueColor,
   });
 
   @override
@@ -39,7 +41,7 @@ class AmountContainer extends StatelessWidget {
               ),
               Text(
                 amount,
-                style: const TextStyle(color: AppColors.primaryColor),
+                style: TextStyle(color: valueColor),
               ),
             ],
           ),
@@ -82,7 +84,7 @@ class SmallContainer extends StatelessWidget {
                     const TextStyle(fontSize: 9, color: AppColors.primaryColor),
               ),
               Text(
-                amount, 
+                amount,
                 style: const TextStyle(color: AppColors.primaryColor),
               ),
             ],

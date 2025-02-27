@@ -4,20 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/appbar.dart';
+import '../../../core/constants/routes.dart';
 import '../../../core/widgets/shimmer.dart';
+import '../../../data/models/tasklist/tasklist_model.dart';
 import '../../payment_details/widgets/amount_container.dart';
 import '../cubit/task_cubit.dart';
 import '../cubit/task_state.dart';
 
 class TaskList extends StatelessWidget {
   TaskList({super.key});
-  List taskList = [];
+  List<Tasks> taskList = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: AppColors.backgroundColor,
-        appBar: simpleAppbar(context, "Task", true),
+        appBar: simpleAppbar(context, "Task", false),
         body: BlocProvider(
           create: (context) => TaskCubit(),
           child: MultiBlocListener(
@@ -25,7 +27,7 @@ class TaskList extends StatelessWidget {
               BlocListener<TaskCubit, TaskState>(
                 listener: (context, state) {
                   if (state is TaskSuccess) {
-                    // taskList = state.response.data;
+                    taskList = state.response.data;
                   }
                 },
               )
@@ -44,7 +46,7 @@ class TaskList extends StatelessWidget {
                       );
                     },
                   );
-                } else if (taskList.isEmpty) {
+                } else if (taskList.isNotEmpty) {
                   return RefreshIndicator(
                     onRefresh: () async {
                       cubit.getTaskList();
@@ -52,7 +54,7 @@ class TaskList extends StatelessWidget {
                     child: ListView.builder(
                       shrinkWrap: true,
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      itemCount: 5,
+                      itemCount: taskList.length,
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: const EdgeInsets.all(6.0),
@@ -61,70 +63,102 @@ class TaskList extends StatelessWidget {
                               // Navigator.of(context)
                               //     .pushNamed(AppRoutes.stageHistory);
                             },
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * .9,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: Colors.white,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.8),
-                                    blurRadius: 3,
-                                    offset: const Offset(0, 3),
-                                  ),
-                                ],
-                              ),
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width * .7,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 8.0,
-                                      left: 8.0,
-                                      right: 8.0,
-                                      bottom: 8.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "taskList[index].materialName",
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 3,
-                                      ),
-                                      Text(
-                                        "taskList[index].supplierName",
-                                        style: const TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          AmountContainer(
-                                            title: "Unit Price",
-                                            amount: "taskList[index].unitPrice",
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.pushNamed(context,
+                                                    AppRoutes.taskDetails,
+                                                    arguments: {
+                                                      "id": taskList[index].id
+                                                    });
+                              },
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * .9,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.8),
+                                      blurRadius: 3,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: SizedBox(
+                                  width: MediaQuery.of(context).size.width * .7,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 8.0,
+                                        left: 8.0,
+                                        right: 8.0,
+                                        bottom: 8.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          taskList[index].taskTitle,
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
                                           ),
-                                          AmountContainer(
-                                            title: "In Task",
-                                            amount: "taskList[index].quantity",
+                                        ),
+                                        const SizedBox(height: 3),
+                                        Text(
+                                          taskList[index].staffName,
+                                          style: const TextStyle(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
                                           ),
-                                          AmountContainer(
-                                            title: "Total Amount",
-                                            amount: "taskList[index].totalAmount",
+                                        ),
+                                        if (taskList[index]
+                                            .stageName
+                                            .isNotEmpty) ...[
+                                          const SizedBox(height: 3),
+                                          Text(
+                                            taskList[index].stageName,
+                                            style: const TextStyle(
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ],
-                                      ),
-                                    ],
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            AmountContainer(
+                                                title: "From Date",
+                                                amount: taskList[index].fromDate,
+                                                valueColor:
+                                                    AppColors.primaryColor),
+                                            AmountContainer(
+                                                title: "To Date",
+                                                amount: taskList[index].toDate,
+                                                valueColor:
+                                                    AppColors.primaryColor),
+                                            AmountContainer(
+                                              title: "Status",
+                                              amount: taskList[index].status,
+                                              valueColor:
+                                                  taskList[index].status == "New"
+                                                      ? Colors.blue
+                                                      : taskList[index].status ==
+                                                              "Pending"
+                                                          ? Colors.orange
+                                                          : taskList[index]
+                                                                      .status ==
+                                                                  "Rejected"
+                                                              ? Colors.red
+                                                              : Colors.green,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),

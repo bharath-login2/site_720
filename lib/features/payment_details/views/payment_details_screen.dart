@@ -146,16 +146,19 @@ class PaymentDetails extends StatelessWidget {
                                               title: "Estimated Amount",
                                               amount:
                                                   "${state.response.data[index].amount} ₹",
+                                                    valueColor:  AppColors.primaryColor
                                             ),
                                             AmountContainer(
                                               title: "Paid Amount",
                                               amount:
                                                   "${state.response.data[index].paidAmount} ₹",
+                                                    valueColor:  AppColors.primaryColor
                                             ),
                                             AmountContainer(
                                               title: "Balance",
                                               amount:
                                                   "${state.response.data[index].balanceAmount} ₹",
+                                                    valueColor:  AppColors.primaryColor
                                             ),
                                           ],
                                         ),

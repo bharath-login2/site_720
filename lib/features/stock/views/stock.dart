@@ -118,15 +118,18 @@ class Stock extends StatelessWidget {
                                           AmountContainer(
                                             title: "Unit Price",
                                             amount: stockList[index].unitPrice,
+                                              valueColor:  AppColors.primaryColor
                                           ),
                                           AmountContainer(
                                             title: "In Stock",
                                             amount: stockList[index].quantity,
+                                              valueColor:  AppColors.primaryColor
                                           ),
                                           AmountContainer(
                                             title: "Total Amount",
                                             amount:
                                                 stockList[index].totalAmount,
+                                                  valueColor:  AppColors.primaryColor
                                           )    ,
                                         ],
                                       ),

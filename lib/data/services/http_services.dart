@@ -31,6 +31,7 @@ import '../models/stages/stagephase_model.dart';
 import '../models/stock/stock_list.dart';
 import '../models/stockconsume/stockconsume_model.dart';
 import '../models/succes_response/success_response.dart';
+import '../models/tasklist/tasklist_model.dart';
 import '../models/workdetails/add_work_details_model.dart';
 import '../models/stages/stage_model.dart';
 import '../models/workdetails/work_detail_model.dart';
@@ -1101,6 +1102,20 @@ class HttpServices {
       });
       if (response.statusCode == 200) {
         return successResponseFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+   static Future getTaskList() async {
+    try {
+      http.Response response = await http
+          .post(Uri.parse("${baseUrl}get_task_list"), body: {
+        'token': await getSharedPreference('token'),
+      });
+      if (response.statusCode == 200) {
+        return getTaskListFromJson(response.body);
       }
     } catch (e) {
       log(e.toString());

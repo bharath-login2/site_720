@@ -1,8 +1,8 @@
+import 'dart:developer';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../core/utilities/shared_preferences.dart';
 import '../../../data/models/login/login_model.dart';
 import '../../../data/services/http_services.dart';
-
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
@@ -14,7 +14,9 @@ class LoginCubit extends Cubit<LoginState> {
 
   Future<void> login(String username, String password) async {
     emit(LoginLoading());
-    final firebaseToken = await getSharedPreference("firebase_token");
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    String? firebaseToken = await messaging.getToken();
+    log("FCM Token: $firebaseToken");
     try {
       LoginModel response = await HttpServices.login(username, password, firebaseToken);
       if (response.status == true) {

@@ -17,7 +17,7 @@ class DashboardCubit extends Cubit<DashboardState> {
         emit(DashboardSuccess(response));
       }
     } catch (e) {
-      emit(DashboardFailure('Failed to fetch data: ${e.toString()}')); 
+      emit(DashboardFailure('Failed to fetch data: ${e.toString()}'));
     }
   }
 }

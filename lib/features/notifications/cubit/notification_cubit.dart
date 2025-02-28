@@ -38,7 +38,5 @@ class NotificationCubit extends Cubit<Map<String, dynamic>> {
       log('User declined or has not granted permission');
     }
 
-    String? firebaseToken = await messaging.getToken();
-    log("FCM Token: $firebaseToken");
   }
 }

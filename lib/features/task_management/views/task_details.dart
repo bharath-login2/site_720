@@ -1,227 +1,632 @@
 // ignore_for_file: must_be_immutable
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:site_720/core/widgets/appbar.dart';
 import 'package:site_720/features/payment_details/widgets/amount_container.dart';
 import 'package:site_720/features/task_management/cubit/task_state.dart';
 import '../../../core/constants/colors.dart';
+import '../../../core/widgets/buttons.dart';
 import '../../../core/widgets/shimmer.dart';
-import '../cubit/task_cubit.dart';
+import '../../../data/models/tasklist/task_details_model.dart';
+import '../../../data/models/tasklist/task_status.dart';
+import '../cubit/task_details_cubit.dart';
 
 class TaskDetails extends StatelessWidget {
   TaskDetails({super.key});
-  List drawingList = [];
-
+  TaskDetailsData? taskDetails;
+  final formKey = GlobalKey<FormState>();
+  String? selectedStatus;
+  List<AvailableStatus> statusList = [];
+  TextEditingController comment = TextEditingController();
+  XFile? image;
   @override
   Widget build(BuildContext context) {
+    final args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+    String taskId = args["task_id"]!;
     return BlocProvider(
-      create: (context) => TaskCubit(),
+      create: (context) => TaskDetailsCubit(taskId),
       child: MultiBlocListener(
         listeners: [
-          BlocListener<TaskCubit, TaskState>(
-            listener: (context, state) {},
+          BlocListener<TaskDetailsCubit, TaskState>(
+            listener: (context, state) {
+              if (state is TaskDetailsSuccess) {
+                taskDetails = state.response.data;
+              } else if (state is TaskStatusSuccess) {
+                statusList = state.response.data.availableStatuses;
+              } else if (state is ImageSuccess) {
+                image = state.image;
+              }
+            },
           )
         ],
-        child: BlocBuilder<TaskCubit, TaskState>(
+        child: BlocBuilder<TaskDetailsCubit, TaskState>(
           builder: (context, state) {
+            final cubit = context.read<TaskDetailsCubit>();
             return Scaffold(
               appBar: simpleAppbar(context, "Task Details", true),
-              body: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 8.0, right: 8.0, top: 16.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: AppColors.secondaryColor,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.8),
-                              blurRadius: 4,
-                              offset: const Offset(1, 1),
+              body: state is TaskLoading
+                  ? shimmerWidget(context)
+                  : SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 8.0, right: 8.0, top: 16.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: AppColors.secondaryColor,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.8),
+                                    blurRadius: 4,
+                                    offset: const Offset(1, 1),
+                                  ),
+                                ],
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 12.0,
+                                    right: 12.0,
+                                    top: 16.0,
+                                    bottom: 16),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              taskDetails!.taskTitle,
+                                              style: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            if (taskDetails!.stageName != "")
+                                              Text(
+                                                taskDetails!.stageName,
+                                                style: const TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight:
+                                                        FontWeight.normal),
+                                              ),
+                                          ],
+                                        ),
+                                        InkWell(
+                                          onTap: () {
+                                            updateStatus(context, cubit);
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              color: AppColors.backgroundColor,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.grey
+                                                      .withOpacity(0.8),
+                                                  blurRadius: 6,
+                                                  offset: const Offset(1, 1),
+                                                ),
+                                              ],
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 12.0,
+                                                      vertical: 4.0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    taskDetails!.status,
+                                                    style: const TextStyle(
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 8,
+                                                  ),
+                                                  const Icon(
+                                                    Icons.arrow_forward_ios,
+                                                    size: 14,
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 15,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        AmountContainer(
+                                            title: "From Date",
+                                            amount: taskDetails!.fromDate,
+                                            valueColor: AppColors.primaryColor),
+                                        AmountContainer(
+                                            title: "To Date",
+                                            amount: taskDetails!.toDate,
+                                            valueColor: AppColors.primaryColor),
+                                        AmountContainer(
+                                            title: "Work Type",
+                                            amount: taskDetails!.workType,
+                                            valueColor: AppColors.primaryColor),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
                             ),
-                          ],
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 12.0, right: 12.0, top: 16.0, bottom: 16),
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 16.0, right: 16.0, top: 16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Description :",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  taskDetails!.description,
+                                  style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 16.0, right: 16.0, bottom: 16.0),
+                            child: Visibility(
+                              visible: taskDetails!.attachments.isNotEmpty,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const Text(
-                                    "TaskName",
+                                    "Attachments :",
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold),
                                   ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: AppColors.backgroundColor,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.8),
-                                          blurRadius: 6,
-                                          offset: const Offset(1, 1),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: taskDetails!.attachments.length,
+                                    itemBuilder: (context, index) {
+                                      return Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 16.0),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            color: AppColors.primaryColor,
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              const Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: 16.0,
+                                                    right: 16.0,
+                                                    top: 8.0,
+                                                    bottom: 8.0),
+                                                child: Row(
+                                                  children: [
+                                                    // Text(
+                                                    //   taskDetails!.attachments[index],
+                                                    //   style: TextStyle(
+                                                    //     color: AppColors
+                                                    //         .lightA,
+                                                    //     fontSize: 14,
+                                                    //     fontWeight:
+                                                    //         FontWeight.bold,
+                                                    //   ),
+                                                    // ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Container(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    .35,
+                                                decoration: BoxDecoration(
+                                                  image: DecorationImage(
+                                                    fit: BoxFit.fitWidth,
+                                                    image: NetworkImage(
+                                                        taskDetails!
+                                                                .attachments[
+                                                            index]),
+                                                  ),
+                                                  color: AppColors.lightA,
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                ),
+                                              ),
+                                              // if (drawingList[index].remarks != "")
+                                            ],
+                                          ),
                                         ),
-                                      ],
-                                    ),
-                                    child: const Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 12.0, vertical: 4.0),
-                                      child: Text(
-                                        "Pending",
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
+                                      );
+                                    },
                                   ),
                                 ],
                               ),
-                              const SizedBox(
-                                height: 15,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  AmountContainer(
-                                      title: "Start Date",
-                                      amount: "14-05-2000",
-                                      valueColor: AppColors.primaryColor),
-                                  AmountContainer(
-                                      title: "End Date",
-                                      amount: "14-05-2025",
-                                      valueColor: AppColors.primaryColor),
-                                  AmountContainer(
-                                      title: "Work Type",
-                                      amount: "24 Yrs",
-                                      valueColor: AppColors.primaryColor),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    const Padding(
-                      padding:
-                          EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Description :",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            "To set up Firebase notifications in Flutter for both foreground and background states, follow these steps",
-                            style: TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.w400),
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 16.0, right: 16.0, bottom: 16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Attachments :",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          ListView.builder(
-                            padding: EdgeInsets.zero,
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: 3,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 16.0),
-                                child: state is TaskLoading
-                                    ? shimmerContainer(
-                                        MediaQuery.of(context).size.height *
-                                            .35,
-                                        MediaQuery.of(context).size.width * .9,
-                                      )
-                                    : Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          color: AppColors.primaryColor,
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            const Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: 16.0,
-                                                  right: 16.0,
-                                                  top: 8.0,
-                                                  bottom: 8.0),
-                                              child: Row(
-                                                children: [
-                                                  Text(
-                                                    "drawingList[index].remarks",
-                                                    style: TextStyle(
-                                                      color: AppColors.lightA,
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Container(
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  .35,
-                                              decoration: BoxDecoration(
-                                                image: const DecorationImage(
-                                                  fit: BoxFit.fitWidth,
-                                                  image: NetworkImage(
-                                                      "https://picsum.photos/250?image=9"),
-                                                ),
-                                                color: AppColors.lightA,
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                              ),
-                                            ),
-                                            // if (drawingList[index].remarks != "")
-                                          ],
-                                        ),
-                                      ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
             );
           },
         ),
       ),
+    );
+  }
+
+  SingleChildScrollView shimmerWidget(BuildContext context) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            shimmerContainer(
+              MediaQuery.of(context).size.height * .15,
+              MediaQuery.of(context).size.width,
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            shimmerContainer(15, 150),
+            const SizedBox(
+              height: 10,
+            ),
+            shimmerContainer(15, MediaQuery.of(context).size.width),
+            const SizedBox(
+              height: 10,
+            ),
+            shimmerContainer(15, MediaQuery.of(context).size.width),
+            const SizedBox(
+              height: 10,
+            ),
+            shimmerContainer(15, MediaQuery.of(context).size.width),
+            const SizedBox(
+              height: 20,
+            ),
+            shimmerContainer(15, 150),
+            const SizedBox(
+              height: 10,
+            ),
+            shimmerContainer(
+              MediaQuery.of(context).size.height * .25,
+              MediaQuery.of(context).size.width,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            shimmerContainer(
+              MediaQuery.of(context).size.height * .25,
+              MediaQuery.of(context).size.width,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> updateStatus(
+    BuildContext context,
+    TaskDetailsCubit cubit,
+  ) async {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        // Use StatefulBuilder to manage the state within the dialog
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              content: SizedBox(
+                height: image != null ? 480 : 350,
+                child: SingleChildScrollView(
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(top: 16.0, bottom: 25),
+                          child: Text(
+                            "Update Status",
+                            style: TextStyle(
+                                color: AppColors.primaryColor,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.95,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: DropdownButtonFormField<String>(
+                            value: selectedStatus,
+                            items: statusList.map((data) {
+                              return DropdownMenuItem<String>(
+                                value: data.id.toString(),
+                                child: Text(
+                                  data.status.toString(),
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                selectedStatus = value;
+                              });
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Select a Status";
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.all(10),
+                              labelText: 'Status*',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              prefixIcon: const Icon(Icons.info),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.95,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: TextFormField(
+                            keyboardType: TextInputType.text,
+                            controller: comment,
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.all(10),
+                              labelText: 'Comment',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              prefixIcon: const Icon(Icons.text_fields),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        InkWell(
+                          onTap: () async {
+                            // Call the imageDialog function and refresh the UI when an image is selected
+                            await imageDialog(context, cubit);
+                            setState(() {}); // Refresh the UI
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * .75,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const SizedBox(width: 10),
+                                const Icon(Icons.image, color: Colors.grey),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                    child: image != null
+                                        ? Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Image.file(
+                                              File(image!.path),
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .2,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          )
+                                        : const Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 20.0),
+                                            child: Text(
+                                              'Choose Image',
+                                              style:
+                                                  TextStyle(color: Colors.grey),
+                                            ),
+                                          )),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            if (formKey.currentState!.validate()) {
+                              Navigator.pop(context);
+                            }
+                          },
+                          child: LargeButton(title: "Update"),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Close'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> imageDialog(BuildContext context, TaskDetailsCubit cubit) async {
+    return showDialog(
+      barrierColor: Colors.white.withOpacity(.4),
+      context: context,
+      builder: (ctx) {
+        return Material(
+          type: MaterialType.transparency,
+          color: Colors.grey.shade200,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  border: Border.all(),
+                ),
+                height: 200,
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: const CircleAvatar(
+                              radius: 10,
+                              foregroundColor: AppColors.backgroundColor,
+                              backgroundColor: AppColors.primaryColor,
+                              child: Center(
+                                child: Icon(
+                                  Icons.close,
+                                  size: 16,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: () async {
+                            await cubit.selectImage(ImageSource.camera);
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            height: 100,
+                            width: 100,
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryColor,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: const Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.camera,
+                                  color: Colors.white,
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  "Camera",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 20),
+                        InkWell(
+                          onTap: () async {
+                            await cubit.selectImage(ImageSource.gallery);
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            height: 100,
+                            width: 100,
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryColor,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: const Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.image,
+                                  color: Colors.white,
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                  "Gallery",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -65,11 +65,9 @@ class TaskList extends StatelessWidget {
                             },
                             child: InkWell(
                               onTap: () {
-                                Navigator.pushNamed(context,
-                                                    AppRoutes.taskDetails,
-                                                    arguments: {
-                                                      "id": taskList[index].id
-                                                    });
+                                Navigator.pushNamed(
+                                    context, AppRoutes.taskDetails,
+                                    arguments: {"task_id": taskList[index].id});
                               },
                               child: Container(
                                 width: MediaQuery.of(context).size.width * .9,
@@ -103,18 +101,15 @@ class TaskList extends StatelessWidget {
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                        const SizedBox(height: 3),
-                                        Text(
-                                          taskList[index].staffName,
-                                          style: const TextStyle(
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.bold,
+                                        if (taskList[index].staffName != "")
+                                          Text(
+                                            taskList[index].staffName,
+                                            style: const TextStyle(
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
-                                        ),
-                                        if (taskList[index]
-                                            .stageName
-                                            .isNotEmpty) ...[
-                                          const SizedBox(height: 3),
+                                        if (taskList[index].stageName != "")
                                           Text(
                                             taskList[index].stageName,
                                             style: const TextStyle(
@@ -122,7 +117,6 @@ class TaskList extends StatelessWidget {
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                        ],
                                         const SizedBox(
                                           height: 10,
                                         ),
@@ -132,7 +126,8 @@ class TaskList extends StatelessWidget {
                                           children: [
                                             AmountContainer(
                                                 title: "From Date",
-                                                amount: taskList[index].fromDate,
+                                                amount:
+                                                    taskList[index].fromDate,
                                                 valueColor:
                                                     AppColors.primaryColor),
                                             AmountContainer(
@@ -143,17 +138,18 @@ class TaskList extends StatelessWidget {
                                             AmountContainer(
                                               title: "Status",
                                               amount: taskList[index].status,
-                                              valueColor:
-                                                  taskList[index].status == "New"
-                                                      ? Colors.blue
-                                                      : taskList[index].status ==
-                                                              "Pending"
-                                                          ? Colors.orange
-                                                          : taskList[index]
-                                                                      .status ==
-                                                                  "Rejected"
-                                                              ? Colors.red
-                                                              : Colors.green,
+                                              valueColor: taskList[index]
+                                                          .status ==
+                                                      "New"
+                                                  ? Colors.blue
+                                                  : taskList[index].status ==
+                                                          "Pending"
+                                                      ? Colors.orange
+                                                      : taskList[index]
+                                                                  .status ==
+                                                              "Rejected"
+                                                          ? Colors.red
+                                                          : Colors.green,
                                             ),
                                           ],
                                         ),

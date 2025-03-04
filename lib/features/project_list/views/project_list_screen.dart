@@ -8,7 +8,10 @@ import 'package:site_720/core/widgets/dialogs.dart';
 import 'package:site_720/core/widgets/snack_bar.dart';
 import 'package:site_720/features/project_list/cubit/project_list_state.dart';
 import '../../../core/widgets/buttons.dart';
+import '../../../core/widgets/connectivity_dialog.dart';
 import '../../../core/widgets/shimmer.dart';
+import '../../connectivity/cubit/connectivity_cubit.dart';
+import '../../connectivity/cubit/connectivity_state.dart';
 import '../cubit/project_list_cubit.dart';
 import '../widgets/floating_card.dart';
 
@@ -19,6 +22,7 @@ class ProjectList extends StatelessWidget {
   dynamic status;
   List statuses = ["upcoming", "running", "completed", "all"];
   String sts = "";
+
   @override
   Widget build(BuildContext context) {
     if (fromHome) {
@@ -37,12 +41,29 @@ class ProjectList extends StatelessWidget {
           body: BlocBuilder<ProjectListCubit, ProjectListState>(
             builder: (context, state) {
               final cubit = context.read<ProjectListCubit>();
-              return BlocListener<ProjectListCubit, ProjectListState>(
-                listener: (context, state) {
-                  if (state is ProjectDeleted) {
-                    snackBar(context, state.message, AppColors.primaryColor);
-                  }
-                },
+              return MultiBlocListener(
+                listeners: [
+                  BlocListener<ConnectivityCubit, ConnectivityState>(
+                    listener: (context, state) {
+                      if (state is ConnectivityDisconnected) {
+                        if (connStatus == true) {
+                          connStatus = false;
+                          connectivityDialog(context);
+                        }
+                      } else {
+                        connStatus = true;
+                      }
+                    },
+                  ),
+                  BlocListener<ProjectListCubit, ProjectListState>(
+                    listener: (context, state) {
+                      if (state is ProjectDeleted) {
+                        snackBar(
+                            context, state.message, AppColors.primaryColor);
+                      }
+                    },
+                  )
+                ],
                 child: RefreshIndicator(
                   onRefresh: () async {
                     cubit.getProjectList(status.toString(), search.text);

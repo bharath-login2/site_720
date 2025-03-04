@@ -24,7 +24,6 @@ class DrawingScreen extends StatelessWidget {
   TextEditingController remark = TextEditingController();
   List<Drawings> drawingList = [];
   XFile? image;
-  bool connStatus = false;
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +36,10 @@ class DrawingScreen extends StatelessWidget {
       child: BlocListener<ConnectivityCubit, ConnectivityState>(
         listener: (context, state) {
           if (state is ConnectivityDisconnected) {
-            connStatus = false;
-            connectivityDialog(context);
+            if (connStatus == true) {
+              connStatus = false;
+              connectivityDialog(context);
+            }
           } else {
             connStatus = true;
           }

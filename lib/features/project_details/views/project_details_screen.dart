@@ -7,6 +7,9 @@ import 'package:site_720/core/constants/routes.dart';
 import 'package:site_720/features/project_details/cubit/project_details_cubit.dart';
 import 'package:site_720/features/project_details/cubit/project_details_state.dart';
 import '../../../core/widgets/appbar.dart';
+import '../../../core/widgets/connectivity_dialog.dart';
+import '../../connectivity/cubit/connectivity_cubit.dart';
+import '../../connectivity/cubit/connectivity_state.dart';
 import '../widgets/details_button_container.dart';
 import '../widgets/details_item.dart';
 import '../widgets/floating_profile_card.dart';
@@ -26,12 +29,28 @@ class ProjectDetails extends StatelessWidget {
       create: (context) => ProjectDetailsCubit(id),
       child: BlocBuilder<ProjectDetailsCubit, ProjectDetailsState>(
         builder: (context, state) {
-          return BlocListener<ProjectDetailsCubit, ProjectDetailsState>(
-            listener: (context, state) {
-              if (state is ProjectDetailsSuccess) {
-                clientId = state.response.data.clientId;
-              }
-            },
+          return MultiBlocListener(
+            listeners: [
+              BlocListener<ConnectivityCubit, ConnectivityState>(
+                listener: (context, state) {
+                  if (state is ConnectivityDisconnected) {
+                    if (connStatus == true) {
+                      connStatus = false;
+                      connectivityDialog(context);
+                    }
+                  } else {
+                    connStatus = true;
+                  }
+                },
+              ),
+              BlocListener<ProjectDetailsCubit, ProjectDetailsState>(
+                listener: (context, state) {
+                  if (state is ProjectDetailsSuccess) {
+                    clientId = state.response.data.clientId;
+                  }
+                },
+              )
+            ],
             child: Scaffold(
                 backgroundColor: AppColors.backgroundColor,
                 body: SingleChildScrollView(
@@ -330,8 +349,8 @@ class ProjectDetails extends StatelessWidget {
                                           context, AppRoutes.package,
                                           arguments: {
                                             "id": id,
-                                            "client_id":clientId
-                                            });
+                                            "client_id": clientId
+                                          });
                                     },
                                     child: DetailsButtonContainer(
                                       title: "Package",

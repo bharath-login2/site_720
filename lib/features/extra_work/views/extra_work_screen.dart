@@ -6,6 +6,9 @@ import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/shimmer.dart';
 import 'package:site_720/core/widgets/snack_bar.dart';
 import '../../../core/widgets/buttons.dart';
+import '../../../core/widgets/connectivity_dialog.dart';
+import '../../connectivity/cubit/connectivity_cubit.dart';
+import '../../connectivity/cubit/connectivity_state.dart';
 import '../../payment_details/widgets/amount_container.dart';
 import '../cubit/extra_work_cubit.dart';
 import '../cubit/extra_work_state.dart';
@@ -29,12 +32,28 @@ class ExtraWork extends StatelessWidget {
       child: BlocBuilder<ExtraWorkCubit, ExtraWorkState>(
         builder: (context, state) {
           final cubit = context.read<ExtraWorkCubit>();
-          return BlocListener<ExtraWorkCubit, ExtraWorkState>(
-            listener: (context, state) {
-              if (state is AddedSuccess) {
-                snackBar(context, state.response.message, Colors.green);
-              }
-            },
+          return MultiBlocListener(
+            listeners: [
+              BlocListener<ConnectivityCubit, ConnectivityState>(
+                listener: (context, state) {
+                  if (state is ConnectivityDisconnected) {
+                    if (connStatus == true) {
+                      connStatus = false;
+                      connectivityDialog(context);
+                    }
+                  } else {
+                    connStatus = true;
+                  }
+                },
+              ),
+              BlocListener<ExtraWorkCubit, ExtraWorkState>(
+                listener: (context, state) {
+                  if (state is AddedSuccess) {
+                    snackBar(context, state.response.message, Colors.green);
+                  }
+                },
+              )
+            ],
             child: Scaffold(
                 backgroundColor: AppColors.backgroundColor,
                 appBar: PreferredSize(
@@ -315,11 +334,11 @@ class ExtraWork extends StatelessWidget {
                                                       height: 10,
                                                     ),
                                                     AmountContainer(
-                                                      title: "Cost",
-                                                      amount:
-                                                          "${state.response.data[index].amount} ₹",
-                                                            valueColor:  AppColors.primaryColor
-                                                    ),
+                                                        title: "Cost",
+                                                        amount:
+                                                            "${state.response.data[index].amount} ₹",
+                                                        valueColor: AppColors
+                                                            .primaryColor),
                                                   ],
                                                 )
                                               ],

@@ -99,3 +99,53 @@ class _SlidingGradientTransform extends GradientTransform {
 }
 
 
+ SingleChildScrollView shimmerWidget(BuildContext context) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            shimmerContainer(
+              MediaQuery.of(context).size.height * .15,
+              MediaQuery.of(context).size.width,
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            shimmerContainer(15, 150),
+            const SizedBox(
+              height: 10,
+            ),
+            shimmerContainer(15, MediaQuery.of(context).size.width),
+            const SizedBox(
+              height: 10,
+            ),
+            shimmerContainer(15, MediaQuery.of(context).size.width),
+            const SizedBox(
+              height: 10,
+            ),
+            shimmerContainer(15, MediaQuery.of(context).size.width),
+            const SizedBox(
+              height: 20,
+            ),
+            shimmerContainer(15, 150),
+            const SizedBox(
+              height: 10,
+            ),
+            shimmerContainer(
+              MediaQuery.of(context).size.height * .25,
+              MediaQuery.of(context).size.width,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            shimmerContainer(
+              MediaQuery.of(context).size.height * .25,
+              MediaQuery.of(context).size.width,
+            ),
+          ],
+        ),
+      ),
+    );
+  }

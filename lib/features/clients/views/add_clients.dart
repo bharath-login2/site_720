@@ -8,9 +8,12 @@ import 'package:site_720/core/widgets/snack_bar.dart';
 import 'package:site_720/features/clients/cubit/add_client_cubit.dart';
 import 'package:site_720/features/clients/cubit/client_state.dart';
 import '../../../core/widgets/appbar.dart';
+import '../../../core/widgets/connectivity_dialog.dart';
 import '../../../data/models/clientlist/client_type_list.dart';
 import '../../../data/models/clientlist/district_list.dart';
 import '../../../data/models/clientlist/state_list_model.dart';
+import '../../connectivity/cubit/connectivity_cubit.dart';
+import '../../connectivity/cubit/connectivity_state.dart';
 
 class AddCilentScreen extends StatelessWidget {
   AddCilentScreen({super.key});
@@ -30,15 +33,28 @@ class AddCilentScreen extends StatelessWidget {
   List<States> stateList = [];
   List<Districts> districtList = [];
   List<ClientTypes> clientTypes = [];
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => AddClientsCubit(),
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
-        appBar: simpleAppbar(context, "Add Client", true), 
+        appBar: simpleAppbar(context, "Add Client", true),
         body: MultiBlocListener(
           listeners: [
+            BlocListener<ConnectivityCubit, ConnectivityState>(
+              listener: (context, state) {
+                if (state is ConnectivityDisconnected) {
+                  if (connStatus == true) {
+                    connStatus = false;
+                    connectivityDialog(context);
+                  }
+                } else {
+                  connStatus = true;
+                }
+              },
+            ),
             BlocListener<AddClientsCubit, ClientsState>(
               listener: (context, state) {
                 if (state is StateListFetched) {

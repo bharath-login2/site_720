@@ -7,9 +7,12 @@ import 'package:site_720/core/widgets/buttons.dart';
 import 'package:site_720/core/widgets/snack_bar.dart';
 import 'package:site_720/features/clients/cubit/client_state.dart';
 import '../../../core/widgets/appbar.dart';
+import '../../../core/widgets/connectivity_dialog.dart';
 import '../../../data/models/clientlist/client_type_list.dart';
 import '../../../data/models/clientlist/district_list.dart';
 import '../../../data/models/clientlist/state_list_model.dart';
+import '../../connectivity/cubit/connectivity_cubit.dart';
+import '../../connectivity/cubit/connectivity_state.dart';
 import '../cubit/edit_client_cubit.dart';
 
 class EditCilentScreen extends StatelessWidget {
@@ -30,6 +33,7 @@ class EditCilentScreen extends StatelessWidget {
   List<States> stateList = [];
   List<Districts> districtList = [];
   List<ClientTypes> clientTypes = [];
+
   @override
   Widget build(BuildContext context) {
     final args =
@@ -42,6 +46,18 @@ class EditCilentScreen extends StatelessWidget {
         appBar: simpleAppbar(context, "Edit Client", true),
         body: MultiBlocListener(
           listeners: [
+            BlocListener<ConnectivityCubit, ConnectivityState>(
+              listener: (context, state) {
+                if (state is ConnectivityDisconnected) {
+                  if (connStatus == true) {
+                    connStatus = false;
+                    connectivityDialog(context);
+                  }
+                } else {
+                  connStatus = true;
+                }
+              },
+            ),
             BlocListener<EditClientsCubit, ClientsState>(
               listener: (context, state) {
                 if (state is StateListFetched) {

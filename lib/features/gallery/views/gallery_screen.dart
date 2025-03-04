@@ -8,8 +8,11 @@ import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/buttons.dart';
 import 'package:site_720/core/widgets/snack_bar.dart';
 import '../../../core/widgets/appbar.dart';
+import '../../../core/widgets/connectivity_dialog.dart';
 import '../../../data/models/galery/galery_list_model.dart';
 import '../../../data/models/galery/stage_pro_model.dart';
+import '../../connectivity/cubit/connectivity_cubit.dart';
+import '../../connectivity/cubit/connectivity_state.dart';
 import '../cubit/gallery_state.dart';
 import '../cubit/galllery_cubit.dart';
 import '../widgets/stage_widget.dart';
@@ -24,6 +27,7 @@ class GalleryScreen extends StatelessWidget {
   String clientId = "";
   List<GalleryData> galleryList = [];
   TextEditingController youtubeLink = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final args =
@@ -34,102 +38,114 @@ class GalleryScreen extends StatelessWidget {
       create: (context) => GalleryCubit(projectId),
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
-        body: BlocConsumer<GalleryCubit, GalleryState>(
+        body: BlocListener<ConnectivityCubit, ConnectivityState>(
           listener: (context, state) {
-            if (state is GallerySuccess) {
-              galleryList = state.response.data;
-            }
-            if (state is StageSuccess) {
-              stages = state.response.data;
-            }
-            if (state is ImageSuccess) {
-              images = state.imageList;
-            }
-            if (state is GalleryPosted) {
-              stageId = null;
-              images.clear();
-              youtubeLink.clear();
-              snackBar(context, state.message, AppColors.primaryColor);
+            if (state is ConnectivityDisconnected) {
+              if (connStatus == true) {
+                connStatus = false;
+                connectivityDialog(context);
+              }
+            } else {
+              connStatus = true;
             }
           },
-          builder: (context, state) {
-            final cubit = context.read<GalleryCubit>();
-            return SingleChildScrollView(
-              child: Stack(
-                children: [
-                  SizedBox(
-                    child: Column(
-                      children: [
-                        FloatingAppBar(
-                          title: "Gallery",
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * .38,
-                        ),
-                        if (galleryList.isNotEmpty)
-                          Container(
-                            width: MediaQuery.of(context).size.width * .92,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: AppColors.lightA,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.8),
-                                  blurRadius: 3,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 16.0),
-                              child: Column(
-                                children: [
-                                  const Text(
-                                    "Stages",
-                                    style: TextStyle(
-                                      color: AppColors.primaryColor,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+          child: BlocConsumer<GalleryCubit, GalleryState>(
+            listener: (context, state) {
+              if (state is GallerySuccess) {
+                galleryList = state.response.data;
+              }
+              if (state is StageSuccess) {
+                stages = state.response.data;
+              }
+              if (state is ImageSuccess) {
+                images = state.imageList;
+              }
+              if (state is GalleryPosted) {
+                stageId = null;
+                images.clear();
+                youtubeLink.clear();
+                snackBar(context, state.message, AppColors.primaryColor);
+              }
+            },
+            builder: (context, state) {
+              final cubit = context.read<GalleryCubit>();
+              return SingleChildScrollView(
+                child: Stack(
+                  children: [
+                    SizedBox(
+                      child: Column(
+                        children: [
+                          FloatingAppBar(
+                            title: "Gallery",
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * .38,
+                          ),
+                          if (galleryList.isNotEmpty)
+                            Container(
+                              width: MediaQuery.of(context).size.width * .92,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: AppColors.lightA,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.8),
+                                    blurRadius: 3,
+                                    offset: const Offset(0, 3),
                                   ),
-                                  SingleChildScrollView(
-                                    child: ListView.builder(
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      shrinkWrap: true,
-                                      itemCount: galleryList.length,
-                                      itemBuilder: (context, index) {
-                                        return stageWidget(
-                                          context,
-                                          galleryList[index].stageName,
-                                          galleryList[index].images,
-                                          galleryList[index].ytLinks,
-                                          cubit,projectId
-                                        );
-                                      },
-                                    ),
-                                  )
                                 ],
                               ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 16.0),
+                                child: Column(
+                                  children: [
+                                    const Text(
+                                      "Stages",
+                                      style: TextStyle(
+                                        color: AppColors.primaryColor,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SingleChildScrollView(
+                                      child: ListView.builder(
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        shrinkWrap: true,
+                                        itemCount: galleryList.length,
+                                        itemBuilder: (context, index) {
+                                          return stageWidget(
+                                              context,
+                                              galleryList[index].stageName,
+                                              galleryList[index].images,
+                                              galleryList[index].ytLinks,
+                                              cubit,
+                                              projectId);
+                                        },
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
                             ),
-                          ),
-                        const SizedBox(height: 20),
-                      ],
+                          const SizedBox(height: 20),
+                        ],
+                      ),
                     ),
-                  ),
-                  Positioned(
-                    top: MediaQuery.of(context).size.height * 0.16,
-                    left: MediaQuery.of(context).size.width * 0.05,
-                    child: floatingCard(
-                      context,
-                      cubit,
+                    Positioned(
+                      top: MediaQuery.of(context).size.height * 0.16,
+                      left: MediaQuery.of(context).size.width * 0.05,
+                      child: floatingCard(
+                        context,
+                        cubit,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            );
-          },
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -265,7 +281,7 @@ class GalleryScreen extends StatelessWidget {
                               return const Text(
                                 'Choose Image',
                                 style: TextStyle(color: Colors.grey),
-                              ); 
+                              );
                             }
                           },
                         ),

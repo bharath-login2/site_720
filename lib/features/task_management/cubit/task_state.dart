@@ -1,8 +1,10 @@
 import 'package:image_picker/image_picker.dart';
+import 'package:site_720/data/models/succes_response/success_response.dart';
 
-import '../../../data/models/tasklist/task_details_model.dart';
-import '../../../data/models/tasklist/task_status.dart';
-import '../../../data/models/tasklist/tasklist_model.dart';
+import '../../../data/models/task/task_details_model.dart';
+import '../../../data/models/task/task_history.dart';
+import '../../../data/models/task/task_status.dart';
+import '../../../data/models/task/tasklist_model.dart';
 
 class TaskState {
   TaskState();
@@ -49,4 +51,31 @@ class ImageSuccess extends TaskState {
 class ImageFailure extends TaskState {
   final String message;
   ImageFailure(this.message);
+}
+
+class TaskStatusUpdated extends TaskState {
+  SuccessResponse response;
+  TaskStatusUpdated(this.response);
+}
+class TaskStatusupdateFailed extends TaskState {
+  final String message;
+  TaskStatusupdateFailed(this.message);
+}
+class AttendanceUpdated extends TaskState {
+  SuccessResponse response;
+  AttendanceUpdated(this.response);
+}
+
+class AttendanceFailed extends TaskState {
+  final String message;
+  AttendanceFailed(this.message);
+}
+
+class PopupLoading extends TaskState {}
+
+class HistoryLoading extends TaskState {}
+
+class HistoryFetched extends TaskState {
+  TaskHistoryModel response;
+  HistoryFetched(this.response);
 }

@@ -40,7 +40,10 @@ class OtpScreen extends StatelessWidget {
                 BlocListener<ConnectivityCubit, ConnectivityState>(
                   listener: (context, state) {
                     if (state is ConnectivityDisconnected) {
-                      connectivityDialog(context);
+                      if (connStatus == true) {
+                        connStatus = false;
+                        connectivityDialog(context);
+                      }
                     }
                   },
                 ),

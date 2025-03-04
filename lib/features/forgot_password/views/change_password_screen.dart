@@ -15,9 +15,10 @@ class ChangePasswordScreen extends StatelessWidget {
 
   final passwordController = TextEditingController();
   final confirmpasswordController = TextEditingController();
-  bool connStatus = false;
+
   bool isObscure = true;
   bool confirmObscure = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,8 +30,10 @@ class ChangePasswordScreen extends StatelessWidget {
             BlocListener<ConnectivityCubit, ConnectivityState>(
               listener: (context, state) {
                 if (state is ConnectivityDisconnected) {
-                  connStatus = false;
-                  connectivityDialog(context);
+                  if (connStatus == true) {
+                    connStatus = false;
+                    connectivityDialog(context);
+                  }
                 } else {
                   connStatus = true;
                 }
@@ -87,11 +90,11 @@ class ChangePasswordScreen extends StatelessWidget {
                 BlocBuilder<ForgotPasswordCubit, ForgotPasswordState>(
                   builder: (context, state) {
                     if (state is PasswordVisibilityChanged) {
-                    isObscure = state.isObscure;
-                  }
-                  if (state is ConfirmPasswordVisibilityChanged) {
-                    confirmObscure = state.confirmObscure;
-                  }
+                      isObscure = state.isObscure;
+                    }
+                    if (state is ConfirmPasswordVisibilityChanged) {
+                      confirmObscure = state.confirmObscure;
+                    }
                     return Form(
                       child: Column(
                         children: [
@@ -117,27 +120,24 @@ class ChangePasswordScreen extends StatelessWidget {
                                 contentPadding: const EdgeInsets.all(10),
                                 border: const OutlineInputBorder(),
                                 suffixIcon: IconButton(
-                                onPressed: () {
-                                  context
-                                      .read<ForgotPasswordCubit>()
-                                      .togglePasswordVisibility(isObscure);
-                                },
-                                icon: Icon(
-                                  isObscure
-                                      ? Icons.remove_red_eye_outlined
-                                      : Icons.visibility_off,
-                                  color: AppColors.primaryColor,
-                                  size: 22,
+                                  onPressed: () {
+                                    context
+                                        .read<ForgotPasswordCubit>()
+                                        .togglePasswordVisibility(isObscure);
+                                  },
+                                  icon: Icon(
+                                    isObscure
+                                        ? Icons.remove_red_eye_outlined
+                                        : Icons.visibility_off,
+                                    color: AppColors.primaryColor,
+                                    size: 22,
+                                  ),
                                 ),
-                              ),
                               ),
                             ),
                           ),
-
-                           const SizedBox(height: 10),
-
-
-                           Container(
+                          const SizedBox(height: 10),
+                          Container(
                             height: 45,
                             width: MediaQuery.of(context).size.width * 0.85,
                             decoration: BoxDecoration(
@@ -159,19 +159,20 @@ class ChangePasswordScreen extends StatelessWidget {
                                 contentPadding: const EdgeInsets.all(10),
                                 border: const OutlineInputBorder(),
                                 suffixIcon: IconButton(
-                                onPressed: () {
-                                  context
-                                      .read<ForgotPasswordCubit>()
-                                      .confirmPasswordVisibility(confirmObscure);
-                                },
-                                icon: Icon(
-                                  confirmObscure
-                                      ? Icons.remove_red_eye_outlined
-                                      : Icons.visibility_off,
-                                  color: AppColors.primaryColor,
-                                  size: 22,
+                                  onPressed: () {
+                                    context
+                                        .read<ForgotPasswordCubit>()
+                                        .confirmPasswordVisibility(
+                                            confirmObscure);
+                                  },
+                                  icon: Icon(
+                                    confirmObscure
+                                        ? Icons.remove_red_eye_outlined
+                                        : Icons.visibility_off,
+                                    color: AppColors.primaryColor,
+                                    size: 22,
+                                  ),
                                 ),
-                              ),
                               ),
                             ),
                           ),
@@ -190,14 +191,13 @@ class ChangePasswordScreen extends StatelessWidget {
                     }
                     return InkWell(
                       onTap: () async {
-
                         await context
                             .read<ConnectivityCubit>()
                             .checkConnection();
                         if (context.mounted) {
                           if (passwordController.text.isEmpty) {
-                            snackBar(context, "Enter Valid Password",
-                                Colors.red);
+                            snackBar(
+                                context, "Enter Valid Password", Colors.red);
                           } else {
                             if (connStatus == true) {
                               context.read<ForgotPasswordCubit>().sendOtp(
@@ -205,11 +205,13 @@ class ChangePasswordScreen extends StatelessWidget {
                                   );
                             }
                           }
-                          if(passwordController.text.length<8){
-                         snackBar(context, "Should Contain atleast 8 characters",
+                          if (passwordController.text.length < 8) {
+                            snackBar(
+                                context,
+                                "Should Contain atleast 8 characters",
                                 Colors.red);
-                                return; 
-                          }else {
+                            return;
+                          } else {
                             if (connStatus == true) {
                               context.read<ForgotPasswordCubit>().sendOtp(
                                     passwordController.text,
@@ -219,7 +221,7 @@ class ChangePasswordScreen extends StatelessWidget {
                           if (confirmpasswordController.text.isEmpty) {
                             snackBar(context, "Enter Valid Confirm Password",
                                 Colors.red);
-                                return; 
+                            return;
                           } else {
                             if (connStatus == true) {
                               context.read<ForgotPasswordCubit>().sendOtp(
@@ -227,13 +229,20 @@ class ChangePasswordScreen extends StatelessWidget {
                                   );
                             }
                           }
-                            if (passwordController.text != confirmpasswordController.text) {
-                              snackBar(context, "Password and Confirm Password do not match", Colors.red);
-                              return; 
-                            }
-                            if (connStatus == true) {
-                            context.read<ForgotPasswordCubit>().sendOtp(passwordController.text);
-                           snackBar(context, "Password Changed Successfully", const Color.fromARGB(255, 83, 199, 89));
+                          if (passwordController.text !=
+                              confirmpasswordController.text) {
+                            snackBar(
+                                context,
+                                "Password and Confirm Password do not match",
+                                Colors.red);
+                            return;
+                          }
+                          if (connStatus == true) {
+                            context
+                                .read<ForgotPasswordCubit>()
+                                .sendOtp(passwordController.text);
+                            snackBar(context, "Password Changed Successfully",
+                                const Color.fromARGB(255, 83, 199, 89));
                             Navigator.pop(context);
                           }
                         }

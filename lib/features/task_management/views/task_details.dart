@@ -10,9 +10,13 @@ import 'package:site_720/features/payment_details/widgets/amount_container.dart'
 import 'package:site_720/features/task_management/cubit/task_state.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/widgets/buttons.dart';
+import '../../../core/widgets/connectivity_dialog.dart';
 import '../../../core/widgets/shimmer.dart';
-import '../../../data/models/tasklist/task_details_model.dart';
-import '../../../data/models/tasklist/task_status.dart';
+import '../../../core/widgets/snack_bar.dart';
+import '../../../data/models/task/task_details_model.dart';
+import '../../../data/models/task/task_status.dart';
+import '../../connectivity/cubit/connectivity_cubit.dart';
+import '../../connectivity/cubit/connectivity_state.dart';
 import '../cubit/task_details_cubit.dart';
 
 class TaskDetails extends StatelessWidget {
@@ -23,15 +27,29 @@ class TaskDetails extends StatelessWidget {
   List<AvailableStatus> statusList = [];
   TextEditingController comment = TextEditingController();
   XFile? image;
+  String taskId = "";
+
   @override
   Widget build(BuildContext context) {
     final args =
         ModalRoute.of(context)!.settings.arguments as Map<String, String>;
-    String taskId = args["task_id"]!;
+    taskId = args["task_id"]!;
     return BlocProvider(
       create: (context) => TaskDetailsCubit(taskId),
       child: MultiBlocListener(
         listeners: [
+          BlocListener<ConnectivityCubit, ConnectivityState>(
+            listener: (context, state) {
+              if (state is ConnectivityDisconnected) {
+                if (connStatus == true) {
+                  connStatus = false;
+                  connectivityDialog(context);
+                }
+              } else {
+                connStatus = true;
+              }
+            },
+          ),
           BlocListener<TaskDetailsCubit, TaskState>(
             listener: (context, state) {
               if (state is TaskDetailsSuccess) {
@@ -40,6 +58,10 @@ class TaskDetails extends StatelessWidget {
                 statusList = state.response.data.availableStatuses;
               } else if (state is ImageSuccess) {
                 image = state.image;
+              } else if (state is TaskStatusUpdated) {
+                snackBar(context, state.response.message, Colors.green);
+              } else if (state is TaskStatusupdateFailed) {
+                snackBar(context, state.message, Colors.red);
               }
             },
           )
@@ -296,57 +318,6 @@ class TaskDetails extends StatelessWidget {
     );
   }
 
-  SingleChildScrollView shimmerWidget(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            shimmerContainer(
-              MediaQuery.of(context).size.height * .15,
-              MediaQuery.of(context).size.width,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            shimmerContainer(15, 150),
-            const SizedBox(
-              height: 10,
-            ),
-            shimmerContainer(15, MediaQuery.of(context).size.width),
-            const SizedBox(
-              height: 10,
-            ),
-            shimmerContainer(15, MediaQuery.of(context).size.width),
-            const SizedBox(
-              height: 10,
-            ),
-            shimmerContainer(15, MediaQuery.of(context).size.width),
-            const SizedBox(
-              height: 20,
-            ),
-            shimmerContainer(15, 150),
-            const SizedBox(
-              height: 10,
-            ),
-            shimmerContainer(
-              MediaQuery.of(context).size.height * .25,
-              MediaQuery.of(context).size.width,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            shimmerContainer(
-              MediaQuery.of(context).size.height * .25,
-              MediaQuery.of(context).size.width,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Future<void> updateStatus(
     BuildContext context,
     TaskDetailsCubit cubit,
@@ -355,7 +326,6 @@ class TaskDetails extends StatelessWidget {
       context: context,
       barrierDismissible: false,
       builder: (context) {
-        // Use StatefulBuilder to manage the state within the dialog
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
@@ -440,9 +410,8 @@ class TaskDetails extends StatelessWidget {
                         ),
                         InkWell(
                           onTap: () async {
-                            // Call the imageDialog function and refresh the UI when an image is selected
                             await imageDialog(context, cubit);
-                            setState(() {}); // Refresh the UI
+                            setState(() {});
                           },
                           child: Container(
                             width: MediaQuery.of(context).size.width * .75,
@@ -488,6 +457,14 @@ class TaskDetails extends StatelessWidget {
                         GestureDetector(
                           onTap: () async {
                             if (formKey.currentState!.validate()) {
+                              cubit.updateTaskStatus(
+                                  taskId,
+                                  image == null ? "" : image!.path,
+                                  comment.text,
+                                  selectedStatus!);
+                              image = null;
+                              selectedStatus = null;
+                              comment.clear();
                               Navigator.pop(context);
                             }
                           },

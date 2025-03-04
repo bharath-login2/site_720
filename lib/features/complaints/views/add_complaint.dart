@@ -9,7 +9,10 @@ import 'package:site_720/core/widgets/buttons.dart';
 import 'package:site_720/features/complaints/cubit/complaint_state.dart';
 
 import '../../../core/widgets/appbar.dart';
+import '../../../core/widgets/connectivity_dialog.dart';
 import '../../../data/models/complaint/complaint_details_model.dart';
+import '../../connectivity/cubit/connectivity_cubit.dart';
+import '../../connectivity/cubit/connectivity_state.dart';
 import '../cubit/add_complaint_cubit.dart';
 
 class AddComplaint extends StatelessWidget {
@@ -46,6 +49,18 @@ class AddComplaint extends StatelessWidget {
         appBar: simpleAppbar(context, "Complaints", true),
         body: MultiBlocListener(
           listeners: [
+            BlocListener<ConnectivityCubit, ConnectivityState>(
+              listener: (context, state) {
+                if (state is ConnectivityDisconnected) {
+                  if (connStatus == true) {
+                    connStatus = false;
+                    connectivityDialog(context);
+                  }
+                } else {
+                  connStatus = true;
+                }
+              },
+            ),
             BlocListener<AddComplaintCubit, ComplaintState>(
               listener: (context, state) {
                 if (state is ComplaintDetailsFetched) {

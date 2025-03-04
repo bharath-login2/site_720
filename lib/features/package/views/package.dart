@@ -6,6 +6,9 @@ import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/appbar.dart';
 import 'package:site_720/features/package/cubit/package_cubit.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import '../../../core/widgets/connectivity_dialog.dart';
+import '../../connectivity/cubit/connectivity_cubit.dart';
+import '../../connectivity/cubit/connectivity_state.dart';
 import '../cubit/package_state.dart';
 
 class Package extends StatelessWidget {
@@ -26,6 +29,18 @@ class Package extends StatelessWidget {
           create: (context) => PackageCubit(projectId),
           child: MultiBlocListener(
             listeners: [
+              BlocListener<ConnectivityCubit, ConnectivityState>(
+                listener: (context, state) {
+                  if (state is ConnectivityDisconnected) {
+                    if (connStatus == true) {
+                      connStatus = false;
+                      connectivityDialog(context);
+                    }
+                  } else {
+                    connStatus = true;
+                  }
+                },
+              ),
               BlocListener<PackageCubit, PackageState>(
                 listener: (context, state) {
                   if (state is PackageSuccess) {

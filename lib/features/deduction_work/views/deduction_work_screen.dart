@@ -6,8 +6,11 @@ import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/shimmer.dart';
 import 'package:site_720/core/widgets/snack_bar.dart';
 import '../../../core/widgets/buttons.dart';
+import '../../../core/widgets/connectivity_dialog.dart';
 import '../../../data/models/deductionwork/deductionlist_model.dart';
 import '../../../data/models/deductionwork/phaselist_model.dart';
+import '../../connectivity/cubit/connectivity_cubit.dart';
+import '../../connectivity/cubit/connectivity_state.dart';
 import '../../payment_details/widgets/amount_container.dart';
 import '../cubit/deducion_work_cubit.dart';
 import '../cubit/deduction_work_state.dart';
@@ -34,18 +37,34 @@ class DeductionWork extends StatelessWidget {
 
     return BlocProvider(
       create: (context) => DeductionWorkCubit(projectId),
-      child: BlocListener<DeductionWorkCubit, DeductionWorkState>(
-        listener: (context, state) {
-          if (state is PhaselistSuccess) {
-            phaseList = state.response.data;
-          }
-          if (state is DeductionWorkSuccess) {
-            workList = state.response.data;
-          }
-          if (state is AddedSuccess) {
-            snackBar(context, state.response.message, Colors.green);
-          }
-        },
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<ConnectivityCubit, ConnectivityState>(
+            listener: (context, state) {
+              if (state is ConnectivityDisconnected) {
+                if (connStatus == true) {
+                  connStatus = false;
+                  connectivityDialog(context);
+                }
+              } else {
+                connStatus = true;
+              }
+            },
+          ),
+          BlocListener<DeductionWorkCubit, DeductionWorkState>(
+            listener: (context, state) {
+              if (state is PhaselistSuccess) {
+                phaseList = state.response.data;
+              }
+              if (state is DeductionWorkSuccess) {
+                workList = state.response.data;
+              }
+              if (state is AddedSuccess) {
+                snackBar(context, state.response.message, Colors.green);
+              }
+            },
+          )
+        ],
         child: BlocBuilder<DeductionWorkCubit, DeductionWorkState>(
           builder: (context, state) {
             final cubit = context.read<DeductionWorkCubit>();

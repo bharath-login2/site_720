@@ -1,4 +1,4 @@
- import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,6 +30,7 @@ import 'features/complaints/views/complaint_list.dart';
 import 'features/connectivity/cubit/connectivity_cubit.dart';
 import 'features/deduction_work/views/deduction_work_screen.dart';
 import 'features/forgot_password/views/change_password_screen.dart';
+import 'features/forgot_password/views/otp_screen.dart';
 import 'features/forgot_password/views/phone_number_screen.dart';
 import 'features/home/home.dart';
 import 'features/login/cubit/login_cubit.dart';
@@ -39,6 +40,7 @@ import 'features/project_list/views/add_projects.dart';
 import 'features/stages/views/stages.dart';
 import 'features/stages/views/stage_history.dart';
 import 'features/task_management/views/task_details.dart';
+import 'features/task_management/views/task_history.dart';
 import 'features/work_details/views/work_details_screen.dart';
 
 Future<void> main() async {
@@ -84,13 +86,13 @@ class MyApp extends StatelessWidget {
         '/contractor': (context) => Contractor(),
         '/extraWork': (context) => ExtraWork(),
         '/deductionWork': (context) => DeductionWork(),
-        '/purchase': (context) => const PurchaseList(),
+        '/purchase': (context) => PurchaseList(),
         '/addPurchase': (context) => AddPurchase(),
         '/stock': (context) => Stock(),
         '/expense': (context) => Expense(),
-        '/paymentDetails': (context) => const PaymentDetails(),
-        '/estimation': (context) => const Estimation(),
-        '/consumption': (context) => const Consumption(),
+        '/paymentDetails': (context) => PaymentDetails(),
+        '/estimation': (context) => Estimation(),
+        '/consumption': (context) => Consumption(),
         '/package': (context) => Package(),
         '/phoneNumber': (context) => PhoneNumberScreen(),
         // '/otpScreen': (context) => OtpScreen(),
@@ -98,11 +100,12 @@ class MyApp extends StatelessWidget {
         '/addProjectScreen': (context) => AddProjectScreen(
               fromHome: false,
             ),
-        '/complaintList': (context) => const ComplaintList(),
+        '/complaintList': (context) => ComplaintList(),
         '/addComplaints': (context) => AddComplaint(),
         '/imageViewer': (context) => const ImageViewer(),
         '/editProjectScreen': (context) => EditProjectScreen(),
-         '/taskDetails': (context) => TaskDetails(),
+        '/taskDetails': (context) => TaskDetails(),
+        '/taskHistoryScreen': (context) => TaskHistoryScreen(),
       },
     );
   }

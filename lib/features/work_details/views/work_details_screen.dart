@@ -8,9 +8,12 @@ import 'package:site_720/core/widgets/shimmer.dart';
 import 'package:site_720/data/models/workdetails/work_detail_model.dart';
 import 'package:site_720/features/work_details/cubit/work_details_state.dart';
 import '../../../core/widgets/buttons.dart';
+import '../../../core/widgets/connectivity_dialog.dart';
 import '../../../core/widgets/dialogs.dart';
 import '../../../core/widgets/snack_bar.dart';
 import '../../../data/models/workdetails/add_work_details_model.dart';
+import '../../connectivity/cubit/connectivity_cubit.dart';
+import '../../connectivity/cubit/connectivity_state.dart';
 import '../cubit/work_details_cubit.dart';
 
 class WorkDetailsScreen extends StatelessWidget {
@@ -33,21 +36,37 @@ class WorkDetailsScreen extends StatelessWidget {
     String clientId = args["client_id"]!;
     return BlocProvider(
       create: (context) => WorkDetailsCubit(id),
-      child: BlocListener<WorkDetailsCubit, WorkDetailsState>(
-        listener: (context, state) {
-          if (state is WorkStatusSuccess) {
-            issuesList = state.response.data;
-          }
-          if (state is WorkDetailsSuccess) {
-            workList = state.response.data;
-          }
-          if (state is AddingSuccess) {
-            snackBar(context, state.message, AppColors.primaryColor);
-          }
-          if (state is AddingFailure) {
-            snackBar(context, state.message, Colors.red);
-          }
-        },
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<ConnectivityCubit, ConnectivityState>(
+            listener: (context, state) {
+              if (state is ConnectivityDisconnected) {
+                if (connStatus == true) {
+                  connStatus = false;
+                  connectivityDialog(context);
+                }
+              } else {
+                connStatus = true;
+              }
+            },
+          ),
+          BlocListener<WorkDetailsCubit, WorkDetailsState>(
+            listener: (context, state) {
+              if (state is WorkStatusSuccess) {
+                issuesList = state.response.data;
+              }
+              if (state is WorkDetailsSuccess) {
+                workList = state.response.data;
+              }
+              if (state is AddingSuccess) {
+                snackBar(context, state.message, AppColors.primaryColor);
+              }
+              if (state is AddingFailure) {
+                snackBar(context, state.message, Colors.red);
+              }
+            },
+          )
+        ],
         child: BlocBuilder<WorkDetailsCubit, WorkDetailsState>(
           builder: (context, state) {
             final cubit = context.read<WorkDetailsCubit>();

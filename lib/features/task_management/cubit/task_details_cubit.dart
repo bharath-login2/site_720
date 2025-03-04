@@ -1,7 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../../data/models/tasklist/task_details_model.dart';
-import '../../../data/models/tasklist/task_status.dart';
+import 'package:site_720/data/models/succes_response/success_response.dart';
+import '../../../data/models/task/task_details_model.dart';
+import '../../../data/models/task/task_status.dart';
 import '../../../data/services/http_services.dart';
 import 'task_state.dart';
 
@@ -40,7 +41,7 @@ class TaskDetailsCubit extends Cubit<TaskState> {
       emit(TaskStatusFailure('Failed to fetch data: ${e.toString()}'));
     }
   }
-  
+
   XFile? image;
 
   selectImage(
@@ -55,6 +56,27 @@ class TaskDetailsCubit extends Cubit<TaskState> {
       emit(ImageSuccess(image!));
     } catch (e) {
       emit(ImageFailure("Failed to get image, Please Select once again.."));
+    }
+  }
+
+  Future<void> updateTaskStatus(
+    String taskId,
+    String imagePath,
+    String comment,
+    String status,
+  ) async {
+    try {
+      SuccessResponse response = await HttpServices.updateTaskStatus(
+          taskId, imagePath, comment, status);
+
+      if (response.status == true) {
+        emit(TaskStatusUpdated(response));
+        getTaskDetails(taskId);
+      } else {
+        emit(TaskStatusupdateFailed(response.message));
+      }
+    } catch (e) {
+      emit(TaskStatusupdateFailed('Failed to fetch data: ${e.toString()}'));
     }
   }
 }

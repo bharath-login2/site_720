@@ -17,9 +17,8 @@ class LoginScreen extends StatelessWidget {
 
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool connStatus = false;
-  bool isObscure = true;
 
+  bool isObscure = true;
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +29,10 @@ class LoginScreen extends StatelessWidget {
           BlocListener<ConnectivityCubit, ConnectivityState>(
             listener: (context, state) {
               if (state is ConnectivityDisconnected) {
-                connStatus = false;
-                connectivityDialog(context);
+                if (connStatus == true) {
+                  connStatus = false;
+                  connectivityDialog(context);
+                }
               } else {
                 connStatus = true;
               }

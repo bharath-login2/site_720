@@ -8,13 +8,13 @@ import '../cubit/estimation_cubit.dart';
 import '../widgets/estimation_container.dart';
 
 class Estimation extends StatelessWidget {
-  const Estimation({super.key});
+  Estimation({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: AppColors.backgroundColor,
-        appBar: simpleAppbar(context, "Estimation",true),
+        appBar: simpleAppbar(context, "Estimation", true),
         body: BlocProvider(
           create: (context) => EstimationCubit(),
           child: ListView.builder(

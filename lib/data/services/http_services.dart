@@ -31,9 +31,10 @@ import '../models/stages/stagephase_model.dart';
 import '../models/stock/stock_list.dart';
 import '../models/stockconsume/stockconsume_model.dart';
 import '../models/succes_response/success_response.dart';
-import '../models/tasklist/task_details_model.dart';
-import '../models/tasklist/task_status.dart';
-import '../models/tasklist/tasklist_model.dart';
+import '../models/task/task_details_model.dart';
+import '../models/task/task_history.dart';
+import '../models/task/task_status.dart';
+import '../models/task/tasklist_model.dart';
 import '../models/workdetails/add_work_details_model.dart';
 import '../models/stages/stage_model.dart';
 import '../models/workdetails/work_detail_model.dart';
@@ -1138,7 +1139,8 @@ class HttpServices {
       log(e.toString());
     }
   }
-   static Future getTaskStatus() async {
+
+  static Future getTaskStatus() async {
     try {
       http.Response response =
           await http.post(Uri.parse("${baseUrl}get_task_status"), body: {
@@ -1146,6 +1148,77 @@ class HttpServices {
       });
       if (response.statusCode == 200) {
         return taskStatusModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  static Future updateTaskStatus(
+    String taskId,
+    String imagePath,
+    String comment,
+    String status,
+  ) async {
+    try {
+      var uri = Uri.parse("${baseUrl}update_task_status");
+      var request = http.MultipartRequest('POST', uri);
+      request.fields.addAll({
+        'token': await getSharedPreference('token'),
+        'task_id': taskId,
+        'status': status,
+        'comment': comment
+      });
+      if (imagePath.isNotEmpty) {
+        request.files
+            .add(await http.MultipartFile.fromPath('task_image', imagePath));
+      }
+      var response = await request.send();
+      if (response.statusCode == 200) {
+        return successResponseFromJson(await response.stream.bytesToString());
+      }
+    } catch (e) {
+      log("Error: ${e.toString()}");
+    }
+  }
+
+  static Future addAttendance(
+    String taskId,
+    String imagePath,
+    String latitude,
+    String longitude,
+  ) async {
+    try {
+      var uri = Uri.parse("${baseUrl}add_attendance");
+      var request = http.MultipartRequest('POST', uri);
+      request.fields.addAll({
+        'token': await getSharedPreference('token'),
+        'task_id': taskId,
+        'latitude': latitude,
+        'longitude': longitude
+      });
+      if (imagePath.isNotEmpty) {
+        request.files.add(
+            await http.MultipartFile.fromPath('attendance_image', imagePath));
+      }
+      var response = await request.send();
+      if (response.statusCode == 200) {
+        return successResponseFromJson(await response.stream.bytesToString());
+      }
+    } catch (e) {
+      log("Error: ${e.toString()}");
+    }
+  }
+
+  static Future getTaskHistory(String taskId) async {
+    try {
+      http.Response response =
+          await http.post(Uri.parse("${baseUrl}get_task_history"), body: {
+        'token': await getSharedPreference('token'),
+        'task_id': taskId,
+      });
+      if (response.statusCode == 200) {
+        return taskHistoryModelFromJson(response.body);
       }
     } catch (e) {
       log(e.toString());

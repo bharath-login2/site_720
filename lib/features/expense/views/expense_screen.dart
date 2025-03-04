@@ -8,7 +8,10 @@ import 'package:site_720/core/widgets/buttons.dart';
 import 'package:site_720/core/widgets/shimmer.dart';
 import 'package:site_720/features/expense/cubit/expense_state.dart';
 import 'package:site_720/features/payment_details/widgets/amount_container.dart';
+import '../../../core/widgets/connectivity_dialog.dart';
 import '../../../core/widgets/snack_bar.dart';
+import '../../connectivity/cubit/connectivity_cubit.dart';
+import '../../connectivity/cubit/connectivity_state.dart';
 import '../cubit/expense_cubit.dart';
 
 class Expense extends StatelessWidget {
@@ -19,6 +22,7 @@ class Expense extends StatelessWidget {
   TextEditingController spendBy = TextEditingController();
   TextEditingController dateOn = TextEditingController();
   TextEditingController spendAmount = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final args =
@@ -92,136 +96,152 @@ class Expense extends StatelessWidget {
         ),
         body: BlocProvider(
           create: (context) => ExpenseCubit(projectId),
-          child: BlocBuilder<ExpenseCubit, ExpenseState>(
-            builder: (context, state) {
-              return state is ExpenseSuccess
-                  ? ListView.builder(
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      // ignore: unnecessary_type_check
-                      itemCount: state is ExpenseSuccess
-                          ? state.response.data.length
-                          : 7,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.all(6.0),
-                          child: InkWell(
-                            onTap: () {
-                              // Navigator.of(context)
-                              //     .pushNamed(AppRoutes.stageHistory);
-                            },
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * .9,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: Colors.white,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.8),
-                                    blurRadius: 3,
-                                    offset: const Offset(0, 3),
-                                  ),
-                                ],
-                              ),
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width * .7,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 8.0,
-                                      left: 8.0,
-                                      right: 8.0,
-                                      bottom: 8.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            state.response.data[index]
-                                                .expenseType,
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
+          child: MultiBlocListener(
+            listeners: [
+              BlocListener<ConnectivityCubit, ConnectivityState>(
+                listener: (context, state) {
+                  if (state is ConnectivityDisconnected) {
+                    if (connStatus == true) {
+                      connStatus = false;
+                      connectivityDialog(context);
+                    }
+                  } else {
+                    connStatus = true;
+                  }
+                },
+              ),
+            ],
+            child: BlocBuilder<ExpenseCubit, ExpenseState>(
+              builder: (context, state) {
+                return state is ExpenseSuccess
+                    ? ListView.builder(
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        // ignore: unnecessary_type_check
+                        itemCount: state is ExpenseSuccess
+                            ? state.response.data.length
+                            : 7,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(6.0),
+                            child: InkWell(
+                              onTap: () {
+                                // Navigator.of(context)
+                                //     .pushNamed(AppRoutes.stageHistory);
+                              },
+                              child: Container(
+                                width: MediaQuery.of(context).size.width * .9,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.8),
+                                      blurRadius: 3,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: SizedBox(
+                                  width: MediaQuery.of(context).size.width * .7,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 8.0,
+                                        left: 8.0,
+                                        right: 8.0,
+                                        bottom: 8.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              state.response.data[index]
+                                                  .expenseType,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Text(
-                                            "Bill No:${state.response.data[index].billNo}",
-                                            style: const TextStyle(
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.bold,
+                                            const SizedBox(
+                                              height: 10,
                                             ),
-                                          ),
-                                          const SizedBox(
-                                            height: 5,
-                                          ),
-                                          Text(
-                                            "Created by:${state.response.data[index].createdBy}",
-                                            style: const TextStyle(
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.bold,
+                                            Text(
+                                              "Bill No:${state.response.data[index].billNo}",
+                                              style: const TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            "Bill Date :${state.response.data[index].billDate}",
-                                            style: const TextStyle(  
-                                              fontSize: 10,
-                                              fontWeight: FontWeight.bold,
+                                            const SizedBox(
+                                              height: 5,
                                             ),
-                                          ),
-                                          const SizedBox(
-                                            height: 20,
-                                          ),
-                                          AmountContainer(
-                                            title: "Cost",
-                                            amount:
-                                                "${state.response.data[index].billAmount} ₹",
-                                            valueColor:  AppColors.primaryColor
-                                          ),
-                                          // Text(
-                                          //   "₹ 500000 /-",
-                                          //   style: TextStyle(
-                                          //       fontSize: 18,
-                                          //       fontWeight: FontWeight.bold,
-                                          //       color: AppColors.primaryColor),
-                                          // ),
-                                        ],
-                                      ),
-                                    ],
+                                            Text(
+                                              "Created by:${state.response.data[index].createdBy}",
+                                              style: const TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              "Bill Date :${state.response.data[index].billDate}",
+                                              style: const TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 20,
+                                            ),
+                                            AmountContainer(
+                                                title: "Cost",
+                                                amount:
+                                                    "${state.response.data[index].billAmount} ₹",
+                                                valueColor:
+                                                    AppColors.primaryColor),
+                                            // Text(
+                                            //   "₹ 500000 /-",
+                                            //   style: TextStyle(
+                                            //       fontSize: 18,
+                                            //       fontWeight: FontWeight.bold,
+                                            //       color: AppColors.primaryColor),
+                                            // ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                    )
-                  : state is ExpenseLoading
-                      ? ListView.builder(
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: shimmerContainer(100, 70),
-                            );
-                          },
-                        )
-                      : const Center(
-                          child: Text("No Expense Added"),
-                        );
-            },
+                          );
+                        },
+                      )
+                    : state is ExpenseLoading
+                        ? ListView.builder(
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: shimmerContainer(100, 70),
+                              );
+                            },
+                          )
+                        : const Center(
+                            child: Text("No Expense Added"),
+                          );
+              },
+            ),
           ),
         ));
   }

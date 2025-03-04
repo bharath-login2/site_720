@@ -10,9 +10,12 @@ import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/buttons.dart';
 import 'package:site_720/core/widgets/snack_bar.dart';
 import '../../../core/widgets/appbar.dart';
+import '../../../core/widgets/connectivity_dialog.dart';
 import '../../../core/widgets/dialogs.dart';
 import '../../../data/models/project_list/edit_data_model.dart';
 import '../../../data/models/project_list/project_data_model.dart';
+import '../../connectivity/cubit/connectivity_cubit.dart';
+import '../../connectivity/cubit/connectivity_state.dart';
 import '../../payment_details/widgets/amount_container.dart';
 import '../cubit/edit_project_cubit.dart';
 import '../cubit/project_list_state.dart';
@@ -74,6 +77,7 @@ class EditProjectScreen extends StatelessWidget {
   String elevation = "";
   String pageType = "add";
   String projectId = "add";
+
   @override
   Widget build(BuildContext context) {
     final args =
@@ -85,75 +89,91 @@ class EditProjectScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
         appBar: simpleAppbar(context, "Edit", true),
-        body: BlocListener<EditProjectCubit, ProjectListState>(
-          listener: (context, state) {
-            if (state is PriorityUpdated) {
-              priority = state.value;
-            }
-            if (state is ProjectDataSuccess) {
-              filteredClientList = state.response.data.clientList;
-              clientList = state.response.data.clientList;
-              projectList = state.response.data.projectList;
-              projectCategory = state.response.data.projectCategory;
-              packages = state.response.data.packages;
-              bhkList = state.response.data.bhk;
-            }
-            if (state is PlanSuccess) {
-              planImage = state.image;
-            }
-            if (state is ElevationSuccess) {
-              elevationImage = state.image;
-            }
-            if (state is EditProjectSuccess) {
-              Navigator.pop(context);
-              snackBar(context, state.message, Colors.green);
-            }
-            if (state is EditProjectFailed) {
-              snackBar(context, state.message, Colors.red);
-            }
-            if (state is EditDtailsSuccess) {
-              EditDetails editDetails = state.response.data;
-              clientId = editDetails.clientId;
-              clientName.text = editDetails.clientName;
-              projectName.text = editDetails.projectName;
-              type = editDetails.projectTypeId;
-              category = editDetails.projectCategoryId;
-              referenceNumber.text = editDetails.referenceNo;
-              location.text = editDetails.location;
-              locationArea.text = editDetails.locationArea;
-              cctvAddress.text = editDetails.cctvId;
-              priority = editDetails.priorityId;
-              package = editDetails.packageId;
-              bhk = editDetails.bhkNo;
-              startDate.text = editDetails.startingDate;
-              completionDate.text = editDetails.completionDate;
-              fixedRate.text = editDetails.fixedRate;
-              estBudAmt.text = editDetails.estimatedBudget;
-              gst = editDetails.gstPercentage;
-              gstAmt.text = editDetails.gstAmount;
-              totalAmount = double.parse(editDetails.totalAmount);
-              totalAmt.text = editDetails.totalAmount;
-              description.text = editDetails.projectDescription;
-              lpoNumber.text = editDetails.lpoNo;
-              quotationNumber.text = editDetails.orderNo;
-              plan = editDetails.planImage;
-              elevation = editDetails.elevatedImage;
-              if (editDetails.unitList.isNotEmpty) {
-                budgetMethord = "Unit Based Rate";
-              } else {
-                budgetMethord = 'Fixed Rate';
-              }
-              for (int i = 0; i < editDetails.unitList.length; i++) {
-                unitList.add({
-                  "name": editDetails.unitList[i].sqftName,
-                  "squareFeet": editDetails.unitList[i].sqftVal,
-                  "rate": editDetails.unitList[i].sqftRate,
-                  "amount": editDetails.unitList[i].sqftTotal,
-                });
-              }
-              (context as Element).markNeedsBuild();
-            }
-          },
+        body: MultiBlocListener(
+          listeners: [
+            BlocListener<ConnectivityCubit, ConnectivityState>(
+              listener: (context, state) {
+                if (state is ConnectivityDisconnected) {
+                  if (connStatus == true) {
+                    connStatus = false;
+                    connectivityDialog(context);
+                  }
+                } else {
+                  connStatus = true;
+                }
+              },
+            ),
+            BlocListener<EditProjectCubit, ProjectListState>(
+              listener: (context, state) {
+                if (state is PriorityUpdated) {
+                  priority = state.value;
+                }
+                if (state is ProjectDataSuccess) {
+                  filteredClientList = state.response.data.clientList;
+                  clientList = state.response.data.clientList;
+                  projectList = state.response.data.projectList;
+                  projectCategory = state.response.data.projectCategory;
+                  packages = state.response.data.packages;
+                  bhkList = state.response.data.bhk;
+                }
+                if (state is PlanSuccess) {
+                  planImage = state.image;
+                }
+                if (state is ElevationSuccess) {
+                  elevationImage = state.image;
+                }
+                if (state is EditProjectSuccess) {
+                  Navigator.pop(context);
+                  snackBar(context, state.message, Colors.green);
+                }
+                if (state is EditProjectFailed) {
+                  snackBar(context, state.message, Colors.red);
+                }
+                if (state is EditDtailsSuccess) {
+                  EditDetails editDetails = state.response.data;
+                  clientId = editDetails.clientId;
+                  clientName.text = editDetails.clientName;
+                  projectName.text = editDetails.projectName;
+                  type = editDetails.projectTypeId;
+                  category = editDetails.projectCategoryId;
+                  referenceNumber.text = editDetails.referenceNo;
+                  location.text = editDetails.location;
+                  locationArea.text = editDetails.locationArea;
+                  cctvAddress.text = editDetails.cctvId;
+                  priority = editDetails.priorityId;
+                  package = editDetails.packageId;
+                  bhk = editDetails.bhkNo;
+                  startDate.text = editDetails.startingDate;
+                  completionDate.text = editDetails.completionDate;
+                  fixedRate.text = editDetails.fixedRate;
+                  estBudAmt.text = editDetails.estimatedBudget;
+                  gst = editDetails.gstPercentage;
+                  gstAmt.text = editDetails.gstAmount;
+                  totalAmount = double.parse(editDetails.totalAmount);
+                  totalAmt.text = editDetails.totalAmount;
+                  description.text = editDetails.projectDescription;
+                  lpoNumber.text = editDetails.lpoNo;
+                  quotationNumber.text = editDetails.orderNo;
+                  plan = editDetails.planImage;
+                  elevation = editDetails.elevatedImage;
+                  if (editDetails.unitList.isNotEmpty) {
+                    budgetMethord = "Unit Based Rate";
+                  } else {
+                    budgetMethord = 'Fixed Rate';
+                  }
+                  for (int i = 0; i < editDetails.unitList.length; i++) {
+                    unitList.add({
+                      "name": editDetails.unitList[i].sqftName,
+                      "squareFeet": editDetails.unitList[i].sqftVal,
+                      "rate": editDetails.unitList[i].sqftRate,
+                      "amount": editDetails.unitList[i].sqftTotal,
+                    });
+                  }
+                  (context as Element).markNeedsBuild();
+                }
+              },
+            )
+          ],
           child: BlocBuilder<EditProjectCubit, ProjectListState>(
             builder: (context, state) {
               return SingleChildScrollView(
@@ -1689,7 +1709,9 @@ class EditProjectScreen extends StatelessWidget {
                             await context
                                 .read<EditProjectCubit>()
                                 .selectImage(ImageSource.camera, type);
-                            if(context.mounted) {  Navigator.pop(context);}
+                            if (context.mounted) {
+                              Navigator.pop(context);
+                            }
                           },
                           child: Container(
                             height: 100,
@@ -1721,7 +1743,9 @@ class EditProjectScreen extends StatelessWidget {
                             await context
                                 .read<EditProjectCubit>()
                                 .selectImage(null, type);
-                             if(context.mounted)  {Navigator.pop(context);}
+                            if (context.mounted) {
+                              Navigator.pop(context);
+                            }
                           },
                           child: Container(
                             height: 100,

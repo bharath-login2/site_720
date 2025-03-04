@@ -24,7 +24,6 @@ class DashboardScreen extends StatelessWidget {
       text: DateFormat('dd-MM-yyyy').format(DateTime.now()));
   TextEditingController tdate = TextEditingController(
       text: DateFormat('dd-MM-yyyy').format(DateTime.now()));
-  bool connStatus = false;
 
   List colors = [
     Colors.blue,
@@ -32,6 +31,7 @@ class DashboardScreen extends StatelessWidget {
     Colors.orange,
     Colors.red,
   ];
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -41,8 +41,10 @@ class DashboardScreen extends StatelessWidget {
           BlocListener<ConnectivityCubit, ConnectivityState>(
             listener: (context, state) {
               if (state is ConnectivityDisconnected) {
-                connStatus = false;
-                connectivityDialog(context);
+                if (connStatus == true) {
+                  connStatus = false;
+                  connectivityDialog(context);
+                }
               } else {
                 connStatus = true;
               }

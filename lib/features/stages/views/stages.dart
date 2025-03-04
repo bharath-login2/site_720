@@ -17,7 +17,7 @@ import '../cubit/stages_state.dart';
 
 class Stages extends StatelessWidget {
   Stages({super.key});
-  bool connStatus = false;
+
   final formKey = GlobalKey<FormState>();
   List<GetStages> stages = [];
   TextEditingController searchController = TextEditingController();
@@ -31,6 +31,7 @@ class Stages extends StatelessWidget {
       text: DateFormat('dd-MM-yyyy').format(DateTime.now()));
   List<StagePhase> phaseList = [];
   String? selectedPhase;
+
   @override
   Widget build(BuildContext context) {
     final args =
@@ -44,8 +45,10 @@ class Stages extends StatelessWidget {
           BlocListener<ConnectivityCubit, ConnectivityState>(
             listener: (context, state) {
               if (state is ConnectivityDisconnected) {
-                connStatus = false;
-                connectivityDialog(context);
+                if (connStatus == true) {
+                  connStatus = false;
+                  connectivityDialog(context);
+                }
               } else {
                 connStatus = true;
               }
@@ -640,26 +643,23 @@ class Stages extends StatelessWidget {
                       child: TextFormField(
                         validator: (value) {
                           if (value == "") {
-                            return "Enter start date"; 
+                            return "Enter start date";
                           }
                           return null;
                         },
                         controller: startDateController,
-                        readOnly:
-                            true, 
+                        readOnly: true,
                         onTap: () async {
                           DateTime? selectedDate = await showDatePicker(
                             context: context,
                             initialDate: DateTime.now(),
-                            firstDate:
-                                DateTime(1900),
+                            firstDate: DateTime(1900),
                             lastDate: DateTime(2101),
                           );
                           if (selectedDate != null) {
-                         
                             String formattedDate =
                                 "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}";
-                    
+
                             startDateController.text = formattedDate;
                           }
                         },
@@ -689,21 +689,18 @@ class Stages extends StatelessWidget {
                           return null;
                         },
                         controller: endDateController,
-                        readOnly:
-                            true,
+                        readOnly: true,
                         onTap: () async {
                           DateTime? selectedDate = await showDatePicker(
                             context: context,
                             initialDate: DateTime.now(),
-                            firstDate:
-                                DateTime(1900), 
+                            firstDate: DateTime(1900),
                             lastDate: DateTime(2101),
                           );
                           if (selectedDate != null) {
-                          
                             String formattedDate =
                                 "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}";
-                          
+
                             endDateController.text = formattedDate;
                           }
                         },

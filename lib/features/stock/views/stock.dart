@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/appbar.dart';
+import '../../../core/widgets/connectivity_dialog.dart';
 import '../../../core/widgets/shimmer.dart';
 import '../../../data/models/stock/stock_list.dart';
+import '../../connectivity/cubit/connectivity_cubit.dart';
+import '../../connectivity/cubit/connectivity_state.dart';
 import '../../payment_details/widgets/amount_container.dart';
 import '../cubit/stock_cubit.dart';
 import '../cubit/stock_state.dart';
@@ -27,6 +30,18 @@ class Stock extends StatelessWidget {
           create: (context) => StockCubit(projectId),
           child: MultiBlocListener(
             listeners: [
+              BlocListener<ConnectivityCubit, ConnectivityState>(
+                listener: (context, state) {
+                  if (state is ConnectivityDisconnected) {
+                    if (connStatus == true) {
+                      connStatus = false;
+                      connectivityDialog(context);
+                    }
+                  } else {
+                    connStatus = true;
+                  }
+                },
+              ),
               BlocListener<StockCubit, StockState>(
                 listener: (context, state) {
                   if (state is StockSuccess) {
@@ -116,21 +131,22 @@ class Stock extends StatelessWidget {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           AmountContainer(
-                                            title: "Unit Price",
-                                            amount: stockList[index].unitPrice,
-                                              valueColor:  AppColors.primaryColor
-                                          ),
+                                              title: "Unit Price",
+                                              amount:
+                                                  stockList[index].unitPrice,
+                                              valueColor:
+                                                  AppColors.primaryColor),
                                           AmountContainer(
-                                            title: "In Stock",
-                                            amount: stockList[index].quantity,
-                                              valueColor:  AppColors.primaryColor
-                                          ),
+                                              title: "In Stock",
+                                              amount: stockList[index].quantity,
+                                              valueColor:
+                                                  AppColors.primaryColor),
                                           AmountContainer(
-                                            title: "Total Amount",
-                                            amount:
-                                                stockList[index].totalAmount,
-                                                  valueColor:  AppColors.primaryColor
-                                          )    ,
+                                              title: "Total Amount",
+                                              amount:
+                                                  stockList[index].totalAmount,
+                                              valueColor:
+                                                  AppColors.primaryColor),
                                         ],
                                       ),
                                     ],

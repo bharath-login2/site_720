@@ -11,8 +11,11 @@ import 'package:site_720/core/widgets/buttons.dart';
 import 'package:site_720/core/widgets/snack_bar.dart';
 import 'package:site_720/features/project_list/cubit/add_project_cubit.dart';
 import '../../../core/widgets/appbar.dart';
+import '../../../core/widgets/connectivity_dialog.dart';
 import '../../../core/widgets/dialogs.dart';
 import '../../../data/models/project_list/project_data_model.dart';
+import '../../connectivity/cubit/connectivity_cubit.dart';
+import '../../connectivity/cubit/connectivity_state.dart';
 import '../../payment_details/widgets/amount_container.dart';
 import '../cubit/project_list_state.dart';
 
@@ -72,6 +75,7 @@ class AddProjectScreen extends StatelessWidget {
   XFile? elevationImage;
   String pageType = "add";
   String projectId = "add";
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -79,33 +83,49 @@ class AddProjectScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
         appBar: simpleAppbar(context, "Add Project", fromHome ? false : true),
-        body: BlocListener<AddProjectCubit, ProjectListState>(
-          listener: (context, state) {
-            if (state is PriorityUpdated) {
-              priority = state.value;
-            }
-            if (state is ProjectDataSuccess) {
-              filteredClientList = state.response.data.clientList;
-              clientList = state.response.data.clientList;
-              projectList = state.response.data.projectList;
-              projectCategory = state.response.data.projectCategory;
-              packages = state.response.data.packages;
-              bhkList = state.response.data.bhk;
-            }
-            if (state is PlanSuccess) {
-              planImage = state.image;
-            }
-            if (state is ElevationSuccess) {
-              elevationImage = state.image;
-            }
-            if (state is AddProjectSuccess) {
-              snackBar(context, state.message, Colors.green);
-              Navigator.pop(context);
-            }
-            if (state is AddProjectFailed) {
-              snackBar(context, state.message, Colors.red);
-            }
-          },
+        body: MultiBlocListener(
+          listeners: [
+            BlocListener<ConnectivityCubit, ConnectivityState>(
+              listener: (context, state) {
+                if (state is ConnectivityDisconnected) {
+                  if (connStatus == true) {
+                    connStatus = false;
+                    connectivityDialog(context);
+                  }
+                } else {
+                  connStatus = true;
+                }
+              },
+            ),
+            BlocListener<AddProjectCubit, ProjectListState>(
+              listener: (context, state) {
+                if (state is PriorityUpdated) {
+                  priority = state.value;
+                }
+                if (state is ProjectDataSuccess) {
+                  filteredClientList = state.response.data.clientList;
+                  clientList = state.response.data.clientList;
+                  projectList = state.response.data.projectList;
+                  projectCategory = state.response.data.projectCategory;
+                  packages = state.response.data.packages;
+                  bhkList = state.response.data.bhk;
+                }
+                if (state is PlanSuccess) {
+                  planImage = state.image;
+                }
+                if (state is ElevationSuccess) {
+                  elevationImage = state.image;
+                }
+                if (state is AddProjectSuccess) {
+                  snackBar(context, state.message, Colors.green);
+                  Navigator.pop(context);
+                }
+                if (state is AddProjectFailed) {
+                  snackBar(context, state.message, Colors.red);
+                }
+              },
+            )
+          ],
           child: BlocBuilder<AddProjectCubit, ProjectListState>(
             builder: (context, state) {
               return SingleChildScrollView(
@@ -1643,7 +1663,9 @@ class AddProjectScreen extends StatelessWidget {
                             await context
                                 .read<AddProjectCubit>()
                                 .selectImage(null, type);
-                          if(context.mounted)  {Navigator.pop(context);}
+                            if (context.mounted) {
+                              Navigator.pop(context);
+                            }
                           },
                           child: Container(
                             height: 100,
@@ -1838,7 +1860,7 @@ class AddProjectScreen extends StatelessWidget {
                             double rate =
                                 double.tryParse(unit["rate"] ?? "0") ?? 0;
                             double amount =
-                                double.tryParse(unit["amount"] ?? "0") ?? 0; 
+                                double.tryParse(unit["amount"] ?? "0") ?? 0;
 
                             totalSqFt += squareFeet;
                             totalRate += rate;

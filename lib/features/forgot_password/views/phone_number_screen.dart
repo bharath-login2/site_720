@@ -17,7 +17,7 @@ class PhoneNumberScreen extends StatelessWidget {
   PhoneNumberScreen({super.key});
 
   final phoneNumberController = TextEditingController();
-  bool connStatus = false;
+
   bool isObscure = true;
 
   @override
@@ -31,8 +31,10 @@ class PhoneNumberScreen extends StatelessWidget {
             BlocListener<ConnectivityCubit, ConnectivityState>(
               listener: (context, state) {
                 if (state is ConnectivityDisconnected) {
-                  connStatus = false;
-                  connectivityDialog(context);
+                  if (connStatus == true) {
+                    connStatus = false;
+                    connectivityDialog(context);
+                  }
                 } else {
                   connStatus = true;
                 }

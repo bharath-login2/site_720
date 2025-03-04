@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'buttons.dart';
 
+bool connStatus = false;
+
 Future<void> connectivityDialog(BuildContext context) async {
   return showDialog(
     barrierDismissible: false,

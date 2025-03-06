@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:site_720/core/constants/routes.dart';
 import 'package:site_720/core/utilities/shared_preferences.dart';
 
+import '../../../core/widgets/connectivity_dialog.dart';
+
 class Splash extends StatefulWidget {
   const Splash({super.key});
 
@@ -20,6 +22,7 @@ class _SplashState extends State<Splash> {
     await Future.delayed(const Duration(seconds: 3));
     final token = await getSharedPreference("token");
     if (mounted) {
+      connStatus = true;
       if (token == null) {
         Navigator.pushReplacementNamed(context, AppRoutes.login);
       } else {

@@ -14,7 +14,7 @@ import '../cubit/purchase_cubit.dart';
 import '../cubit/purchase_state.dart';
 
 class PurchaseList extends StatelessWidget {
-  PurchaseList({super.key});
+  const PurchaseList({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +75,7 @@ class PurchaseList extends StatelessWidget {
                       visible: false,
                       child: InkWell(
                         onTap: () {
+                          connStatus = true;
                           Navigator.pushNamed(context, AppRoutes.addPurchase);
                         },
                         child: const CircleAvatar(

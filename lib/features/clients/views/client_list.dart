@@ -1,4 +1,4 @@
-// ignore_for_file: must_be_immutable
+// ignore_for_file: must_be_immutable, prefer_const_constructors_in_immutables
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -74,6 +74,7 @@ class ClientList extends StatelessWidget {
                           ),
                           InkWell(
                             onTap: () {
+                              connStatus = true;
                               Navigator.pushNamed(
                                       context, AppRoutes.addCilentScreen)
                                   .then((_) {
@@ -281,6 +282,7 @@ class ClientList extends StatelessWidget {
                                                 //       children: [
                                                 InkWell(
                                                   onTap: () {
+                                                    connStatus = true;
                                                     Navigator.pushNamed(
                                                         context,
                                                         AppRoutes

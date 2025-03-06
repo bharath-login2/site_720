@@ -53,6 +53,7 @@ class OtpScreen extends StatelessWidget {
                       genOtp = state.otp;
                       snackBar(context, state.message, Colors.green);
                     } else if (state is OtpVerified) {
+                      connStatus = true;
                       Navigator.pushReplacementNamed(
                           context, AppRoutes.changePasswordScreen);
                     } else if (state is OtpVerificationFailed) {

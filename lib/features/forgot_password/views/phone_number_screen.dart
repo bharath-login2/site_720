@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/connectivity_dialog.dart';
+import '../../../core/constants/routes.dart';
 import '../../../core/widgets/buttons.dart';
 import '../../../core/widgets/snack_bar.dart';
 import '../../connectivity/cubit/connectivity_cubit.dart';
@@ -43,8 +44,10 @@ class PhoneNumberScreen extends StatelessWidget {
             BlocListener<ForgotPasswordCubit, ForgotPasswordState>(
               listener: (context, state) {
                 if (state is OtpSent) {
-                  // Navigator.pushReplacementNamed(context, AppRoutes.otpScreen);
+                  connStatus = true;
+                  Navigator.pushReplacementNamed(context, AppRoutes.otpScreen);
                   log(state.otp);
+                  connStatus = true;
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(

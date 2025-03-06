@@ -259,6 +259,7 @@ class ProjectList extends StatelessWidget {
                                       child: state is ProjectListSuccess
                                           ? InkWell(
                                               onTap: () {
+                                                connStatus = true;
                                                 Navigator.pushNamed(context,
                                                     AppRoutes.projectDetails,
                                                     arguments: {
@@ -532,6 +533,8 @@ class ProjectList extends StatelessWidget {
                                                             children: [
                                                               InkWell(
                                                                 onTap: () {
+                                                                  connStatus =
+                                                                      true;
                                                                   Navigator.pushNamed(
                                                                       context,
                                                                       AppRoutes

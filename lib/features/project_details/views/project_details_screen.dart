@@ -228,6 +228,7 @@ class ProjectDetails extends StatelessWidget {
                                             onTap: () {
                                               if (state
                                                   is ProjectDetailsSuccess) {
+                                                connStatus = true;
                                                 Navigator.pushNamed(context,
                                                     AppRoutes.imageViewer,
                                                     arguments: {
@@ -250,6 +251,7 @@ class ProjectDetails extends StatelessWidget {
                                             onTap: () {
                                               if (state
                                                   is ProjectDetailsSuccess) {
+                                                connStatus = true;
                                                 Navigator.pushNamed(context,
                                                     AppRoutes.imageViewer,
                                                     arguments: {
@@ -287,6 +289,7 @@ class ProjectDetails extends StatelessWidget {
                                 children: [
                                   InkWell(
                                     onTap: () {
+                                      connStatus = true;
                                       Navigator.pushNamed(
                                           context, AppRoutes.gallery,
                                           arguments: {
@@ -303,6 +306,7 @@ class ProjectDetails extends StatelessWidget {
                                   ),
                                   InkWell(
                                     onTap: () {
+                                      connStatus = true;
                                       Navigator.pushNamed(
                                           context, AppRoutes.workDetails,
                                           arguments: {
@@ -329,6 +333,7 @@ class ProjectDetails extends StatelessWidget {
                                 children: [
                                   InkWell(
                                     onTap: () {
+                                      connStatus = true;
                                       Navigator.pushNamed(
                                           context, AppRoutes.drawing,
                                           arguments: {
@@ -345,6 +350,7 @@ class ProjectDetails extends StatelessWidget {
                                   ),
                                   InkWell(
                                     onTap: () {
+                                      connStatus = true;
                                       Navigator.pushNamed(
                                           context, AppRoutes.package,
                                           arguments: {
@@ -371,6 +377,7 @@ class ProjectDetails extends StatelessWidget {
                                 children: [
                                   InkWell(
                                     onTap: () {
+                                      connStatus = true;
                                       Navigator.pushNamed(
                                           context, AppRoutes.stages,
                                           arguments: {
@@ -387,6 +394,7 @@ class ProjectDetails extends StatelessWidget {
                                   ),
                                   InkWell(
                                     onTap: () {
+                                      connStatus = true;
                                       Navigator.pushNamed(
                                           context, AppRoutes.contractor,
                                           arguments: {"id": id});
@@ -410,6 +418,7 @@ class ProjectDetails extends StatelessWidget {
                                 children: [
                                   InkWell(
                                     onTap: () {
+                                      connStatus = true;
                                       Navigator.pushNamed(
                                           context, AppRoutes.extraWork,
                                           arguments: {
@@ -426,6 +435,7 @@ class ProjectDetails extends StatelessWidget {
                                   ),
                                   InkWell(
                                     onTap: () {
+                                      connStatus = true;
                                       Navigator.pushNamed(
                                           context, AppRoutes.deductionWork,
                                           arguments: {
@@ -452,6 +462,7 @@ class ProjectDetails extends StatelessWidget {
                                 children: [
                                   InkWell(
                                     onTap: () {
+                                      connStatus = true;
                                       Navigator.pushNamed(
                                           context, AppRoutes.purchase,
                                           arguments: {"id": id});
@@ -465,6 +476,7 @@ class ProjectDetails extends StatelessWidget {
                                   ),
                                   InkWell(
                                     onTap: () {
+                                      connStatus = true;
                                       Navigator.pushNamed(
                                           context, AppRoutes.stock,
                                           arguments: {"id": id});
@@ -488,6 +500,7 @@ class ProjectDetails extends StatelessWidget {
                                 children: [
                                   InkWell(
                                     onTap: () {
+                                      connStatus = true;
                                       Navigator.pushNamed(
                                           context, AppRoutes.expense,
                                           arguments: {"id": id});
@@ -501,6 +514,7 @@ class ProjectDetails extends StatelessWidget {
                                   ),
                                   InkWell(
                                     onTap: () {
+                                      connStatus = true;
                                       Navigator.pushNamed(
                                           context, AppRoutes.paymentDetails,
                                           arguments: {"id": id});
@@ -524,6 +538,7 @@ class ProjectDetails extends StatelessWidget {
                                 children: [
                                   InkWell(
                                     onTap: () {
+                                      connStatus = true;
                                       Navigator.pushNamed(
                                           context, AppRoutes.estimation,
                                           arguments: {"id": id});
@@ -537,6 +552,7 @@ class ProjectDetails extends StatelessWidget {
                                   ),
                                   InkWell(
                                     onTap: () {
+                                      connStatus = true;
                                       Navigator.pushNamed(
                                           context, AppRoutes.consumption,
                                           arguments: {"id": id});

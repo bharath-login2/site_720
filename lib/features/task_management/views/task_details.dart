@@ -539,7 +539,7 @@ class TaskDetails extends StatelessWidget {
                         InkWell(
                           onTap: () async {
                             await cubit.selectImage(ImageSource.camera);
-                            Navigator.pop(context);
+                         if(context.mounted)  { Navigator.pop(context);}
                           },
                           child: Container(
                             height: 100,
@@ -569,7 +569,7 @@ class TaskDetails extends StatelessWidget {
                         InkWell(
                           onTap: () async {
                             await cubit.selectImage(ImageSource.gallery);
-                            Navigator.pop(context);
+                           if(context.mounted) {Navigator.pop(context);}
                           },
                           child: Container(
                             height: 100,

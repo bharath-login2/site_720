@@ -87,6 +87,7 @@ class TaskList extends StatelessWidget {
                           padding: const EdgeInsets.all(6.0),
                           child: InkWell(
                             onTap: () {
+                              connStatus = true;
                               Navigator.pushNamed(
                                   context, AppRoutes.taskDetails,
                                   arguments: {"task_id": taskList[index].id});
@@ -193,6 +194,7 @@ class TaskList extends StatelessWidget {
                                               ),
                                               InkWell(
                                                 onTap: () {
+                                                  connStatus = true;
                                                   Navigator.pushNamed(context,
                                                       AppRoutes.taskHistory,
                                                       arguments: {

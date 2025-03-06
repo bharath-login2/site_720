@@ -14,7 +14,7 @@ import '../../connectivity/cubit/connectivity_cubit.dart';
 import '../../connectivity/cubit/connectivity_state.dart';
 
 class TaskHistoryScreen extends StatelessWidget {
-  TaskHistoryScreen({super.key});
+  const TaskHistoryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

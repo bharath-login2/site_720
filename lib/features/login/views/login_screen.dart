@@ -196,6 +196,7 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: 20),
               InkWell(
                 onTap: () {
+                  connStatus = true;
                   Navigator.pushNamed(context, AppRoutes.phoneNumber);
                 },
                 child: const Text(

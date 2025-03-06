@@ -18,7 +18,6 @@ import 'package:site_720/features/project_details/views/image_view_screen.dart';
 import 'package:site_720/features/project_details/views/project_details_screen.dart';
 import 'package:site_720/features/project_list/views/edit_project.dart';
 import 'package:site_720/features/project_list/views/project_list_screen.dart';
-import 'package:site_720/features/purchase/views/add_purchase.dart';
 import 'package:site_720/features/purchase/views/purchase_list_screen.dart';
 import 'package:site_720/features/splash/views/splash.dart';
 import 'package:site_720/features/stock/views/stock.dart';
@@ -30,7 +29,6 @@ import 'features/complaints/views/complaint_list.dart';
 import 'features/connectivity/cubit/connectivity_cubit.dart';
 import 'features/deduction_work/views/deduction_work_screen.dart';
 import 'features/forgot_password/views/change_password_screen.dart';
-import 'features/forgot_password/views/otp_screen.dart';
 import 'features/forgot_password/views/phone_number_screen.dart';
 import 'features/home/home.dart';
 import 'features/login/cubit/login_cubit.dart';
@@ -56,7 +54,6 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -66,7 +63,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      initialRoute: AppRoutes.splash,
+      initialRoute: AppRoutes.splash,  
       routes: {
         '/splash': (context) => const Splash(),
         '/login': (context) => LoginScreen(),
@@ -86,8 +83,7 @@ class MyApp extends StatelessWidget {
         '/contractor': (context) => Contractor(),
         '/extraWork': (context) => ExtraWork(),
         '/deductionWork': (context) => DeductionWork(),
-        '/purchase': (context) => PurchaseList(),
-        '/addPurchase': (context) => AddPurchase(),
+        '/purchase': (context) => const PurchaseList(),
         '/stock': (context) => Stock(),
         '/expense': (context) => Expense(),
         '/paymentDetails': (context) => PaymentDetails(),
@@ -95,7 +91,6 @@ class MyApp extends StatelessWidget {
         '/consumption': (context) => Consumption(),
         '/package': (context) => Package(),
         '/phoneNumber': (context) => PhoneNumberScreen(),
-        // '/otpScreen': (context) => OtpScreen(),
         '/changePasswordScreen': (context) => ChangePasswordScreen(),
         '/addProjectScreen': (context) => AddProjectScreen(
               fromHome: false,
@@ -105,7 +100,7 @@ class MyApp extends StatelessWidget {
         '/imageViewer': (context) => const ImageViewer(),
         '/editProjectScreen': (context) => EditProjectScreen(),
         '/taskDetails': (context) => TaskDetails(),
-        '/taskHistoryScreen': (context) => TaskHistoryScreen(),
+        '/taskHistoryScreen': (context) => const TaskHistoryScreen(),
       },
     );
   }

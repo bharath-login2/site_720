@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/routes.dart';
 
 import '../../../core/constants/colors.dart';
+import '../../../core/widgets/connectivity_dialog.dart';
 import '../cubit/project_list_cubit.dart';
 
 class FloatingCard extends StatelessWidget {
@@ -61,6 +62,7 @@ class FloatingCard extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
+                connStatus = true;
                 Navigator.pushNamed(context, AppRoutes.addProjectScreen)
                     .then((_) {
                   if (context.mounted) {

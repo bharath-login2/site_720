@@ -4,6 +4,7 @@ import 'package:site_720/core/utilities/shared_preferences.dart';
 import '../constants/colors.dart';
 import '../constants/routes.dart';
 import 'buttons.dart';
+import 'connectivity_dialog.dart';
 
 Future<void> deleteDialog(BuildContext context, onTap) async {
   return showDialog(
@@ -125,6 +126,7 @@ Future<void> logOut(BuildContext context) async {
                 GestureDetector(
                   onTap: () {
                     clearSharedPreference();
+                    connStatus = true;
                     Navigator.pushReplacementNamed(context, AppRoutes.login);
                   },
                   child: LargeButton(title: "Logout"),

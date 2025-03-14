@@ -103,200 +103,231 @@ class ComplaintList extends StatelessWidget {
                     ),
                   ),
                 ),
-                body: ListView.builder(
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 8.0, vertical: 6.0),
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(6.0),
-                      child: state is ComplaintSuccess
-                          ? InkWell(
-                              onTap: () {
-                                // Navigator.of(context).pushNamed(AppRoutes.stageHistory);
-                              },
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * .9,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.8),
-                                      blurRadius: 3,
-                                      offset: const Offset(0, 3),
-                                    ),
-                                  ],
-                                ),
-                                child: SizedBox(
-                                  width: MediaQuery.of(context).size.width * .7,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 8.0,
-                                        left: 8.0,
-                                        right: 8.0,
-                                        bottom: 8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                if (state.response.data[index]
-                                                        .natureName !=
-                                                    '')
-                                                  Text(
-                                                    state.response.data[index]
-                                                        .natureName,
-                                                    style: const TextStyle(
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color:
-                                                            AppColors.coffie),
+                body: state is ComplaintFailure
+                    ? Center(
+                        child: Text("Something went wrong"),
+                      )
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8.0, vertical: 6.0),
+                        itemCount: 5,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(6.0),
+                            child: state is ComplaintSuccess
+                                ? InkWell(
+                                    onTap: () {
+                                      // Navigator.of(context).pushNamed(AppRoutes.stageHistory);
+                                    },
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          .9,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: Colors.white,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.8),
+                                            blurRadius: 3,
+                                            offset: const Offset(0, 3),
+                                          ),
+                                        ],
+                                      ),
+                                      child: SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                .7,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 8.0,
+                                              left: 8.0,
+                                              right: 8.0,
+                                              bottom: 8.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      if (state
+                                                              .response
+                                                              .data[index]
+                                                              .natureName !=
+                                                          '')
+                                                        Text(
+                                                          state
+                                                              .response
+                                                              .data[index]
+                                                              .natureName,
+                                                          style: const TextStyle(
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color: AppColors
+                                                                  .coffie),
+                                                        ),
+                                                      if (state
+                                                              .response
+                                                              .data[index]
+                                                              .description !=
+                                                          '')
+                                                        Text(
+                                                          state
+                                                              .response
+                                                              .data[index]
+                                                              .description,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      if (state
+                                                              .response
+                                                              .data[index]
+                                                              .incidentDate !=
+                                                          '')
+                                                        Text(
+                                                          state
+                                                              .response
+                                                              .data[index]
+                                                              .incidentDate,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      if (state
+                                                              .response
+                                                              .data[index]
+                                                              .statusName !=
+                                                          '')
+                                                        Text(
+                                                          state
+                                                              .response
+                                                              .data[index]
+                                                              .statusName,
+                                                          style: TextStyle(
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color: state
+                                                                          .response
+                                                                          .data[
+                                                                              index]
+                                                                          .statusName ==
+                                                                      "Closed"
+                                                                  ? AppColors
+                                                                      .primaryColor
+                                                                  : Colors
+                                                                      .green),
+                                                        ),
+                                                    ],
                                                   ),
-                                                if (state.response.data[index]
-                                                        .description !=
-                                                    '')
-                                                  Text(
-                                                    state.response.data[index]
-                                                        .description,
-                                                    style: const TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                if (state.response.data[index]
-                                                        .incidentDate !=
-                                                    '')
-                                                  Text(
-                                                    state.response.data[index]
-                                                        .incidentDate,
-                                                    style: const TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                if (state.response.data[index]
-                                                        .statusName !=
-                                                    '')
-                                                  Text(
-                                                    state.response.data[index]
-                                                        .statusName,
-                                                    style: TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: state
-                                                                    .response
-                                                                    .data[index]
-                                                                    .statusName ==
-                                                                "Closed"
-                                                            ? AppColors
-                                                                .primaryColor
-                                                            : Colors.green),
-                                                  ),
-                                              ],
-                                            ),
-                                            // Column(
-                                            //   crossAxisAlignment:
-                                            //       CrossAxisAlignment.end,
-                                            //   children: [
-                                            // Row(
-                                            //   children: [
-                                            //     InkWell(
-                                            //       onTap: () {},
-                                            //       child: Container(
-                                            //         height: 25,
-                                            //         width: 25,
-                                            //         decoration: BoxDecoration(
-                                            //           borderRadius:
-                                            //               BorderRadius
-                                            //                   .circular(5),
-                                            //           color:
-                                            //               AppColors.lightBlue,
-                                            //           boxShadow: [
-                                            //             BoxShadow(
-                                            //               color: Colors.grey
-                                            //                   .withOpacity(
-                                            //                       0.8),
-                                            //               blurRadius: 6,
-                                            //               offset:
-                                            //                   const Offset(
-                                            //                       1, 1),
-                                            //             ),
-                                            //           ],
-                                            //         ),
-                                            //         child: const Icon(
-                                            //           Icons.edit,
-                                            //           size: 18,
-                                            //           color: Colors.white,
-                                            //         ),
-                                            //       ),
-                                            //     ),
-                                            //     const SizedBox(
-                                            //       width: 7,
-                                            //     ),
-                                            //     InkWell(
-                                            //       onTap: () {
-                                            //         deleteDialog(context, () {
-                                            //           Navigator.pop(context);
-                                            //         });
-                                            //       },
-                                            //       child: Container(
-                                            //         height: 25,
-                                            //         width: 25,
-                                            //         decoration: BoxDecoration(
-                                            //           borderRadius:
-                                            //               BorderRadius
-                                            //                   .circular(5),
-                                            //           color: Colors.red,
-                                            //           boxShadow: [
-                                            //             BoxShadow(
-                                            //               color: Colors.grey
-                                            //                   .withOpacity(
-                                            //                       0.8),
-                                            //               blurRadius: 6,
-                                            //               offset:
-                                            //                   const Offset(
-                                            //                       1, 1),
-                                            //             ),
-                                            //           ],
-                                            //         ),
-                                            //         child: const Icon(
-                                            //           Icons.delete,
-                                            //           size: 18,
-                                            //           color: Colors.white,
-                                            //         ),
-                                            //       ),
-                                            //     ),
-                                            //   ],
-                                            // ),
-                                            //   ],
-                                            // )
-                                          ],
+                                                  // Column(
+                                                  //   crossAxisAlignment:
+                                                  //       CrossAxisAlignment.end,
+                                                  //   children: [
+                                                  // Row(
+                                                  //   children: [
+                                                  //     InkWell(
+                                                  //       onTap: () {},
+                                                  //       child: Container(
+                                                  //         height: 25,
+                                                  //         width: 25,
+                                                  //         decoration: BoxDecoration(
+                                                  //           borderRadius:
+                                                  //               BorderRadius
+                                                  //                   .circular(5),
+                                                  //           color:
+                                                  //               AppColors.lightBlue,
+                                                  //           boxShadow: [
+                                                  //             BoxShadow(
+                                                  //               color: Colors.grey
+                                                  //                   .withOpacity(
+                                                  //                       0.8),
+                                                  //               blurRadius: 6,
+                                                  //               offset:
+                                                  //                   const Offset(
+                                                  //                       1, 1),
+                                                  //             ),
+                                                  //           ],
+                                                  //         ),
+                                                  //         child: const Icon(
+                                                  //           Icons.edit,
+                                                  //           size: 18,
+                                                  //           color: Colors.white,
+                                                  //         ),
+                                                  //       ),
+                                                  //     ),
+                                                  //     const SizedBox(
+                                                  //       width: 7,
+                                                  //     ),
+                                                  //     InkWell(
+                                                  //       onTap: () {
+                                                  //         deleteDialog(context, () {
+                                                  //           Navigator.pop(context);
+                                                  //         });
+                                                  //       },
+                                                  //       child: Container(
+                                                  //         height: 25,
+                                                  //         width: 25,
+                                                  //         decoration: BoxDecoration(
+                                                  //           borderRadius:
+                                                  //               BorderRadius
+                                                  //                   .circular(5),
+                                                  //           color: Colors.red,
+                                                  //           boxShadow: [
+                                                  //             BoxShadow(
+                                                  //               color: Colors.grey
+                                                  //                   .withOpacity(
+                                                  //                       0.8),
+                                                  //               blurRadius: 6,
+                                                  //               offset:
+                                                  //                   const Offset(
+                                                  //                       1, 1),
+                                                  //             ),
+                                                  //           ],
+                                                  //         ),
+                                                  //         child: const Icon(
+                                                  //           Icons.delete,
+                                                  //           size: 18,
+                                                  //           color: Colors.white,
+                                                  //         ),
+                                                  //       ),
+                                                  //     ),
+                                                  //   ],
+                                                  // ),
+                                                  //   ],
+                                                  // )
+                                                ],
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ],
+                                      ),
                                     ),
-                                  ),
-                                ),
-                              ),
-                            )
-                          : shimmerContainer(80, 200),
-                    );
-                  },
-                ));
+                                  )
+                                : shimmerContainer(80, 200),
+                          );
+                        },
+                      ));
           },
         ),
       ),

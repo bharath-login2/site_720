@@ -1,15 +1,40 @@
 import 'dart:developer';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../core/utilities/shared_preferences.dart';
+import '../../../data/models/login/api_auth.dart';
 import '../../../data/models/login/login_model.dart';
 import '../../../data/services/http_services.dart';
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
-  LoginCubit() : super(LoginInitial());
+  LoginCubit() : super(LoginInitial()) {
+    apiAuth();
+  }
+
+  List<Server> serverList = [];
+  Server? selectedServer;
 
   void togglePasswordVisibility(bool isObscure) {
     emit(LoginPasswordVisibilityChanged(!isObscure));
+  }
+
+  Future<void> apiAuth() async {
+    try {
+      ApiAuth response = await HttpServices.apiAuth();
+      if (response.status == true) {
+        serverList = response.data.server;
+        if (serverList.length < 2) {
+          selectedServer = serverList[0];
+          saveSharedPreference("url", serverList[0].url);
+        }
+        emit(ServerSuccess(response.message));
+      } else {
+        emit(ServerFailed(response.message));
+      }
+    } catch (e) {
+      emit(ServerFailed('Failed to fetch data: ${e.toString()}'));
+    }
   }
 
   Future<void> login(String username, String password) async {
@@ -18,7 +43,8 @@ class LoginCubit extends Cubit<LoginState> {
     String? firebaseToken = await messaging.getToken();
     log("FCM Token: $firebaseToken");
     try {
-      LoginModel response = await HttpServices.login(username, password, firebaseToken);
+      LoginModel response =
+          await HttpServices.login(username, password, firebaseToken);
       if (response.status == true) {
         emit(LoginSuccess(response.message, response.data.token));
       } else {

@@ -20,6 +20,14 @@ class LoginSuccess extends LoginState {
 
 class LoginFailure extends LoginState {
   final String message;
-
   LoginFailure(this.message);
+}
+
+class ServerSuccess extends LoginState {
+  final String message;
+
+  ServerSuccess(this.message);
+}class ServerFailed extends LoginState {
+  final String message;
+  ServerFailed(this.message);
 }

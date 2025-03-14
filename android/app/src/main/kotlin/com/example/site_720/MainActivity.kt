@@ -1,4 +1,4 @@
-package com.example.site_720
+package com.site720.supervisor
 
 import io.flutter.embedding.android.FlutterActivity
 

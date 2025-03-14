@@ -46,7 +46,6 @@ Future<void> main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(MultiBlocProvider(providers: [
     BlocProvider(create: (_) => ConnectivityCubit(Connectivity())),
-    BlocProvider(create: (_) => LoginCubit()),
     BlocProvider(create: (_) => NotificationCubit()..setupFCM()),
   ], child: const MyApp()));
 }

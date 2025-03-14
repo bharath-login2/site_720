@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:site_720/core/utilities/shared_preferences.dart';
 import 'package:site_720/data/models/galery/galery_list_model.dart';
 import 'package:site_720/data/models/project_list/project_list_model.dart';
+import '../../core/config/config.dart';
 import '../models/clientlist/client_details.dart';
 import '../models/clientlist/client_list_model.dart';
 import '../models/clientlist/client_type_list.dart';
@@ -19,6 +20,7 @@ import '../models/deductionwork/phaselist_model.dart';
 import '../models/expenselist/expenselist_model.dart';
 import '../models/extraworklist/extra_work_model.dart';
 import '../models/galery/stage_pro_model.dart';
+import '../models/login/api_auth.dart';
 import '../models/package/package_model.dart';
 import '../models/paymentdetails/paymentdetails_model.dart';
 import '../models/login/login_model.dart';
@@ -40,13 +42,23 @@ import '../models/stages/stage_model.dart';
 import '../models/workdetails/work_detail_model.dart';
 
 class HttpServices {
-  static var dev = 'https://dev.login2.in/constructEase/test_dev/v1/api/';
-  static var main = 'https://dev.login2.in/constructEase/test_dev/v1/api/';
-  static var baseUrl = dev;
+  static Future apiAuth() async {
+    try {
+      http.Response response = await http.get(
+        Uri.parse("https://site720.com/api/apiAuth.php"),
+      );
+      if (response.statusCode == 200) {
+        return apiAuthFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
 
   static Future login(mobile, password, firebaseId) async {
     try {
-      http.Response response = await http.post(Uri.parse("${baseUrl}login"),
+      http.Response response = await http.post(
+          Uri.parse("${await Config.getUrl()}login"),
           body: ({
             'user_name': mobile,
             'password': password,
@@ -64,7 +76,7 @@ class HttpServices {
     log(await getSharedPreference('token'));
     try {
       http.Response response =
-          await http.post(Uri.parse("${baseUrl}get_dashboard"),
+          await http.post(Uri.parse("${await Config.getUrl()}get_dashboard"),
               body: ({
                 'token': await getSharedPreference('token'),
                 'from_date': fromDate,
@@ -81,7 +93,7 @@ class HttpServices {
   static Future getProjectList(status, searchKey) async {
     try {
       http.Response response =
-          await http.post(Uri.parse("${baseUrl}get_project_list"),
+          await http.post(Uri.parse("${await Config.getUrl()}get_project_list"),
               body: ({
                 'token': await getSharedPreference('token'),
                 'status': status == "null" || status == "all" ? "" : status,
@@ -98,7 +110,7 @@ class HttpServices {
   static Future getProjectDetails(projectId) async {
     try {
       http.Response response = await http.post(
-          Uri.parse("${baseUrl}get_project_detailed"),
+          Uri.parse("${await Config.getUrl()}get_project_detailed"),
           body: ({
             'token': await getSharedPreference('token'),
             'project_id': projectId
@@ -114,7 +126,7 @@ class HttpServices {
   static Future getClientList() async {
     try {
       http.Response response = await http.post(
-          Uri.parse("${baseUrl}get_client_list"),
+          Uri.parse("${await Config.getUrl()}get_client_list"),
           body: ({'token': await getSharedPreference('token')}));
       if (response.statusCode == 200) {
         return clientListModelFromJson(response.body);
@@ -127,7 +139,7 @@ class HttpServices {
   static Future getWorkDetails(projectId) async {
     try {
       http.Response response = await http
-          .post(Uri.parse("${baseUrl}get_work_detailed"), body: {
+          .post(Uri.parse("${await Config.getUrl()}get_work_detailed"), body: {
         'token': await getSharedPreference('token'),
         "project_id": projectId
       });
@@ -142,7 +154,7 @@ class HttpServices {
   static Future getWorkIssues() async {
     try {
       http.Response response = await http.post(
-          Uri.parse("${baseUrl}get_status_issues"),
+          Uri.parse("${await Config.getUrl()}get_status_issues"),
           body: ({'token': await getSharedPreference('token')}));
       if (response.statusCode == 200) {
         return addWorkDetailsModelFromJson(response.body);
@@ -155,7 +167,7 @@ class HttpServices {
   static Future getComplaintList() async {
     try {
       http.Response response = await http.post(
-          Uri.parse("${baseUrl}get_complaint_list"),
+          Uri.parse("${await Config.getUrl()}get_complaint_list"),
           body: ({'token': await getSharedPreference('token')}));
       if (response.statusCode == 200) {
         return complaintListModelFromJson(response.body);
@@ -168,7 +180,7 @@ class HttpServices {
   static Future getContractorList() async {
     try {
       http.Response response = await http.post(
-          Uri.parse("${baseUrl}get_contractor_list"),
+          Uri.parse("${await Config.getUrl()}get_contractor_list"),
           body: ({'token': await getSharedPreference('token')}));
       if (response.statusCode == 200) {
         return contractorListModelFromJson(response.body);
@@ -180,8 +192,8 @@ class HttpServices {
 
   static Future getExtraWorkList(projectId) async {
     try {
-      http.Response response =
-          await http.post(Uri.parse("${baseUrl}get_extrawork_list"), body: {
+      http.Response response = await http
+          .post(Uri.parse("${await Config.getUrl()}get_extrawork_list"), body: {
         "project_id": projectId,
         'token': await getSharedPreference('token'),
       });
@@ -195,11 +207,12 @@ class HttpServices {
 
   static Future getDeductionWorkList(projectId) async {
     try {
-      http.Response response = await http
-          .post(Uri.parse("${baseUrl}deduction_work_list"), body: {
-        'token': await getSharedPreference('token'),
-        "project_id": projectId
-      });
+      http.Response response = await http.post(
+          Uri.parse("${await Config.getUrl()}deduction_work_list"),
+          body: {
+            'token': await getSharedPreference('token'),
+            "project_id": projectId
+          });
       if (response.statusCode == 200) {
         return getDeductionWorkFromJson(response.body);
       }
@@ -211,7 +224,7 @@ class HttpServices {
   static Future getPurchaseBillList(projectId) async {
     try {
       http.Response response = await http
-          .post(Uri.parse("${baseUrl}get_purchase_bill"), body: {
+          .post(Uri.parse("${await Config.getUrl()}get_purchase_bill"), body: {
         'token': await getSharedPreference('token'),
         "project_id": projectId
       });
@@ -232,8 +245,8 @@ class HttpServices {
       String status,
       String description) async {
     try {
-      http.Response response =
-          await http.post(Uri.parse("${baseUrl}add_work_details"), body: {
+      http.Response response = await http
+          .post(Uri.parse("${await Config.getUrl()}add_work_details"), body: {
         'token': await getSharedPreference('token'),
         "project_id": projectId,
         "client_id": clintId,
@@ -261,8 +274,8 @@ class HttpServices {
       String description,
       String workId) async {
     try {
-      http.Response response =
-          await http.post(Uri.parse("${baseUrl}edit_work_details"), body: {
+      http.Response response = await http
+          .post(Uri.parse("${await Config.getUrl()}edit_work_details"), body: {
         'token': await getSharedPreference('token'),
         "work_id": workId,
         "project_id": projectId,
@@ -284,7 +297,7 @@ class HttpServices {
   static Future deleteWorkDetails(String workId) async {
     try {
       http.Response response = await http.post(
-          Uri.parse("${baseUrl}delete_work_details"),
+          Uri.parse("${await Config.getUrl()}delete_work_details"),
           body: ({
             'token': await getSharedPreference('token'),
             'work_id': workId
@@ -300,7 +313,7 @@ class HttpServices {
   static Future getPhaseNew(projectId) async {
     try {
       http.Response response = await http
-          .post(Uri.parse("${baseUrl}phase_list_new"), body: {
+          .post(Uri.parse("${await Config.getUrl()}phase_list_new"), body: {
         'token': await getSharedPreference('token'),
         "project_id": projectId
       });
@@ -321,8 +334,8 @@ class HttpServices {
     String endDate,
   ) async {
     try {
-      http.Response response =
-          await http.post(Uri.parse("${baseUrl}add_stages"), body: {
+      http.Response response = await http
+          .post(Uri.parse("${await Config.getUrl()}add_stages"), body: {
         'token': await getSharedPreference('token'),
         "project_id": projectId,
         "client_id": clintId,
@@ -349,8 +362,8 @@ class HttpServices {
     String endDate,
   ) async {
     try {
-      http.Response response =
-          await http.post(Uri.parse("${baseUrl}edit_stages"), body: {
+      http.Response response = await http
+          .post(Uri.parse("${await Config.getUrl()}edit_stages"), body: {
         'token': await getSharedPreference('token'),
         "project_id": projectId,
         "client_id": clintId,
@@ -371,7 +384,7 @@ class HttpServices {
   static Future getStagesList(projectId) async {
     try {
       http.Response response = await http
-          .post(Uri.parse("${baseUrl}get_stages"), body: {
+          .post(Uri.parse("${await Config.getUrl()}get_stages"), body: {
         'token': await getSharedPreference('token'),
         "project_id": projectId
       });
@@ -386,7 +399,7 @@ class HttpServices {
   static Future getExpenseList(projectId) async {
     try {
       http.Response response = await http
-          .post(Uri.parse("${baseUrl}expense_list"), body: {
+          .post(Uri.parse("${await Config.getUrl()}expense_list"), body: {
         'token': await getSharedPreference('token'),
         "project_id": projectId
       });
@@ -400,11 +413,12 @@ class HttpServices {
 
   static Future getPaymentDetails(projectId) async {
     try {
-      http.Response response = await http
-          .post(Uri.parse("${baseUrl}get_payment_history"), body: {
-        'token': await getSharedPreference('token'),
-        "project_id": projectId
-      });
+      http.Response response = await http.post(
+          Uri.parse("${await Config.getUrl()}get_payment_history"),
+          body: {
+            'token': await getSharedPreference('token'),
+            "project_id": projectId
+          });
       if (response.statusCode == 200) {
         return getPaymentDetailsFromJson(response.body);
       }
@@ -416,7 +430,7 @@ class HttpServices {
   static Future getAddProjectDetails() async {
     try {
       http.Response response = await http.post(
-          Uri.parse("${baseUrl}project_data"),
+          Uri.parse("${await Config.getUrl()}project_data"),
           body: ({'token': await getSharedPreference('token')}));
       if (response.statusCode == 200) {
         return projectDataModelFromJson(response.body);
@@ -453,7 +467,7 @@ class HttpServices {
     String workOrderNo,
   ) async {
     try {
-      var uri = Uri.parse("${baseUrl}add_project");
+      var uri = Uri.parse("${await Config.getUrl()}add_project");
       var request = http.MultipartRequest('POST', uri);
       request.fields['token'] = await getSharedPreference('token');
       request.fields["client_id"] = clientId;
@@ -503,7 +517,7 @@ class HttpServices {
   static Future editDetails(String projectId) async {
     try {
       http.Response response = await http
-          .post(Uri.parse("${baseUrl}edit_datalist"), body: {
+          .post(Uri.parse("${await Config.getUrl()}edit_datalist"), body: {
         'token': await getSharedPreference('token'),
         "project_id": projectId
       });
@@ -543,7 +557,7 @@ class HttpServices {
     String workOrderNo,
   ) async {
     try {
-      var uri = Uri.parse("${baseUrl}edit_project");
+      var uri = Uri.parse("${await Config.getUrl()}edit_project");
       var request = http.MultipartRequest('POST', uri);
 
       request.fields['token'] = await getSharedPreference('token');
@@ -599,7 +613,7 @@ class HttpServices {
   static Future deleteProject(String projectId) async {
     try {
       http.Response response = await http.post(
-          Uri.parse("${baseUrl}delete_project"),
+          Uri.parse("${await Config.getUrl()}delete_project"),
           body: ({
             'token': await getSharedPreference('token'),
             'project_id': projectId
@@ -615,7 +629,7 @@ class HttpServices {
   static Future getStagePro(String projectId) async {
     try {
       http.Response response = await http.post(
-          Uri.parse("${baseUrl}get_stages_pro"),
+          Uri.parse("${await Config.getUrl()}get_stages_pro"),
           body: ({
             'token': await getSharedPreference('token'),
             'project_id': projectId
@@ -636,7 +650,7 @@ class HttpServices {
     String ytLink,
   ) async {
     try {
-      var uri = Uri.parse("${baseUrl}add_gallery");
+      var uri = Uri.parse("${await Config.getUrl()}add_gallery");
       var request = http.MultipartRequest('POST', uri);
 
       request.fields['token'] = await getSharedPreference('token');
@@ -665,7 +679,7 @@ class HttpServices {
   static Future galleryList(String projectId) async {
     try {
       http.Response response = await http.post(
-          Uri.parse("${baseUrl}list_gallery"),
+          Uri.parse("${await Config.getUrl()}list_gallery"),
           body: ({
             'token': await getSharedPreference('token'),
             'project_id': projectId
@@ -681,7 +695,7 @@ class HttpServices {
   static Future deleteGalery(String id) async {
     try {
       http.Response response = await http.post(
-          Uri.parse("${baseUrl}delete_gallery"),
+          Uri.parse("${await Config.getUrl()}delete_gallery"),
           body: ({
             'token': await getSharedPreference('token'),
             'image_id': id
@@ -702,8 +716,8 @@ class HttpServices {
     String description,
   ) async {
     try {
-      http.Response response =
-          await http.post(Uri.parse("${baseUrl}add_extra_work"), body: {
+      http.Response response = await http
+          .post(Uri.parse("${await Config.getUrl()}add_extra_work"), body: {
         'token': await getSharedPreference('token'),
         "project_id": projectId,
         "client_id": clintId,
@@ -728,8 +742,8 @@ class HttpServices {
     String description,
   ) async {
     try {
-      http.Response response =
-          await http.post(Uri.parse("${baseUrl}edit_extra_work"), body: {
+      http.Response response = await http
+          .post(Uri.parse("${await Config.getUrl()}edit_extra_work"), body: {
         'token': await getSharedPreference('token'),
         "project_id": projectId,
         "client_id": clintId,
@@ -750,8 +764,8 @@ class HttpServices {
     String workId,
   ) async {
     try {
-      http.Response response =
-          await http.post(Uri.parse("${baseUrl}delete_extrawork"), body: {
+      http.Response response = await http
+          .post(Uri.parse("${await Config.getUrl()}delete_extrawork"), body: {
         'token': await getSharedPreference('token'),
         "work_id": workId,
       });
@@ -766,7 +780,7 @@ class HttpServices {
   static Future getPhaseList(projectId) async {
     try {
       http.Response response = await http
-          .post(Uri.parse("${baseUrl}get_phase_details"), body: {
+          .post(Uri.parse("${await Config.getUrl()}get_phase_details"), body: {
         'token': await getSharedPreference('token'),
         "project_id": projectId
       });
@@ -787,8 +801,8 @@ class HttpServices {
       String amount,
       String description) async {
     try {
-      http.Response response =
-          await http.post(Uri.parse("${baseUrl}add_deduction_work"), body: {
+      http.Response response = await http
+          .post(Uri.parse("${await Config.getUrl()}add_deduction_work"), body: {
         'token': await getSharedPreference('token'),
         "project_id": projectId,
         "client_id": clintId,
@@ -816,18 +830,19 @@ class HttpServices {
       String amount,
       String description) async {
     try {
-      http.Response response =
-          await http.post(Uri.parse("${baseUrl}edit_deduction_work"), body: {
-        'token': await getSharedPreference('token'),
-        "project_id": projectId,
-        "client_id": clintId,
-        "deduction_id": workId,
-        "work": work,
-        "phase": selectedStatus,
-        "percentage": percentage,
-        "amount": amount,
-        "description": description,
-      });
+      http.Response response = await http.post(
+          Uri.parse("${await Config.getUrl()}edit_deduction_work"),
+          body: {
+            'token': await getSharedPreference('token'),
+            "project_id": projectId,
+            "client_id": clintId,
+            "deduction_id": workId,
+            "work": work,
+            "phase": selectedStatus,
+            "percentage": percentage,
+            "amount": amount,
+            "description": description,
+          });
       if (response.statusCode == 200) {
         return successResponseFromJson(response.body);
       }
@@ -841,12 +856,13 @@ class HttpServices {
     String workId,
   ) async {
     try {
-      http.Response response =
-          await http.post(Uri.parse("${baseUrl}delete_deduction_work"), body: {
-        'token': await getSharedPreference('token'),
-        "project_id": projectId,
-        "work_id": workId,
-      });
+      http.Response response = await http.post(
+          Uri.parse("${await Config.getUrl()}delete_deduction_work"),
+          body: {
+            'token': await getSharedPreference('token'),
+            "project_id": projectId,
+            "work_id": workId,
+          });
       if (response.statusCode == 200) {
         return successResponseFromJson(response.body);
       }
@@ -859,8 +875,8 @@ class HttpServices {
     String projectId,
   ) async {
     try {
-      http.Response response =
-          await http.post(Uri.parse("${baseUrl}list_site_drawings"), body: {
+      http.Response response = await http
+          .post(Uri.parse("${await Config.getUrl()}list_site_drawings"), body: {
         'token': await getSharedPreference('token'),
         "project_id": projectId,
       });
@@ -879,7 +895,7 @@ class HttpServices {
     String remark,
   ) async {
     try {
-      var uri = Uri.parse("${baseUrl}add_site_drawings");
+      var uri = Uri.parse("${await Config.getUrl()}add_site_drawings");
       var request = http.MultipartRequest('POST', uri);
       request.fields['token'] = await getSharedPreference('token');
       request.fields['project_id'] = projectId;
@@ -905,11 +921,12 @@ class HttpServices {
     String siteId,
   ) async {
     try {
-      http.Response response =
-          await http.post(Uri.parse("${baseUrl}delete_site_drawings"), body: {
-        'token': await getSharedPreference('token'),
-        "site_id": siteId,
-      });
+      http.Response response = await http.post(
+          Uri.parse("${await Config.getUrl()}delete_site_drawings"),
+          body: {
+            'token': await getSharedPreference('token'),
+            "site_id": siteId,
+          });
       if (response.statusCode == 200) {
         return successResponseFromJson(response.body);
       }
@@ -920,10 +937,11 @@ class HttpServices {
 
   static Future getComplaintDetails() async {
     try {
-      http.Response response =
-          await http.post(Uri.parse("${baseUrl}complaints_details_n"), body: {
-        'token': await getSharedPreference('token'),
-      });
+      http.Response response = await http.post(
+          Uri.parse("${await Config.getUrl()}complaints_details_n"),
+          body: {
+            'token': await getSharedPreference('token'),
+          });
       if (response.statusCode == 200) {
         return complaintDetailsModelFromJson(response.body);
       }
@@ -935,7 +953,7 @@ class HttpServices {
   static Future getPackage(projectId) async {
     try {
       http.Response response = await http
-          .post(Uri.parse("${baseUrl}package_data"), body: {
+          .post(Uri.parse("${await Config.getUrl()}package_data"), body: {
         'token': await getSharedPreference('token'),
         "project_id": projectId
       });
@@ -950,7 +968,7 @@ class HttpServices {
   static Future getStockList(projectId) async {
     try {
       http.Response response = await http
-          .post(Uri.parse("${baseUrl}stock_list_view"), body: {
+          .post(Uri.parse("${await Config.getUrl()}stock_list_view"), body: {
         'token': await getSharedPreference('token'),
         "project_id": projectId
       });
@@ -964,11 +982,12 @@ class HttpServices {
 
   static Future getConsumeList(projectId) async {
     try {
-      http.Response response = await http
-          .post(Uri.parse("${baseUrl}stock_consumption_view"), body: {
-        'token': await getSharedPreference('token'),
-        "project_id": projectId
-      });
+      http.Response response = await http.post(
+          Uri.parse("${await Config.getUrl()}stock_consumption_view"),
+          body: {
+            'token': await getSharedPreference('token'),
+            "project_id": projectId
+          });
       if (response.statusCode == 200) {
         return stockConsumeModelFromJson(response.body);
       }
@@ -980,7 +999,7 @@ class HttpServices {
   static Future getStates() async {
     try {
       http.Response response = await http.post(
-          Uri.parse("${baseUrl}state_list"),
+          Uri.parse("${await Config.getUrl()}state_list"),
           body: ({'token': await getSharedPreference('token')}));
       if (response.statusCode == 200) {
         return stateListModelFromJson(response.body);
@@ -993,7 +1012,7 @@ class HttpServices {
   static Future getDistricts(stateId) async {
     try {
       http.Response response = await http
-          .post(Uri.parse("${baseUrl}district_list"), body: {
+          .post(Uri.parse("${await Config.getUrl()}district_list"), body: {
         'token': await getSharedPreference('token'),
         "state_id": stateId
       });
@@ -1008,7 +1027,7 @@ class HttpServices {
   static Future getClientTypes() async {
     try {
       http.Response response = await http.post(
-          Uri.parse("${baseUrl}client_type_list"),
+          Uri.parse("${await Config.getUrl()}client_type_list"),
           body: ({'token': await getSharedPreference('token')}));
       if (response.statusCode == 200) {
         return clientTypeListModelFromJson(response.body);
@@ -1032,8 +1051,8 @@ class HttpServices {
       String districtId,
       String clientTypeId) async {
     try {
-      http.Response response =
-          await http.post(Uri.parse("${baseUrl}add_client"), body: {
+      http.Response response = await http
+          .post(Uri.parse("${await Config.getUrl()}add_client"), body: {
         'token': await getSharedPreference('token'),
         "client_name": clientName,
         "contact_person": contactPerson,
@@ -1058,11 +1077,12 @@ class HttpServices {
 
   static Future getClientDetails(clientId) async {
     try {
-      http.Response response = await http
-          .post(Uri.parse("${baseUrl}edit_details_client"), body: {
-        'token': await getSharedPreference('token'),
-        "client_id": clientId
-      });
+      http.Response response = await http.post(
+          Uri.parse("${await Config.getUrl()}edit_details_client"),
+          body: {
+            'token': await getSharedPreference('token'),
+            "client_id": clientId
+          });
       if (response.statusCode == 200) {
         return clientDetailsModelFromJson(response.body);
       }
@@ -1086,8 +1106,8 @@ class HttpServices {
       String districtId,
       String clientTypeId) async {
     try {
-      http.Response response =
-          await http.post(Uri.parse("${baseUrl}edit_client"), body: {
+      http.Response response = await http
+          .post(Uri.parse("${await Config.getUrl()}edit_client"), body: {
         'token': await getSharedPreference('token'),
         "client_id": clientId,
         "client_name": clientName,
@@ -1113,8 +1133,8 @@ class HttpServices {
 
   static Future getTaskList() async {
     try {
-      http.Response response =
-          await http.post(Uri.parse("${baseUrl}get_task_list"), body: {
+      http.Response response = await http
+          .post(Uri.parse("${await Config.getUrl()}get_task_list"), body: {
         'token': await getSharedPreference('token'),
       });
       if (response.statusCode == 200) {
@@ -1127,8 +1147,8 @@ class HttpServices {
 
   static Future getTaskDetails(String taskId) async {
     try {
-      http.Response response =
-          await http.post(Uri.parse("${baseUrl}get_task_details"), body: {
+      http.Response response = await http
+          .post(Uri.parse("${await Config.getUrl()}get_task_details"), body: {
         'token': await getSharedPreference('token'),
         'task_id': taskId,
       });
@@ -1142,8 +1162,8 @@ class HttpServices {
 
   static Future getTaskStatus() async {
     try {
-      http.Response response =
-          await http.post(Uri.parse("${baseUrl}get_task_status"), body: {
+      http.Response response = await http
+          .post(Uri.parse("${await Config.getUrl()}get_task_status"), body: {
         'token': await getSharedPreference('token'),
       });
       if (response.statusCode == 200) {
@@ -1161,7 +1181,7 @@ class HttpServices {
     String status,
   ) async {
     try {
-      var uri = Uri.parse("${baseUrl}update_task_status");
+      var uri = Uri.parse("${await Config.getUrl()}update_task_status");
       var request = http.MultipartRequest('POST', uri);
       request.fields.addAll({
         'token': await getSharedPreference('token'),
@@ -1189,7 +1209,7 @@ class HttpServices {
     String longitude,
   ) async {
     try {
-      var uri = Uri.parse("${baseUrl}add_attendance");
+      var uri = Uri.parse("${await Config.getUrl()}add_attendance");
       var request = http.MultipartRequest('POST', uri);
       request.fields.addAll({
         'token': await getSharedPreference('token'),
@@ -1212,8 +1232,8 @@ class HttpServices {
 
   static Future getTaskHistory(String taskId) async {
     try {
-      http.Response response =
-          await http.post(Uri.parse("${baseUrl}get_task_history"), body: {
+      http.Response response = await http
+          .post(Uri.parse("${await Config.getUrl()}get_task_history"), body: {
         'token': await getSharedPreference('token'),
         'task_id': taskId,
       });

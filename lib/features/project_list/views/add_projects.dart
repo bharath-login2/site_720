@@ -23,6 +23,7 @@ class AddProjectScreen extends StatelessWidget {
   bool fromHome;
   AddProjectScreen({super.key, required this.fromHome});
   final formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> unitKey = GlobalKey<FormState>();
   TextEditingController clientName = TextEditingController();
   TextEditingController projectName = TextEditingController();
   TextEditingController referenceNumber = TextEditingController();
@@ -44,7 +45,6 @@ class AddProjectScreen extends StatelessWidget {
   TextEditingController estBudAmt = TextEditingController();
   TextEditingController gstAmt = TextEditingController();
   TextEditingController totalAmt = TextEditingController();
-  final GlobalKey<FormState> unitKey = GlobalKey<FormState>();
   String priority = "";
   dynamic type;
   dynamic category;

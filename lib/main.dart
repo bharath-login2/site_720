@@ -1,5 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
@@ -12,6 +13,7 @@ import 'package:site_720/features/estimation/views/estimation_screen.dart';
 import 'package:site_720/features/expense/views/expense_screen.dart';
 import 'package:site_720/features/extra_work/views/extra_work_screen.dart';
 import 'package:site_720/features/gallery/views/gallery_screen.dart';
+import 'package:site_720/features/notifications/views/notification_list.dart';
 import 'package:site_720/features/package/views/package.dart';
 import 'package:site_720/features/payment_details/views/payment_details_screen.dart';
 import 'package:site_720/features/project_details/views/image_view_screen.dart';
@@ -31,9 +33,8 @@ import 'features/deduction_work/views/deduction_work_screen.dart';
 import 'features/forgot_password/views/change_password_screen.dart';
 import 'features/forgot_password/views/phone_number_screen.dart';
 import 'features/home/home.dart';
-import 'features/login/cubit/login_cubit.dart';
 import 'features/login/views/login_screen.dart';
-import 'features/notifications/cubit/notification_cubit.dart';
+import 'features/notifications/notification_channel.dart';
 import 'features/project_list/views/add_projects.dart';
 import 'features/stages/views/stages.dart';
 import 'features/stages/views/stage_history.dart';
@@ -43,11 +44,27 @@ import 'features/work_details/views/work_details_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(MultiBlocProvider(providers: [
-    BlocProvider(create: (_) => ConnectivityCubit(Connectivity())),
-    BlocProvider(create: (_) => NotificationCubit()..setupFCM()),
-  ], child: const MyApp()));
+
+  // Initialize NotificationServices
+  final NotificationServices notificationServices = NotificationServices();
+  notificationServices.initLocalNotifications();
+  await notificationServices.requestNotificationPermission();
+  notificationServices.foregroundMessage();
+  notificationServices.firebaseInit();
+
+  FirebaseMessaging.onBackgroundMessage(NotificationServices.backgroundMessageHandler);
+
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => ConnectivityCubit(Connectivity())),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -62,15 +79,13 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      initialRoute: AppRoutes.splash,  
+      initialRoute: AppRoutes.splash,
       routes: {
         '/splash': (context) => const Splash(),
         '/login': (context) => LoginScreen(),
         '/home': (context) => const Home(),
         '/dashboard': (context) => DashboardScreen(),
-        '/projectList': (context) => ProjectList(
-              fromHome: false,
-            ),
+        '/projectList': (context) => ProjectList(fromHome: false),
         '/addCilentScreen': (context) => AddCilentScreen(),
         '/editCilentScreen': (context) => EditCilentScreen(),
         '/projectDetails': (context) => ProjectDetails(),
@@ -91,15 +106,14 @@ class MyApp extends StatelessWidget {
         '/package': (context) => Package(),
         '/phoneNumber': (context) => PhoneNumberScreen(),
         '/changePasswordScreen': (context) => ChangePasswordScreen(),
-        '/addProjectScreen': (context) => AddProjectScreen(
-              fromHome: false,
-            ),
+        '/addProjectScreen': (context) => AddProjectScreen(fromHome: false),
         '/complaintList': (context) => ComplaintList(),
         '/addComplaints': (context) => AddComplaint(),
         '/imageViewer': (context) => const ImageViewer(),
         '/editProjectScreen': (context) => EditProjectScreen(),
         '/taskDetails': (context) => TaskDetails(),
         '/taskHistoryScreen': (context) => const TaskHistoryScreen(),
+        '/notification': (context) => const NotificationList(),
       },
     );
   }

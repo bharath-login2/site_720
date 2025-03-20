@@ -153,33 +153,71 @@ class DashboardScreen extends StatelessWidget {
                                       ),
                               ],
                             ),
-                            InkWell(
-                              onTap: () {
-                                final dashboardCubit =
-                                    BlocProvider.of<DashboardCubit>(context);
-                                showDateRangeDialog(context, dashboardCubit);
-                              },
-                              child: Container(
-                                width: 30,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: AppColors.primaryColor,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.8),
-                                      blurRadius: 6,
-                                      offset: const Offset(3, 3),
+                            Row(
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      AppRoutes.notification,
+                                    );
+                                  },
+                                  child: Container(
+                                    width: 30,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: AppColors.lightA,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.8),
+                                          blurRadius: 6,
+                                          offset: const Offset(3, 3),
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                    alignment: Alignment.center,
+                                    child: const Icon(
+                                      Icons.notifications,
+                                      color: AppColors.primaryColor,
+                                      size: 18,
+                                    ),
+                                  ),
                                 ),
-                                alignment: Alignment.center,
-                                child: const Icon(
-                                  Icons.calendar_month,
-                                  color: AppColors.lightA,
-                                  size: 16,
+                                const SizedBox(
+                                  width: 10,
                                 ),
-                              ),
+                                InkWell(
+                                  onTap: () {
+                                    final dashboardCubit =
+                                        BlocProvider.of<DashboardCubit>(
+                                            context);
+                                    showDateRangeDialog(
+                                        context, dashboardCubit);
+                                  },
+                                  child: Container(
+                                    width: 30,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: AppColors.primaryColor,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.8),
+                                          blurRadius: 6,
+                                          offset: const Offset(3, 3),
+                                        ),
+                                      ],
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: const Icon(
+                                      Icons.calendar_month,
+                                      color: AppColors.lightA,
+                                      size: 16,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),

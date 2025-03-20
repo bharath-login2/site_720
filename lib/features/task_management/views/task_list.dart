@@ -183,8 +183,8 @@ class TaskList extends StatelessWidget {
                                                     ],
                                                   ),
                                                   child: const Icon(
-                                                    Icons.edit,
-                                                    size: 18,
+                                                    Icons.person_add,
+                                                    size: 16,
                                                     color: Colors.white,
                                                   ),
                                                 ),

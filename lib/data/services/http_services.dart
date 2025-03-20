@@ -21,6 +21,7 @@ import '../models/expenselist/expenselist_model.dart';
 import '../models/extraworklist/extra_work_model.dart';
 import '../models/galery/stage_pro_model.dart';
 import '../models/login/api_auth.dart';
+import '../models/notification/notification_list.dart';
 import '../models/package/package_model.dart';
 import '../models/paymentdetails/paymentdetails_model.dart';
 import '../models/login/login_model.dart';
@@ -1239,6 +1240,20 @@ class HttpServices {
       });
       if (response.statusCode == 200) {
         return taskHistoryModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  static Future getNotifications() async {
+    try {
+      http.Response response = await http
+          .post(Uri.parse("${await Config.getUrl()}get_notifications"), body: {
+        'token': await getSharedPreference('token'),
+      });
+      if (response.statusCode == 200) {
+        return notificationListModelFromJson(response.body);
       }
     } catch (e) {
       log(e.toString());

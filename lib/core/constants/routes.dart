@@ -34,4 +34,5 @@ class AppRoutes {
   static const imageViewer = '/imageViewer';
   static const taskDetails = '/taskDetails';
   static const taskHistory = '/taskHistoryScreen';
+  static const notification = '/notification';
 }

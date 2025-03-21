@@ -34,7 +34,7 @@ import 'features/forgot_password/views/change_password_screen.dart';
 import 'features/forgot_password/views/phone_number_screen.dart';
 import 'features/home/home.dart';
 import 'features/login/views/login_screen.dart';
-import 'features/notifications/notification_channel.dart';
+import 'features/notifications/service/notification_channel.dart';
 import 'features/project_list/views/add_projects.dart';
 import 'features/stages/views/stages.dart';
 import 'features/stages/views/stage_history.dart';

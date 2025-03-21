@@ -26,6 +26,7 @@ import '../models/package/package_model.dart';
 import '../models/paymentdetails/paymentdetails_model.dart';
 import '../models/login/login_model.dart';
 import '../models/project_details/project_detais_model.dart';
+import '../models/project_list/add_project_response.dart';
 import '../models/project_list/edit_data_model.dart';
 import '../models/project_list/project_data_model.dart';
 import '../models/purchasebilllist/purchasebill_list_model.dart';
@@ -38,6 +39,7 @@ import '../models/task/task_details_model.dart';
 import '../models/task/task_history.dart';
 import '../models/task/task_status.dart';
 import '../models/task/tasklist_model.dart';
+import '../models/version/version_model.dart';
 import '../models/workdetails/add_work_details_model.dart';
 import '../models/stages/stage_model.dart';
 import '../models/workdetails/work_detail_model.dart';
@@ -50,6 +52,18 @@ class HttpServices {
       );
       if (response.statusCode == 200) {
         return apiAuthFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  static Future getVersion() async {
+    try {
+      http.Response response =
+          await http.post(Uri.parse("${await Config.getUrl()}get_version"));
+      if (response.statusCode == 200) {
+        return versionModelFromJson(response.body);
       }
     } catch (e) {
       log(e.toString());
@@ -505,7 +519,8 @@ class HttpServices {
       var response = await request.send();
 
       if (response.statusCode == 200) {
-        return successResponseFromJson(await response.stream.bytesToString());
+        return addProjectResponseFromJson(
+            await response.stream.bytesToString());
       } else {
         return {'error': 'Failed to add project'};
       }

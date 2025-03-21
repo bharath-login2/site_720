@@ -76,6 +76,47 @@ class AddProjectScreen extends StatelessWidget {
   String pageType = "add";
   String projectId = "add";
 
+  void clearAllVariables() {
+    clientName.clear();
+    projectName.clear();
+    referenceNumber.clear();
+    location.clear();
+    locationArea.clear();
+    cctvAddress.clear();
+    startDate.clear();
+    completionDate.clear();
+    companyName.clear();
+    civilId.clear();
+    description.clear();
+    lpoNumber.clear();
+    quotationNumber.clear();
+    fixedRate.clear();
+    name.clear();
+    squareFeet.clear();
+    rate.clear();
+    amount.clear();
+    estBudAmt.clear();
+    gstAmt.clear();
+    totalAmt.clear();
+    priority = "";
+    type = null;
+    category = null;
+    package = null;
+    bhk = null;
+    gst = null;
+    clientId = "";
+    budgetMethord = 'Fixed Rate';
+    totalSqFt = 0;
+    totalRate = 0;
+    averageRate = 0;
+    totalAmount = 0;
+    pageType = "add";
+    projectId = "add";
+    unitList.clear();
+    planImage = null;
+    elevationImage = null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -118,7 +159,11 @@ class AddProjectScreen extends StatelessWidget {
                 }
                 if (state is AddProjectSuccess) {
                   snackBar(context, state.message, Colors.green);
-                  Navigator.pop(context);
+                  if (fromHome == false) {
+                    Navigator.pop(context);
+                  } else {
+                    clearAllVariables();
+                  }
                 }
                 if (state is AddProjectFailed) {
                   snackBar(context, state.message, Colors.red);

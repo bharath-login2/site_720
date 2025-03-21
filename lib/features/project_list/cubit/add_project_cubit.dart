@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:site_720/data/models/succes_response/success_response.dart';
+import '../../../data/models/project_list/add_project_response.dart';
 import '../../../data/models/project_list/project_data_model.dart';
 import '../../../data/services/http_services.dart';
 import 'project_list_state.dart';
@@ -95,7 +96,7 @@ class AddProjectCubit extends Cubit<ProjectListState> {
     String workOrderNo,
   ) async {
     try {
-      SuccessResponse response = await HttpServices.addProject(
+      AddProjectResponse response = await HttpServices.addProject(
           clientId,
           projectName,
           projectType,

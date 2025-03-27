@@ -363,33 +363,53 @@ class ProjectList extends StatelessWidget {
                                                                             .bold,
                                                                   ),
                                                                 ),
-                                                                Text(
-                                                                  state
-                                                                      .response
-                                                                      .data
-                                                                      .projectList[
-                                                                          index]
-                                                                      .location,
-                                                                  style:
-                                                                      const TextStyle(
-                                                                    fontSize:
-                                                                        11,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
+                                                                if (state
+                                                                        .response
+                                                                        .data
+                                                                        .projectList[
+                                                                            index]
+                                                                        .location !=
+                                                                    "")
+                                                                  Text(
+                                                                    state
+                                                                        .response
+                                                                        .data
+                                                                        .projectList[
+                                                                            index]
+                                                                        .location,
+                                                                    style:
+                                                                        const TextStyle(
+                                                                      fontSize:
+                                                                          11,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                    ),
                                                                   ),
-                                                                ),
-                                                                Text(
-                                                                  "${state.response.data.projectList[index].startingDate} to ${state.response.data.projectList[index].completionDate}",
-                                                                  style:
-                                                                      const TextStyle(
-                                                                    fontSize:
-                                                                        11,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
+                                                                if (state
+                                                                            .response
+                                                                            .data
+                                                                            .projectList[
+                                                                                index]
+                                                                            .startingDate !=
+                                                                        "" &&
+                                                                    state
+                                                                            .response
+                                                                            .data
+                                                                            .projectList[index]
+                                                                            .completionDate !=
+                                                                        "")
+                                                                  Text(
+                                                                    "${state.response.data.projectList[index].startingDate} to ${state.response.data.projectList[index].completionDate}",
+                                                                    style:
+                                                                        const TextStyle(
+                                                                      fontSize:
+                                                                          11,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                    ),
                                                                   ),
-                                                                ),
                                                               ],
                                                             ),
                                                           ),

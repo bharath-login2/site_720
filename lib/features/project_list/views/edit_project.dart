@@ -41,9 +41,7 @@ class EditProjectScreen extends StatelessWidget {
   TextEditingController squareFeet = TextEditingController();
   TextEditingController rate = TextEditingController();
   TextEditingController amount = TextEditingController();
-  TextEditingController estBudAmt = TextEditingController();
-  TextEditingController gstAmt = TextEditingController();
-  TextEditingController totalAmt = TextEditingController();
+
   final GlobalKey<FormState> unitKey = GlobalKey<FormState>();
   String priority = "";
   dynamic type;
@@ -51,6 +49,9 @@ class EditProjectScreen extends StatelessWidget {
   dynamic package;
   dynamic bhk;
   dynamic gst;
+  String estBudAmt = "";
+  String gstAmt = "";
+  String totalAmt = "";
   List<Clients> clientList = [];
   List<Clients> filteredClientList = [];
   String clientId = "";
@@ -77,6 +78,7 @@ class EditProjectScreen extends StatelessWidget {
   String elevation = "";
   String pageType = "add";
   String projectId = "add";
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -146,11 +148,11 @@ class EditProjectScreen extends StatelessWidget {
                   startDate.text = editDetails.startingDate;
                   completionDate.text = editDetails.completionDate;
                   fixedRate.text = editDetails.fixedRate;
-                  estBudAmt.text = editDetails.estimatedBudget;
+                  estBudAmt = editDetails.estimatedBudget;
                   gst = editDetails.gstPercentage;
-                  gstAmt.text = editDetails.gstAmount;
+                  gstAmt = editDetails.gstAmount;
                   totalAmount = double.parse(editDetails.totalAmount);
-                  totalAmt.text = editDetails.totalAmount;
+                  totalAmt = editDetails.totalAmount;
                   description.text = editDetails.projectDescription;
                   lpoNumber.text = editDetails.lpoNo;
                   quotationNumber.text = editDetails.orderNo;
@@ -182,11 +184,6 @@ class EditProjectScreen extends StatelessWidget {
                   child: Center(
                     child: Column(
                       children: [
-                        if (state is EditDtailsLoading)
-                          const Padding(
-                            padding: EdgeInsets.only(top: 10.0),
-                            child: LinearProgressIndicator(),
-                          ),
                         const SizedBox(
                           height: 20,
                         ),
@@ -701,8 +698,24 @@ class EditProjectScreen extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(5),
                                     ),
                                     child: Center(
-                                      child: planImage != null
-                                          ? Image.file(
+                                      child: planImage == null
+                                          ? const Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(Icons.upload_file,
+                                                    color: Colors.grey),
+                                                SizedBox(height: 10),
+                                                Text(
+                                                  'Upload Plan',
+                                                  style: TextStyle(
+                                                      color: Colors.grey),
+                                                ),
+                                              ],
+                                            )
+                                          : Image.file(
                                               File(planImage!.path),
                                               width: MediaQuery.of(context)
                                                       .size
@@ -713,36 +726,7 @@ class EditProjectScreen extends StatelessWidget {
                                                       .width *
                                                   .4,
                                               fit: BoxFit.cover,
-                                            )
-                                          : plan != ""
-                                              ? Image.network(
-                                                  plan,
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      .4,
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      .4,
-                                                  fit: BoxFit.cover,
-                                                )
-                                              : const Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Icon(Icons.upload_file,
-                                                        color: Colors.grey),
-                                                    SizedBox(height: 10),
-                                                    Text(
-                                                      'Upload Plan',
-                                                      style: TextStyle(
-                                                          color: Colors.grey),
-                                                    ),
-                                                  ],
-                                                ),
+                                            ),
                                     ),
                                   ),
                                 ),
@@ -772,8 +756,24 @@ class EditProjectScreen extends StatelessWidget {
                                           color: Colors.black, width: 1.5),
                                       borderRadius: BorderRadius.circular(5),
                                     ),
-                                    child: elevationImage != null
-                                        ? Image.file(
+                                    child: elevationImage == null
+                                        ? const Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(Icons.upload_file,
+                                                  color: Colors.grey),
+                                              SizedBox(height: 10),
+                                              Text(
+                                                'Upload Elevation',
+                                                style: TextStyle(
+                                                    color: Colors.grey),
+                                              )
+                                            ],
+                                          )
+                                        : Image.file(
                                             File(elevationImage!.path),
                                             width: MediaQuery.of(context)
                                                     .size
@@ -784,36 +784,7 @@ class EditProjectScreen extends StatelessWidget {
                                                     .width *
                                                 .4,
                                             fit: BoxFit.cover,
-                                          )
-                                        : elevation != ""
-                                            ? Image.network(
-                                                elevation,
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .4,
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .4,
-                                                fit: BoxFit.cover,
-                                              )
-                                            : const Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Icon(Icons.upload_file,
-                                                      color: Colors.grey),
-                                                  SizedBox(height: 10),
-                                                  Text(
-                                                    'Upload Elevation',
-                                                    style: TextStyle(
-                                                        color: Colors.grey),
-                                                  )
-                                                ],
-                                              ),
+                                          ),
                                   ),
                                 ),
                               ],
@@ -843,9 +814,9 @@ class EditProjectScreen extends StatelessWidget {
                                     onChanged: (value) {
                                       budgetMethord = value!;
                                       unitList.clear();
-                                      estBudAmt.clear();
-                                      gstAmt.clear();
-                                      totalAmt.clear();
+                                      estBudAmt = "";
+                                      gstAmt = "";
+                                      totalAmt = "";
                                       (context as Element).markNeedsBuild();
                                     },
                                   ),
@@ -856,9 +827,9 @@ class EditProjectScreen extends StatelessWidget {
                                     onChanged: (value) {
                                       budgetMethord = value!;
                                       fixedRate.clear();
-                                      estBudAmt.clear();
-                                      gstAmt.clear();
-                                      totalAmt.clear();
+                                      estBudAmt = '';
+                                      gstAmt = "";
+                                      totalAmt = "";
                                       (context as Element).markNeedsBuild();
                                     },
                                   ),
@@ -867,331 +838,6 @@ class EditProjectScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        budgetMethord == "Fixed Rate"
-                            ? SizedBox(
-                                width: MediaQuery.sizeOf(context).width * .9,
-                                height: 50,
-                                child: TextFormField(
-                                  controller: fixedRate,
-                                  keyboardType: TextInputType.number,
-                                  onChanged: (value) {
-                                    estBudAmt.text = value;
-                                    totalAmt.text = value;
-                                    updateGst();
-                                  },
-                                  decoration: const InputDecoration(
-                                      labelText: 'Fixed rate',
-                                      contentPadding: EdgeInsets.all(10),
-                                      border: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: AppColors.primaryColor)),
-                                      labelStyle: TextStyle(
-                                          color: Colors.grey, fontSize: 14),
-                                      prefixIcon: Icon(Icons.money,
-                                          size: 18,
-                                          color: AppColors.primaryColor)),
-                                ),
-                              )
-                            : Container(
-                                width: MediaQuery.of(context).size.width * .91,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: AppColors.backgroundColor,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.8),
-                                      blurRadius: 3,
-                                      offset: const Offset(0, .5),
-                                    ),
-                                  ],
-                                ),
-                                child: Column(
-                                  children: [
-                                    Container(
-                                        decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(5),
-                                            topRight: Radius.circular(5),
-                                          ),
-                                          color: AppColors.primaryColor,
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 12.0, vertical: 12.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              const Text(
-                                                "Units",
-                                                style: TextStyle(
-                                                  fontSize: 13,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: AppColors.lightA,
-                                                ),
-                                              ),
-                                              InkWell(
-                                                onTap: () {
-                                                  addBudgetDialog(context);
-                                                },
-                                                child: Container(
-                                                  height: 25,
-                                                  width: 25,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
-                                                    color: AppColors.lightA,
-                                                  ),
-                                                  child: const Icon(
-                                                    Icons.add,
-                                                    size: 18,
-                                                    color:
-                                                        AppColors.primaryColor,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        )),
-                                    unitList.isNotEmpty
-                                        ? Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 10.0),
-                                            child: Column(
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      vertical: 10.0),
-                                                  child: ListView.builder(
-                                                    shrinkWrap: true,
-                                                    physics:
-                                                        const NeverScrollableScrollPhysics(),
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 8.0),
-                                                    itemCount: unitList.length,
-                                                    itemBuilder:
-                                                        (context, index) {
-                                                      return Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .all(6.0),
-                                                        child: InkWell(
-                                                          onTap: () {
-                                                            // Navigator.of(context)
-                                                            //     .pushNamed(AppRoutes.stageHistory);
-                                                          },
-                                                          child: Container(
-                                                            width: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width *
-                                                                .9,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5),
-                                                              color:
-                                                                  Colors.white,
-                                                              boxShadow: [
-                                                                BoxShadow(
-                                                                  color: Colors
-                                                                      .grey
-                                                                      .withOpacity(
-                                                                          0.8),
-                                                                  blurRadius: 3,
-                                                                  offset:
-                                                                      const Offset(
-                                                                          0, 3),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                            child: SizedBox(
-                                                              width: MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width *
-                                                                  .7,
-                                                              child: Padding(
-                                                                padding: const EdgeInsets
-                                                                    .only(
-                                                                    top: 8.0,
-                                                                    left: 8.0,
-                                                                    right: 8.0,
-                                                                    bottom:
-                                                                        8.0),
-                                                                child: Column(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .spaceBetween,
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    Row(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .spaceBetween,
-                                                                      children: [
-                                                                        Text(
-                                                                          unitList[index]
-                                                                              [
-                                                                              'name'],
-                                                                          style:
-                                                                              const TextStyle(
-                                                                            fontSize:
-                                                                                16,
-                                                                            fontWeight:
-                                                                                FontWeight.bold,
-                                                                          ),
-                                                                        ),
-                                                                        Row(
-                                                                          children: [
-                                                                            // InkWell(
-                                                                            //   onTap: () {},
-                                                                            //   child: Container(
-                                                                            //     height: 25,
-                                                                            //     width: 25,
-                                                                            //     decoration: BoxDecoration(
-                                                                            //       borderRadius: BorderRadius.circular(5),
-                                                                            //       color: AppColors.lightBlue,
-                                                                            //       boxShadow: [
-                                                                            //         BoxShadow(
-                                                                            //           color: Colors.grey.withOpacity(0.8),
-                                                                            //           blurRadius: 6,
-                                                                            //           offset: const Offset(1, 1),
-                                                                            //         ),
-                                                                            //       ],
-                                                                            //     ),
-                                                                            //     child: const Icon(
-                                                                            //       Icons.edit,
-                                                                            //       size: 18,
-                                                                            //       color: Colors.white,
-                                                                            //     ),
-                                                                            //   ),
-                                                                            // ),
-                                                                            // const SizedBox(
-                                                                            //   width: 7,
-                                                                            // ),
-                                                                            InkWell(
-                                                                              onTap: () {
-                                                                                deleteDialog(context, () {
-                                                                                  Navigator.pop(context);
-                                                                                });
-                                                                              },
-                                                                              child: Container(
-                                                                                height: 25,
-                                                                                width: 25,
-                                                                                decoration: BoxDecoration(
-                                                                                  borderRadius: BorderRadius.circular(5),
-                                                                                  color: Colors.red,
-                                                                                  boxShadow: [
-                                                                                    BoxShadow(
-                                                                                      color: Colors.grey.withOpacity(0.8),
-                                                                                      blurRadius: 6,
-                                                                                      offset: const Offset(1, 1),
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
-                                                                                child: const Icon(
-                                                                                  Icons.delete,
-                                                                                  size: 18,
-                                                                                  color: Colors.white,
-                                                                                ),
-                                                                              ),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                    const SizedBox(
-                                                                      height:
-                                                                          10,
-                                                                    ),
-                                                                    Row(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .spaceBetween,
-                                                                      children: [
-                                                                        SmallContainer(
-                                                                          title:
-                                                                              "Square Feet",
-                                                                          amount:
-                                                                              unitList[index]['squareFeet'],
-                                                                        ),
-                                                                        SmallContainer(
-                                                                          title:
-                                                                              "Rate",
-                                                                          amount:
-                                                                              unitList[index]['rate'],
-                                                                        ),
-                                                                        SmallContainer(
-                                                                          title:
-                                                                              "Amount",
-                                                                          amount:
-                                                                              unitList[index]['amount'],
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      );
-                                                    },
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 16.0),
-                                                  child: Column(
-                                                    children: [
-                                                      buildRow(
-                                                          "Total Square Feet : ",
-                                                          totalSqFt.toString()),
-                                                      buildRow("Total Rate : ",
-                                                          totalRate.toString()),
-                                                      buildRow(
-                                                          "Average : ",
-                                                          averageRate
-                                                              .toString()),
-                                                      buildRow(
-                                                          "Total Amount : ",
-                                                          totalAmount
-                                                              .toString()),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        : const Padding(
-                                            padding: EdgeInsets.all(25.0),
-                                            child: Text(
-                                              "Empty !",
-                                              style: TextStyle(
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.bold,
-                                                color: AppColors.primaryColor,
-                                              ),
-                                            ),
-                                          )
-                                  ],
-                                ),
-                              ),
-                        const SizedBox(
-                          height: 20,
                         ),
                         Container(
                           width: MediaQuery.of(context).size.width * .91,
@@ -1234,164 +880,383 @@ class EditProjectScreen extends StatelessWidget {
                                       ],
                                     ),
                                   )),
+                              if (budgetMethord != "Fixed Rate")
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 16.0, left: 16.0, right: 16.0),
+                                  child: Container(
+                                    // width:
+                                    //     MediaQuery.of(context).size.width * .9,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: AppColors.backgroundColor,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.8),
+                                          blurRadius: 3,
+                                          offset: const Offset(0, .5),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                            decoration: const BoxDecoration(
+                                              borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(5),
+                                                topRight: Radius.circular(5),
+                                              ),
+                                              color: AppColors.primaryColor,
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 12.0,
+                                                      vertical: 12.0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  const Text(
+                                                    "Units",
+                                                    style: TextStyle(
+                                                      fontSize: 13,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: AppColors.lightA,
+                                                    ),
+                                                  ),
+                                                  InkWell(
+                                                    onTap: () {
+                                                      addBudgetDialog(context);
+                                                    },
+                                                    child: Container(
+                                                      height: 25,
+                                                      width: 25,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5),
+                                                        color: AppColors.lightA,
+                                                      ),
+                                                      child: const Icon(
+                                                        Icons.add,
+                                                        size: 18,
+                                                        color: AppColors
+                                                            .primaryColor,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            )),
+                                        unitList.isNotEmpty
+                                            ? Padding(
+                                                padding: const EdgeInsets.only(
+                                                    bottom: 10.0),
+                                                child: Column(
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          vertical: 10.0),
+                                                      child: ListView.builder(
+                                                        shrinkWrap: true,
+                                                        physics:
+                                                            const NeverScrollableScrollPhysics(),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal:
+                                                                    8.0),
+                                                        itemCount:
+                                                            unitList.length,
+                                                        itemBuilder:
+                                                            (context, index) {
+                                                          return Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(6.0),
+                                                            child: InkWell(
+                                                              onTap: () {
+                                                                // Navigator.of(context)
+                                                                //     .pushNamed(AppRoutes.stageHistory);
+                                                              },
+                                                              child: Container(
+                                                                width: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .width *
+                                                                    .9,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              5),
+                                                                  color: Colors
+                                                                      .white,
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                      color: Colors
+                                                                          .grey
+                                                                          .withOpacity(
+                                                                              0.8),
+                                                                      blurRadius:
+                                                                          3,
+                                                                      offset:
+                                                                          const Offset(
+                                                                              0,
+                                                                              3),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                child: SizedBox(
+                                                                  width: MediaQuery.of(
+                                                                              context)
+                                                                          .size
+                                                                          .width *
+                                                                      .7,
+                                                                  child:
+                                                                      Padding(
+                                                                    padding: const EdgeInsets.only(
+                                                                        top:
+                                                                            8.0,
+                                                                        left:
+                                                                            8.0,
+                                                                        right:
+                                                                            8.0,
+                                                                        bottom:
+                                                                            8.0),
+                                                                    child:
+                                                                        Column(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .spaceBetween,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.spaceBetween,
+                                                                          children: [
+                                                                            Text(
+                                                                              unitList[index]['name'],
+                                                                              style: const TextStyle(
+                                                                                fontSize: 16,
+                                                                                fontWeight: FontWeight.bold,
+                                                                              ),
+                                                                            ),
+                                                                            Row(
+                                                                              children: [
+                                                                                // InkWell(
+                                                                                //   onTap: () {},
+                                                                                //   child: Container(
+                                                                                //     height: 25,
+                                                                                //     width: 25,
+                                                                                //     decoration: BoxDecoration(
+                                                                                //       borderRadius: BorderRadius.circular(5),
+                                                                                //       color: AppColors.lightBlue,
+                                                                                //       boxShadow: [
+                                                                                //         BoxShadow(
+                                                                                //           color: Colors.grey.withOpacity(0.8),
+                                                                                //           blurRadius: 6,
+                                                                                //           offset: const Offset(1, 1),
+                                                                                //         ),
+                                                                                //       ],
+                                                                                //     ),
+                                                                                //     child: const Icon(
+                                                                                //       Icons.edit,
+                                                                                //       size: 18,
+                                                                                //       color: Colors.white,
+                                                                                //     ),
+                                                                                //   ),
+                                                                                // ),
+                                                                                // const SizedBox(
+                                                                                //   width: 7,
+                                                                                // ),
+                                                                                InkWell(
+                                                                                  onTap: () {
+                                                                                    deleteDialog(context, () {
+                                                                                      unitList.removeAt(index);
+                                                                                      calculateTotal();
+                                                                                      updateGst();
+                                                                                      Navigator.pop(context);
+                                                                                    });
+                                                                                  },
+                                                                                  child: Container(
+                                                                                    height: 25,
+                                                                                    width: 25,
+                                                                                    decoration: BoxDecoration(
+                                                                                      borderRadius: BorderRadius.circular(5),
+                                                                                      color: Colors.red,
+                                                                                      boxShadow: [
+                                                                                        BoxShadow(
+                                                                                          color: Colors.grey.withOpacity(0.8),
+                                                                                          blurRadius: 6,
+                                                                                          offset: const Offset(1, 1),
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                    child: const Icon(
+                                                                                      Icons.delete,
+                                                                                      size: 18,
+                                                                                      color: Colors.white,
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          height:
+                                                                              10,
+                                                                        ),
+                                                                        Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.spaceBetween,
+                                                                          children: [
+                                                                            SmallContainer(
+                                                                              title: "Square Feet",
+                                                                              amount: unitList[index]['squareFeet'],
+                                                                            ),
+                                                                            SmallContainer(
+                                                                              title: "Rate",
+                                                                              amount: unitList[index]['rate'],
+                                                                            ),
+                                                                            SmallContainer(
+                                                                              title: "Amount",
+                                                                              amount: unitList[index]['amount'],
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal: 16.0),
+                                                      child: Column(
+                                                        children: [
+                                                          buildRow(
+                                                              "Total Square Feet : ",
+                                                              totalSqFt
+                                                                  .toString()),
+                                                          buildRow(
+                                                              "Total Rate : ",
+                                                              totalRate
+                                                                  .toString()),
+                                                          buildRow(
+                                                              "Average : ",
+                                                              averageRate
+                                                                  .toString()),
+                                                          buildRow(
+                                                              "Total Amount : ",
+                                                              totalAmount
+                                                                  .toString()),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            : const Padding(
+                                                padding: EdgeInsets.all(25.0),
+                                                child: Text(
+                                                  "Empty !",
+                                                  style: TextStyle(
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.bold,
+                                                    color:
+                                                        AppColors.primaryColor,
+                                                  ),
+                                                ),
+                                              )
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              else
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 16.0, left: 16.0, right: 16.0),
+                                  child: TextFormField(
+                                    controller: fixedRate,
+                                    keyboardType: TextInputType.number,
+                                    onChanged: (value) {
+                                      estBudAmt = value;
+                                      totalAmt = value;
+                                      updateGst();
+                                    },
+                                    decoration: const InputDecoration(
+                                        labelText: 'Fixed rate',
+                                        contentPadding: EdgeInsets.all(10),
+                                        border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: AppColors.primaryColor)),
+                                        labelStyle: TextStyle(
+                                            color: Colors.grey, fontSize: 14),
+                                        prefixIcon: Icon(Icons.money,
+                                            size: 18,
+                                            color: AppColors.primaryColor)),
+                                  ),
+                                ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 12.0, left: 16.0, right: 16.0),
+                                child: DropdownButtonFormField(
+                                  value: gst,
+                                  onChanged: (value) async {
+                                    gst = value.toString();
+                                    updateGst();
+                                  },
+                                  items: gstList.map((data) {
+                                    return DropdownMenuItem<String>(
+                                      value: data["value"].toString(),
+                                      child: Text(
+                                        data["name"].toString(),
+                                      ),
+                                    );
+                                  }).toList(),
+                                  decoration: InputDecoration(
+                                    fillColor: Colors.white,
+                                    filled: true,
+                                    border: OutlineInputBorder(
+                                      // Custom border
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    labelText: 'GST',
+                                    labelStyle: const TextStyle(
+                                        color: Colors.grey, fontSize: 14),
+                                    contentPadding:
+                                        const EdgeInsets.only(left: 10),
+                                  ),
+                                ),
+                              ),
                               Padding(
                                 padding: const EdgeInsets.all(16.0),
                                 child: Column(
                                   children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      child: TextFormField(
-                                        controller: estBudAmt,
-                                        onTap: () {},
-                                        validator: (value) {
-                                          if (value == "") {
-                                            return "Add Project Budget";
-                                          } else {
-                                            return null;
-                                          }
-                                        },
-                                        readOnly: true,
-                                        onChanged: (value) {
-                                          updateGst();
-                                        },
-                                        decoration: InputDecoration(
-                                          prefixIcon: const Icon(
-                                            Icons.currency_rupee,
-                                            color: Colors.grey,
-                                            size: 18,
-                                          ),
-                                          labelStyle: const TextStyle(
-                                              color: Colors.grey, fontSize: 14),
-                                          contentPadding:
-                                              const EdgeInsets.only(left: 10),
-                                          labelText: 'Estimated Budget Amount',
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 12,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              .4,
-                                          child: DropdownButtonFormField(
-                                            value: gst,
-                                            onChanged: (value) async {
-                                              gst = value.toString();
-                                              updateGst();
-                                            },
-                                            items: gstList.map((data) {
-                                              return DropdownMenuItem<String>(
-                                                value: data["value"].toString(),
-                                                child: Text(
-                                                  data["name"].toString(),
-                                                ),
-                                              );
-                                            }).toList(),
-                                            decoration: InputDecoration(
-                                              fillColor: Colors.white,
-                                              filled: true,
-                                              border: OutlineInputBorder(
-                                                // Custom border
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
-                                              ),
-                                              labelText: 'GST',
-                                              labelStyle: const TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 14),
-                                              contentPadding:
-                                                  const EdgeInsets.only(
-                                                      left: 10),
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.4,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                          ),
-                                          child: TextFormField(
-                                            onChanged: (value) {
-                                              amount
-                                                  .text = (double.parse(value) *
-                                                      double.parse(
-                                                          squareFeet.text == ""
-                                                              ? "1"
-                                                              : squareFeet
-                                                                  .text))
-                                                  .toString();
-                                            },
-                                            readOnly: true,
-                                            keyboardType: TextInputType.number,
-                                            controller: gstAmt,
-                                            decoration: InputDecoration(
-                                              prefixIcon: const Icon(
-                                                Icons.currency_rupee,
-                                                color: Colors.grey,
-                                                size: 18,
-                                              ),
-                                              labelStyle: const TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 14),
-                                              contentPadding:
-                                                  const EdgeInsets.only(
-                                                      left: 5),
-                                              labelText: 'GST Amount',
-                                              border: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 12,
-                                    ),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      child: TextFormField(
-                                        onTap: () {},
-                                        readOnly: true,
-                                        controller: totalAmt,
-                                        decoration: InputDecoration(
-                                          labelText: 'Total Amount',
-                                          prefixIcon: const Icon(
-                                            Icons.currency_rupee,
-                                            color: Colors.grey,
-                                            size: 18,
-                                          ),
-                                          labelStyle: const TextStyle(
-                                              color: Colors.grey, fontSize: 14),
-                                          contentPadding:
-                                              const EdgeInsets.only(left: 10),
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                                    if (estBudAmt != "")
+                                      buildRow("Estimated Budget : ",
+                                          estBudAmt.toString()),
+                                    if (gstAmt != "")
+                                      buildRow(
+                                          "GST Amount : ", gstAmt.toString()),
+                                    if (totalAmt != "")
+                                      buildRow("Total Amount : ",
+                                          totalAmt.toString()),
                                   ],
                                 ),
                               ),
@@ -1505,9 +1370,9 @@ class EditProjectScreen extends StatelessWidget {
                                         : elevationImage!.path,
                                     fixedRate.text,
                                     unitList,
-                                    estBudAmt.text,
+                                    estBudAmt,
                                     gst,
-                                    gstAmt.text,
+                                    gstAmt,
                                     totalAmount.toString(),
                                     description.text,
                                     lpoNumber.text,
@@ -1949,8 +1814,8 @@ class EditProjectScreen extends StatelessWidget {
                           averageRate = unitList.isNotEmpty
                               ? totalRate / unitList.length
                               : 0;
-                          estBudAmt.text = totalAmount.toString();
-                          totalAmt.text = totalAmount.toString();
+                          estBudAmt = totalAmount.toString();
+                          totalAmt = totalAmount.toString();
                           name.text = "";
                           squareFeet.text = "";
                           rate.text = "";
@@ -1979,11 +1844,34 @@ class EditProjectScreen extends StatelessWidget {
   }
 
   void updateGst() {
-    double amt = double.parse(estBudAmt.text);
-    double gstPercent = double.parse(gst);
+    double amt = double.parse(estBudAmt);
+    double gstPercent = double.parse(gst ?? "0");
     double gstRate = (amt * gstPercent) / 100;
-    gstAmt.text = gstRate.toString();
-    totalAmt.text = (amt + gstRate).toString();
+    gstAmt = gstRate.toString();
+    totalAmt = (amt + gstRate).toString();
+  }
+
+  void calculateTotal() {
+    averageRate = 0;
+    totalSqFt = 0;
+    totalRate = 0;
+    totalAmount = 0;
+    for (var unit in unitList) {
+      double squareFeet = double.tryParse(unit["squareFeet"] ?? "0") ?? 0;
+      double rate = double.tryParse(unit["rate"] ?? "0") ?? 0;
+      double amount = double.tryParse(unit["amount"] ?? "0") ?? 0;
+
+      totalSqFt += squareFeet;
+      totalRate += rate;
+      totalAmount += amount;
+    }
+    averageRate = unitList.isNotEmpty ? totalRate / unitList.length : 0;
+    estBudAmt = totalAmount.toString();
+    totalAmt = totalAmount.toString();
+    name.text = "";
+    squareFeet.text = "";
+    rate.text = "";
+    amount.text = "";
   }
 }
 

@@ -66,7 +66,7 @@ class Expense extends StatelessWidget {
                         width: 10,
                       ),
                       const Text(
-                        "Expense",
+                        "Expenses",
                         style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,

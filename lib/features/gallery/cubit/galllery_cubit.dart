@@ -14,6 +14,7 @@ class GalleryCubit extends Cubit<GalleryState> {
 
   List<XFile> imageList = [];
 
+
   selectMultiImage(
     ImageSource? source,
   ) async {
@@ -60,6 +61,7 @@ class GalleryCubit extends Cubit<GalleryState> {
     List<XFile> images,
     String ytLink,
   ) async {
+    emit(GalleryLoading());
     try {
       SuccessResponse response = await HttpServices.postGallery(
           projectId, clientId, stageId, images, ytLink);

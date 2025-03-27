@@ -20,10 +20,8 @@ class DashboardScreen extends StatelessWidget {
   DashboardScreen({super.key});
 
   TextEditingController searchController = TextEditingController();
-  TextEditingController fdate = TextEditingController(
-      text: DateFormat('dd-MM-yyyy').format(DateTime.now()));
-  TextEditingController tdate = TextEditingController(
-      text: DateFormat('dd-MM-yyyy').format(DateTime.now()));
+  TextEditingController fdate = TextEditingController();
+  TextEditingController tdate = TextEditingController();
 
   List colors = [
     Colors.blue,
@@ -313,8 +311,8 @@ class DashboardScreen extends StatelessWidget {
                                   },
                                   child: DashContainer(
                                     title: "All",
-                                    count: state
-                                        .response.data.projectCounts.completed,
+                                    count:
+                                        state.response.data.projectCounts.all,
                                   ),
                                 ),
                               ],
@@ -400,76 +398,118 @@ class DashboardScreen extends StatelessWidget {
                                                         .symmetric(
                                                         vertical: 6.0,
                                                         horizontal: 6.0),
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.end,
-                                                      children: [
-                                                        Text(
-                                                          double.parse(state
+                                                    child: InkWell(
+                                                      onTap: () {
+                                                        connStatus = true;
+                                                        Navigator.pushNamed(
+                                                            context,
+                                                            AppRoutes.expense,
+                                                            arguments: {
+                                                              "id": state
                                                                   .response
                                                                   .data
                                                                   .expenseData[
                                                                       i]
-                                                                  .count)
-                                                              .toString(),
-                                                          style:
-                                                              const TextStyle(
+                                                                  .projectId
+                                                            });
+                                                      },
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .end,
+                                                        children: [
+                                                          Text(
+                                                            "${state.response.data.expenseData[i].percentage}%",
+                                                            style: const TextStyle(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 14),
+                                                          ),
+                                                          Container(
+                                                            width: 60,
+                                                            height: double.parse(state
+                                                                    .response
+                                                                    .data
+                                                                    .expenseData[
+                                                                        i]
+                                                                    .percentage) *
+                                                                1,
+                                                            decoration: BoxDecoration(
+                                                                boxShadow: [
+                                                                  BoxShadow(
+                                                                    color: Colors
+                                                                        .grey
+                                                                        .withOpacity(
+                                                                            0.8),
+                                                                    blurRadius:
+                                                                        3,
+                                                                    offset:
+                                                                        const Offset(
+                                                                            3,
+                                                                            3),
+                                                                  ),
+                                                                ],
+                                                                color: AppColors
+                                                                    .primaryColor,
+                                                                borderRadius:
+                                                                    const BorderRadius
+                                                                        .all(
+                                                                        Radius.circular(
+                                                                            8))),
+                                                            child: Align(
+                                                              alignment:
+                                                                  Alignment
+                                                                      .center,
+                                                              child: Text(
+                                                                state
+                                                                    .response
+                                                                    .data
+                                                                    .expenseData[
+                                                                        i]
+                                                                    .count,
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    fontSize:
+                                                                        14),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 5,
+                                                          ),
+                                                          SizedBox(
+                                                            width: 80,
+                                                            child: Text(
+                                                              state
+                                                                  .response
+                                                                  .data
+                                                                  .expenseData[
+                                                                      i]
+                                                                  .projectName,
+                                                              style: const TextStyle(
                                                                   color: Colors
                                                                       .black,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold,
-                                                                  fontSize: 14),
-                                                        ),
-                                                        Container(
-                                                          width: 70,
-                                                          height: double.parse(state
-                                                                  .response
-                                                                  .data
-                                                                  .expenseData[
-                                                                      i]
-                                                                  .percentage) *
-                                                              1,
-                                                          decoration: BoxDecoration(
-                                                              boxShadow: [
-                                                                BoxShadow(
-                                                                  color: Colors
-                                                                      .grey
-                                                                      .withOpacity(
-                                                                          0.8),
-                                                                  blurRadius: 3,
-                                                                  offset:
-                                                                      const Offset(
-                                                                          3, 3),
-                                                                ),
-                                                              ],
-                                                              color: AppColors
-                                                                  .lightPrimary,
-                                                              borderRadius:
-                                                                  const BorderRadius
-                                                                      .all(
-                                                                      Radius.circular(
-                                                                          8))),
-                                                        ),
-                                                        const SizedBox(
-                                                          height: 5,
-                                                        ),
-                                                        Text(
-                                                          state
-                                                              .response
-                                                              .data
-                                                              .expenseData[i]
-                                                              .expenseName,
-                                                          style:
-                                                              const TextStyle(
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  fontSize: 12),
-                                                        ),
-                                                      ],
+                                                                  fontSize: 13),
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   );
                                                 }),
@@ -538,14 +578,17 @@ class DashboardScreen extends StatelessWidget {
                                                     // color: AppColors.coffie,
                                                   ),
                                                 ),
-                                                Text(
-                                                  "from ${fdate.text} To ${tdate.text}",
-                                                  style: const TextStyle(
-                                                    fontSize: 10,
-                                                    fontWeight: FontWeight.bold,
-                                                    // color: AppColors.coffie,
+                                                if (fdate.text != '' &&
+                                                    tdate.text != '')
+                                                  Text(
+                                                    "from ${fdate.text} To ${tdate.text}",
+                                                    style: const TextStyle(
+                                                      fontSize: 10,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      // color: AppColors.coffie,
+                                                    ),
                                                   ),
-                                                ),
                                               ],
                                             ),
                                             InkWell(
@@ -598,7 +641,7 @@ class DashboardScreen extends StatelessWidget {
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .width *
-                                                .4,
+                                                .35,
                                             height: MediaQuery.of(context)
                                                     .size
                                                     .width *
@@ -622,7 +665,7 @@ class DashboardScreen extends StatelessWidget {
                                                   MainAxisAlignment.center,
                                               children: [
                                                 Text(
-                                                  "Complaint History",
+                                                  "Complaint List",
                                                   style: TextStyle(
                                                     fontSize: 10,
                                                     fontWeight: FontWeight.bold,
@@ -695,14 +738,17 @@ class DashboardScreen extends StatelessWidget {
                                                     // color: AppColors.coffie,
                                                   ),
                                                 ),
-                                                Text(
-                                                  "from ${fdate.text} To ${tdate.text}",
-                                                  style: const TextStyle(
-                                                    fontSize: 10,
-                                                    fontWeight: FontWeight.bold,
-                                                    // color: AppColors.coffie,
+                                                if (fdate.text != '' &&
+                                                    tdate.text != '')
+                                                  Text(
+                                                    "from ${fdate.text} To ${tdate.text}",
+                                                    style: const TextStyle(
+                                                      fontSize: 10,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      // color: AppColors.coffie,
+                                                    ),
                                                   ),
-                                                ),
                                               ],
                                             ),
                                             InkWell(

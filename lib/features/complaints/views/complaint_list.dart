@@ -104,7 +104,7 @@ class ComplaintList extends StatelessWidget {
                   ),
                 ),
                 body: state is ComplaintFailure
-                    ? Center(
+                    ? const Center(
                         child: Text("Something went wrong"),
                       )
                     : ListView.builder(
@@ -235,8 +235,12 @@ class ComplaintList extends StatelessWidget {
                                                                       "Closed"
                                                                   ? AppColors
                                                                       .primaryColor
-                                                                  : Colors
-                                                                      .green),
+                                                                  : state.response.data[index].statusName ==
+                                                                          "NEW"
+                                                                      ? Colors
+                                                                          .blue
+                                                                      : Colors
+                                                                          .green),
                                                         ),
                                                     ],
                                                   ),

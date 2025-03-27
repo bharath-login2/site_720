@@ -16,7 +16,7 @@ import '../cubit/extra_work_state.dart';
 class ExtraWork extends StatelessWidget {
   ExtraWork({super.key});
   final formKey = GlobalKey<FormState>();
-  TextEditingController searchController = TextEditingController();
+  // TextEditingController searchController = TextEditingController();
   TextEditingController work = TextEditingController();
   TextEditingController amount = TextEditingController();
   TextEditingController description = TextEditingController();

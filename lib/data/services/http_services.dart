@@ -526,7 +526,6 @@ class HttpServices {
       }
     } catch (e) {
       log(e.toString());
-      return {'error': e.toString()};
     }
   }
 
@@ -609,7 +608,6 @@ class HttpServices {
         request.files
             .add(await http.MultipartFile.fromPath('elev_img', elevImg));
       }
-
       var response = await request.send();
 
       if (response.statusCode == 200) {

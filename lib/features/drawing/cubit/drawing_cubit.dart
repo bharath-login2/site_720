@@ -42,6 +42,8 @@ class DrawingCubit extends Cubit<DrawingState> {
   Future<void> uploadDrawings(
       String projectId, String clientId, XFile image, String remark) async {
     try {
+      emit(UploadLoading());
+
       SuccessResponse response =
           await HttpServices.uploadDrawings(projectId, clientId, image, remark);
       if (response.status == true) {

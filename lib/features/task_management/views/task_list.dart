@@ -96,7 +96,17 @@ class TaskList extends StatelessWidget {
                               width: MediaQuery.of(context).size.width * .9,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
-                                color: Colors.white,
+                                color: taskList[index].status == "New"
+                                    ? Colors.blue.shade50
+                                    : taskList[index].status == "in progress"
+                                        ? Colors.orange.shade50
+                                        : taskList[index].status ==
+                                                "not-started"
+                                            ? Colors.red.shade50
+                                            : taskList[index].status ==
+                                                    "Completed"
+                                                ? Colors.green.shade50
+                                                : Colors.grey.shade50,
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.grey.withOpacity(0.8),
@@ -252,17 +262,21 @@ class TaskList extends StatelessWidget {
                                           AmountContainer(
                                             title: "Status",
                                             amount: taskList[index].status,
-                                            valueColor:
-                                                taskList[index].status == "New"
-                                                    ? Colors.blue
+                                            valueColor: taskList[index]
+                                                        .status ==
+                                                    "New"
+                                                ? Colors.blue
+                                                : taskList[index].status ==
+                                                        "in progress"
+                                                    ? Colors.orange
                                                     : taskList[index].status ==
-                                                            "Pending"
-                                                        ? Colors.orange
+                                                            "not-started"
+                                                        ? Colors.red
                                                         : taskList[index]
                                                                     .status ==
-                                                                "Rejected"
-                                                            ? Colors.red
-                                                            : Colors.green,
+                                                                "Completed"
+                                                            ? Colors.green
+                                                            : Colors.grey,
                                           ),
                                         ],
                                       ),

@@ -96,7 +96,7 @@ class DrawingScreen extends StatelessWidget {
                                           decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(12),
-                                            color: AppColors.lightA,
+                                            color: Colors.white,
                                             boxShadow: [
                                               BoxShadow(
                                                 color: Colors.grey
@@ -128,20 +128,20 @@ class DrawingScreen extends StatelessWidget {
                                                 ),
                                                 margin: const EdgeInsets.all(8),
                                               ),
-                                              if (drawingList[index].remarks !=
-                                                  "")
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 16.0,
-                                                          right: 16.0,
-                                                          top: 4.0,
-                                                          bottom: 8.0),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 16.0,
+                                                    right: 16.0,
+                                                    top: 4.0,
+                                                    bottom: 8.0),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    if (drawingList[index]
+                                                            .remarks !=
+                                                        "")
                                                       Text(
                                                         drawingList[index]
                                                             .remarks,
@@ -152,29 +152,30 @@ class DrawingScreen extends StatelessWidget {
                                                           fontWeight:
                                                               FontWeight.bold,
                                                         ),
-                                                      ),
-                                                      InkWell(
-                                                        onTap: () {
-                                                          deleteDialog(context,
-                                                              () {
-                                                            cubit.deleteDrawing(
-                                                                projectId,
-                                                                drawingList[
-                                                                        index]
-                                                                    .id);
-                                                            Navigator.pop(
-                                                                context);
-                                                          });
-                                                        },
-                                                        child: const Icon(
-                                                          Icons.delete,
-                                                          color: Colors.red,
-                                                          size: 22,
-                                                        ),
                                                       )
-                                                    ],
-                                                  ),
+                                                    else
+                                                      const SizedBox(),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        deleteDialog(context,
+                                                            () {
+                                                          cubit.deleteDrawing(
+                                                              projectId,
+                                                              drawingList[index]
+                                                                  .id);
+                                                          Navigator.pop(
+                                                              context);
+                                                        });
+                                                      },
+                                                      child: const Icon(
+                                                        Icons.delete,
+                                                        color: Colors.red,
+                                                        size: 22,
+                                                      ),
+                                                    )
+                                                  ],
                                                 ),
+                                              ),
                                             ],
                                           ),
                                         ),
@@ -188,7 +189,7 @@ class DrawingScreen extends StatelessWidget {
                     Positioned(
                       top: MediaQuery.of(context).size.height * 0.16,
                       left: MediaQuery.of(context).size.width * 0.05,
-                      child: floatingCard(context),
+                      child: floatingCard(context, state),
                     ),
                   ],
                 ),
@@ -200,9 +201,7 @@ class DrawingScreen extends StatelessWidget {
     );
   }
 
-  Container floatingCard(
-    BuildContext context,
-  ) {
+  Container floatingCard(BuildContext context, DrawingState state) {
     return Container(
       width: MediaQuery.of(context).size.width * .9,
       decoration: BoxDecoration(
@@ -294,13 +293,14 @@ class DrawingScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 15),
-            InkWell(
-                onTap: () async {
-                  await context
-                      .read<DrawingCubit>()
-                      .uploadDrawings(projectId, clientId, image!, remark.text);
-                },
-                child: MediumButton(title: "Submit")),
+            state is UploadLoading
+                ? const CircularProgressIndicator()
+                : InkWell(
+                    onTap: () async {
+                      await context.read<DrawingCubit>().uploadDrawings(
+                          projectId, clientId, image!, remark.text);
+                    },
+                    child: MediumButton(title: "Submit")),
             const SizedBox(height: 4),
           ],
         ),

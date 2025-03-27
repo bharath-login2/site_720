@@ -29,4 +29,7 @@ class ImageFailure extends DrawingState {
   final String message;
   ImageFailure(this.message);
 }
+
 class UploadSuccess extends DrawingState {}
+
+class UploadLoading extends DrawingState {}

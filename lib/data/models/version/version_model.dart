@@ -4,30 +4,31 @@
 
 import 'dart:convert';
 
-VersionModel versionModelFromJson(String str) => VersionModel.fromJson(json.decode(str));
+VersionModel versionModelFromJson(String str) =>
+    VersionModel.fromJson(json.decode(str));
 
 String versionModelToJson(VersionModel data) => json.encode(data.toJson());
 
 class VersionModel {
-    String data;
-    String message;
-    bool status;
+  String data;
+  String message;
+  bool status;
 
-    VersionModel({
-        required this.data,
-        required this.message,
-        required this.status,
-    });
+  VersionModel({
+    required this.data,
+    required this.message,
+    required this.status,
+  });
 
-    factory VersionModel.fromJson(Map<String, dynamic> json) => VersionModel(
+  factory VersionModel.fromJson(Map<String, dynamic> json) => VersionModel(
         data: json["data"],
         message: json["message"],
         status: json["status"],
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "data": data,
         "message": message,
         "status": status,
-    };
+      };
 }

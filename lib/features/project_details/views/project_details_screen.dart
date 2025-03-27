@@ -578,7 +578,7 @@ class ProjectDetails extends StatelessWidget {
                         left: MediaQuery.of(context).size.width * 0.05,
                         child: FloatingProfileCard(
                           name: state is ProjectDetailsSuccess
-                              ? state.response.data.clientName
+                              ? state.response.data.projectName
                               : "",
                           address: state is ProjectDetailsSuccess
                               ? state.response.data.address

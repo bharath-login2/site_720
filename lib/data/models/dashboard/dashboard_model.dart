@@ -95,23 +95,31 @@ class ComplaintCount {
 }
 
 class ExpenseDatum {
+  String projectId;
+  String projectName;
   String expenseName;
   String percentage;
   String count;
 
   ExpenseDatum({
+    required this.projectId,
+    required this.projectName,
     required this.expenseName,
     required this.percentage,
     required this.count,
   });
 
   factory ExpenseDatum.fromJson(Map<String, dynamic> json) => ExpenseDatum(
+        projectId: json["project_id"] ?? "",
+        projectName: json["project_name"] ?? "",
         expenseName: json["expense_name"] ?? "",
         percentage: json["percentage"] ?? "",
         count: json["count"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {
+        "project_id": projectId,
+        "project_name": projectName,
         "expense_name": expenseName,
         "percentage": percentage,
         "count": count,
@@ -122,17 +130,20 @@ class ProjectCounts {
   String upcoming;
   String running;
   String completed;
+  String all;
 
   ProjectCounts({
     required this.upcoming,
     required this.running,
     required this.completed,
+    required this.all,
   });
 
   factory ProjectCounts.fromJson(Map<String, dynamic> json) => ProjectCounts(
         upcoming: json["upcoming"] ?? "",
         running: json["running"] ?? "",
         completed: json["completed"] ?? "",
+        all: json["all"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {

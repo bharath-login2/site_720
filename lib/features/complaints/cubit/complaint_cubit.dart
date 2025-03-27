@@ -8,13 +8,12 @@ class ComplaintCubit extends Cubit<ComplaintState> {
   ComplaintCubit() : super(ComplaintInitial()){
     getComplaintList();
   }
-
  
  Future<void> getComplaintList() async {
       emit(ComplaintLoading());
       try {
         ComplaintListModel response = await HttpServices.getComplaintList();
-        
+
         if (response.status == true) {
           emit(ComplaintSuccess(response));
         }

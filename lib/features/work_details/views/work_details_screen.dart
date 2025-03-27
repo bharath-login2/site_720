@@ -673,6 +673,11 @@ class WorkDetailsScreen extends StatelessWidget {
                                   workId);
                             }
                             Navigator.pop(context);
+                            date.clear();
+                            noOfLabours.clear();
+                            description.clear();   
+                            selectedStatus = null;
+                            isWorking = 'Yes';
                           }
                         },
                         child: LargeButton(

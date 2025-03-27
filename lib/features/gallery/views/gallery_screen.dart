@@ -136,10 +136,7 @@ class GalleryScreen extends StatelessWidget {
                     Positioned(
                       top: MediaQuery.of(context).size.height * 0.16,
                       left: MediaQuery.of(context).size.width * 0.05,
-                      child: floatingCard(
-                        context,
-                        cubit,
-                      ),
+                      child: floatingCard(context, cubit, state),
                     ),
                   ],
                 ),
@@ -151,7 +148,8 @@ class GalleryScreen extends StatelessWidget {
     );
   }
 
-  Container floatingCard(BuildContext context, GalleryCubit cubit) {
+  Container floatingCard(
+      BuildContext context, GalleryCubit cubit, GalleryState state) {
     return Container(
       width: MediaQuery.of(context).size.width * .9,
       decoration: BoxDecoration(
@@ -324,16 +322,20 @@ class GalleryScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 15),
-              InkWell(
-                  onTap: () {
-                    if (formKey.currentState!.validate() && images.isNotEmpty) {
-                      cubit.postGalery(projectId, clientId, stageId, images,
-                          youtubeLink.text);
-                    } else {
-                      snackBar(context, "Select stage and images", Colors.red);
-                    }
-                  },
-                  child: MediumButton(title: "Submit")),
+              state is GalleryLoading
+                  ? const CircularProgressIndicator()
+                  : InkWell(
+                      onTap: () {
+                        if (formKey.currentState!.validate() &&
+                            images.isNotEmpty) {
+                          cubit.postGalery(projectId, clientId, stageId, images,
+                              youtubeLink.text);
+                        } else {
+                          snackBar(
+                              context, "Select stage and images", Colors.red);
+                        }
+                      },
+                      child: MediumButton(title: "Submit")),
               const SizedBox(height: 4),
             ],
           ),

@@ -64,24 +64,26 @@ class FloatingProfileCard extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * .6,
-                  child: Text(
-                    address,
-                    // overflow: TextOverflow.ellipsis,
+                if (address != '')
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * .6,
+                    child: Text(
+                      address,
+                      // overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ),
+                if (phoneNumber != '')
+                  Text(
+                    phoneNumber,
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.normal,
                     ),
                   ),
-                ),
-                Text(
-                  phoneNumber,
-                  style: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
               ],
             ),
           ],

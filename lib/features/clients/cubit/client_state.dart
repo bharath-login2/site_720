@@ -69,3 +69,8 @@ class EditDetailsFailure extends ClientsState {
   String message;
   EditDetailsFailure(this.message);
 }
+
+class SearchResult extends ClientsState {
+     List<Clients> filteredList;
+  SearchResult(this.filteredList);
+}

@@ -215,6 +215,8 @@ class Stages extends StatelessWidget {
                         ),
                         state is StagesLoading
                             ? ListView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
                                 itemCount: 7,
                                 itemBuilder: (context, index) {
                                   return Padding(

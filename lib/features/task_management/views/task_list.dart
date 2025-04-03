@@ -86,7 +86,7 @@ class TaskList extends StatelessWidget {
                         return Padding(
                           padding: const EdgeInsets.all(6.0),
                           child: InkWell(
-                            onTap: () {
+                            onTap: () { 
                               connStatus = true;
                               Navigator.pushNamed(
                                   context, AppRoutes.taskDetails,

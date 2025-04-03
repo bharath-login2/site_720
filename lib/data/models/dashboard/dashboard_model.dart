@@ -154,11 +154,13 @@ class ProjectCounts {
 }
 
 class WorkissuesCount {
+  String workissueId;
   String workissueName;
   String count;
 
   WorkissuesCount({
     required this.workissueName,
+    required this.workissueId,
     required this.count,
   });
 
@@ -166,6 +168,7 @@ class WorkissuesCount {
       WorkissuesCount(
         workissueName: json["workissue_name"] ?? "",
         count: json["count"] ?? "",
+        workissueId: json["workissue_id"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {

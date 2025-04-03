@@ -24,8 +24,8 @@ class ProjectDataModel {
   factory ProjectDataModel.fromJson(Map<String, dynamic> json) =>
       ProjectDataModel(
         data: Data.fromJson(json["data"]),
-        message: json["message"],
-        status: json["status"],
+        message: json["message"] ?? "",
+        status: json["status"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {
@@ -82,8 +82,8 @@ class Bhk {
   });
 
   factory Bhk.fromJson(Map<String, dynamic> json) => Bhk(
-        id: json["id"],
-        name: json["name"],
+        id: json["id"] ?? "",
+        name: json["name"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {
@@ -102,8 +102,8 @@ class Clients {
   });
 
   factory Clients.fromJson(Map<String, dynamic> json) => Clients(
-        clientName: json["client_name"],
-        id: json["id"],
+        clientName: json["client_name"] ?? "",
+        id: json["id"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {
@@ -122,8 +122,8 @@ class Package {
   });
 
   factory Package.fromJson(Map<String, dynamic> json) => Package(
-        packageName: json["package_name"],
-        id: json["id"],
+        packageName: json["package_name"] ?? "",
+        id: json["id"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {
@@ -143,8 +143,8 @@ class ProjectCategory {
 
   factory ProjectCategory.fromJson(Map<String, dynamic> json) =>
       ProjectCategory(
-        categoryName: json["category_name"],
-        id: json["id"],
+        categoryName: json["category_name"] ?? "",
+        id: json["id"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {
@@ -163,8 +163,8 @@ class ProjectList {
   });
 
   factory ProjectList.fromJson(Map<String, dynamic> json) => ProjectList(
-        projectType: json["project_type"],
-        id: json["id"],
+        projectType: json["project_type"] ?? "",
+        id: json["id"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {

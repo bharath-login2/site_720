@@ -24,6 +24,7 @@ import 'package:site_720/features/purchase/views/purchase_list_screen.dart';
 import 'package:site_720/features/splash/views/splash.dart';
 import 'package:site_720/features/stock/views/stock.dart';
 import 'package:site_720/features/sub_contactors/views/sub_contrctor_screen.dart';
+import 'package:site_720/features/work_issues/views/work_issues_screen.dart';
 import 'package:site_720/firebase_options.dart';
 import 'features/clients/views/add_clients.dart';
 import 'features/complaints/views/add_complaint.dart';
@@ -114,6 +115,7 @@ class MyApp extends StatelessWidget {
         '/taskDetails': (context) => TaskDetails(),
         '/taskHistoryScreen': (context) => const TaskHistoryScreen(),
         '/notification': (context) => const NotificationList(),
+        '/workIssuesList': (context) => WorkIssues(),
       },
     );
   }

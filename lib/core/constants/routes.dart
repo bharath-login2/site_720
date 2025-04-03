@@ -35,4 +35,5 @@ class AppRoutes {
   static const taskDetails = '/taskDetails';
   static const taskHistory = '/taskHistoryScreen';
   static const notification = '/notification';
+  static const workIssuesList = '/workIssuesList';
 }

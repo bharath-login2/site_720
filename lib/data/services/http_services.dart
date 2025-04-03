@@ -166,6 +166,21 @@ class HttpServices {
     }
   }
 
+  static Future getWorkIssuesList(statesId) async {
+    try {
+      http.Response response = await http
+          .post(Uri.parse("${await Config.getUrl()}get_work_issues_list"), body: {
+        'token': await getSharedPreference('token'),
+        "status_id": statesId
+      });
+      if (response.statusCode == 200) {
+        return workDetailModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
   static Future getWorkIssues() async {
     try {
       http.Response response = await http.post(

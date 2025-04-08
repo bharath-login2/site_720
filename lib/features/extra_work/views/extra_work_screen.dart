@@ -206,6 +206,24 @@ class ExtraWork extends StatelessWidget {
                                                         ),
                                                       ),
                                                     ),
+                                                    SizedBox(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              .5,
+                                                      child: Text(
+                                                        state
+                                                            .response
+                                                            .data[index]
+                                                            .description,
+                                                        style: const TextStyle(
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ],
                                                 ),
                                                 Column(

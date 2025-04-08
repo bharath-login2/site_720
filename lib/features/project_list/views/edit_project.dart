@@ -615,7 +615,7 @@ class EditProjectScreen extends StatelessWidget {
                                 child: TextFormField(
                                   onTap: () async {
                                     String? selectedDate =
-                                        await selectDate(context);
+                                        await selectDate(context, false);
                                     if (selectedDate != null) {
                                       startDate.text = selectedDate;
                                       if (context.mounted) {}
@@ -645,7 +645,7 @@ class EditProjectScreen extends StatelessWidget {
                                 child: TextFormField(
                                   onTap: () async {
                                     String? selectedDate =
-                                        await selectDate(context);
+                                        await selectDate(context, true);
                                     if (selectedDate != null) {
                                       completionDate.text = selectedDate;
                                       if (context.mounted) {}
@@ -1513,16 +1513,32 @@ class EditProjectScreen extends StatelessWidget {
     );
   }
 
-  selectDate(BuildContext context) async {
+  Future<String?> selectDate(BuildContext context, bool isEndDate) async {
+    DateTime now = DateTime.now();
+    DateTime initialDate = now;
+    DateTime firstDate = DateTime(2000);
+
+    if (isEndDate && startDate.text.isNotEmpty) {
+      try {
+        firstDate = DateFormat('dd-MM-yyyy').parse(startDate.text);
+      } catch (e) {
+        log(e.toString());
+        firstDate = now;
+      }
+    }
+    if (initialDate.isBefore(firstDate)) {
+      initialDate = firstDate;
+    }
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
+      initialDate: initialDate,
+      firstDate: firstDate,
       lastDate: DateTime(2100),
     );
     if (pickedDate != null) {
       return DateFormat('dd-MM-yyyy').format(pickedDate);
     }
+    return null;
   }
 
   Future<void> imageDialog(BuildContext context, type) async {
@@ -1872,31 +1888,34 @@ class CheckBoxWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      // crossAxisAlignment: CrossAxisAlignment
-      //     .start,
-      children: [
-        Checkbox(
-          value: value,
-          onChanged: (bool? newValue) {
-            try {
-              context.read<EditProjectCubit>().updatePriority(id);
-            } catch (e) {
-              log(e.toString());
-            }
-          },
-        ),
-        Expanded(
-          child: Text(
-            title,
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-              color: Color.fromARGB(255, 59, 58, 58),
+    return InkWell(
+      onTap: () {
+        try {
+          context.read<EditProjectCubit>().updatePriority(id);
+        } catch (e) {
+          log(e.toString());
+        }
+      },
+      child: Row(
+        // crossAxisAlignment: CrossAxisAlignment
+        //     .start,
+        children: [
+          Checkbox(
+            value: value,
+            onChanged: (bool? newValue) {},
+          ),
+          Expanded(
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 59, 58, 58),
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

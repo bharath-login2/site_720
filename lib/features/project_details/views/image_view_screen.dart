@@ -13,7 +13,7 @@ class ImageViewer extends StatelessWidget {
     String image = args["image"]!;
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: simpleAppbar(context, args["title"]!,true),
+      appBar: simpleAppbar(context, args["title"]!, true),
       body: Center(
         child: PhotoView(
           imageProvider: CachedNetworkImageProvider(image),

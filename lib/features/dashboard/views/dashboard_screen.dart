@@ -591,16 +591,6 @@ class DashboardScreen extends StatelessWidget {
                                                   ),
                                               ],
                                             ),
-                                            InkWell(
-                                              onTap: () {
-                                                showDateRangeDialog(
-                                                    context, cubit);
-                                              },
-                                              child: const Icon(
-                                                Icons.calendar_month,
-                                                color: AppColors.coffie,
-                                              ),
-                                            )
                                           ],
                                         ),
                                       )),
@@ -751,169 +741,160 @@ class DashboardScreen extends StatelessWidget {
                                                   ),
                                               ],
                                             ),
-                                            InkWell(
-                                              onTap: () {
-                                                showDateRangeDialog(
-                                                    context, cubit);
-                                              },
-                                              child: const Icon(
-                                                Icons.calendar_month,
-                                                color: AppColors.coffie,
-                                              ),
-                                            )
                                           ],
                                         ),
                                       )),
-                                  state.response.data.workissuesCounts
-                                          .isNotEmpty
-                                      ? Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 8.0, vertical: 16),
-                                          child: ListView.builder(
-                                              padding: EdgeInsets.zero,
-                                              shrinkWrap: true,
-                                              physics:
-                                                  const NeverScrollableScrollPhysics(),
-                                              itemCount: state.response.data
-                                                  .workissuesCounts.length,
-                                              itemBuilder: (context, i) {
-                                                return Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
+                                  if (state.response.data.workissuesCounts
+                                      .isNotEmpty)
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0, vertical: 16),
+                                      child: ListView.builder(
+                                          padding: EdgeInsets.zero,
+                                          shrinkWrap: true,
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          itemCount: state.response.data
+                                              .workissuesCounts.length,
+                                          itemBuilder: (context, i) {
+                                            final double totalCount = state
+                                                .response.data.workissuesCounts
+                                                .fold(
+                                                    0,
+                                                    (sum, item) =>
+                                                        sum +
+                                                        double.parse(
+                                                            item.count));
+                                            return Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
                                                       vertical: 6.0,
                                                       horizontal: 8.0),
-                                                  child: InkWell(
-                                                    onTap: () {
-                                                      Navigator.of(context)
-                                                          .pushNamed(
-                                                              AppRoutes
-                                                                  .workIssuesList,
-                                                              arguments: {
-                                                            "status_id": state
-                                                                .response
-                                                                .data
-                                                                .workissuesCounts[
-                                                                    i]
-                                                                .workissueId,
-                                                          });
-                                                    },
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                          boxShadow: [
-                                                            BoxShadow(
-                                                              color: Colors.grey
-                                                                  .withOpacity(
-                                                                      0.8),
-                                                              blurRadius: 3,
-                                                              offset:
-                                                                  const Offset(
-                                                                      3, 3),
-                                                            ),
-                                                          ],
-                                                          color: AppColors
-                                                              .backgroundColor,
-                                                          borderRadius:
-                                                              const BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          8))),
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                                horizontal:
-                                                                    12.0,
-                                                                vertical: 8.0),
-                                                        child: Column(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .end,
-                                                          children: [
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(2.0),
-                                                              child: Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
-                                                                children: [
-                                                                  Text(
-                                                                    state
-                                                                        .response
-                                                                        .data
-                                                                        .workissuesCounts[
-                                                                            i]
-                                                                        .workissueName,
-                                                                    style: const TextStyle(
-                                                                        color: Colors
-                                                                            .black,
-                                                                        fontWeight:
-                                                                            FontWeight
-                                                                                .bold,
-                                                                        fontSize:
-                                                                            12),
-                                                                  ),
-                                                                  Text(
-                                                                    state
-                                                                        .response
-                                                                        .data
-                                                                        .workissuesCounts[
-                                                                            i]
-                                                                        .count,
-                                                                    style: const TextStyle(
-                                                                        color: Colors
-                                                                            .black,
-                                                                        fontWeight:
-                                                                            FontWeight
-                                                                                .bold,
-                                                                        fontSize:
-                                                                            12),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            LinearProgressIndicator(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          8),
-                                                              backgroundColor:
-                                                                  Colors.grey
-                                                                      .shade400,
-                                                              value: double.parse(state
-                                                                      .response
-                                                                      .data
-                                                                      .workissuesCounts[
-                                                                          i]
-                                                                      .count) /
-                                                                  100,
-                                                              valueColor:
-                                                                  AlwaysStoppedAnimation<
-                                                                          Color>(
-                                                                      colors[
-                                                                          i]),
-                                                              minHeight: 5,
-                                                            ),
-                                                          ],
+                                              child: InkWell(
+                                                onTap: () {
+                                                  Navigator.of(context)
+                                                      .pushNamed(
+                                                          AppRoutes
+                                                              .workIssuesList,
+                                                          arguments: {
+                                                        "status_id": state
+                                                            .response
+                                                            .data
+                                                            .workissuesCounts[i]
+                                                            .workissueId,
+                                                      });
+                                                },
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: Colors.grey
+                                                              .withOpacity(0.8),
+                                                          blurRadius: 3,
+                                                          offset: const Offset(
+                                                              3, 3),
                                                         ),
-                                                      ),
+                                                      ],
+                                                      color: AppColors
+                                                          .backgroundColor,
+                                                      borderRadius:
+                                                          const BorderRadius
+                                                              .all(
+                                                              Radius.circular(
+                                                                  8))),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 12.0,
+                                                        vertical: 8.0),
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.end,
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(2.0),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Text(
+                                                                state
+                                                                    .response
+                                                                    .data
+                                                                    .workissuesCounts[
+                                                                        i]
+                                                                    .workissueName,
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .black,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    fontSize:
+                                                                        12),
+                                                              ),
+                                                              Text(
+                                                                state
+                                                                    .response
+                                                                    .data
+                                                                    .workissuesCounts[
+                                                                        i]
+                                                                    .count,
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .black,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    fontSize:
+                                                                        12),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        LinearProgressIndicator(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(8),
+                                                          backgroundColor:
+                                                              Colors.grey
+                                                                  .shade400,
+                                                          value: double.parse(state
+                                                                  .response
+                                                                  .data
+                                                                  .workissuesCounts[
+                                                                      i]
+                                                                  .count) /
+                                                              totalCount,
+                                                          valueColor:
+                                                              AlwaysStoppedAnimation<
+                                                                      Color>(
+                                                                  colors[i]),
+                                                          minHeight: 5,
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
-                                                );
-                                              }),
-                                        )
-                                      : const Padding(
-                                          padding: EdgeInsets.all(25.0),
-                                          child: Text(
-                                            "No Issues !",
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.bold,
-                                              color: AppColors.primaryColor,
-                                            ),
-                                          ),
-                                        )
+                                                ),
+                                              ),
+                                            );
+                                          }),
+                                    )
+                                  else
+                                    const Padding(
+                                      padding: EdgeInsets.all(25.0),
+                                      child: Text(
+                                        "No Issues !",
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.primaryColor,
+                                        ),
+                                      ),
+                                    )
                                 ],
                               ),
                             )
@@ -964,7 +945,6 @@ class DashboardScreen extends StatelessWidget {
                             String? selectedDate = await selectDate(context);
                             if (selectedDate != null) {
                               fdate.text = selectedDate;
-                              if (context.mounted) {}
                             }
                           },
                           readOnly: true,
@@ -990,7 +970,6 @@ class DashboardScreen extends StatelessWidget {
                             String? selectedDate = await selectDate(context);
                             if (selectedDate != null) {
                               tdate.text = selectedDate;
-                              if (context.mounted) {}
                             }
                           },
                           readOnly: true,

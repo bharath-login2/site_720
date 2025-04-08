@@ -20,9 +20,9 @@ class PackageModel {
     });
 
     factory PackageModel.fromJson(Map<String, dynamic> json) => PackageModel(
-        status: json["status"],
-        message: json["message"],
-        pdfUrl: json["pdf_url"],
+        status: json["status"]??false,
+        message: json["message"]??"",
+        pdfUrl: json["pdf_url"]??"",
     );
 
     Map<String, dynamic> toJson() => {

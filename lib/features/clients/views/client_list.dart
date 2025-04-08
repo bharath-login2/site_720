@@ -349,7 +349,10 @@ class ClientList extends StatelessWidget {
                                                                     .filteredList[
                                                                         index]
                                                                     .id
-                                                              });
+                                                              }).then((_) {
+                                                            cubit
+                                                                .getClientList();
+                                                          });
                                                         },
                                                         child: Container(
                                                           height: 25,

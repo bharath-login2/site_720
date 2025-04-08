@@ -90,7 +90,9 @@ class AddCilentScreen extends StatelessWidget {
                             controller: clientName,
                             validator: (value) {
                               if (value == "") {
-                                return "Enter client name";
+                                return "Enter name";
+                              } else if (isValidName(value!) == false) {
+                                return "Enter valid name";
                               } else {
                                 return null;
                               }
@@ -121,6 +123,15 @@ class AddCilentScreen extends StatelessWidget {
                           width: MediaQuery.of(context).size.width * .9,
                           child: TextFormField(
                             controller: contactPerson,
+                            validator: (value) {
+                              if (value == "") {
+                                return "Enter name";
+                              } else if (isValidName(value!) == false) {
+                                return "Enter valid name";
+                              } else {
+                                return null;
+                              }
+                            },
                             decoration: InputDecoration(
                               fillColor: Colors.white,
                               filled: true,
@@ -150,6 +161,8 @@ class AddCilentScreen extends StatelessWidget {
                             validator: (value) {
                               if (value == "") {
                                 return "Enter phone number";
+                              } else if (isValidPhoneNumber(value!) == false) {
+                                return "Enter valid phone number";
                               } else {
                                 return null;
                               }
@@ -184,6 +197,8 @@ class AddCilentScreen extends StatelessWidget {
                             validator: (value) {
                               if (value == "") {
                                 return "Enter whatsApp number";
+                              } else if (isValidPhoneNumber(value!) == false) {
+                                return "Enter valid number";
                               } else {
                                 return null;
                               }
@@ -466,5 +481,15 @@ class AddCilentScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  bool isValidPhoneNumber(String phone) {
+    final regex = RegExp(r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$');
+    return regex.hasMatch(phone);
+  }
+
+  bool isValidName(String name) {
+    final nameRegExp = RegExp(r"^[a-zA-Z]+(?:[\s'-][a-zA-Z]+)*$");
+    return nameRegExp.hasMatch(name);
   }
 }

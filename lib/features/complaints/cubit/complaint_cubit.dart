@@ -5,20 +5,23 @@ import '../../../data/services/http_services.dart';
 import 'complaint_state.dart';
 
 class ComplaintCubit extends Cubit<ComplaintState> {
-  ComplaintCubit() : super(ComplaintInitial()){
+  ComplaintCubit() : super(ComplaintInitial()) {
     getComplaintList();
   }
- 
- Future<void> getComplaintList() async {
-      emit(ComplaintLoading());
-      try {
-        ComplaintListModel response = await HttpServices.getComplaintList();
 
-        if (response.status == true) {
-          emit(ComplaintSuccess(response));
-        }
-      } catch (e) {
-        emit(ComplaintFailure('Failed to fetch data: ${e.toString()}'));
+  List<ComplaintList> complaints = [];
+
+  Future<void> getComplaintList() async {
+    emit(ComplaintLoading());
+    try {
+      ComplaintListModel response = await HttpServices.getComplaintList();
+
+      if (response.status == true) {
+        complaints = response.data;
+        emit(ComplaintSuccess(response));
       }
+    } catch (e) {
+      emit(ComplaintFailure('Failed to fetch data: ${e.toString()}'));
     }
+  }
 }

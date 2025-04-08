@@ -1,3 +1,4 @@
+import '../../../data/models/work_issues/work_issues_model.dart';
 import '../../../data/models/workdetails/add_work_details_model.dart';
 import '../../../data/models/workdetails/work_detail_model.dart';
 
@@ -20,7 +21,7 @@ class WorkIssuesInitial extends WorkIssuesState {}
 class WorkIssuesLoading extends WorkIssuesState {}
 
 class WorkIssuesSuccess extends WorkIssuesState {
-  WorkDetailModel response;
+  WorkIssueListModel response;
 
   WorkIssuesSuccess(this.response);
 }
@@ -29,4 +30,3 @@ class WorkIssuesFailure extends WorkIssuesState {
   final String message;
   WorkIssuesFailure(this.message);
 }
-

@@ -40,6 +40,7 @@ import '../models/task/task_history.dart';
 import '../models/task/task_status.dart';
 import '../models/task/tasklist_model.dart';
 import '../models/version/version_model.dart';
+import '../models/work_issues/work_issues_model.dart';
 import '../models/workdetails/add_work_details_model.dart';
 import '../models/stages/stage_model.dart';
 import '../models/workdetails/work_detail_model.dart';
@@ -168,13 +169,14 @@ class HttpServices {
 
   static Future getWorkIssuesList(statesId) async {
     try {
-      http.Response response = await http
-          .post(Uri.parse("${await Config.getUrl()}get_work_issues_list"), body: {
-        'token': await getSharedPreference('token'),
-        "status_id": statesId
-      });
+      http.Response response = await http.post(
+          Uri.parse("${await Config.getUrl()}get_work_issues_list"),
+          body: {
+            'token': await getSharedPreference('token'),
+            "status_id": statesId
+          });
       if (response.statusCode == 200) {
-        return workDetailModelFromJson(response.body);
+        return workIssueListModelFromJson(response.body);
       }
     } catch (e) {
       log(e.toString());
@@ -360,6 +362,8 @@ class HttpServices {
     String clintId,
     selectedStatus,
     String stages,
+    String est_days,
+    String curingdays,
     String startDate,
     String endDate,
   ) async {
@@ -371,6 +375,8 @@ class HttpServices {
         "client_id": clintId,
         "phase_id": selectedStatus,
         "stages": stages,
+        "est_days": est_days,
+        "curingdays": curingdays,
         "startDate": startDate,
         "endDate": endDate,
       });
@@ -388,6 +394,8 @@ class HttpServices {
     String stageId,
     selectedStatus,
     String stages,
+    String est_days,
+    String curingdays,
     String startDate,
     String endDate,
   ) async {
@@ -400,6 +408,8 @@ class HttpServices {
         "stage_id": stageId,
         "phase_id": selectedStatus,
         "stages": stages,
+        "est_days": est_days,
+        "curingdays": curingdays,
         "startDate": startDate,
         "endDate": endDate,
       });

@@ -157,6 +157,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
     gstAmt = "";
     totalAmt = "";
     priority = "";
+    estBudAmt = "";
     type = null;
     category = null;
     package = null;
@@ -217,6 +218,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                   elevationImage = state.image;
                 }
                 if (state is AddProjectSuccess) {
+                  isLoading = false;
                   snackBar(context, state.message, Colors.green);
                   if (widget.fromHome == false) {
                     Navigator.pop(context);
@@ -225,6 +227,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                   }
                 }
                 if (state is AddProjectFailed) {
+                  isLoading = false;
                   snackBar(context, state.message, Colors.red);
                 }
               },
@@ -318,7 +321,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                           child: DropdownButtonFormField(
                             value: type,
                             validator: (value) {
-                              if (value == "") {
+                              if (value == null) {
                                 return "Select Type";
                               } else {
                                 return null;
@@ -357,7 +360,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                           child: DropdownButtonFormField(
                             value: category,
                             validator: (value) {
-                              if (value == "") {
+                              if (value == null) {
                                 return "Select Category";
                               } else {
                                 return null;
@@ -586,7 +589,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                               package = value.toString();
                             },
                             validator: (value) {
-                              if (value == "") {
+                              if (value == null) {
                                 return "Select Package";
                               } else {
                                 return null;
@@ -625,7 +628,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                               bhk = value.toString();
                             },
                             validator: (value) {
-                              if (value == "") {
+                              if (value == null) {
                                 return "Select no of BHK";
                               } else {
                                 return null;
@@ -1208,10 +1211,10 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
                                                               "Total Square Feet : ",
                                                               totalSqFt
                                                                   .toString()),
-                                                          buildRow(
-                                                              "Total Rate : ",
-                                                              totalRate
-                                                                  .toString()),
+                                                          // buildRow(
+                                                          //     "Total Rate : ",
+                                                          //     totalRate
+                                                          //         .toString()),
                                                           buildRow(
                                                               "Average : ",
                                                               averageRate
@@ -1885,7 +1888,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
   }
 
   void updateGst() {
-    double amt = double.parse(estBudAmt);
+    double amt = double.parse(estBudAmt == "" ? "0" : estBudAmt);
     double gstPercent = double.parse(gst ?? "0");
     double gstRate = (amt * gstPercent) / 100;
     gstAmt = gstRate.toString();
@@ -1907,7 +1910,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
       totalRate += rate;
       totalAmount += amount;
     }
-    averageRate = unitList.isNotEmpty ? totalRate / unitList.length : 0;
+    averageRate = unitList.isNotEmpty ? totalRate / totalSqFt : 0;
     estBudAmt = totalAmount.toString();
     totalAmt = totalAmount.toString();
     name.text = "";

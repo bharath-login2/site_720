@@ -35,6 +35,7 @@ class ComplaintList extends StatelessWidget {
         ],
         child: BlocBuilder<ComplaintCubit, ComplaintState>(
           builder: (context, state) {
+            ComplaintCubit cubit = context.read<ComplaintCubit>();
             return Scaffold(
                 backgroundColor: AppColors.backgroundColor,
                 appBar: PreferredSize(
@@ -111,224 +112,250 @@ class ComplaintList extends StatelessWidget {
                         shrinkWrap: true,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8.0, vertical: 6.0),
-                        itemCount: 5,
+                        itemCount: cubit.complaints.length,
                         itemBuilder: (context, index) {
                           return Padding(
                             padding: const EdgeInsets.all(6.0),
-                            child: state is ComplaintSuccess
-                                ? InkWell(
-                                    onTap: () {
-                                      // Navigator.of(context).pushNamed(AppRoutes.stageHistory);
-                                    },
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          .9,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: Colors.white,
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.withOpacity(0.8),
-                                            blurRadius: 3,
-                                            offset: const Offset(0, 3),
-                                          ),
-                                        ],
-                                      ),
-                                      child: SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                .7,
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 8.0,
-                                              left: 8.0,
-                                              right: 8.0,
-                                              bottom: 8.0),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      if (state
-                                                              .response
-                                                              .data[index]
-                                                              .natureName !=
-                                                          '')
-                                                        Text(
-                                                          state
-                                                              .response
-                                                              .data[index]
-                                                              .natureName,
-                                                          style: const TextStyle(
-                                                              fontSize: 16,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              color: AppColors
-                                                                  .coffie),
-                                                        ),
-                                                      if (state
-                                                              .response
-                                                              .data[index]
-                                                              .description !=
-                                                          '')
-                                                        Text(
-                                                          state
-                                                              .response
-                                                              .data[index]
-                                                              .description,
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 12,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                      if (state
-                                                              .response
-                                                              .data[index]
-                                                              .incidentDate !=
-                                                          '')
-                                                        Text(
-                                                          state
-                                                              .response
-                                                              .data[index]
-                                                              .incidentDate,
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 12,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                      if (state
-                                                              .response
-                                                              .data[index]
-                                                              .statusName !=
-                                                          '')
-                                                        Text(
-                                                          state
-                                                              .response
-                                                              .data[index]
-                                                              .statusName,
-                                                          style: TextStyle(
-                                                              fontSize: 12,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              color: state
-                                                                          .response
-                                                                          .data[
-                                                                              index]
-                                                                          .statusName ==
-                                                                      "Closed"
-                                                                  ? AppColors
-                                                                      .primaryColor
-                                                                  : state.response.data[index].statusName ==
-                                                                          "NEW"
-                                                                      ? Colors
-                                                                          .blue
-                                                                      : Colors
-                                                                          .green),
-                                                        ),
-                                                    ],
-                                                  ),
-                                                  // Column(
-                                                  //   crossAxisAlignment:
-                                                  //       CrossAxisAlignment.end,
-                                                  //   children: [
-                                                  // Row(
-                                                  //   children: [
-                                                  //     InkWell(
-                                                  //       onTap: () {},
-                                                  //       child: Container(
-                                                  //         height: 25,
-                                                  //         width: 25,
-                                                  //         decoration: BoxDecoration(
-                                                  //           borderRadius:
-                                                  //               BorderRadius
-                                                  //                   .circular(5),
-                                                  //           color:
-                                                  //               AppColors.lightBlue,
-                                                  //           boxShadow: [
-                                                  //             BoxShadow(
-                                                  //               color: Colors.grey
-                                                  //                   .withOpacity(
-                                                  //                       0.8),
-                                                  //               blurRadius: 6,
-                                                  //               offset:
-                                                  //                   const Offset(
-                                                  //                       1, 1),
-                                                  //             ),
-                                                  //           ],
-                                                  //         ),
-                                                  //         child: const Icon(
-                                                  //           Icons.edit,
-                                                  //           size: 18,
-                                                  //           color: Colors.white,
-                                                  //         ),
-                                                  //       ),
-                                                  //     ),
-                                                  //     const SizedBox(
-                                                  //       width: 7,
-                                                  //     ),
-                                                  //     InkWell(
-                                                  //       onTap: () {
-                                                  //         deleteDialog(context, () {
-                                                  //           Navigator.pop(context);
-                                                  //         });
-                                                  //       },
-                                                  //       child: Container(
-                                                  //         height: 25,
-                                                  //         width: 25,
-                                                  //         decoration: BoxDecoration(
-                                                  //           borderRadius:
-                                                  //               BorderRadius
-                                                  //                   .circular(5),
-                                                  //           color: Colors.red,
-                                                  //           boxShadow: [
-                                                  //             BoxShadow(
-                                                  //               color: Colors.grey
-                                                  //                   .withOpacity(
-                                                  //                       0.8),
-                                                  //               blurRadius: 6,
-                                                  //               offset:
-                                                  //                   const Offset(
-                                                  //                       1, 1),
-                                                  //             ),
-                                                  //           ],
-                                                  //         ),
-                                                  //         child: const Icon(
-                                                  //           Icons.delete,
-                                                  //           size: 18,
-                                                  //           color: Colors.white,
-                                                  //         ),
-                                                  //       ),
-                                                  //     ),
-                                                  //   ],
-                                                  // ),
-                                                  //   ],
-                                                  // )
-                                                ],
+                            child: state is ComplaintLoading
+                                ? shimmerContainer(80, 200)
+                                : cubit.complaints.isNotEmpty
+                                    ? InkWell(
+                                        onTap: () {
+                                          // Navigator.of(context).pushNamed(AppRoutes.stageHistory);
+                                        },
+                                        child: Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              .9,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                            color: Colors.white,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey
+                                                    .withOpacity(0.8),
+                                                blurRadius: 3,
+                                                offset: const Offset(0, 3),
                                               ),
                                             ],
                                           ),
+                                          child: SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                .7,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 8.0,
+                                                  left: 8.0,
+                                                  right: 8.0,
+                                                  bottom: 8.0),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          if (cubit
+                                                                  .complaints[
+                                                                      index]
+                                                                  .customerName !=
+                                                              '')
+                                                            Text(
+                                                              cubit
+                                                                  .complaints[
+                                                                      index]
+                                                                  .customerName,
+                                                              style: const TextStyle(
+                                                                  fontSize: 16,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color: AppColors
+                                                                      .coffie),
+                                                            ),
+                                                          if (cubit
+                                                                  .complaints[
+                                                                      index]
+                                                                  .natureName !=
+                                                              '')
+                                                            Text(
+                                                              cubit
+                                                                  .complaints[
+                                                                      index]
+                                                                  .natureName,
+                                                              style: const TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color: AppColors
+                                                                      .coffie),
+                                                            ),
+                                                          if (cubit
+                                                                  .complaints[
+                                                                      index]
+                                                                  .description !=
+                                                              '')
+                                                            Text(
+                                                              cubit
+                                                                  .complaints[
+                                                                      index]
+                                                                  .description,
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          if (cubit
+                                                                  .complaints[
+                                                                      index]
+                                                                  .incidentDate !=
+                                                              '')
+                                                            Text(
+                                                              cubit
+                                                                  .complaints[
+                                                                      index]
+                                                                  .incidentDate,
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          if (cubit
+                                                                  .complaints[
+                                                                      index]
+                                                                  .statusName !=
+                                                              '')
+                                                            Text(
+                                                              cubit
+                                                                  .complaints[
+                                                                      index]
+                                                                  .statusName,
+                                                              style: TextStyle(
+                                                                  fontSize: 12,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color: cubit.complaints[index].statusName ==
+                                                                          "Closed"
+                                                                      ? AppColors
+                                                                          .primaryColor
+                                                                      : cubit.complaints[index].statusName ==
+                                                                              "NEW"
+                                                                          ? Colors
+                                                                              .blue
+                                                                          : Colors
+                                                                              .green),
+                                                            ),
+                                                        ],
+                                                      ),
+                                                      // Column(
+                                                      //   crossAxisAlignment:
+                                                      //       CrossAxisAlignment.end,
+                                                      //   children: [
+                                                      // Row(
+                                                      //   children: [
+                                                      //     InkWell(
+                                                      //       onTap: () {},
+                                                      //       child: Container(
+                                                      //         height: 25,
+                                                      //         width: 25,
+                                                      //         decoration: BoxDecoration(
+                                                      //           borderRadius:
+                                                      //               BorderRadius
+                                                      //                   .circular(5),
+                                                      //           color:
+                                                      //               AppColors.lightBlue,
+                                                      //           boxShadow: [
+                                                      //             BoxShadow(
+                                                      //               color: Colors.grey
+                                                      //                   .withOpacity(
+                                                      //                       0.8),
+                                                      //               blurRadius: 6,
+                                                      //               offset:
+                                                      //                   const Offset(
+                                                      //                       1, 1),
+                                                      //             ),
+                                                      //           ],
+                                                      //         ),
+                                                      //         child: const Icon(
+                                                      //           Icons.edit,
+                                                      //           size: 18,
+                                                      //           color: Colors.white,
+                                                      //         ),
+                                                      //       ),
+                                                      //     ),
+                                                      //     const SizedBox(
+                                                      //       width: 7,
+                                                      //     ),
+                                                      //     InkWell(
+                                                      //       onTap: () {
+                                                      //         deleteDialog(context, () {
+                                                      //           Navigator.pop(context);
+                                                      //         });
+                                                      //       },
+                                                      //       child: Container(
+                                                      //         height: 25,
+                                                      //         width: 25,
+                                                      //         decoration: BoxDecoration(
+                                                      //           borderRadius:
+                                                      //               BorderRadius
+                                                      //                   .circular(5),
+                                                      //           color: Colors.red,
+                                                      //           boxShadow: [
+                                                      //             BoxShadow(
+                                                      //               color: Colors.grey
+                                                      //                   .withOpacity(
+                                                      //                       0.8),
+                                                      //               blurRadius: 6,
+                                                      //               offset:
+                                                      //                   const Offset(
+                                                      //                       1, 1),
+                                                      //             ),
+                                                      //           ],
+                                                      //         ),
+                                                      //         child: const Icon(
+                                                      //           Icons.delete,
+                                                      //           size: 18,
+                                                      //           color: Colors.white,
+                                                      //         ),
+                                                      //       ),
+                                                      //     ),
+                                                      //   ],
+                                                      // ),
+                                                      //   ],
+                                                      // )
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
                                         ),
+                                      )
+                                    : const Center(
+                                        child: Text("Empty..."),
                                       ),
-                                    ),
-                                  )
-                                : shimmerContainer(80, 200),
                           );
                         },
                       ));

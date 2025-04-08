@@ -4,12 +4,14 @@ import '../../../core/constants/colors.dart';
 class FloatingProfileCard extends StatelessWidget {
   final String name;
   final String address;
+  final String location;
   final String phoneNumber;
 
   const FloatingProfileCard(
       {super.key,
       required this.name,
       required this.address,
+      required this.location,
       required this.phoneNumber});
 
   @override
@@ -69,6 +71,18 @@ class FloatingProfileCard extends StatelessWidget {
                     width: MediaQuery.of(context).size.width * .6,
                     child: Text(
                       address,
+                      // overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ),
+                if (location != '')
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * .6,
+                    child: Text(
+                      location,
                       // overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontSize: 13,

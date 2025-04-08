@@ -583,6 +583,9 @@ class ProjectDetails extends StatelessWidget {
                           address: state is ProjectDetailsSuccess
                               ? state.response.data.address
                               : "",
+                          location: state is ProjectDetailsSuccess
+                              ? state.response.data.location
+                              : "",
                           phoneNumber: state is ProjectDetailsSuccess
                               ? state.response.data.phoneNumber
                               : "",

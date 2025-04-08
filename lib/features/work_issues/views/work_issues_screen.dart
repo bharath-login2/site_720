@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/shimmer.dart';
-import 'package:site_720/data/models/workdetails/work_detail_model.dart';
 import '../../../core/widgets/connectivity_dialog.dart';
+import '../../../data/models/work_issues/work_issues_model.dart';
 import '../../connectivity/cubit/connectivity_cubit.dart';
 import '../../connectivity/cubit/connectivity_state.dart';
 import '../cubit/work_issues_cubit.dart';
@@ -13,7 +13,7 @@ import '../cubit/work_issues_state.dart';
 class WorkIssues extends StatelessWidget {
   WorkIssues({super.key});
 
-  List<WorkDetails> workList = [];
+  List<Issues> workList = [];
   String isWorking = 'Yes';
   String? selectedStatus;
   final formKey = GlobalKey<FormState>();
@@ -180,7 +180,7 @@ class WorkIssues extends StatelessWidget {
                                                           .backgroundColor),
                                                 ),
                                                 Text(
-                                                  workList[index].workMonthName,
+                                                  workList[index].workMonth,
                                                   style: const TextStyle(
                                                       fontSize: 14,
                                                       fontWeight:
@@ -221,27 +221,38 @@ class WorkIssues extends StatelessWidget {
                                                   children: [
                                                     Text(
                                                       workList[index]
-                                                                  .isWorking ==
-                                                              "No"
-                                                          ? workList[index]
-                                                              .workStatus
-                                                          : "Labour No:${workList[index].laboursNo}",
+                                                          .projectName,
                                                       style: const TextStyle(
-                                                        fontSize: 14,
+                                                        fontSize: 15,
                                                         fontWeight:
                                                             FontWeight.bold,
                                                       ),
                                                     ),
-                                                    Text(
-                                                      workList[index]
-                                                          .description,
-                                                      style: const TextStyle(
-                                                          fontSize: 10,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color:
-                                                              AppColors.coffie),
-                                                    ),
+                                                    if (workList[index]
+                                                            .workStatus !=
+                                                        "")
+                                                      Text(
+                                                        workList[index]
+                                                            .workStatus,
+                                                        style: const TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: AppColors
+                                                                .coffie),
+                                                      ),
+                                                    if (workList[index]
+                                                            .description !=
+                                                        "")
+                                                      Text(
+                                                        "remarks: ${workList[index].description}",
+                                                        style: const TextStyle(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: AppColors
+                                                                .coffie),
+                                                      ),
                                                   ],
                                                 ),
                                               ],

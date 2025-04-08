@@ -22,7 +22,8 @@ class Stages extends StatelessWidget {
   List<GetStages> stages = [];
   TextEditingController searchController = TextEditingController();
   TextEditingController stage = TextEditingController();
-  TextEditingController days = TextEditingController();
+  TextEditingController est_days = TextEditingController();
+  TextEditingController curingdays = TextEditingController();
   TextEditingController startDateController = TextEditingController();
   TextEditingController endDateController = TextEditingController();
   TextEditingController fdate = TextEditingController(
@@ -404,6 +405,10 @@ class Stages extends StatelessWidget {
                                                                           stageId =
                                                                           stages[index]
                                                                               .stageId;
+                                                                      String
+                                                                          est_days =
+                                                                          stages[index]
+                                                                              .estDays;
                                                                       addStageDialog(
                                                                           context,
                                                                           cubit,
@@ -555,7 +560,7 @@ class Stages extends StatelessWidget {
         return AlertDialog(
           backgroundColor: Colors.white,
           content: SizedBox(
-            height: 400,
+            height: 460,
             child: SingleChildScrollView(
               child: Form(
                 key: formKey,
@@ -572,40 +577,40 @@ class Stages extends StatelessWidget {
                             fontWeight: FontWeight.bold),
                       ),
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.95,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: DropdownButtonFormField<String>(
-                        value: selectedPhase,
-                        items: list.map((data) {
-                          return DropdownMenuItem<String>(
-                            value: data.id.toString(),
-                            child: Text(
-                              data.phaseName.toString(),
-                            ),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          selectedPhase = value;
-                        },
-                        validator: (value) {
-                          if (value == null) {
-                            return "Select a Status";
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.all(10),
-                          labelText: 'Phase',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          prefixIcon: const Icon(Icons.info),
-                        ),
-                      ),
-                    ),
+                    // Container(
+                    //   width: MediaQuery.of(context).size.width * 0.95,
+                    //   decoration: BoxDecoration(
+                    //     borderRadius: BorderRadius.circular(5),
+                    //   ),
+                    //   child: DropdownButtonFormField<String>(
+                    //     value: selectedPhase,
+                    //     items: list.map((data) {
+                    //       return DropdownMenuItem<String>(
+                    //         value: data.id.toString(),
+                    //         child: Text(
+                    //           data.phaseName.toString(),
+                    //         ),
+                    //       );
+                    //     }).toList(),
+                    //     onChanged: (value) {
+                    //       selectedPhase = value;
+                    //     },
+                    //     validator: (value) {
+                    //       if (value == null) {
+                    //         return "Select a Status";
+                    //       }
+                    //       return null;
+                    //     },
+                    //     decoration: InputDecoration(
+                    //       contentPadding: const EdgeInsets.all(10),
+                    //       labelText: 'Phase',
+                    //       border: OutlineInputBorder(
+                    //         borderRadius: BorderRadius.circular(5),
+                    //       ),
+                    //       prefixIcon: const Icon(Icons.info),
+                    //     ),
+                    //   ),
+                    // ),
                     const SizedBox(
                       height: 12,
                     ),
@@ -645,12 +650,82 @@ class Stages extends StatelessWidget {
                       child: TextFormField(
                         validator: (value) {
                           if (value == "") {
+                            return "Enter days";
+                          } else {
+                            return null;
+                          }
+                        },
+                        onTap: () {},
+                        controller: est_days,
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.all(10),
+                          labelText: 'Days*',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          prefixIcon: const Icon(Icons.calendar_view_day),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.95,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: TextFormField(
+                        validator: (value) {
+                          if (value == "") {
+                            return "Enter Curing Days";
+                          } else {
+                            return null;
+                          }
+                        },
+                        onTap: () {},
+                        controller: curingdays,
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.all(10),
+                          labelText: 'Curing Days',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          prefixIcon: const Icon(Icons.calendar_view_day),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.95,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: TextFormField(
+                        validator: (value) {
+                          if (value == "") {
                             return "Enter start date";
                           }
                           return null;
                         },
                         controller: startDateController,
                         readOnly: true,
+                        // onTap: () async {
+                        //   DateTime? selectedDate = await showDatePicker(
+                        //     context: context,
+                        //     initialDate: DateTime.now(),
+                        //     firstDate: DateTime(1900),
+                        //     lastDate: DateTime(2101),
+                        //   );
+                        //   if (selectedDate != null) {
+                        //     String formattedDate =
+                        //         "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}";
+
+                        //     startDateController.text = formattedDate;
+                        //   }
+                        // },
                         onTap: () async {
                           DateTime? selectedDate = await showDatePicker(
                             context: context,
@@ -661,11 +736,15 @@ class Stages extends StatelessWidget {
                           if (selectedDate != null) {
                             String formattedDate =
                                 "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}";
-
                             startDateController.text = formattedDate;
+                            int daysToAdd = int.tryParse(est_days.text) ?? 0;
+                            DateTime calculatedEndDate =
+                                selectedDate.add(Duration(days: daysToAdd));
+                            String endFormattedDate =
+                                "${calculatedEndDate.day}/${calculatedEndDate.month}/${calculatedEndDate.year}";
+                            endDateController.text = endFormattedDate;
                           }
                         },
-                        // controller: descriptionController, // Controller to manage the input text
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.all(10),
                           labelText: 'Start Date',
@@ -706,7 +785,6 @@ class Stages extends StatelessWidget {
                             endDateController.text = formattedDate;
                           }
                         },
-                        // controller: descriptionController, // Controller to manage the input text
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.all(10),
                           labelText: 'End Date',
@@ -730,6 +808,8 @@ class Stages extends StatelessWidget {
                               clientId,
                               selectedPhase,
                               stage.text,
+                              est_days.text,
+                              curingdays.text,
                               startDateController.text,
                               endDateController.text,
                             );
@@ -740,12 +820,15 @@ class Stages extends StatelessWidget {
                               stageId,
                               selectedPhase,
                               stage.text,
+                              est_days.text,
+                              curingdays.text,
                               startDateController.text,
                               endDateController.text,
                             );
                           }
                           selectedPhase = null;
                           stage.clear();
+                          est_days.clear();
                           startDateController.clear();
                           endDateController.clear();
                           Navigator.pop(context);

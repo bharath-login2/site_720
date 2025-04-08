@@ -171,6 +171,8 @@ class EditProjectScreen extends StatelessWidget {
                       "amount": editDetails.unitList[i].sqftTotal,
                     });
                   }
+                  updateGst();
+                  calculateTotal();
                   (context as Element).markNeedsBuild();
                 }
               },
@@ -1153,10 +1155,10 @@ class EditProjectScreen extends StatelessWidget {
                                                               "Total Square Feet : ",
                                                               totalSqFt
                                                                   .toString()),
-                                                          buildRow(
-                                                              "Total Rate : ",
-                                                              totalRate
-                                                                  .toString()),
+                                                          // buildRow(
+                                                          //     "Total Rate : ",
+                                                          //     totalRate
+                                                          //         .toString()),
                                                           buildRow(
                                                               "Average : ",
                                                               averageRate
@@ -1198,6 +1200,7 @@ class EditProjectScreen extends StatelessWidget {
                                       estBudAmt = value;
                                       totalAmt = value;
                                       updateGst();
+                                      (context as Element).markNeedsBuild();
                                     },
                                     decoration: const InputDecoration(
                                         labelText: 'Fixed rate',
@@ -1220,6 +1223,7 @@ class EditProjectScreen extends StatelessWidget {
                                   onChanged: (value) async {
                                     gst = value.toString();
                                     updateGst();
+                                    (context as Element).markNeedsBuild();
                                   },
                                   items: gstList.map((data) {
                                     return DropdownMenuItem<String>(
@@ -1799,28 +1803,7 @@ class EditProjectScreen extends StatelessWidget {
                             "rate": rate.text,
                             "amount": amount.text,
                           });
-                          for (var unit in unitList) {
-                            double squareFeet =
-                                double.tryParse(unit["squareFeet"] ?? "0") ?? 0;
-                            double rate =
-                                double.tryParse(unit["rate"] ?? "0") ?? 0;
-                            double amount =
-                                double.tryParse(unit["amount"] ?? "0") ?? 0;
-
-                            totalSqFt += squareFeet;
-                            totalRate += rate;
-                            totalAmount += amount;
-                          }
-                          averageRate = unitList.isNotEmpty
-                              ? totalRate / unitList.length
-                              : 0;
-                          estBudAmt = totalAmount.toString();
-                          totalAmt = totalAmount.toString();
-                          name.text = "";
-                          squareFeet.text = "";
-                          rate.text = "";
-                          amount.text = "";
-                          log(unitList.toString());
+                          calculateTotal();
                         }
                         Navigator.pop(context);
                         updateGst();
@@ -1844,7 +1827,7 @@ class EditProjectScreen extends StatelessWidget {
   }
 
   void updateGst() {
-    double amt = double.parse(estBudAmt);
+    double amt = double.parse(estBudAmt == "" ? "0" : estBudAmt);
     double gstPercent = double.parse(gst ?? "0");
     double gstRate = (amt * gstPercent) / 100;
     gstAmt = gstRate.toString();
@@ -1865,7 +1848,7 @@ class EditProjectScreen extends StatelessWidget {
       totalRate += rate;
       totalAmount += amount;
     }
-    averageRate = unitList.isNotEmpty ? totalRate / unitList.length : 0;
+    averageRate = unitList.isNotEmpty ? totalRate / totalSqFt : 0;
     estBudAmt = totalAmount.toString();
     totalAmt = totalAmount.toString();
     name.text = "";

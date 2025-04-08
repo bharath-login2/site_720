@@ -31,24 +31,36 @@ class StagesCubit extends Cubit<StagesState> {
     }
   }
 
-    Future<void> getPhaseNew(String projectId) async {
+  Future<void> getPhaseNew(String projectId) async {
     try {
-      StagePhaseList response =
-          await HttpServices.getPhaseNew(projectId);
+      StagePhaseList response = await HttpServices.getPhaseNew(projectId);
       if (response.status == true) {
         emit(PhaselistSuccess(response));
-      } else {
-      }
+      } else {}
     } catch (e) {
       emit(StagesFailure('Failed to fetch data: ${e.toString()}'));
     }
   }
 
-  Future<void> addStageDetails(String projectId, String clintId,selectedStatus, String stage,
-      String startDateController, String endDateController) async {
+  Future<void> addStageDetails(
+      String projectId,
+      String clintId,
+      selectedStatus,
+      String stage,
+      String days,
+      String curingdays,
+      String startDateController,
+      String endDateController) async {
     try {
       SuccessResponse response = await HttpServices.addStages(
-          projectId, clintId,selectedStatus, stage, startDateController, endDateController);
+          projectId,
+          clintId,
+          selectedStatus,
+          stage,
+          days,
+          curingdays,
+          startDateController,
+          endDateController);
       if (response.status == true) {
         getStagesList(projectId);
         emit(AddedSuccess(response));
@@ -60,11 +72,27 @@ class StagesCubit extends Cubit<StagesState> {
     }
   }
 
-   Future<void> editStageDetails(String projectId, String clintId,String stageId, selectedStatus, String stage,
-      String startDateController, String endDateController) async {
+  Future<void> editStageDetails(
+      String projectId,
+      String clintId,
+      String stageId,
+      selectedStatus,
+      String stage,
+      String est_days,
+      String curingdays,
+      String startDateController,
+      String endDateController) async {
     try {
       SuccessResponse response = await HttpServices.editStages(
-          projectId, clintId,stageId,selectedStatus, stage, startDateController, endDateController);
+          projectId,
+          clintId,
+          stageId,
+          selectedStatus,
+          stage,
+          est_days,
+          curingdays,
+          startDateController,
+          endDateController);
       if (response.status == true) {
         getStagesList(projectId);
         emit(AddedSuccess(response));

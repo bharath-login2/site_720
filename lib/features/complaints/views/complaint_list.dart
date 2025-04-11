@@ -14,6 +14,10 @@ import '../cubit/complaint_state.dart';
 class ComplaintList extends StatelessWidget {
   ComplaintList({super.key});
 
+  final formKey = GlobalKey<FormState>();
+  TextEditingController status = TextEditingController();
+  TextEditingController remark = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -269,82 +273,126 @@ class ComplaintList extends StatelessWidget {
                                                             ),
                                                         ],
                                                       ),
-                                                      // Column(
-                                                      //   crossAxisAlignment:
-                                                      //       CrossAxisAlignment.end,
-                                                      //   children: [
-                                                      // Row(
-                                                      //   children: [
-                                                      //     InkWell(
-                                                      //       onTap: () {},
-                                                      //       child: Container(
-                                                      //         height: 25,
-                                                      //         width: 25,
-                                                      //         decoration: BoxDecoration(
-                                                      //           borderRadius:
-                                                      //               BorderRadius
-                                                      //                   .circular(5),
-                                                      //           color:
-                                                      //               AppColors.lightBlue,
-                                                      //           boxShadow: [
-                                                      //             BoxShadow(
-                                                      //               color: Colors.grey
-                                                      //                   .withOpacity(
-                                                      //                       0.8),
-                                                      //               blurRadius: 6,
-                                                      //               offset:
-                                                      //                   const Offset(
-                                                      //                       1, 1),
-                                                      //             ),
-                                                      //           ],
-                                                      //         ),
-                                                      //         child: const Icon(
-                                                      //           Icons.edit,
-                                                      //           size: 18,
-                                                      //           color: Colors.white,
-                                                      //         ),
-                                                      //       ),
-                                                      //     ),
-                                                      //     const SizedBox(
-                                                      //       width: 7,
-                                                      //     ),
-                                                      //     InkWell(
-                                                      //       onTap: () {
-                                                      //         deleteDialog(context, () {
-                                                      //           Navigator.pop(context);
-                                                      //         });
-                                                      //       },
-                                                      //       child: Container(
-                                                      //         height: 25,
-                                                      //         width: 25,
-                                                      //         decoration: BoxDecoration(
-                                                      //           borderRadius:
-                                                      //               BorderRadius
-                                                      //                   .circular(5),
-                                                      //           color: Colors.red,
-                                                      //           boxShadow: [
-                                                      //             BoxShadow(
-                                                      //               color: Colors.grey
-                                                      //                   .withOpacity(
-                                                      //                       0.8),
-                                                      //               blurRadius: 6,
-                                                      //               offset:
-                                                      //                   const Offset(
-                                                      //                       1, 1),
-                                                      //             ),
-                                                      //           ],
-                                                      //         ),
-                                                      //         child: const Icon(
-                                                      //           Icons.delete,
-                                                      //           size: 18,
-                                                      //           color: Colors.white,
-                                                      //         ),
-                                                      //       ),
-                                                      //     ),
-                                                      //   ],
-                                                      // ),
-                                                      //   ],
-                                                      // )
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .end,
+                                                        children: [
+                                                          Row(
+                                                            children: [
+                                                              InkWell(
+                                                                onTap: () {
+                                                                  updateStatus(
+                                                                      context,
+                                                                      cubit);
+                                                                },
+                                                                child:
+                                                                    Container(
+                                                                  height: 25,
+                                                                  width: 25,
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(5),
+                                                                    color: AppColors
+                                                                        .lightBlue,
+                                                                    boxShadow: [
+                                                                      BoxShadow(
+                                                                        color: Colors
+                                                                            .grey
+                                                                            .withOpacity(0.8),
+                                                                        blurRadius:
+                                                                            6,
+                                                                        offset: const Offset(
+                                                                            1,
+                                                                            1),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  child:
+                                                                      const Icon(
+                                                                    Icons
+                                                                        .upload,
+                                                                    size: 18,
+                                                                    color: Colors
+                                                                        .white,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              // const SizedBox(
+                                                              //   width: 7,
+                                                              // ),
+                                                              // InkWell(
+                                                              //   onTap: () {},
+                                                              //   child: Container(
+                                                              //     height: 25,
+                                                              //     width: 25,
+                                                              //     decoration: BoxDecoration(
+                                                              //       borderRadius:
+                                                              //           BorderRadius
+                                                              //               .circular(5),
+                                                              //       color:
+                                                              //           AppColors.lightBlue,
+                                                              //       boxShadow: [
+                                                              //         BoxShadow(
+                                                              //           color: Colors.grey
+                                                              //               .withOpacity(
+                                                              //                   0.8),
+                                                              //           blurRadius: 6,
+                                                              //           offset:
+                                                              //               const Offset(
+                                                              //                   1, 1),
+                                                              //         ),
+                                                              //       ],
+                                                              //     ),
+                                                              //     child: const Icon(
+                                                              //       Icons.edit,
+                                                              //       size: 18,
+                                                              //       color: Colors.white,
+                                                              //     ),
+                                                              //   ),
+                                                              // ),
+                                                              // const SizedBox(
+                                                              //   width: 7,
+                                                              // ),
+                                                              // InkWell(
+                                                              //   onTap: () {
+                                                              //     deleteDialog(context, () {
+                                                              //       Navigator.pop(context);
+                                                              //     });
+                                                              //   },
+                                                              //   child: Container(
+                                                              //     height: 25,
+                                                              //     width: 25,
+                                                              //     decoration: BoxDecoration(
+                                                              //       borderRadius:
+                                                              //           BorderRadius
+                                                              //               .circular(5),
+                                                              //       color: Colors.red,
+                                                              //       boxShadow: [
+                                                              //         BoxShadow(
+                                                              //           color: Colors.grey
+                                                              //               .withOpacity(
+                                                              //                   0.8),
+                                                              //           blurRadius: 6,
+                                                              //           offset:
+                                                              //               const Offset(
+                                                              //                   1, 1),
+                                                              //         ),
+                                                              //       ],
+                                                              //     ),
+                                                              //     child: const Icon(
+                                                              //       Icons.delete,
+                                                              //       size: 18,
+                                                              //       color: Colors.white,
+                                                              //     ),
+                                                              //   ),
+                                                              // ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      )
                                                     ],
                                                   ),
                                                 ],
@@ -365,45 +413,99 @@ class ComplaintList extends StatelessWidget {
     );
   }
 
-  Future<void> deleteDialog(BuildContext context, onTap) async {
+  Future<void> updateStatus(
+    BuildContext context,
+    ComplaintCubit cubit,
+  ) async {
     return showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          content: SizedBox(
-            height: 200,
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 30.0, bottom: 20),
-                    child: Text(
-                      "Are you sure ?",
-                      style: TextStyle(
-                          color: AppColors.primaryColor,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold),
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              content: SizedBox(
+                height: 300,
+                child: SingleChildScrollView(
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(top: 16.0, bottom: 25),
+                          child: Text(
+                            "Update Status",
+                            style: TextStyle(
+                                color: AppColors.primaryColor,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.95,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: TextFormField(
+                            keyboardType: TextInputType.text,
+                            controller: status,
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.all(10),
+                              labelText: 'Status',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              prefixIcon: const Icon(Icons.edit),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 12,
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.95,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: TextFormField(
+                            keyboardType: TextInputType.text,
+                            controller: remark,
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.all(10),
+                              labelText: 'Remark',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              prefixIcon: const Icon(Icons.text_fields),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            if (formKey.currentState!.validate()) {
+                              Navigator.pop(context);
+                            }
+                          },
+                          child: LargeButton(title: "Update"),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Close'),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  GestureDetector(
-                    onTap: onTap,
-                    child: LargeButton(title: "Delete"),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Close'),
-                  ),
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );

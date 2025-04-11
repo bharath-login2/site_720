@@ -185,6 +185,8 @@ class EditCilentScreen extends StatelessWidget {
                                 return "Enter phone number";
                               } else if (isValidPhoneNumber(value!) == false) {
                                 return "Enter valid phone number";
+                              } else if (value.length != 10) {
+                                return "Enter valid number";
                               } else {
                                 return null;
                               }
@@ -220,6 +222,8 @@ class EditCilentScreen extends StatelessWidget {
                               if (value == "") {
                                 return "Enter whatsApp number";
                               } else if (isValidPhoneNumber(value!) == false) {
+                                return "Enter valid number";
+                              } else if (value.length != 10) {
                                 return "Enter valid number";
                               } else {
                                 return null;
@@ -277,6 +281,14 @@ class EditCilentScreen extends StatelessWidget {
                           width: MediaQuery.of(context).size.width * .9,
                           child: TextFormField(
                             controller: email,
+                            validator: (value) {
+                              if (value != "" &&
+                                  isValidEmail(value!) == false) {
+                                return "Enter valid Email";
+                              } else {
+                                return null;
+                              }
+                            },
                             decoration: InputDecoration(
                               fillColor: Colors.white,
                               filled: true,
@@ -335,7 +347,7 @@ class EditCilentScreen extends StatelessWidget {
                                 // Custom border
                                 borderRadius: BorderRadius.circular(5),
                               ),
-                              labelText: 'Civil ID',
+                              labelText: 'Civil Id',
                               labelStyle: const TextStyle(
                                   color: Colors.grey, fontSize: 14),
                               contentPadding: const EdgeInsets.only(left: 10),
@@ -514,5 +526,22 @@ class EditCilentScreen extends StatelessWidget {
   bool isValidName(String name) {
     final nameRegExp = RegExp(r"^[a-zA-Z]+(?:[\s'-][a-zA-Z]+)*$");
     return nameRegExp.hasMatch(name);
+  }
+
+  bool isValidEmail(String email) {
+    final regex = RegExp(
+        r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$');
+    return regex.hasMatch(email);
+  }
+
+  bool isValidGST(String gstNumber) {
+    final regex =
+        RegExp(r'^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$');
+    return regex.hasMatch(gstNumber);
+  }
+
+  bool isValidAadhaar(String aadhaar) {
+    final regex = RegExp(r'^[2-9]{1}[0-9]{11}$');
+    return regex.hasMatch(aadhaar);
   }
 }

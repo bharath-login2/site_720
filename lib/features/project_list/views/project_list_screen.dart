@@ -265,7 +265,10 @@ class ProjectList extends StatelessWidget {
                                                     arguments: {
                                                       "id": state.response.data
                                                           .projectList[index].id
-                                                    });
+                                                    }).then((_) {
+                                                  cubit.getProjectList(
+                                                      status, search.text);
+                                                });
                                               },
                                               child: Container(
                                                 width: MediaQuery.of(context)
@@ -565,7 +568,13 @@ class ProjectList extends StatelessWidget {
                                                                             .data
                                                                             .projectList[index]
                                                                             .id
-                                                                      });
+                                                                      }).then(
+                                                                      (_) {
+                                                                    cubit.getProjectList(
+                                                                        status,
+                                                                        search
+                                                                            .text);
+                                                                  });
                                                                 },
                                                                 child:
                                                                     Container(

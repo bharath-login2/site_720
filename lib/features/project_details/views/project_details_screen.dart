@@ -148,30 +148,6 @@ class ProjectDetails extends StatelessWidget {
                                           MainAxisAlignment.spaceEvenly,
                                       children: [
                                         DetailsItem(
-                                          title: "Total Worked",
-                                          value: state is ProjectDetailsSuccess
-                                              ? state.response.data.totalWorked
-                                              : null,
-                                          icon: Icons.done_all,
-                                        ),
-                                        DetailsItem(
-                                          title: "Unassigned Work",
-                                          value: state is ProjectDetailsSuccess
-                                              ? state
-                                                  .response.data.unassignedWorks
-                                              : null,
-                                          icon: Icons.person_off,
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        DetailsItem(
                                           title: "Company Issues",
                                           value: state is ProjectDetailsSuccess
                                               ? state.response.data

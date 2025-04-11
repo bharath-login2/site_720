@@ -11,8 +11,8 @@ import '../../connectivity/cubit/connectivity_state.dart';
 import '../cubit/client_cubit.dart';
 import '../cubit/client_state.dart';
 
-class ClientList extends StatelessWidget {
-  ClientList({super.key});
+class ClientDetails extends StatelessWidget {
+  ClientDetails({super.key});
 
   TextEditingController searchController = TextEditingController();
 
@@ -81,7 +81,6 @@ class ClientList extends StatelessWidget {
                                       context, AppRoutes.addCilentScreen)
                                   .then((_) {
                                 cubit.getClientList();
-                                
                               });
                             },
                             child: const CircleAvatar(
@@ -338,100 +337,92 @@ class ClientList extends StatelessWidget {
                                                       //   children: [
                                                       //     Row(
                                                       //       children: [
-                                                      Row(
-                                                        children: [
-                                                          InkWell(
-                                                            onTap: () {
-                                                              connStatus = true;
-                                                              Navigator.pushNamed(
-                                                                  context,
-                                                                  AppRoutes
-                                                                      .editCilentScreen,
-                                                                  arguments: {
-                                                                    "client_id": state
-                                                                        .filteredList[
-                                                                            index]
-                                                                        .id
-                                                                  }).then((_) {
-                                                                cubit
-                                                                    .getClientList();
-                                                              });
-                                                            },
-                                                            child: Container(
-                                                              height: 25,
-                                                              width: 25,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            5),
-                                                                color: AppColors
-                                                                    .primaryColor,
-                                                                boxShadow: [
-                                                                  BoxShadow(
-                                                                    color: Colors
-                                                                        .grey
-                                                                        .withOpacity(
-                                                                            0.8),
-                                                                    blurRadius:
-                                                                        6,
-                                                                    offset:
-                                                                        const Offset(
-                                                                            1,
-                                                                            1),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              child: const Icon(
-                                                                Icons.edit,
-                                                                size: 18,
+                                                      InkWell(
+                                                        onTap: () {
+                                                          connStatus = true;
+                                                          Navigator.pushNamed(
+                                                              context,
+                                                              AppRoutes
+                                                                  .editCilentScreen,
+                                                              arguments: {
+                                                                "client_id": state
+                                                                    .filteredList[
+                                                                        index]
+                                                                    .id
+                                                              }).then((_) {
+                                                            cubit
+                                                                .getClientList();
+                                                          });
+                                                        },
+                                                        child: Container(
+                                                          height: 25,
+                                                          width: 25,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        5),
+                                                            color: AppColors
+                                                                .primaryColor,
+                                                            boxShadow: [
+                                                              BoxShadow(
                                                                 color: Colors
-                                                                    .white,
+                                                                    .grey
+                                                                    .withOpacity(
+                                                                        0.8),
+                                                                blurRadius: 6,
+                                                                offset:
+                                                                    const Offset(
+                                                                        1, 1),
                                                               ),
-                                                            ),
+                                                            ],
                                                           ),
-                                                          // const SizedBox(
-                                                          //   width: 7,
-                                                          // ),
-                                                          // InkWell(
-                                                          //   onTap: () {},
-                                                          //   child: Container(
-                                                          //     height: 25,
-                                                          //     width: 25,
-                                                          //     decoration:
-                                                          //         BoxDecoration(
-                                                          //       borderRadius:
-                                                          //           BorderRadius
-                                                          //               .circular(
-                                                          //                   5),
-                                                          //       color: AppColors
-                                                          //           .primaryColor,
-                                                          //       boxShadow: [
-                                                          //         BoxShadow(
-                                                          //           color: Colors
-                                                          //               .grey
-                                                          //               .withOpacity(
-                                                          //                   0.8),
-                                                          //           blurRadius:
-                                                          //               6,
-                                                          //           offset:
-                                                          //               const Offset(
-                                                          //                   1,
-                                                          //                   1),
-                                                          //         ),
-                                                          //       ],
-                                                          //     ),
-                                                          //     child: const Icon(
-                                                          //       Icons.delete,
-                                                          //       size: 18,
-                                                          //       color: Colors
-                                                          //           .white,
-                                                          //     ),
-                                                          //   ),
-                                                          // ),
-                                                        ],
+                                                          child: const Icon(
+                                                            Icons.edit,
+                                                            size: 18,
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
                                                       ),
+                                                      //         const SizedBox(
+                                                      //           width: 7,
+                                                      //         ),
+                                                      //         InkWell(
+                                                      //           onTap: () {
+                                                      //             deleteDialog(context, () {
+                                                      //               Navigator.pop(context);
+                                                      //             });
+                                                      //           },
+                                                      //           child: Container(
+                                                      //             height: 25,
+                                                      //             width: 25,
+                                                      //             decoration: BoxDecoration(
+                                                      //               borderRadius:
+                                                      //                   BorderRadius.circular(
+                                                      //                       5),
+                                                      //               color: Colors.red,
+                                                      //               boxShadow: [
+                                                      //                 BoxShadow(
+                                                      //                   color: Colors.grey
+                                                      //                       .withOpacity(0.8),
+                                                      //                   blurRadius: 6,
+                                                      //                   offset:
+                                                      //                       const Offset(1, 1),
+                                                      //                 ),
+                                                      //               ],
+                                                      //             ),
+                                                      //             child: const Icon(
+                                                      //               Icons.delete,
+                                                      //               size: 18,
+                                                      //               color: Colors.white,
+                                                      //             ),
+                                                      //           ),
+                                                      //         ),
+                                                      //       ],
+                                                      //     ),
+                                                      //   ],
+                                                      // )
                                                     ],
                                                   ),
                                                 ],

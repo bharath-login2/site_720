@@ -121,9 +121,18 @@ class WorkDetailsScreen extends StatelessWidget {
                           ),
                           InkWell(
                             onTap: () {
+                              date.text = DateFormat('dd-MM-yyyy')
+                                  .format(DateTime.now());
                               if (issuesList.isNotEmpty) {
                                 workDialog(context, cubit, issuesList, id,
-                                    clientId, "add", "");
+                                        clientId, "add", "")
+                                    .then((_) {
+                                  date.clear();
+                                  noOfLabours.clear();
+                                  description.clear();
+                                  selectedStatus = null;
+                                  isWorking = 'Yes';
+                                });
                               } else {
                                 snackBar(context, "Something went wrong",
                                     Colors.red);
@@ -356,14 +365,25 @@ class WorkDetailsScreen extends StatelessWidget {
                                                                 workList[index]
                                                                     .description;
                                                             workDialog(
-                                                                context,
-                                                                cubit,
-                                                                issuesList,
-                                                                id,
-                                                                clientId,
-                                                                "edit",
-                                                                workList[index]
-                                                                    .id);
+                                                                    context,
+                                                                    cubit,
+                                                                    issuesList,
+                                                                    id,
+                                                                    clientId,
+                                                                    "edit",
+                                                                    workList[
+                                                                            index]
+                                                                        .id)
+                                                                .then((_) {
+                                                              date.clear();
+                                                              noOfLabours
+                                                                  .clear();
+                                                              description
+                                                                  .clear();
+                                                              selectedStatus =
+                                                                  null;
+                                                              isWorking = 'Yes';
+                                                            });
                                                           },
                                                           child: Container(
                                                             height: 25,
@@ -675,7 +695,7 @@ class WorkDetailsScreen extends StatelessWidget {
                             Navigator.pop(context);
                             date.clear();
                             noOfLabours.clear();
-                            description.clear();   
+                            description.clear();
                             selectedStatus = null;
                             isWorking = 'Yes';
                           }

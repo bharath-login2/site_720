@@ -163,6 +163,8 @@ class AddCilentScreen extends StatelessWidget {
                                 return "Enter phone number";
                               } else if (isValidPhoneNumber(value!) == false) {
                                 return "Enter valid phone number";
+                              } else if (value.length != 10) {
+                                return "Enter valid number";
                               } else {
                                 return null;
                               }
@@ -198,6 +200,8 @@ class AddCilentScreen extends StatelessWidget {
                               if (value == "") {
                                 return "Enter whatsApp number";
                               } else if (isValidPhoneNumber(value!) == false) {
+                                return "Enter valid number";
+                              } else if (value.length != 10) {
                                 return "Enter valid number";
                               } else {
                                 return null;
@@ -255,6 +259,14 @@ class AddCilentScreen extends StatelessWidget {
                           width: MediaQuery.of(context).size.width * .9,
                           child: TextFormField(
                             controller: email,
+                            validator: (value) {
+                              if (value != "" &&
+                                  isValidEmail(value!) == false) {
+                                return "Enter valid Email";
+                              } else {
+                                return null;
+                              }
+                            },
                             decoration: InputDecoration(
                               fillColor: Colors.white,
                               filled: true,
@@ -306,6 +318,14 @@ class AddCilentScreen extends StatelessWidget {
                           width: MediaQuery.of(context).size.width * .9,
                           child: TextFormField(
                             controller: civilId,
+                            //  validator: (value) {
+                            //   if (value != "" &&
+                            //       isValidAadhaar(value!) == false) {
+                            //     return "Enter valid Aadhar number";
+                            //   } else {
+                            //     return null;
+                            //   }
+                            // },
                             decoration: InputDecoration(
                               fillColor: Colors.white,
                               filled: true,
@@ -327,6 +347,14 @@ class AddCilentScreen extends StatelessWidget {
                           width: MediaQuery.of(context).size.width * .9,
                           child: TextFormField(
                             controller: gstNumber,
+                            // validator: (value) {
+                            //   if (value != "" &&
+                            //       isValidGST(value!) == false) {
+                            //     return "Enter valid number";
+                            //   } else {
+                            //     return null;
+                            //   }
+                            // },
                             decoration: InputDecoration(
                               fillColor: Colors.white,
                               filled: true,
@@ -492,4 +520,20 @@ class AddCilentScreen extends StatelessWidget {
     final nameRegExp = RegExp(r"^[a-zA-Z]+(?:[\s'-][a-zA-Z]+)*$");
     return nameRegExp.hasMatch(name);
   }
+
+  bool isValidEmail(String email) {
+    final regex = RegExp(
+        r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$');
+    return regex.hasMatch(email);
+  }
+  bool isValidGST(String gstNumber) {
+    final regex =
+        RegExp(r'^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$');
+    return regex.hasMatch(gstNumber);
+  }
+
+//   bool isValidAadhaar(String aadhaar) {
+//   final regex = RegExp(r'^[2-9]{1}[0-9]{11}$');
+//   return regex.hasMatch(aadhaar);
+// }
 }

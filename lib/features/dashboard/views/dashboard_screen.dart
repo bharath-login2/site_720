@@ -388,8 +388,6 @@ class DashboardScreen extends StatelessWidget {
                                                     Axis.horizontal,
                                                 padding: EdgeInsets.zero,
                                                 shrinkWrap: true,
-                                                physics:
-                                                    const NeverScrollableScrollPhysics(),
                                                 itemCount: state.response.data
                                                     .expenseData.length,
                                                 itemBuilder: (context, i) {

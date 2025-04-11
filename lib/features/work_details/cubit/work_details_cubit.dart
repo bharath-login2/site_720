@@ -3,6 +3,7 @@ import 'package:site_720/data/models/succes_response/success_response.dart';
 import 'package:site_720/data/models/workdetails/work_detail_model.dart';
 
 import '../../../data/models/workdetails/add_work_details_model.dart';
+import '../../../data/models/workdetails/work_stage_model.dart';
 import '../../../data/services/http_services.dart';
 import 'work_details_state.dart';
 
@@ -10,6 +11,7 @@ class WorkDetailsCubit extends Cubit<WorkDetailsState> {
   WorkDetailsCubit(String projectId) : super(WorkDetailsInitial()) {
     getWorkDetails(projectId);
     getWorkIssues();
+     getWorkStages(projectId);
   }
 
   void startLoading() {
@@ -57,6 +59,20 @@ class WorkDetailsCubit extends Cubit<WorkDetailsState> {
     }
   }
 
+    Future<void> getWorkStages(String projectId) async {
+    emit(WorkDetailsLoading());
+    try {
+      WorkStagesModel response = await HttpServices.getWorkStages(projectId);
+      if (response.status == true) {
+        emit(WorkStagesSuccess(response));
+      } else {
+        emit(WorkDetailsFailure(response.message));
+      }
+    } catch (e) {
+      emit(WorkDetailsFailure('Failed to fetch data: ${e.toString()}'));
+    }
+  }
+
   Future<void> addWorkDetails(
       String projectId,
       String clintId,
@@ -64,10 +80,11 @@ class WorkDetailsCubit extends Cubit<WorkDetailsState> {
       String date,
       String noOfLabours,
       String status,
+       String stage,
       String description) async {
     try {
       SuccessResponse response = await HttpServices.addWorkDetails(projectId,
-          clintId, isWorking, date, noOfLabours, status, description);
+          clintId, isWorking, date, noOfLabours, status,stage, description);
       if (response.status == true) {
         getWorkDetails(projectId);
         emit(AddingSuccess(response.message));
@@ -86,11 +103,12 @@ class WorkDetailsCubit extends Cubit<WorkDetailsState> {
       String date,
       String noOfLabours,
       String status,
+        String stage,
       String description,
       String workId) async {
     try {
       SuccessResponse response = await HttpServices.editWorkDetails(projectId,
-          clintId, isWorking, date, noOfLabours, status, description, workId);
+          clintId, isWorking, date, noOfLabours, status,stage, description, workId);
       if (response.status == true) {
         getWorkDetails(projectId);
       } else {

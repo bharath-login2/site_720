@@ -12,6 +12,7 @@ import '../../../core/widgets/connectivity_dialog.dart';
 import '../../../core/widgets/dialogs.dart';
 import '../../../core/widgets/snack_bar.dart';
 import '../../../data/models/workdetails/add_work_details_model.dart';
+import '../../../data/models/workdetails/work_stage_model.dart';
 import '../../connectivity/cubit/connectivity_cubit.dart';
 import '../../connectivity/cubit/connectivity_state.dart';
 import '../cubit/work_details_cubit.dart';
@@ -21,8 +22,10 @@ class WorkDetailsScreen extends StatelessWidget {
 
   List<WorkIssues> issuesList = [];
   List<WorkDetails> workList = [];
+  List<Workstage> stageList = [];
   String isWorking = 'Yes';
   String? selectedStatus;
+  String? selectedStage;
   final formKey = GlobalKey<FormState>();
   TextEditingController date = TextEditingController();
   TextEditingController noOfLabours = TextEditingController();
@@ -57,6 +60,9 @@ class WorkDetailsScreen extends StatelessWidget {
               }
               if (state is WorkDetailsSuccess) {
                 workList = state.response.data;
+              }
+               if (state is WorkStagesSuccess) {
+                stageList = state.response.data;
               }
               if (state is AddingSuccess) {
                 snackBar(context, state.message, AppColors.primaryColor);
@@ -124,7 +130,7 @@ class WorkDetailsScreen extends StatelessWidget {
                               date.text = DateFormat('dd-MM-yyyy')
                                   .format(DateTime.now());
                               if (issuesList.isNotEmpty) {
-                                workDialog(context, cubit, issuesList, id,
+                                workDialog(context, cubit, issuesList,stageList, id,
                                         clientId, "add", "")
                                     .then((_) {
                                   date.clear();
@@ -361,6 +367,9 @@ class WorkDetailsScreen extends StatelessWidget {
                                                             selectedStatus =
                                                                 workList[index]
                                                                     .workStatusId;
+                                                                    selectedStage=
+                                                                     workList[index]
+                                                                    .stageId;
                                                             description.text =
                                                                 workList[index]
                                                                     .description;
@@ -368,6 +377,7 @@ class WorkDetailsScreen extends StatelessWidget {
                                                                     context,
                                                                     cubit,
                                                                     issuesList,
+                                                                     stageList,
                                                                     id,
                                                                     clientId,
                                                                     "edit",
@@ -489,6 +499,7 @@ class WorkDetailsScreen extends StatelessWidget {
     BuildContext context,
     cubit,
     List<WorkIssues> list,
+    List<Workstage> stagelist,
     String projectId,
     String clientId,
     String type,
@@ -500,7 +511,7 @@ class WorkDetailsScreen extends StatelessWidget {
         return AlertDialog(
           backgroundColor: Colors.white,
           content: SizedBox(
-              height: 500,
+              height: 550,
               child: SingleChildScrollView(
                 child: Form(
                   key: formKey,
@@ -548,6 +559,36 @@ class WorkDetailsScreen extends StatelessWidget {
                           const Text("No"),
                         ],
                       ),
+                        const SizedBox(height: 12),
+                       Container(
+                          width: MediaQuery.of(context).size.width * 0.95,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: DropdownButtonFormField<String>(
+                            value: selectedStage,
+                            items: stagelist.map((data) {
+                              return DropdownMenuItem<String>(
+                                value: data.stageId.toString(),
+                                child: Text(
+                                  data.stageName.toString(),
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              selectedStage = value;
+                            },
+                           
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.all(10),
+                              labelText: 'Stages*',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              prefixIcon: const Icon(Icons.info),
+                            ),
+                          ),
+                        ),
                       const SizedBox(height: 12),
                       Container(
                         width: MediaQuery.of(context).size.width * 0.95,
@@ -680,6 +721,7 @@ class WorkDetailsScreen extends StatelessWidget {
                                   date.text,
                                   noOfLabours.text,
                                   selectedStatus ?? "",
+                                   selectedStage ?? "",
                                   description.text);
                             } else {
                               cubit.editWorkDetails(
@@ -689,6 +731,7 @@ class WorkDetailsScreen extends StatelessWidget {
                                   date.text,
                                   noOfLabours.text,
                                   selectedStatus ?? "",
+                                   selectedStage ?? "",
                                   description.text,
                                   workId);
                             }

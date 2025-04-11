@@ -1,5 +1,6 @@
 import '../../../data/models/workdetails/add_work_details_model.dart';
 import '../../../data/models/workdetails/work_detail_model.dart';
+import '../../../data/models/workdetails/work_stage_model.dart';
 
 class WorkDetailsState {
   final DateTime? fromDate;
@@ -42,4 +43,10 @@ class AddingSuccess extends WorkDetailsState {
 class AddingFailure extends WorkDetailsState {
   final String message;
   AddingFailure(this.message);
+}
+
+class WorkStagesSuccess extends WorkDetailsState {
+  WorkStagesModel response;
+
+  WorkStagesSuccess(this.response);
 }

@@ -44,6 +44,7 @@ import '../models/work_issues/work_issues_model.dart';
 import '../models/workdetails/add_work_details_model.dart';
 import '../models/stages/stage_model.dart';
 import '../models/workdetails/work_detail_model.dart';
+import '../models/workdetails/work_stage_model.dart';
 
 class HttpServices {
   static Future apiAuth() async {
@@ -196,6 +197,22 @@ class HttpServices {
     }
   }
 
+
+  static Future getWorkStages(projectId) async {
+    try {
+      http.Response response = await http.post(
+          Uri.parse("${await Config.getUrl()}get_work_stages"),
+          body: ({
+              "project_id": projectId,
+            'token': await getSharedPreference('token')}));
+      if (response.statusCode == 200) {
+        return workStagesModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
   static Future getComplaintList() async {
     try {
       http.Response response = await http.post(
@@ -275,6 +292,7 @@ class HttpServices {
       String date,
       String noOfLabours,
       String status,
+        String stage,
       String description) async {
     try {
       http.Response response = await http
@@ -286,6 +304,7 @@ class HttpServices {
         "date": date,
         "no_of_labours": noOfLabours,
         "status": status,
+         "stage": stage,
         "description": description,
       });
       if (response.statusCode == 200) {
@@ -303,6 +322,7 @@ class HttpServices {
       String date,
       String noOfLabours,
       String status,
+        String stage,
       String description,
       String workId) async {
     try {
@@ -316,6 +336,7 @@ class HttpServices {
         "date": date,
         "no_of_labours": noOfLabours,
         "status": status,
+        "stage": stage,
         "description": description,
       });
       if (response.statusCode == 200) {

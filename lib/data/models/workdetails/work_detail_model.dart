@@ -44,6 +44,8 @@ class WorkDetails {
     String laboursNo;
     String workStatusId;
     String workStatus;
+    String stageName;
+    String stageId;
     String workMonthName;
 
     WorkDetails({
@@ -58,6 +60,8 @@ class WorkDetails {
         required this.laboursNo,
         required this.workStatusId,
         required this.workStatus,
+         required this.stageName,
+          required this.stageId,
         required this.workMonthName,
     });
 
@@ -73,6 +77,8 @@ class WorkDetails {
         laboursNo: json["labours_no"]??"",
         workStatusId: json["work_status_id"]??"",
         workStatus: json["work_status"]??"",
+         stageName: json["stage_name"]??"",
+          stageId: json["stage_id"]??"",
         workMonthName: json["work_month_name"]??"",
     );
 
@@ -88,6 +94,8 @@ class WorkDetails {
         "labours_no": laboursNo,
         "work_status_id": workStatusId,
         "work_status": workStatus,
+          "stage_name": stageName,
+           "stage_id": stageId,
         "work_month_name": workMonthName,
     };
 }

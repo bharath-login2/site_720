@@ -13,6 +13,7 @@ import '../models/clientlist/district_list.dart';
 import '../models/clientlist/state_list_model.dart';
 import '../models/complaint/complaint_details_model.dart';
 import '../models/complaint/complaint_list_model.dart';
+import '../models/complaint/complaint_status_list.dart';
 import '../models/contractorlist/contractor_list_model.dart';
 import '../models/dashboard/dashboard_model.dart';
 import '../models/deductionwork/deductionlist_model.dart';
@@ -197,14 +198,14 @@ class HttpServices {
     }
   }
 
-
   static Future getWorkStages(projectId) async {
     try {
       http.Response response = await http.post(
           Uri.parse("${await Config.getUrl()}get_work_stages"),
           body: ({
-              "project_id": projectId,
-            'token': await getSharedPreference('token')}));
+            "project_id": projectId,
+            'token': await getSharedPreference('token')
+          }));
       if (response.statusCode == 200) {
         return workStagesModelFromJson(response.body);
       }
@@ -292,7 +293,7 @@ class HttpServices {
       String date,
       String noOfLabours,
       String status,
-        String stage,
+      String stage,
       String description) async {
     try {
       http.Response response = await http
@@ -304,7 +305,7 @@ class HttpServices {
         "date": date,
         "no_of_labours": noOfLabours,
         "status": status,
-         "stage": stage,
+        "stage": stage,
         "description": description,
       });
       if (response.statusCode == 200) {
@@ -322,7 +323,7 @@ class HttpServices {
       String date,
       String noOfLabours,
       String status,
-        String stage,
+      String stage,
       String description,
       String workId) async {
     try {
@@ -381,9 +382,9 @@ class HttpServices {
   static Future addStages(
     String projectId,
     String clintId,
-    selectedStatus,
+    // selectedStatus,
     String stages,
-    String est_days,
+    String estDays,
     String curingdays,
     String startDate,
     String endDate,
@@ -394,9 +395,9 @@ class HttpServices {
         'token': await getSharedPreference('token'),
         "project_id": projectId,
         "client_id": clintId,
-        "phase_id": selectedStatus,
+        // "phase_id": selectedStatus,
         "stages": stages,
-        "est_days": est_days,
+        "est_days": estDays,
         "curingdays": curingdays,
         "startDate": startDate,
         "endDate": endDate,
@@ -1313,6 +1314,49 @@ class HttpServices {
       });
       if (response.statusCode == 200) {
         return notificationListModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  static Future updateComplaintStatus(
+    String complaintId,
+    String imagePath,
+    String comment,
+    String status,
+  ) async {
+    try {
+      var uri = Uri.parse("${await Config.getUrl()}update_complaint_status");
+      var request = http.MultipartRequest('POST', uri);
+      request.fields.addAll({
+        'token': await getSharedPreference('token'),
+        'complaint_id': complaintId,
+        'complaint_status': status,
+        'comment': comment
+      });
+      if (imagePath.isNotEmpty) {
+        request.files.add(
+            await http.MultipartFile.fromPath('complaint_image', imagePath));
+      }
+      var response = await request.send();
+      if (response.statusCode == 200) {
+        return successResponseFromJson(await response.stream.bytesToString());
+      }
+    } catch (e) {
+      log("Error: ${e.toString()}");
+    }
+  }
+
+  static Future getComplaintStatus() async {
+    try {
+      http.Response response = await http.post(
+          Uri.parse("${await Config.getUrl()}get_complaint_update_data"),
+          body: {
+            'token': await getSharedPreference('token'),
+          });
+      if (response.statusCode == 200) {
+        return complaintStatusListFromJson(response.body);
       }
     } catch (e) {
       log(e.toString());

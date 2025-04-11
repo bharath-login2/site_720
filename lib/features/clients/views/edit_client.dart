@@ -340,6 +340,14 @@ class EditCilentScreen extends StatelessWidget {
                           width: MediaQuery.of(context).size.width * .9,
                           child: TextFormField(
                             controller: civilId,
+                            validator: (value) {
+                              if (value != "" &&
+                                  isValidAadhaar(value!) == false) {
+                                return "Enter valid Aadhar number";
+                              } else {
+                                return null;
+                              }
+                            },
                             decoration: InputDecoration(
                               fillColor: Colors.white,
                               filled: true,
@@ -361,6 +369,14 @@ class EditCilentScreen extends StatelessWidget {
                           width: MediaQuery.of(context).size.width * .9,
                           child: TextFormField(
                             controller: gstNumber,
+                            validator: (value) {
+                              if (value != "" &&
+                                  isValidGSTNumber(value!) == false) {
+                                return "Enter valid GST number";
+                              } else {
+                                return null;
+                              }
+                            },
                             decoration: InputDecoration(
                               fillColor: Colors.white,
                               filled: true,
@@ -534,14 +550,15 @@ class EditCilentScreen extends StatelessWidget {
     return regex.hasMatch(email);
   }
 
-  bool isValidGST(String gstNumber) {
-    final regex =
-        RegExp(r'^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$');
-    return regex.hasMatch(gstNumber);
+  bool isValidGSTNumber(String gstNumber) {
+    final gstRegex = RegExp(
+      r'^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$',
+    );
+    return gstRegex.hasMatch(gstNumber);
   }
 
   bool isValidAadhaar(String aadhaar) {
-    final regex = RegExp(r'^[2-9]{1}[0-9]{11}$');
-    return regex.hasMatch(aadhaar);
+    final aadhaarRegex = RegExp(r'^[2-9]{1}[0-9]{11}$');
+    return aadhaarRegex.hasMatch(aadhaar);
   }
 }

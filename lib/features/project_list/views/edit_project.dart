@@ -1902,7 +1902,13 @@ class CheckBoxWidget extends StatelessWidget {
         children: [
           Checkbox(
             value: value,
-            onChanged: (bool? newValue) {},
+            onChanged: (bool? newValue) {
+              try {
+                context.read<EditProjectCubit>().updatePriority(id);
+              } catch (e) {
+                log(e.toString());
+              }
+            },
           ),
           Expanded(
             child: Text(

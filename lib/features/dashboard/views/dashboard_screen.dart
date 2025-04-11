@@ -398,18 +398,18 @@ class DashboardScreen extends StatelessWidget {
                                                         horizontal: 6.0),
                                                     child: InkWell(
                                                       onTap: () {
-                                                        connStatus = true;
-                                                        Navigator.pushNamed(
-                                                            context,
-                                                            AppRoutes.expense,
-                                                            arguments: {
-                                                              "id": state
-                                                                  .response
-                                                                  .data
-                                                                  .expenseData[
-                                                                      i]
-                                                                  .projectId
-                                                            });
+                                                        // connStatus = true;
+                                                        // Navigator.pushNamed(
+                                                        //     context,
+                                                        //     AppRoutes.expense,
+                                                        //     arguments: {
+                                                        //       "id": state
+                                                        //           .response
+                                                        //           .data
+                                                        //           .expenseData[
+                                                        //               i]
+                                                        //           .projectId
+                                                        //     });
                                                       },
                                                       child: Column(
                                                         mainAxisAlignment:
@@ -490,7 +490,7 @@ class DashboardScreen extends StatelessWidget {
                                                                   .data
                                                                   .expenseData[
                                                                       i]
-                                                                  .projectName,
+                                                                  .expenseName,
                                                               style: const TextStyle(
                                                                   color: Colors
                                                                       .black,

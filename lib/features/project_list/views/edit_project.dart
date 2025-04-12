@@ -171,8 +171,8 @@ class EditProjectScreen extends StatelessWidget {
                       "amount": editDetails.unitList[i].sqftTotal,
                     });
                   }
-                  updateGst();
-                  calculateTotal();
+                  // updateGst();
+                  // calculateTotal();
                   (context as Element).markNeedsBuild();
                 }
               },
@@ -1253,14 +1253,12 @@ class EditProjectScreen extends StatelessWidget {
                                 child: Column(
                                   children: [
                                     if (estBudAmt != "")
-                                      buildRow("Estimated Budget : ",
-                                          estBudAmt.toString()),
-                                    if (gstAmt != "")
                                       buildRow(
-                                          "GST Amount : ", gstAmt.toString()),
+                                          "Estimated Budget : ", estBudAmt),
+                                    if (gstAmt != "")
+                                      buildRow("GST Amount : ", gstAmt),
                                     if (totalAmt != "")
-                                      buildRow("Total Amount : ",
-                                          totalAmt.toString()),
+                                      buildRow("Total Amount : ", totalAmt),
                                   ],
                                 ),
                               ),

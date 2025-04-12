@@ -146,7 +146,7 @@ Future<void> logOut(BuildContext context) async {
   );
 }
 
-Future<void> forceUpdate(BuildContext context,onTap) async {
+Future<void> forceUpdate(BuildContext context, onTap) async {
   return showDialog(
     context: context,
     builder: (context) {
@@ -183,6 +183,71 @@ Future<void> forceUpdate(BuildContext context,onTap) async {
                     },
                     child: const Text('Cancel'),
                   ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+Future<void> permissionDialog(
+  BuildContext context,
+) async {
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return PopScope(
+        child: AlertDialog(
+          backgroundColor: Colors.white,
+          content: SizedBox(
+            height: 190,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(
+                        top: 30.0, bottom: 20, left: 10, right: 10),
+                    child: Column(
+                      children: [
+                        Text(
+                          "Permission Required ⚠️",
+                          style: TextStyle(
+                              color: AppColors.primaryColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          height: 25,
+                        ),
+                        Text(
+                          "Sorry, you don’t have permission to access this feature. Please contact your admin",
+                          style: TextStyle(
+                              color: AppColors.primaryColor,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text(
+                      'Close',
+                      style: TextStyle(
+                          color: AppColors.primaryColor,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  )
                 ],
               ),
             ),

@@ -22,6 +22,9 @@ class ProjectList extends StatelessWidget {
   dynamic status;
   List statuses = ["upcoming", "running", "completed", "all"];
   String sts = "";
+  bool addProjectPermission = false;
+  bool editProjectPermission = false;
+  bool deleteProjectPermission = false;
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +60,14 @@ class ProjectList extends StatelessWidget {
                   ),
                   BlocListener<ProjectListCubit, ProjectListState>(
                     listener: (context, state) {
+                      if (state is ProjectListSuccess) {
+                        // addProjectPermission =
+                        //     state.response.data.permissions.addUpcomingProjects;
+                        // editProjectPermission =
+                        //     state.response.data.permissions.editListprojects;
+                        // deleteProjectPermission =
+                        //     state.response.data.permissions.deleteListprojects;
+                      }
                       if (state is ProjectDeleted) {
                         snackBar(
                             context, state.message, AppColors.primaryColor);
@@ -99,7 +110,7 @@ class ProjectList extends StatelessWidget {
                                     children: [
                                       Row(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                            CrossAxisAlignment.start, 
                                         children: [
                                           Padding(
                                             padding: const EdgeInsets.all(4.0),
@@ -697,6 +708,7 @@ class ProjectList extends StatelessWidget {
                                 : "0",
                             status: status,
                             search: search.text,
+                            addPermission: addProjectPermission,
                           ),
                         ),
                       ],

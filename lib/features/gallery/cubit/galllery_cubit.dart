@@ -51,7 +51,7 @@ class GalleryCubit extends Cubit<GalleryState> {
 
   deleteImage(int i) {
     imageList.removeAt(i);
-    emit(ImageSuccess(imageList));
+    emit(ImageSuccess(imageList));                   
   }
 
   Future<void> postGalery(

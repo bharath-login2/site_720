@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/routes.dart';
+import 'package:site_720/core/widgets/dialogs.dart';
 
 import '../../../core/constants/colors.dart';
 import '../../../core/widgets/connectivity_dialog.dart';
@@ -13,13 +14,15 @@ class FloatingCard extends StatelessWidget {
   final String value;
   final String search;
   dynamic status;
+  final bool addPermission;
 
   FloatingCard(
       {super.key,
       required this.title,
       required this.value,
       required this.status,
-      required this.search});
+      required this.search,
+      required this.addPermission});
 
   @override
   Widget build(BuildContext context) {
@@ -62,15 +65,19 @@ class FloatingCard extends StatelessWidget {
             ),
             InkWell(
               onTap: () {
-                connStatus = true;
-                Navigator.pushNamed(context, AppRoutes.addProjectScreen)
-                    .then((_) {
-                  if (context.mounted) {
-                    context
-                        .read<ProjectListCubit>()
-                        .getProjectList(status, search);
-                  }
-                });
+                if (addPermission) {
+                  connStatus = true;
+                  Navigator.pushNamed(context, AppRoutes.addProjectScreen)
+                      .then((_) {
+                    if (context.mounted) {
+                      context
+                          .read<ProjectListCubit>()
+                          .getProjectList(status, search);
+                    }
+                  });
+                } else {
+                  permissionDialog(context);
+                }
               },
               child: Container(
                   width: 40,

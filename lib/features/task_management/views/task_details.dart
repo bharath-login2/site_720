@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -28,6 +29,23 @@ class TaskDetails extends StatelessWidget {
   TextEditingController comment = TextEditingController();
   XFile? image;
   String taskId = "";
+  bool isExpanded = false;
+  FocusNode focusNode = FocusNode();
+  TextEditingController textController = TextEditingController();
+  Map<int, dynamic> answers = {};
+  Map<int, List<String>> checkboxAnswers = {};
+  String _getFileName(dynamic answer) {
+    try {
+      if (answer is String) {
+        return answer.split('/').last;
+      } else if (answer is Map && answer['path'] != null) {
+        return answer['path'].toString().split('/').last;
+      }
+    } catch (e) {
+      print("Error extracting file name: $e");
+    }
+    return '';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +82,16 @@ class TaskDetails extends StatelessWidget {
                 snackBar(context, state.message, Colors.red);
               }
             },
-          )
+          ),
+          BlocListener<TaskDetailsCubit, TaskState>(
+            listener: (context, state) {
+              if (state is TaskDetailsSuccessWithMessage) {
+                snackBar(context, state.message, Colors.green);
+              } else if (state is TaskDetailsFailure) {
+                snackBar(context, state.message, Colors.red);
+              }
+            },
+          ),
         ],
         child: BlocBuilder<TaskDetailsCubit, TaskState>(
           builder: (context, state) {
@@ -220,6 +247,7 @@ class TaskDetails extends StatelessWidget {
                               ],
                             ),
                           ),
+                          
                           const SizedBox(
                             height: 15,
                           ),
@@ -539,7 +567,9 @@ class TaskDetails extends StatelessWidget {
                         InkWell(
                           onTap: () async {
                             await cubit.selectImage(ImageSource.camera);
-                         if(context.mounted)  { Navigator.pop(context);}
+                            if (context.mounted) {
+                              Navigator.pop(context);
+                            }
                           },
                           child: Container(
                             height: 100,
@@ -569,7 +599,9 @@ class TaskDetails extends StatelessWidget {
                         InkWell(
                           onTap: () async {
                             await cubit.selectImage(ImageSource.gallery);
-                           if(context.mounted) {Navigator.pop(context);}
+                            if (context.mounted) {
+                              Navigator.pop(context);
+                            }
                           },
                           child: Container(
                             height: 100,

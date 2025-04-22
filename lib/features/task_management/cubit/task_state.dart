@@ -79,3 +79,21 @@ class HistoryFetched extends TaskState {
   TaskHistoryModel response;
   HistoryFetched(this.response);
 }
+
+class FileUploadSuccess extends TaskState {
+  final String filePath;
+  FileUploadSuccess(this.filePath);
+}
+
+class FileUploadFailure extends TaskState {
+  final String message;
+  FileUploadFailure(this.message);
+}
+
+class TaskDetailsSuccessWithMessage extends TaskState {
+  final String message;
+
+  TaskDetailsSuccessWithMessage(this.message);
+}
+
+

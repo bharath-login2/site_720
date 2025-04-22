@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:site_720/data/models/succes_response/success_response.dart';
@@ -41,6 +42,43 @@ class TaskDetailsCubit extends Cubit<TaskState> {
       emit(TaskStatusFailure('Failed to fetch data: ${e.toString()}'));
     }
   }
+
+Future<void> addTaskDetails(
+  String taskId,
+  String visitId,
+  List<String> textQuestionNumbers,  
+  List<String> textAnswers, 
+  List<String> checkboxQuestionNumbers,  
+  List<List<String>> checkboxAnswersList,
+  List<String> fileQuestionNumbers,  
+  List<String> fileAnswers,
+  BuildContext context,
+) async {
+  emit(TaskLoading());
+  try {
+    SuccessResponse response = await HttpServices.addTaskDetails(
+     // taskId,
+      visitId,
+      textQuestionNumbers,
+      textAnswers,
+      checkboxQuestionNumbers,
+      checkboxAnswersList,
+      fileQuestionNumbers,
+      fileAnswers,
+    );
+
+    if (response.status == true) {
+      emit(TaskDetailsSuccessWithMessage(response.message));
+      await getTaskStatus();
+    } else {
+      emit(TaskDetailsFailure(response.message));
+    }
+  } catch (e) {
+    emit(TaskDetailsFailure('Failed to fetch data: ${e.toString()}'));
+  }
+}
+
+
 
   XFile? image;
 

@@ -78,7 +78,7 @@ class StagesCubit extends Cubit<StagesState> {
       String stageId,
       selectedStatus,
       String stage,
-      String est_days,
+      String estDays,
       String curingdays,
       String startDateController,
       String endDateController) async {
@@ -89,7 +89,7 @@ class StagesCubit extends Cubit<StagesState> {
           stageId,
           selectedStatus,
           stage,
-          est_days,
+          estDays,
           curingdays,
           startDateController,
           endDateController);

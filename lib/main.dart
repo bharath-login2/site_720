@@ -41,6 +41,8 @@ import 'features/stages/views/stages.dart';
 import 'features/stages/views/stage_history.dart';
 import 'features/task_management/views/task_details.dart';
 import 'features/task_management/views/task_history.dart';
+import 'features/visit/views/visit_detailed_list.dart';
+import 'features/visit/views/visit_history.dart';
 import 'features/work_details/views/work_details_screen.dart';
 
 Future<void> main() async {
@@ -100,7 +102,7 @@ class MyApp extends StatelessWidget {
         '/deductionWork': (context) => DeductionWork(),
         '/purchase': (context) => const PurchaseList(),
         '/stock': (context) => Stock(),
-        '/expense': (context) => Expense(),
+        '/expense': (context) => const Expense(),
         '/paymentDetails': (context) => PaymentDetails(),
         '/estimation': (context) => Estimation(),
         '/consumption': (context) => Consumption(),
@@ -116,6 +118,8 @@ class MyApp extends StatelessWidget {
         '/taskHistoryScreen': (context) => const TaskHistoryScreen(),
         '/notification': (context) => const NotificationList(),
         '/workIssuesList': (context) => WorkIssues(),
+          '/visitDetails': (context) => VisitDetails(),
+          '/visitHistory': (context) => VisitHistory(),
       },
     );
   }

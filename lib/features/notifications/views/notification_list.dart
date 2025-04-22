@@ -6,7 +6,6 @@ import '../../../core/widgets/connectivity_dialog.dart';
 import '../../../core/widgets/shimmer.dart';
 import '../../connectivity/cubit/connectivity_cubit.dart';
 import '../../connectivity/cubit/connectivity_state.dart';
-import '../../payment_details/widgets/amount_container.dart';
 import '../cubit/notification_list_cubit.dart';
 import '../cubit/notification_state.dart';
 
@@ -137,7 +136,7 @@ class NotificationList extends StatelessWidget {
                                                         child: const Icon(
                                                             Icons.person),
                                                       ),
-                                                      SizedBox(
+                                                      const SizedBox(
                                                         width: 15,
                                                       ),
                                                       Column(

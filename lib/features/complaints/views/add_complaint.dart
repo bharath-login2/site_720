@@ -416,12 +416,10 @@ class AddComplaint extends StatelessWidget {
                                       firstDate: DateTime(1900),
                                       lastDate: DateTime(2101),
                                     );
-                                    if (selectedDate != null) {
-                                      customerName.text =
-                                          "${selectedDate.toLocal()}"
-                                              .split(' ')[0];
-                                    }
-                                  },
+                                    customerName.text =
+                                        "${selectedDate!.toLocal()}"
+                                            .split(' ')[0];
+                                                                    },
                                   decoration: InputDecoration(
                                     fillColor: Colors.white,
                                     filled: true,
@@ -452,12 +450,10 @@ class AddComplaint extends StatelessWidget {
                                           firstDate: DateTime(1900),
                                           lastDate: DateTime(2101),
                                         );
-                                        if (selectedDate != null) {
-                                          customerName.text =
-                                              "${selectedDate.toLocal()}"
-                                                  .split(' ')[0];
-                                        }
-                                      },
+                                        customerName.text =
+                                            "${selectedDate!.toLocal()}"
+                                                .split(' ')[0];
+                                                                            },
                                     ),
                                   ),
                                 ),

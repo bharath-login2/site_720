@@ -14,6 +14,7 @@ import '../../../core/widgets/snack_bar.dart';
 import '../../connectivity/cubit/connectivity_cubit.dart';
 import '../../connectivity/cubit/connectivity_state.dart';
 import '../cubit/complaint_state.dart';
+import 'chatpage.dart';
 
 class ComplaintList extends StatelessWidget {
   ComplaintList({super.key});
@@ -295,6 +296,59 @@ class ComplaintList extends StatelessWidget {
                                                           children: [
                                                             Row(
                                                               children: [
+                                                                InkWell(
+                                                                  onTap: () {
+                                                                    Navigator
+                                                                        .push(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                ChatPage(
+                                                                          complaintId: int.parse(cubit
+                                                                              .complaints[index]
+                                                                              .id),
+                                                                        ),
+                                                                      ),
+                                                                    );
+                                                                  },
+                                                                  child:
+                                                                      Container(
+                                                                    height: 25,
+                                                                    width: 25,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              5),
+                                                                      color: AppColors
+                                                                          .lightBlue,
+                                                                      boxShadow: [
+                                                                        BoxShadow(
+                                                                          color: Colors
+                                                                              .grey
+                                                                              .withOpacity(0.8),
+                                                                          blurRadius:
+                                                                              6,
+                                                                          offset: const Offset(
+                                                                              1,
+                                                                              1),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    child:
+                                                                        const Icon(
+                                                                      Icons
+                                                                          .chat,
+                                                                      size: 20,
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(
+                                                                  width: 9,
+                                                                ),
                                                                 InkWell(
                                                                   onTap: () {
                                                                     updateStatus(

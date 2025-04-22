@@ -72,7 +72,7 @@ class _DashboardPieChartState extends State<DashboardPieChart> {
                   itemBuilder: (context, index) {
                     return Indicator(
                       color: widget.colors[index],
-                      text: widget.values[index].statusName,
+                     text: '${widget.values[index].statusName} (${widget.values[index].count})',
                       isSquare: false,
                     );
                   }),

@@ -3,8 +3,8 @@ import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/dialogs.dart';
 import 'package:site_720/features/dashboard/views/dashboard_screen.dart';
 import '../clients/views/client_list.dart';
-import '../project_list/views/project_list_screen.dart';
 import '../task_management/views/task_list.dart';
+import '../visit/views/visit_details.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -20,9 +20,8 @@ class _HomeState extends State<Home> {
     DashboardScreen(),
     TaskList(),
     ClientList(),
-    ProjectList(
-      fromHome: true,
-    ),
+   VisitList(),
+
   ];
 
   void _onItemTapped(int index) {

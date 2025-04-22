@@ -399,17 +399,17 @@ class DashboardScreen extends StatelessWidget {
                                                     child: InkWell(
                                                       onTap: () {
                                                         // connStatus = true;
-                                                        // Navigator.pushNamed(
-                                                        //     context,
-                                                        //     AppRoutes.expense,
-                                                        //     arguments: {
-                                                        //       "id": state
-                                                        //           .response
-                                                        //           .data
-                                                        //           .expenseData[
-                                                        //               i]
-                                                        //           .projectId
-                                                        //     });
+                                                        Navigator.pushNamed(
+                                                            context,
+                                                            AppRoutes.expense,
+                                                            arguments: {
+                                                              "id": state
+                                                                  .response
+                                                                  .data
+                                                                  .expenseData[
+                                                                      i]
+                                                                  .projectId
+                                                            });
                                                       },
                                                       child: Column(
                                                         mainAxisAlignment:
@@ -497,7 +497,7 @@ class DashboardScreen extends StatelessWidget {
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold,
-                                                                  fontSize: 13),
+                                                                  fontSize: 10),
                                                               overflow:
                                                                   TextOverflow
                                                                       .ellipsis,

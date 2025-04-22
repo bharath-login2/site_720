@@ -406,7 +406,7 @@ class Stages extends StatelessWidget {
                                                                           stages[index]
                                                                               .stageId;
                                                                       String
-                                                                          est_days =
+                                                                          estDays =
                                                                           stages[index]
                                                                               .estDays;
                                                                       addStageDialog(
@@ -733,18 +733,16 @@ class Stages extends StatelessWidget {
                             firstDate: DateTime(1900),
                             lastDate: DateTime(2101),
                           );
-                          if (selectedDate != null) {
-                            String formattedDate =
-                                "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}";
-                            startDateController.text = formattedDate;
-                            int daysToAdd = int.tryParse(est_days.text) ?? 0;
-                            DateTime calculatedEndDate =
-                                selectedDate.add(Duration(days: daysToAdd));
-                            String endFormattedDate =
-                                "${calculatedEndDate.day}/${calculatedEndDate.month}/${calculatedEndDate.year}";
-                            endDateController.text = endFormattedDate;
-                          }
-                        },
+                          String formattedDate =
+                              "${selectedDate!.day}/${selectedDate.month}/${selectedDate.year}";
+                          startDateController.text = formattedDate;
+                          int daysToAdd = int.tryParse(est_days.text) ?? 0;
+                          DateTime calculatedEndDate =
+                              selectedDate.add(Duration(days: daysToAdd));
+                          String endFormattedDate =
+                              "${calculatedEndDate.day}/${calculatedEndDate.month}/${calculatedEndDate.year}";
+                          endDateController.text = endFormattedDate;
+                                                },
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.all(10),
                           labelText: 'Start Date',
@@ -778,13 +776,11 @@ class Stages extends StatelessWidget {
                             firstDate: DateTime(1900),
                             lastDate: DateTime(2101),
                           );
-                          if (selectedDate != null) {
-                            String formattedDate =
-                                "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}";
+                          String formattedDate =
+                              "${selectedDate!.day}/${selectedDate.month}/${selectedDate.year}";
 
-                            endDateController.text = formattedDate;
-                          }
-                        },
+                          endDateController.text = formattedDate;
+                                                },
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.all(10),
                           labelText: 'End Date',

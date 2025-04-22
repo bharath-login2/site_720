@@ -61,7 +61,7 @@ class WorkDetailsScreen extends StatelessWidget {
               if (state is WorkDetailsSuccess) {
                 workList = state.response.data;
               }
-               if (state is WorkStagesSuccess) {
+              if (state is WorkStagesSuccess) {
                 stageList = state.response.data;
               }
               if (state is AddingSuccess) {
@@ -130,8 +130,8 @@ class WorkDetailsScreen extends StatelessWidget {
                               date.text = DateFormat('dd-MM-yyyy')
                                   .format(DateTime.now());
                               if (issuesList.isNotEmpty) {
-                                workDialog(context, cubit, issuesList,stageList, id,
-                                        clientId, "add", "")
+                                workDialog(context, cubit, issuesList,
+                                        stageList, id, clientId, "add", "")
                                     .then((_) {
                                   date.clear();
                                   noOfLabours.clear();
@@ -367,8 +367,8 @@ class WorkDetailsScreen extends StatelessWidget {
                                                             selectedStatus =
                                                                 workList[index]
                                                                     .workStatusId;
-                                                                    selectedStage=
-                                                                     workList[index]
+                                                            selectedStage =
+                                                                workList[index]
                                                                     .stageId;
                                                             description.text =
                                                                 workList[index]
@@ -377,7 +377,7 @@ class WorkDetailsScreen extends StatelessWidget {
                                                                     context,
                                                                     cubit,
                                                                     issuesList,
-                                                                     stageList,
+                                                                    stageList,
                                                                     id,
                                                                     clientId,
                                                                     "edit",
@@ -559,36 +559,35 @@ class WorkDetailsScreen extends StatelessWidget {
                           const Text("No"),
                         ],
                       ),
-                        const SizedBox(height: 12),
-                       Container(
-                          width: MediaQuery.of(context).size.width * 0.95,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: DropdownButtonFormField<String>(
-                            value: selectedStage,
-                            items: stagelist.map((data) {
-                              return DropdownMenuItem<String>(
-                                value: data.stageId.toString(),
-                                child: Text(
-                                  data.stageName.toString(),
-                                ),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              selectedStage = value;
-                            },
-                           
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.all(10),
-                              labelText: 'Stages*',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5),
+                      const SizedBox(height: 12),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.95,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: DropdownButtonFormField<String>(
+                          value: selectedStage,
+                          items: stagelist.map((data) {
+                            return DropdownMenuItem<String>(
+                              value: data.stageId.toString(),
+                              child: Text(
+                                data.stageName.toString(),
                               ),
-                              prefixIcon: const Icon(Icons.info),
+                            );
+                          }).toList(),
+                          onChanged: (value) {
+                            selectedStage = value;
+                          },
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.all(10),
+                            labelText: 'Stages*',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5),
                             ),
+                            prefixIcon: const Icon(Icons.info),
                           ),
                         ),
+                      ),
                       const SizedBox(height: 12),
                       Container(
                         width: MediaQuery.of(context).size.width * 0.95,
@@ -630,8 +629,14 @@ class WorkDetailsScreen extends StatelessWidget {
                           ),
                           child: TextFormField(
                             validator: (value) {
-                              if (isWorking == "Yes" && value == "") {
-                                return "Enter Number of Labours";
+                              if (isWorking == "Yes") {
+                                if (value == null || value.trim().isEmpty) {
+                                  return "Enter Number of Labours";
+                                }
+                                final parsed = int.tryParse(value.trim());
+                                if (parsed == null || parsed <= 0) {
+                                  return "No of Labours must be greater than 0";
+                                }
                               }
                               return null;
                             },
@@ -721,7 +726,7 @@ class WorkDetailsScreen extends StatelessWidget {
                                   date.text,
                                   noOfLabours.text,
                                   selectedStatus ?? "",
-                                   selectedStage ?? "",
+                                  selectedStage ?? "",
                                   description.text);
                             } else {
                               cubit.editWorkDetails(
@@ -731,7 +736,7 @@ class WorkDetailsScreen extends StatelessWidget {
                                   date.text,
                                   noOfLabours.text,
                                   selectedStatus ?? "",
-                                   selectedStage ?? "",
+                                  selectedStage ?? "",
                                   description.text,
                                   workId);
                             }
@@ -740,6 +745,7 @@ class WorkDetailsScreen extends StatelessWidget {
                             noOfLabours.clear();
                             description.clear();
                             selectedStatus = null;
+                            selectedStage = null;
                             isWorking = 'Yes';
                           }
                         },

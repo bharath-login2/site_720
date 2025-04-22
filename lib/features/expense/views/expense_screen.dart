@@ -2,21 +2,17 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:site_720/core/constants/colors.dart';
-import 'package:site_720/core/widgets/buttons.dart';
 import 'package:site_720/core/widgets/shimmer.dart';
 import 'package:site_720/features/expense/cubit/expense_state.dart';
 import 'package:site_720/features/payment_details/widgets/amount_container.dart';
 import '../../../core/widgets/connectivity_dialog.dart';
-import '../../../core/widgets/snack_bar.dart';
 import '../../connectivity/cubit/connectivity_cubit.dart';
 import '../../connectivity/cubit/connectivity_state.dart';
 import '../cubit/expense_cubit.dart';
 
 class Expense extends StatelessWidget {
-  Expense({super.key});
-
+  const Expense({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -167,6 +163,26 @@ class Expense extends StatelessWidget {
                                               height: 10,
                                             ),
                                             Text(
+                                              "Project:${state.response.data[index].projectName}",
+                                              style: const TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Text(
+                                              "Expense Head:${state.response.data[index].expenseHead}",
+                                              style: const TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 10,
+                                            ),
+                                            Text(
                                               "Bill No:${state.response.data[index].billNo}",
                                               style: const TextStyle(
                                                 fontSize: 10,
@@ -189,6 +205,40 @@ class Expense extends StatelessWidget {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 6),
+                                              decoration: BoxDecoration(
+                                                color: state
+                                                            .response
+                                                            .data[index]
+                                                            .status ==
+                                                        "Partially Paid"
+                                                    ? const Color.fromARGB(
+                                                        255, 230, 152, 35)
+                                                    : state.response.data[index]
+                                                                .status ==
+                                                            "Paid"
+                                                        ? Colors.green
+                                                        : Colors.red,
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                              ),
+                                              child: Text(
+                                                state.response.data[index].status,
+                                                style: const TextStyle(
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+
+                                            const SizedBox(
+                                              height: 20,
+                                            ),
                                             Text(
                                               "Bill Date :${state.response.data[index].billDate}",
                                               style: const TextStyle(
@@ -240,6 +290,4 @@ class Expense extends StatelessWidget {
           ),
         ));
   }
-
-
 }

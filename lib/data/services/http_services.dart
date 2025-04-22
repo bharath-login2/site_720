@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:site_720/core/utilities/shared_preferences.dart';
@@ -41,6 +42,9 @@ import '../models/task/task_history.dart';
 import '../models/task/task_status.dart';
 import '../models/task/tasklist_model.dart';
 import '../models/version/version_model.dart';
+import '../models/visit/visit_details_model.dart';
+import '../models/visit/visit_history_model.dart';
+import '../models/visit/visit_list_model.dart';
 import '../models/work_issues/work_issues_model.dart';
 import '../models/workdetails/add_work_details_model.dart';
 import '../models/stages/stage_model.dart';
@@ -59,6 +63,10 @@ class HttpServices {
     } catch (e) {
       log(e.toString());
     }
+  }
+
+  static String getFileName(String filePath) {
+    return filePath.split('/').last;
   }
 
   static Future getVersion() async {
@@ -416,7 +424,7 @@ class HttpServices {
     String stageId,
     selectedStatus,
     String stages,
-    String est_days,
+    String estDays,
     String curingdays,
     String startDate,
     String endDate,
@@ -430,7 +438,7 @@ class HttpServices {
         "stage_id": stageId,
         "phase_id": selectedStatus,
         "stages": stages,
-        "est_days": est_days,
+        "est_days": estDays,
         "curingdays": curingdays,
         "startDate": startDate,
         "endDate": endDate,
@@ -1221,6 +1229,88 @@ class HttpServices {
     }
   }
 
+
+   static Future getVisitDetails() async {
+    try {
+      http.Response response = await http
+          .post(Uri.parse("${await Config.getUrl()}get_visit_details"), body: {
+        'token': await getSharedPreference('token'),
+      });
+      if (response.statusCode == 200) {
+        return listVisitModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+   static Future getVisitalldetails(visitId) async {
+    try {
+      http.Response response = await http
+          .post(Uri.parse("${await Config.getUrl()}get_visitall_details"), body: {
+        'token': await getSharedPreference('token'),
+        'visit_id':visitId,
+      });
+      if (response.statusCode == 200) {
+        return listVisitDetailsModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  static Future addTaskDetails(
+   // String taskId,
+    String visitId,
+    List<String> textQuestionNumbers,
+    List<String> textAnswers,
+    List<String> checkboxQuestionNumbers,
+    List<List<String>> checkboxAnswersList,
+    List<String> fileQuestionNumbers,
+    List<String> fileAnswers,
+  ) async {
+    try {
+      var uri = Uri.parse("${await Config.getUrl()}add_task_details");
+
+      var request = http.MultipartRequest('POST', uri)
+        ..headers['Content-Type'] = 'multipart/form-data'
+        ..fields['token'] = await getSharedPreference('token')
+       // ..fields['task_id'] = taskId
+        ..fields['visit_id'] = visitId
+        ..fields['text_question_numbers'] = jsonEncode(textQuestionNumbers)
+        ..fields['text_answers'] = jsonEncode(textAnswers)
+        ..fields['checkbox_question_numbers'] =
+            jsonEncode(checkboxQuestionNumbers)
+        ..fields['checkbox_answers'] = jsonEncode(checkboxAnswersList)
+        ..fields['file_question_numbers'] = jsonEncode(fileQuestionNumbers)
+        ..fields['file_answers'] = jsonEncode(fileAnswers);
+      for (int i = 0; i < fileAnswers.length; i++) {
+        File file = File(fileAnswers[i]);
+        if (await file.exists()) {
+          var fileStream = http.ByteStream(file.openRead());
+          var length = await file.length();
+          var fileName = getFileName(file.path);
+          var multipartFile = http.MultipartFile(
+              'image_list[]', fileStream, length,
+              filename: fileName);
+
+          request.files.add(multipartFile);
+        }
+      }
+
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+          return successResponseFromJson(await response.stream.bytesToString());
+      } else {
+        throw Exception('Failed to add task details');
+      }
+    } catch (e) {
+      log(e.toString());
+      throw Exception('Error uploading task details: ${e.toString()}');
+    }
+  }
+
   static Future getTaskStatus() async {
     try {
       http.Response response = await http
@@ -1275,6 +1365,35 @@ class HttpServices {
       request.fields.addAll({
         'token': await getSharedPreference('token'),
         'task_id': taskId,
+        'latitude': latitude,
+        'longitude': longitude
+      });
+      if (imagePath.isNotEmpty) {
+        request.files.add(
+            await http.MultipartFile.fromPath('attendance_image', imagePath));
+      }
+      var response = await request.send();
+      if (response.statusCode == 200) {
+        return successResponseFromJson(await response.stream.bytesToString());
+      }
+    } catch (e) {
+      log("Error: ${e.toString()}");
+    }
+  }
+
+
+    static Future addAttendanceVisit(
+    String visitId,
+    String imagePath,
+    String latitude,
+    String longitude,
+  ) async {
+    try {
+      var uri = Uri.parse("${await Config.getUrl()}add_attendance_visit");
+      var request = http.MultipartRequest('POST', uri);
+      request.fields.addAll({
+        'token': await getSharedPreference('token'),
+        'visit_id': visitId,
         'latitude': latitude,
         'longitude': longitude
       });
@@ -1357,6 +1476,21 @@ class HttpServices {
           });
       if (response.statusCode == 200) {
         return complaintStatusListFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+   static Future getVisitHistoryDetails(visitId) async {
+    try {
+      http.Response response = await http
+          .post(Uri.parse("${await Config.getUrl()}get_visithistory_details"), body: {
+        'token': await getSharedPreference('token'),
+        'visit_id':visitId,
+      });
+      if (response.statusCode == 200) {
+        return visitHistoryDetailsModelFromJson(response.body);
       }
     } catch (e) {
       log(e.toString());

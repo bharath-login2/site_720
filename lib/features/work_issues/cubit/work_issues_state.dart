@@ -1,6 +1,4 @@
 import '../../../data/models/work_issues/work_issues_model.dart';
-import '../../../data/models/workdetails/add_work_details_model.dart';
-import '../../../data/models/workdetails/work_detail_model.dart';
 
 class WorkIssuesState {
   final DateTime? fromDate;

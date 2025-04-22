@@ -20,11 +20,10 @@ class SuccessResponse {
     });
 
     factory SuccessResponse.fromJson(Map<String, dynamic> json) => SuccessResponse(
-        data: json["data"],
-        message: json["message"],
-        status: json["status"],
-    );
-
+    data: json["data"] ?? false, 
+    message: json["message"] ?? "", 
+    status: json["status"] ?? false, 
+  );
     Map<String, dynamic> toJson() => {
         "data": data,
         "message": message,

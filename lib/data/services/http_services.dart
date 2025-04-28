@@ -74,7 +74,9 @@ class HttpServices {
     try {
       http.Response response =
           await http.post(Uri.parse("${await Config.getUrl()}get_version"));
+         // print('Response: ${response.body}');
       if (response.statusCode == 200) {
+       
         return versionModelFromJson(response.body);
       }
     } catch (e) {

@@ -42,7 +42,7 @@ class DashboardScreen extends StatelessWidget {
               if (state is ConnectivityDisconnected) {
                 if (connStatus == true) {
                   connStatus = false;
-                  connectivityDialog(context);
+                   connectivityDialog(context);
                 }
               } else {
                 connStatus = true;

@@ -37,6 +37,7 @@ class NotificationServices {
       provisional: true,
       sound: true,
     );
+    
 
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       log('User granted permission');

@@ -45,5 +45,20 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+	<!-- <key>NSAppTransportSecurity</key>
+	<key>NSLocationWhenInUseUsageDescription</key>
+  <key>NSAllowsArbitraryLoads</key>
+  <true/> -->
+  <key>NSAppTransportSecurity</key>
+<dict>
+    <key>NSAllowsArbitraryLoads</key>
+    <true/>
+</dict>
+
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>This app needs location access while using the app.</string>
+
+
 </dict>
 </plist>

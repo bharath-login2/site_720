@@ -50,16 +50,17 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Firebase
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+ await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Initialize NotificationServices
+  
   final NotificationServices notificationServices = NotificationServices();
-  notificationServices.initLocalNotifications();
-  await notificationServices.requestNotificationPermission();
-  notificationServices.foregroundMessage();
-  notificationServices.firebaseInit();
+ notificationServices.initLocalNotifications();
+ await notificationServices.requestNotificationPermission();
+ notificationServices.foregroundMessage();
+ notificationServices.firebaseInit();
 
-  FirebaseMessaging.onBackgroundMessage(NotificationServices.backgroundMessageHandler);
+ FirebaseMessaging.onBackgroundMessage(NotificationServices.backgroundMessageHandler);
 
   runApp(
     MultiBlocProvider(

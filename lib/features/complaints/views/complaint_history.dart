@@ -1,6 +1,5 @@
 // ignore_for_file: must_be_immutable
 
-import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -8,14 +7,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:site_720/core/widgets/appbar.dart';
 import 'package:site_720/features/payment_details/widgets/amount_container.dart';
-import 'package:site_720/features/task_management/cubit/task_state.dart';
 import '../../../core/constants/colors.dart';
-import '../../../core/widgets/buttons.dart';
 import '../../../core/widgets/connectivity_dialog.dart';
 import '../../../core/widgets/shimmer.dart';
 import '../../../core/widgets/snack_bar.dart';
 import '../../../data/models/complaint/complaint_history_model.dart';
-import '../../../data/models/task/task_details_model.dart';
 import '../../../data/models/task/task_status.dart';
 import '../../connectivity/cubit/connectivity_cubit.dart';
 import '../../connectivity/cubit/connectivity_state.dart';

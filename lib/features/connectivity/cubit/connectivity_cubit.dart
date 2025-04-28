@@ -6,9 +6,34 @@ class ConnectivityCubit extends Cubit<ConnectivityState> {
   final Connectivity connectivity;
   late final Stream<List<ConnectivityResult>> connectivityStream;
 
-  ConnectivityCubit(this.connectivity) : super(ConnectivityInitial()) {
+  // ConnectivityCubit(this.connectivity) : super(ConnectivityInitial()) {
+  //   connectivityStream = connectivity.onConnectivityChanged;
+  //   connectivityStream.listen((List<ConnectivityResult> result) {
+  //     if (result.contains(ConnectivityResult.mobile) ||
+  //         result.contains(ConnectivityResult.wifi)) {
+  //       emit(ConnectivityConnected());
+  //     } else {
+  //       emit(ConnectivityDisconnected());
+  //     }
+  //   });
+  //   checkConnection();
+
+  // }
+
+  // checkConnection() async {
+  //   final List<ConnectivityResult> connectivityResult =
+  //       await (Connectivity().checkConnectivity());
+  //   if (connectivityResult.contains(ConnectivityResult.mobile) ||
+  //       connectivityResult.contains(ConnectivityResult.wifi)) {
+  //     emit(ConnectivityConnected());
+  //   } else {
+  //     emit(ConnectivityDisconnected());
+  //   }
+  // }
+    ConnectivityCubit(this.connectivity) : super(ConnectivityInitial()) {
     connectivityStream = connectivity.onConnectivityChanged;
     connectivityStream.listen((List<ConnectivityResult> result) {
+      print('Connectivity Changed: $result');  // Debugging log
       if (result.contains(ConnectivityResult.mobile) ||
           result.contains(ConnectivityResult.wifi)) {
         emit(ConnectivityConnected());
@@ -16,18 +41,20 @@ class ConnectivityCubit extends Cubit<ConnectivityState> {
         emit(ConnectivityDisconnected());
       }
     });
+    checkConnection();
   }
-
   checkConnection() async {
-    final List<ConnectivityResult> connectivityResult =
-        await (Connectivity().checkConnectivity());
-    if (connectivityResult.contains(ConnectivityResult.mobile) ||
-        connectivityResult.contains(ConnectivityResult.wifi)) {
-      emit(ConnectivityConnected());
-    } else {
-      emit(ConnectivityDisconnected());
-    }
+  final List<ConnectivityResult> connectivityResult =
+      await (Connectivity().checkConnectivity());
+  print('Connectivity Result: $connectivityResult');
+  if (connectivityResult.contains(ConnectivityResult.mobile) ||
+      connectivityResult.contains(ConnectivityResult.wifi)) {
+    emit(ConnectivityConnected());
+  } else {
+    emit(ConnectivityDisconnected());
   }
+}
+
 
   @override
   Future<void> close() {

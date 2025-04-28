@@ -43,42 +43,40 @@ class TaskDetailsCubit extends Cubit<TaskState> {
     }
   }
 
-Future<void> addTaskDetails(
-  String taskId,
-  String visitId,
-  List<String> textQuestionNumbers,  
-  List<String> textAnswers, 
-  List<String> checkboxQuestionNumbers,  
-  List<List<String>> checkboxAnswersList,
-  List<String> fileQuestionNumbers,  
-  List<String> fileAnswers,
-  BuildContext context,
-) async {
-  emit(TaskLoading());
-  try {
-    SuccessResponse response = await HttpServices.addTaskDetails(
-     // taskId,
-      visitId,
-      textQuestionNumbers,
-      textAnswers,
-      checkboxQuestionNumbers,
-      checkboxAnswersList,
-      fileQuestionNumbers,
-      fileAnswers,
-    );
+  Future<void> addTaskDetails(
+    String taskId,
+    String visitId,
+    List<String> textQuestionNumbers,
+    List<String> textAnswers,
+    List<String> checkboxQuestionNumbers,
+    List<List<String>> checkboxAnswersList,
+    List<String> fileQuestionNumbers,
+    List<String> fileAnswers,
+    BuildContext context,
+  ) async {
+    emit(TaskLoading());
+    try {
+      SuccessResponse response = await HttpServices.addTaskDetails(
+        // taskId,
+        visitId,
+        textQuestionNumbers,
+        textAnswers,
+        checkboxQuestionNumbers,
+        checkboxAnswersList,
+        fileQuestionNumbers,
+        fileAnswers,
+      );
 
-    if (response.status == true) {
-      emit(TaskDetailsSuccessWithMessage(response.message));
-      await getTaskStatus();
-    } else {
-      emit(TaskDetailsFailure(response.message));
+      if (response.status == true) {
+        emit(TaskDetailsSuccessWithMessage(response.message));
+        await getTaskStatus();
+      } else {
+        emit(TaskDetailsFailure(response.message));
+      }
+    } catch (e) {
+      emit(TaskDetailsFailure('Failed to fetch data: ${e.toString()}'));
     }
-  } catch (e) {
-    emit(TaskDetailsFailure('Failed to fetch data: ${e.toString()}'));
   }
-}
-
-
 
   XFile? image;
 
@@ -104,17 +102,18 @@ Future<void> addTaskDetails(
     String status,
   ) async {
     try {
+      emit(TaskLoading());
       SuccessResponse response = await HttpServices.updateTaskStatus(
           taskId, imagePath, comment, status);
 
       if (response.status == true) {
         emit(TaskStatusUpdated(response));
-        getTaskDetails(taskId);
+        await getTaskDetails(taskId);
       } else {
         emit(TaskStatusupdateFailed(response.message));
       }
     } catch (e) {
-      emit(TaskStatusupdateFailed('Failed to fetch data: ${e.toString()}'));
+      emit(TaskStatusupdateFailed('Failed to update status: ${e.toString()}'));
     }
   }
 }

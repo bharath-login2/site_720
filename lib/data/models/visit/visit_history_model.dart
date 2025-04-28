@@ -2,7 +2,6 @@
 //
 //     final visitHistoryDetailsModel = visitHistoryDetailsModelFromJson(jsonString);
 
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 VisitHistoryDetailsModel visitHistoryDetailsModelFromJson(String str) => VisitHistoryDetailsModel.fromJson(json.decode(str));

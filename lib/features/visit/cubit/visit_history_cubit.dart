@@ -4,9 +4,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:site_720/data/models/succes_response/success_response.dart';
 import 'package:site_720/data/models/visit/visit_history_model.dart';
 import 'package:site_720/features/visit/cubit/visit_history_state.dart';
-import 'package:site_720/features/visit/cubit/visit_state.dart';
 import '../../../data/models/task/task_status.dart';
-import '../../../data/models/visit/visit_list_model.dart';
 import '../../../data/services/http_services.dart';
 
 class VisitHistoryCubit extends Cubit<VisitHistoryState> {

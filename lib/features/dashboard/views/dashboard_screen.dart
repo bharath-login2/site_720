@@ -15,6 +15,7 @@ import '../../../core/widgets/shimmer.dart';
 import '../../connectivity/cubit/connectivity_cubit.dart';
 import '../../connectivity/cubit/connectivity_state.dart';
 import '../widgets/dash_container.dart';
+import '../widgets/date_container.dart';
 
 class DashboardScreen extends StatelessWidget {
   DashboardScreen({super.key});
@@ -236,6 +237,53 @@ class DashboardScreen extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 30.0),
+                      child: state is DashboardSuccess
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                InkWell(
+                                  child: DateContainer(
+                                    count: state.response.data.fromDate.isEmpty
+                                        ? DateFormat('dd-MM-yyyy')
+                                            .format(DateTime.now())
+                                        : state.response.data.fromDate,
+                                  ),
+                                ),
+                                const SizedBox(
+                                    width:
+                                        10), 
+                                const Text(
+                                  "To",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(
+                                    width:
+                                        10), // Adds some space between the "To" and the second date
+                                InkWell(
+                                  child: DateContainer(
+                                    count: state.response.data.toDate.isEmpty
+                                        ? DateFormat('dd-MM-yyyy')
+                                            .format(DateTime.now())
+                                        : state.response.data.toDate,
+                                  ),
+                                ),
+                              ],
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                shimmerContainer(
+                                    85, MediaQuery.of(context).size.width * .4),
+                                shimmerContainer(
+                                    85, MediaQuery.of(context).size.width * .4),
+                              ],
+                            ),
+                    ),
                     Padding(
                       padding: const EdgeInsets.only(top: 30.0),
                       child: state is DashboardSuccess

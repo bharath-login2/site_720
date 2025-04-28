@@ -13,6 +13,7 @@ import '../models/clientlist/client_type_list.dart';
 import '../models/clientlist/district_list.dart';
 import '../models/clientlist/state_list_model.dart';
 import '../models/complaint/complaint_details_model.dart';
+import '../models/complaint/complaint_history_model.dart';
 import '../models/complaint/complaint_list_model.dart';
 import '../models/complaint/complaint_status_list.dart';
 import '../models/contractorlist/contractor_list_model.dart';
@@ -1491,6 +1492,21 @@ class HttpServices {
       });
       if (response.statusCode == 200) {
         return visitHistoryDetailsModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+   static Future getComplaintHistory(String complaintId) async {
+    try {
+      http.Response response = await http
+          .post(Uri.parse("${await Config.getUrl()}get_complaint_history"), body: {
+        'token': await getSharedPreference('token'),
+        'complaint_id': complaintId,
+      });
+      if (response.statusCode == 200) {
+        return complaintHistoryModelFromJson(response.body);
       }
     } catch (e) {
       log(e.toString());

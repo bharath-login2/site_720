@@ -159,16 +159,20 @@ class Expense extends StatelessWidget {
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
+                                           state.response.data[index].projectName != ""
+                                                ?
                                             const SizedBox(
                                               height: 10,
-                                            ),
-                                            Text(
-                                              "Project:${state.response.data[index].projectName}",
-                                              style: const TextStyle(
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
+                                            ):const SizedBox(),
+                                            state.response.data[index].projectName != ""
+                                                ? Text(
+                                                    "Project:${state.response.data[index].projectName}",
+                                                    style: const TextStyle(
+                                                      fontSize: 10,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  )
+                                                : const SizedBox(),
                                             const SizedBox(
                                               height: 10,
                                             ),

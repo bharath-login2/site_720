@@ -28,6 +28,7 @@ import 'package:site_720/features/work_issues/views/work_issues_screen.dart';
 import 'package:site_720/firebase_options.dart';
 import 'features/clients/views/add_clients.dart';
 import 'features/complaints/views/add_complaint.dart';
+import 'features/complaints/views/complaint_history.dart';
 import 'features/complaints/views/complaint_list.dart';
 import 'features/connectivity/cubit/connectivity_cubit.dart';
 import 'features/deduction_work/views/deduction_work_screen.dart';
@@ -97,6 +98,7 @@ class MyApp extends StatelessWidget {
         '/workDetails': (context) => WorkDetailsScreen(),
         '/stages': (context) => Stages(),
         '/stageHistory': (context) => StageHistory(),
+        '/complaintHistory': (context) => ComplaintHistoryPage(),
         '/contractor': (context) => Contractor(),
         '/extraWork': (context) => ExtraWork(),
         '/deductionWork': (context) => DeductionWork(),
@@ -118,7 +120,7 @@ class MyApp extends StatelessWidget {
         '/taskHistoryScreen': (context) => const TaskHistoryScreen(),
         '/notification': (context) => const NotificationList(),
         '/workIssuesList': (context) => WorkIssues(),
-          '/visitDetails': (context) => VisitDetails(),
+          '/visitDetails': (context) => const VisitDetails(),
           '/visitHistory': (context) => VisitHistory(),
       },
     );

@@ -1,17 +1,13 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:site_720/core/widgets/appbar.dart';
 import 'package:site_720/features/payment_details/widgets/amount_container.dart';
-import 'package:site_720/features/task_management/cubit/task_state.dart';
 import 'package:file_picker/file_picker.dart'; // Import file_picker package
 import '../../../core/constants/colors.dart';
 import '../../../core/widgets/connectivity_dialog.dart';
-import '../../../core/widgets/shimmer.dart';
 import '../../../core/widgets/snack_bar.dart';
 
-import '../../../data/models/visit/visit_details_model.dart';
 import '../../connectivity/cubit/connectivity_cubit.dart';
 import '../../connectivity/cubit/connectivity_state.dart';
 import '../cubit/visit_details_cubit.dart';
@@ -370,7 +366,7 @@ class _VisitDetailsState extends State<VisitDetails> {
                                                                     [];
                                                             final isChecked =
                                                                 checkboxAnswers[
-                                                                        i]!
+                                                                        i]
                                                                     .contains(
                                                                         option);
 
@@ -393,9 +389,9 @@ class _VisitDetailsState extends State<VisitDetails> {
                                                                     if (value ==
                                                                         true) {
                                                                       if (checkboxAnswers[
-                                                                              i]!
+                                                                              i]
                                                                           .isEmpty) {
-                                                                        checkboxAnswers[i]!
+                                                                        checkboxAnswers[i]
                                                                             .add(option);
                                                                       } else {
                                                                         ScaffoldMessenger.of(context)
@@ -423,7 +419,7 @@ class _VisitDetailsState extends State<VisitDetails> {
                                                                       }
                                                                     } else {
                                                                       checkboxAnswers[
-                                                                              i]!
+                                                                              i]
                                                                           .remove(
                                                                               option);
                                                                     }
@@ -431,7 +427,7 @@ class _VisitDetailsState extends State<VisitDetails> {
                                                                 },
                                                               ),
                                                             );
-                                                          }).toList(),
+                                                          }),
                                                         ],
                                                       ),
                                                     ),

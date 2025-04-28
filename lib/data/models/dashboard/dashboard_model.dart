@@ -36,6 +36,8 @@ class DashboardModel {
 class Data {
   String username;
   String designation;
+  String fromDate;
+  String toDate;
   ProjectCounts projectCounts;
   List<ComplaintCount> complaintCounts;
   List<WorkissuesCount> workissuesCounts;
@@ -44,6 +46,8 @@ class Data {
   Data({
     required this.username,
     required this.designation,
+     required this.fromDate,
+      required this.toDate,
     required this.projectCounts,
     required this.complaintCounts,
     required this.workissuesCounts,
@@ -53,6 +57,9 @@ class Data {
   factory Data.fromJson(Map<String, dynamic> json) => Data(
         username: json["username"] ?? "",
         designation: json["designation"] ?? "",
+         fromDate: json["from_date"] ?? "",
+         toDate: json["to_date"] ?? "",
+      
         projectCounts: ProjectCounts.fromJson(json["project_counts"]),
         complaintCounts: List<ComplaintCount>.from(
             json["complaint_counts"].map((x) => ComplaintCount.fromJson(x))),
@@ -65,6 +72,8 @@ class Data {
   Map<String, dynamic> toJson() => {
         "username": username,
         "designation": designation,
+          "from_date": fromDate,
+            "to_date": toDate,
         "project_counts": projectCounts.toJson(),
         "complaint_counts":
             List<dynamic>.from(complaintCounts.map((x) => x.toJson())),

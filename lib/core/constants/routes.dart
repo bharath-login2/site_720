@@ -13,6 +13,7 @@ class AppRoutes {
   static const workDetails = '/workDetails';
   static const stages = '/stages';
   static const stageHistory = '/stageHistory';
+    static const complaintHistory = '/complaintHistory';
   static const contractor = '/contractor';
   static const extraWork = '/extraWork';
   static const deductionWork = '/deductionWork';

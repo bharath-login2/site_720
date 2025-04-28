@@ -33,6 +33,7 @@ class TaskDetailsModel {
 
 class TaskDetailsData {
   String id;
+    String comment;
   String taskTitle;
   String fromDate;
   String toDate;
@@ -50,6 +51,7 @@ class TaskDetailsData {
 
   TaskDetailsData({
     required this.id,
+     required this.comment,
     required this.taskTitle,
     required this.fromDate,
     required this.toDate,
@@ -69,6 +71,7 @@ class TaskDetailsData {
   factory TaskDetailsData.fromJson(Map<String, dynamic> json) =>
       TaskDetailsData(
         id: json["id"] ?? "",
+         comment: json["comment"] ?? "",
         taskTitle: json["task_title"] ?? "",
         fromDate: json["from_date"] ?? "",
         toDate: json["to_date"] ?? "",
@@ -92,6 +95,7 @@ class TaskDetailsData {
 
   Map<String, dynamic> toJson() => {
         "id": id,
+        "comment": comment,
         "task_title": taskTitle,
         "from_date": fromDate,
         "to_date": toDate,

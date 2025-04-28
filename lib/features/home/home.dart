@@ -3,6 +3,7 @@ import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/dialogs.dart';
 import 'package:site_720/features/dashboard/views/dashboard_screen.dart';
 import '../clients/views/client_list.dart';
+import '../project_list/views/add_projects.dart';
 import '../task_management/views/task_list.dart';
 import '../visit/views/visit_details.dart';
 
@@ -19,7 +20,7 @@ class _HomeState extends State<Home> {
   static final List<Widget> _widgetOptions = <Widget>[
     DashboardScreen(),
     TaskList(),
-    ClientList(),
+    AddProjectScreen(fromHome: true),
    VisitList(),
 
   ];
@@ -53,11 +54,11 @@ class _HomeState extends State<Home> {
               label: '',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.group),
+              icon: Icon(Icons.add_circle),
               label: '',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.add_home),
+              icon: Icon(Icons.location_pin),
               label: '',
             ),
           ],

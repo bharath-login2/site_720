@@ -75,7 +75,7 @@ class TaskCubit extends Cubit<TaskState> {
     String taskId,
     String imagePath,
   ) async {
-    emit(PopupLoading());
+     emit(TaskLoading());
     try {
       await getLocation();
       SuccessResponse response = await HttpServices.addAttendance(

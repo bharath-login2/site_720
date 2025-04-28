@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/shimmer.dart';
 import 'package:site_720/features/complaints/cubit/complaint_cubit.dart';
+import '../../../core/constants/routes.dart';
 import '../../../core/widgets/buttons.dart';
 import '../../../core/widgets/connectivity_dialog.dart';
 import '../../../core/widgets/snack_bar.dart';
@@ -145,8 +146,18 @@ class ComplaintList extends StatelessWidget {
                                   ? shimmerContainer(80, 200)
                                   : cubit.complaints.isNotEmpty
                                       ? InkWell(
-                                          onTap: () {
-                                            // Navigator.of(context).pushNamed(AppRoutes.stageHistory);
+                                          // onTap: () {
+                                          //   Navigator.of(context).pushNamed(
+                                          //     AppRoutes.complaintHistory,
+                                          //     arguments:
+                                          //         cubit.complaints[index].id,
+                                          //   );
+                                          // },
+                                            onTap: () { 
+                                            connStatus = true;
+                                            Navigator.pushNamed(
+                                                context, AppRoutes.complaintHistory,
+                                                arguments: {"complaint_id": cubit.complaints[index].id});
                                           },
                                           child: Container(
                                             width: MediaQuery.of(context)
@@ -285,7 +296,9 @@ class ComplaintList extends StatelessWidget {
                                                                         ? AppColors.primaryColor
                                                                         : cubit.complaints[index].statusName == "NEW"
                                                                             ? Colors.blue
-                                                                            : Colors.green),
+                                                                            : cubit.complaints[index].statusName == "IN-PROGRESS"
+                                                                                ? const Color.fromARGB(255, 231, 86, 42)
+                                                                                : Colors.green),
                                                               ),
                                                           ],
                                                         ),
@@ -296,53 +309,55 @@ class ComplaintList extends StatelessWidget {
                                                           children: [
                                                             Row(
                                                               children: [
-                                                                InkWell(
-                                                                  onTap: () {
-                                                                    Navigator
-                                                                        .push(
-                                                                      context,
-                                                                      MaterialPageRoute(
-                                                                        builder:
-                                                                            (context) =>
-                                                                                ChatPage(
-                                                                          complaintId: int.parse(cubit
-                                                                              .complaints[index]
-                                                                              .id),
-                                                                        ),
-                                                                      ),
-                                                                    );
-                                                                  },
+                                                                Visibility(
+                                                                  visible:
+                                                                      false,
                                                                   child:
-                                                                      Container(
-                                                                    height: 25,
-                                                                    width: 25,
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              5),
-                                                                      color: AppColors
-                                                                          .lightBlue,
-                                                                      boxShadow: [
-                                                                        BoxShadow(
-                                                                          color: Colors
-                                                                              .grey
-                                                                              .withOpacity(0.8),
-                                                                          blurRadius:
-                                                                              6,
-                                                                          offset: const Offset(
-                                                                              1,
-                                                                              1),
+                                                                      InkWell(
+                                                                    onTap: () {
+                                                                      Navigator
+                                                                          .push(
+                                                                        context,
+                                                                        MaterialPageRoute(
+                                                                          builder: (context) =>
+                                                                              ChatPage(
+                                                                            complaintId:
+                                                                                int.parse(cubit.complaints[index].id),
+                                                                          ),
                                                                         ),
-                                                                      ],
-                                                                    ),
+                                                                      );
+                                                                    },
                                                                     child:
-                                                                        const Icon(
-                                                                      Icons
-                                                                          .chat,
-                                                                      size: 20,
-                                                                      color: Colors
-                                                                          .white,
+                                                                        Container(
+                                                                      height:
+                                                                          25,
+                                                                      width: 25,
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(5),
+                                                                        color: AppColors
+                                                                            .lightBlue,
+                                                                        boxShadow: [
+                                                                          BoxShadow(
+                                                                            color:
+                                                                                Colors.grey.withOpacity(0.8),
+                                                                            blurRadius:
+                                                                                6,
+                                                                            offset:
+                                                                                const Offset(1, 1),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                      child:
+                                                                          const Icon(
+                                                                        Icons
+                                                                            .chat,
+                                                                        size:
+                                                                            20,
+                                                                        color: Colors
+                                                                            .white,
+                                                                      ),
                                                                     ),
                                                                   ),
                                                                 ),

@@ -2,7 +2,6 @@
 
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -240,6 +239,30 @@ class TaskDetails extends StatelessWidget {
                                 ),
                                 Text(
                                   taskDetails!.description,
+                                  style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height:8
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 16.0, right: 16.0, top: 16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Comment :",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  taskDetails!.comment,
                                   style: const TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w400),

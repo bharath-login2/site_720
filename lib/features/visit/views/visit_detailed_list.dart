@@ -275,7 +275,9 @@ class _VisitDetailsState extends State<VisitDetails> {
                                         state.response.data.data.questions;
                                     return Form(
                                       key: formKey,
-                                      child: Column(
+                                      
+                                      child: state.response.data.data.questions.isNotEmpty?
+                                      Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
@@ -607,7 +609,7 @@ class _VisitDetailsState extends State<VisitDetails> {
                                             ),
                                           ),
                                         ],
-                                      ),
+                                      ):const SizedBox(),
                                     );
                                   } else {
                                     return const CircularProgressIndicator();

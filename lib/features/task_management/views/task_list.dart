@@ -356,7 +356,7 @@ class TaskList extends StatelessWidget {
                   );
                 } else {
                   return const Center(
-                    child: Text("Task is Empty"),
+                    child: Text("Daily Task is Empty"),
                   );
                 }
               },

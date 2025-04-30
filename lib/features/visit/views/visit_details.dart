@@ -110,7 +110,7 @@ class VisitList extends StatelessWidget {
                 );
               }
 
-              return const Center(child: Text("Task is Empty"));
+              return const Center(child: Text("Visit is Empty"));
             },
           ),
         ),

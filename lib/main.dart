@@ -21,7 +21,6 @@ import 'package:site_720/features/project_details/views/project_details_screen.d
 import 'package:site_720/features/project_list/views/edit_project.dart';
 import 'package:site_720/features/project_list/views/project_list_screen.dart';
 import 'package:site_720/features/purchase/views/purchase_list_screen.dart';
-import 'package:site_720/features/splash/views/splash.dart';
 import 'package:site_720/features/stock/views/stock.dart';
 import 'package:site_720/features/sub_contactors/views/sub_contrctor_screen.dart';
 import 'package:site_720/features/work_issues/views/work_issues_screen.dart';
@@ -38,6 +37,7 @@ import 'features/home/home.dart';
 import 'features/login/views/login_screen.dart';
 import 'features/notifications/service/notification_channel.dart';
 import 'features/project_list/views/add_projects.dart';
+import 'features/splash/views/splash.dart';
 import 'features/stages/views/stages.dart';
 import 'features/stages/views/stage_history.dart';
 import 'features/task_management/views/task_details.dart';
@@ -50,17 +50,20 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Firebase
- await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Initialize NotificationServices
-  
   final NotificationServices notificationServices = NotificationServices();
- notificationServices.initLocalNotifications();
- await notificationServices.requestNotificationPermission();
- notificationServices.foregroundMessage();
- notificationServices.firebaseInit();
+  notificationServices.initLocalNotifications();
+  
+  // Request notification permissions for iOS (important for push notifications)
+  await requestNotificationPermissions();
 
- FirebaseMessaging.onBackgroundMessage(NotificationServices.backgroundMessageHandler);
+  notificationServices.foregroundMessage();
+  notificationServices.firebaseInit();
+
+  // Set background message handler for Firebase Messaging
+  FirebaseMessaging.onBackgroundMessage(NotificationServices.backgroundMessageHandler);
 
   runApp(
     MultiBlocProvider(
@@ -70,6 +73,25 @@ Future<void> main() async {
       child: const MyApp(),
     ),
   );
+}
+
+Future<void> requestNotificationPermissions() async {
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  // Request permission for push notifications (iOS only)
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+
+  // You can check whether permission was granted
+  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+    print("User granted permission for notifications");
+  } else if (settings.authorizationStatus == AuthorizationStatus.denied) {
+    print("User denied notification permissions");
+  }
+  // Handle other statuses if needed, e.g., 'notDetermined' or 'provisional'
 }
 
 class MyApp extends StatelessWidget {
@@ -121,8 +143,8 @@ class MyApp extends StatelessWidget {
         '/taskHistoryScreen': (context) => const TaskHistoryScreen(),
         '/notification': (context) => const NotificationList(),
         '/workIssuesList': (context) => WorkIssues(),
-          '/visitDetails': (context) => const VisitDetails(),
-          '/visitHistory': (context) => VisitHistory(),
+        '/visitDetails': (context) => const VisitDetails(),
+        '/visitHistory': (context) => VisitHistory(),
       },
     );
   }

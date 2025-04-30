@@ -134,7 +134,7 @@ class ComplaintList extends StatelessWidget {
                         onRefresh: () async {
                           cubit.getComplaintList();
                         },
-                        child: ListView.builder(
+                        child:ListView.builder(
                           shrinkWrap: true,
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8.0, vertical: 6.0),

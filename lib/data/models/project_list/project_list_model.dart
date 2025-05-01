@@ -51,9 +51,9 @@ class Data {
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-        username: json["username"],
-        designation: json["designation"],
-        totalProjectCount: json["total_project_count"],
+        username: json["username"]??"",
+        designation: json["designation"]??"",
+        totalProjectCount: json["total_project_count"]??"",
         projectList: List<ProjectList>.from(
             json["project_list"].map((x) => ProjectList.fromJson(x))),
         // permissions: Permissions.fromJson(json["permissions"]),
@@ -91,15 +91,15 @@ class ProjectList {
   });
 
   factory ProjectList.fromJson(Map<String, dynamic> json) => ProjectList(
-        id: json["id"],
-        projectName: json["project_name"],
-        location: json["location"],
-        clientId: json["client_id"],
-        workStatus: json["work_status"],
-        startingDate: json["starting_date"],
-        completionDate: json["completion_date"],
-        totalAmount: json["total_amount"],
-        paymentStatus: json["payment_status"],
+        id: json["id"]??"",
+        projectName: json["project_name"]??"",
+        location: json["location"]??"",
+        clientId: json["client_id"]??"",
+        workStatus: json["work_status"]??"",
+        startingDate: json["starting_date"]??"",
+        completionDate: json["completion_date"]??"",
+        totalAmount: json["total_amount"]??"",
+        paymentStatus: json["payment_status"]??"",
       );
 
   Map<String, dynamic> toJson() => {

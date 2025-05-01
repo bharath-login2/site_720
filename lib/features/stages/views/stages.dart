@@ -149,7 +149,9 @@ class Stages extends StatelessWidget {
                                   addStageDialog(
                                       context,
                                       cubit,
-                                      phaseList,
+                                      "",
+                                      "",
+                                     // phaseList,
                                       projectId,
                                       clientId,
                                       "",
@@ -385,9 +387,9 @@ class Stages extends StatelessWidget {
                                                                   child:
                                                                       InkWell(
                                                                     onTap: () {
-                                                                      selectedPhase =
+                                                                     curingdays.text =
                                                                           stages[index]
-                                                                              .phaseId;
+                                                                              .curingDays;
                                                                       stage.text =
                                                                           stages[index]
                                                                               .stageName;
@@ -405,14 +407,14 @@ class Stages extends StatelessWidget {
                                                                           stageId =
                                                                           stages[index]
                                                                               .stageId;
-                                                                      String
-                                                                          estDays =
+                                                                      est_days.text =
                                                                           stages[index]
                                                                               .estDays;
                                                                       addStageDialog(
                                                                           context,
                                                                           cubit,
-                                                                          phaseList,
+                                                                          curingdays.text,
+                                                                          est_days.text,
                                                                           projectId,
                                                                           clientId,
                                                                           stageId,
@@ -440,7 +442,7 @@ class Stages extends StatelessWidget {
                                                           children: [
                                                             Text(
                                                               stages[index]
-                                                                  .phaseName,
+                                                                  .curingDays,
                                                               style: const TextStyle(
                                                                   fontSize: 12,
                                                                   fontWeight:
@@ -546,7 +548,9 @@ class Stages extends StatelessWidget {
   Future<void> addStageDialog(
     BuildContext context,
     StagesCubit cubit,
-    List<StagePhase> list,
+  //  List<StagePhase> list,
+  String curingDays,
+  String estDays,
     String projectId,
     String clientId,
     String stageId,
@@ -802,7 +806,7 @@ class Stages extends StatelessWidget {
                             cubit.addStageDetails(
                               projectId,
                               clientId,
-                              selectedPhase,
+                             // selectedPhase,
                               stage.text,
                               est_days.text,
                               curingdays.text,
@@ -814,7 +818,7 @@ class Stages extends StatelessWidget {
                               projectId,
                               clientId,
                               stageId,
-                              selectedPhase,
+                             // selectedPhase,
                               stage.text,
                               est_days.text,
                               curingdays.text,
@@ -825,6 +829,7 @@ class Stages extends StatelessWidget {
                           selectedPhase = null;
                           stage.clear();
                           est_days.clear();
+                            curingdays.clear();
                           startDateController.clear();
                           endDateController.clear();
                           Navigator.pop(context);
@@ -836,6 +841,8 @@ class Stages extends StatelessWidget {
                     TextButton(
                       onPressed: () {
                         stage.clear();
+                          est_days.clear();
+                            curingdays.clear();
                         selectedPhase = null;
                         startDateController.clear();
                         endDateController.clear();

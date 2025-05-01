@@ -1,13 +1,10 @@
-// To parse this JSON data, do
-//
-//     final getStagesModel = getStagesModelFromJson(jsonString);
-
 import 'dart:convert';
 
 GetStagesModel getStagesModelFromJson(String str) =>
     GetStagesModel.fromJson(json.decode(str));
 
-String getStagesModelToJson(GetStagesModel data) => json.encode(data.toJson());
+String getStagesModelToJson(GetStagesModel data) =>
+    json.encode(data.toJson());
 
 class GetStagesModel {
   List<GetStages> data;
@@ -20,11 +17,12 @@ class GetStagesModel {
     required this.status,
   });
 
-  factory GetStagesModel.fromJson(Map<String, dynamic> json) => GetStagesModel(
+  factory GetStagesModel.fromJson(Map<String, dynamic> json) =>
+      GetStagesModel(
         data: List<GetStages>.from(
             json["data"].map((x) => GetStages.fromJson(x))),
-        message: json["message"],
-        status: json["status"],
+        message: json["message"] ?? "",
+        status: json["status"] ?? false,
       );
 
   Map<String, dynamic> toJson() => {
@@ -38,11 +36,9 @@ class GetStages {
   String stageId;
   String stageName;
   String estDays;
-  String curingDays;
   String createdBy;
-  String phaseId;
   String username;
-  String phaseName;
+  String curingDays;
   DateTime startDate;
   DateTime endDate;
 
@@ -50,11 +46,9 @@ class GetStages {
     required this.stageId,
     required this.stageName,
     required this.estDays,
-    required this.curingDays,
     required this.createdBy,
-    required this.phaseId,
     required this.username,
-    required this.phaseName,
+    required this.curingDays,
     required this.startDate,
     required this.endDate,
   });
@@ -63,13 +57,9 @@ class GetStages {
         stageId: json["stage_id"] ?? "",
         stageName: json["stage_name"] ?? "",
         estDays: json["est_days"] ?? "",
-        curingDays: json["curingdays"] ?? "",
         createdBy: json["created_by"] ?? "",
-        phaseId: json["phase_id"] ?? "",
         username: json["username"] ?? "",
-        phaseName: json["phase_name"] ?? "",
-        // startDate: DateTime.parse(json["start_date"]??""),
-        // endDate: DateTime.parse(json["end_date"]??""),
+        curingDays: json["curing_days"] ?? "",
         startDate: json["start_date"] != null && json["start_date"] != ""
             ? DateTime.parse(json["start_date"])
             : DateTime(1970, 1, 1),
@@ -82,11 +72,9 @@ class GetStages {
         "stage_id": stageId,
         "stage_name": stageName,
         "est_days": estDays,
-        "curing_days": curingDays,
         "created_by": createdBy,
-        "phase_id": phaseId,
         "username": username,
-        "phase_name": phaseName,
+        "curing_days": curingDays,
         "start_date":
             "${startDate.year.toString().padLeft(4, '0')}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}",
         "end_date":

@@ -5,21 +5,18 @@ import '../../../data/services/http_services.dart';
 import 'splash_state.dart';
 
 class SplashCubit extends Cubit<SplashState> {
-  SplashCubit() : super(SplashInitial()) {
-    getCurrentVersion();
-    getVersion();
-  }
+  SplashCubit() : super(SplashInitial());
 
   String appVersion = '';
 
-  Future<void> getCurrentVersion() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    appVersion = packageInfo.version;
-  }
-
-  Future<void> getVersion() async {
+  Future<void> checkVersion() async {
     emit(SplashLoading());
     try {
+      // Get local app version first
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      appVersion = packageInfo.version;
+
+      // Now fetch remote version
       VersionModel response = await HttpServices.getVersion();
       if (response.status == true) {
         int versionCompare = appVersion.compareTo(response.data);
@@ -28,9 +25,13 @@ class SplashCubit extends Cubit<SplashState> {
         } else {
           emit(VersionSuccess());
         }
+      } else {
+        emit(GetVersionFailed('Invalid response from server.'));
       }
     } catch (e) {
       emit(GetVersionFailed('Failed to fetch data: ${e.toString()}'));
     }
   }
+   
+
 }

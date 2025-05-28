@@ -23,8 +23,8 @@ class VersionModel {
   factory VersionModel.fromJson(Map<String, dynamic> json) => VersionModel(
         data: json["data"]??"",
         message: json["message"]??"",
-        status: json["status"]??"",
-      );
+        status: json["status"] ?? false,
+       );
 
   Map<String, dynamic> toJson() => {
         "data": data,

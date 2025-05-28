@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCyOkHGKk2ts8k-FcVrd2e1OtKXl-ePF9k',
-    appId: '1:93084755412:android:c834c4213f5c539faa2241',
+    appId: '1:93084755412:android:b911421f03ede7b0aa2241',
     messagingSenderId: '93084755412',
     projectId: 'site-720',
     storageBucket: 'site-720.firebasestorage.app',
@@ -77,10 +77,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyCsZLMAh8sAqeJMSdSM5tCQdMpevkAhZSw',
-    appId: '1:93084755412:web:90bbfdb907121303aa2241',
+    appId: '1:93084755412:web:2a40b35b8f22a6d2aa2241',
     messagingSenderId: '93084755412',
     projectId: 'site-720',
     authDomain: 'site-720.firebaseapp.com',
     storageBucket: 'site-720.firebasestorage.app',
   );
+
 }

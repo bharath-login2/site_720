@@ -30,7 +30,6 @@ class VisitHistory extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       appBar: simpleAppbar(context, "Visit History", true),
-    
       body: BlocProvider(
         create: (context) =>
             VisitHistoryCubit(visitId)..getVisitHistoryDetails(),
@@ -145,11 +144,19 @@ class VisitHistory extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     item.fileType == "0" || item.fileType == "1"
-                        ? Text(
-                            'Answer: ${item.answer}',
-                            style: const TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
+                        ? Container(
+                            constraints: const BoxConstraints(
+                              maxWidth:
+                                  300, // Adjust this value based on your layout
+                            ),
+                            child: Text(
+                              'Answer: ${item.answer}',
+                              style: const TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 3,
                             ),
                           )
                         : item.fileType == "2"
@@ -157,7 +164,7 @@ class VisitHistory extends StatelessWidget {
                                 onTap: () {
                                   Navigator.pushNamed(
                                     context,
-                                    '/imageViewer', 
+                                    '/imageViewer',
                                     arguments: {
                                       "image": item.filePath,
                                       "title": "View Image"

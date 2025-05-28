@@ -1,6 +1,7 @@
 import 'package:image_picker/image_picker.dart';
 import 'package:site_720/data/models/succes_response/success_response.dart';
 
+import '../../../data/models/task/milestoneModel.dart';
 import '../../../data/models/task/task_details_model.dart';
 import '../../../data/models/task/task_history.dart';
 import '../../../data/models/task/task_status.dart';
@@ -94,6 +95,24 @@ class TaskDetailsSuccessWithMessage extends TaskState {
   final String message;
 
   TaskDetailsSuccessWithMessage(this.message);
+}
+class TaskMilestoneSuccess extends TaskState {
+  final MilestoneModel response;
+
+  TaskMilestoneSuccess(this.response);
+}
+
+
+class TaskMilestoneUpdated extends TaskState {
+  final String message;
+
+  TaskMilestoneUpdated(this.message);
+}
+
+class TaskMilestoneUpdateFailed extends TaskState {
+  final String message;
+
+  TaskMilestoneUpdateFailed(this.message);
 }
 
 

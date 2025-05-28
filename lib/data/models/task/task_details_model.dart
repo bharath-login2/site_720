@@ -33,7 +33,7 @@ class TaskDetailsModel {
 
 class TaskDetailsData {
   String id;
-    String comment;
+  String comment;
   String taskTitle;
   String fromDate;
   String toDate;
@@ -46,12 +46,17 @@ class TaskDetailsData {
   String fileName;
   String visitId;
   String siteName;
+  String officeCategoryName;
+  String siteCategoryName;
+  String staffName;
+ String mileStones;
+  String projectName;
   List<String> attachments;
   List<SiteVisitQuestion> siteVisitQuestions;
-
+  String daysLeft;
   TaskDetailsData({
     required this.id,
-     required this.comment,
+    required this.comment,
     required this.taskTitle,
     required this.fromDate,
     required this.toDate,
@@ -64,8 +69,14 @@ class TaskDetailsData {
     required this.fileName,
     required this.visitId,
     required this.siteName,
+    required this.officeCategoryName,
+    required this.siteCategoryName,
+    required this.staffName,
+    required this.mileStones,
+      required this.projectName,
     required this.attachments,
     required this.siteVisitQuestions,
+     required this.daysLeft,
   });
 
   factory TaskDetailsData.fromJson(Map<String, dynamic> json) =>
@@ -84,6 +95,11 @@ class TaskDetailsData {
         fileName: json["file_name"] ?? "",
         visitId: json["visit_id"] ?? "",
         siteName: json["site_name"] ?? "",
+          officeCategoryName: json["office_category_name"] ?? "",
+            siteCategoryName: json["site_category_name"] ?? "",
+            staffName: json["staff_name"] ?? "",
+              mileStones: json["milestones"] ?? "",
+                projectName: json["project_name"] ?? "",
         attachments: json["attachments"] == null
             ? []
             : List<String>.from(json["attachments"].map((x) => x ?? "")),
@@ -91,6 +107,7 @@ class TaskDetailsData {
             ? []
             : List<SiteVisitQuestion>.from(json["site_visit_questions"]
                 .map((x) => SiteVisitQuestion.fromJson(x))),
+                 daysLeft: json["days_left"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {
@@ -108,9 +125,15 @@ class TaskDetailsData {
         "file_name": fileName,
         "visit_id": visitId,
         "site_name": siteName,
+          "office_category_name": officeCategoryName,
+             "site_category_name": siteCategoryName,
+            "staff_name": staffName,
+             "milestones": mileStones,
+              "project_name": projectName,
         "attachments": List<dynamic>.from(attachments.map((x) => x)),
         "site_visit_questions":
             List<dynamic>.from(siteVisitQuestions.map((x) => x.toJson())),
+             "days_left": daysLeft,
       };
 }
 

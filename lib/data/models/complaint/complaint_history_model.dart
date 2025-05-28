@@ -37,7 +37,9 @@ class ComplaintHistory {
     final String customerName;
     final String contactNumber;
     final String description;
+     final String complaintStatus;
     final String fileUrl;
+     final String complaintNature;
 
     ComplaintHistory({
         required this.date,
@@ -45,7 +47,9 @@ class ComplaintHistory {
         required this.customerName,
         required this.contactNumber,
         required this.description,
+          required this.complaintStatus,
         required this.fileUrl,
+          required this.complaintNature,
     });
 
     factory ComplaintHistory.fromJson(Map<String, dynamic> json) => ComplaintHistory(
@@ -54,7 +58,9 @@ class ComplaintHistory {
         customerName: json["customer_name"]??"",
         contactNumber: json["contact_number"]??"",
         description: json["description"]??"",
+          complaintStatus: json["complaint_status"]??"",
         fileUrl: json["file_url"]??"",
+         complaintNature: json["complaint_nature"]??"",
     );
 
     Map<String, dynamic> toJson() => {
@@ -63,6 +69,8 @@ class ComplaintHistory {
         "customer_name": customerName,
         "contact_number": contactNumber,
         "description": description,
+         "complaint_status": complaintStatus,
         "file_url": fileUrl,
+         "complaint_nature": complaintNature,
     };
 }

@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable
 
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +9,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:site_720/core/widgets/appbar.dart';
 import 'package:site_720/features/payment_details/widgets/amount_container.dart';
 import '../../../core/constants/colors.dart';
+import '../../../core/widgets/buttons.dart';
 import '../../../core/widgets/connectivity_dialog.dart';
 import '../../../core/widgets/shimmer.dart';
 import '../../../core/widgets/snack_bar.dart';
+import '../../../data/models/complaint/complaintStatus_model.dart';
 import '../../../data/models/complaint/complaint_history_model.dart';
 import '../../../data/models/task/task_status.dart';
 import '../../connectivity/cubit/connectivity_cubit.dart';
@@ -218,43 +221,114 @@ class ComplaintHistoryPage extends StatelessWidget {
                                               complaintHistory![0].incidentDate,
                                           valueColor: AppColors.primaryColor,
                                         ),
-                                        Container(
-                                          padding: const EdgeInsets.all(12),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                color: Colors.grey
-                                                    .withOpacity(0.5),
-                                                blurRadius: 6,
-                                                offset: const Offset(0, 2),
-                                              ),
-                                            ],
-                                          ),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              const Text(
-                                                "Comment",
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold,
+                                        SizedBox(width:8),
+                                        AmountContainer(
+                                          title: "Complaint Nature",
+                                          amount: complaintHistory![0]
+                                              .complaintNature,
+                                          valueColor: AppColors.primaryColor,
+                                        ),
+                                         SizedBox(width:8),
+                                       InkWell(
+                                          onTap: () {
+                                            updateStatus(context, cubit);
+                                          },
+                                          child: Container(
+                                            width:98,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              color: AppColors.backgroundColor,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.grey
+                                                      .withOpacity(0.8),
+                                                  blurRadius: 6,
+                                                  offset: const Offset(1, 1),
                                                 ),
-                                              ),
-                                              Text(
-                                                complaintHistory![0]
-                                                    .description,
-                                                style: const TextStyle(
+                                              ],
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 12.0,
+                                                      vertical: 4.0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                   complaintHistory![0]
+                                                              .complaintStatus,
+                                              style: TextStyle(
                                                   fontSize: 12,
-                                                  color: AppColors.primaryColor,
-                                                ),
+                                                  fontWeight:
+                                                      FontWeight.bold,
+                                                  color: complaintHistory![0]
+                                                            .complaintStatus ==
+                                                        "IN-PROGRESS"
+                                                    ? Colors.orange
+                                                    : complaintHistory![0]
+                                                                .complaintStatus ==
+                                                            "COMPLETED"
+                                                        ? Colors.green
+                                                        : complaintHistory![0]
+                                                                    .complaintStatus ==
+                                                                "REJECTED"
+                                                            ? Colors.red
+                                                            : Colors.blue,
                                               ),
-                                            ],
+                                                  ),
+                                                  // const SizedBox(
+                                                  //   width: 8,
+                                                  // ),
+                                                  // const Icon(
+                                                  //   Icons.arrow_forward_ios,
+                                                  //   size: 14,
+                                                  // )
+                                                ],
+                                              ),
+                                            ),
                                           ),
                                         ),
+                                        // Container(
+                                        //   padding: const EdgeInsets.all(12),
+                                        //   decoration: BoxDecoration(
+                                        //     color: Colors.white,
+                                        //     borderRadius:
+                                        //         BorderRadius.circular(12),
+                                        //     boxShadow: [
+                                        //       BoxShadow(
+                                        //         color: Colors.grey
+                                        //             .withOpacity(0.5),
+                                        //         blurRadius: 6,
+                                        //         offset: const Offset(0, 2),
+                                        //       ),
+                                        //     ],
+                                        //   ),
+                                        //   child: Column(
+                                        //     crossAxisAlignment:
+                                        //         CrossAxisAlignment.start,
+                                        //     children: [
+                                        //       const Text(
+                                        //         "Comment",
+                                        //         style: TextStyle(
+                                        //           fontSize: 14,
+                                        //           fontWeight: FontWeight.bold,
+                                        //         ),
+                                        //       ),
+                                        //       Text(
+                                        //         complaintHistory![0]
+                                        //             .description,
+                                        //         style: const TextStyle(
+                                        //           fontSize: 12,
+                                        //           color: AppColors.primaryColor,
+                                        //         ),
+                                        //       ),
+                                        //     ],
+                                        //   ),
+                                        // ),
                                       ],
                                     )
                                   ],
@@ -268,6 +342,19 @@ class ComplaintHistoryPage extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                 const Text(
+                                  "Description:",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  complaintHistory![0].description,
+                                  style: const TextStyle(
+                                      fontSize: 14,
+                                    ),
+                                ),
+                                SizedBox(height: 8,),
                                 const Text(
                                   "Added Image:",
                                   style: TextStyle(
@@ -276,10 +363,9 @@ class ComplaintHistoryPage extends StatelessWidget {
                                 ),
                                 InkWell(
                                   onTap: () {
-                                    // Navigate to ImageViewer screen with the image URL as an argument
                                     Navigator.pushNamed(
                                       context,
-                                      '/imageViewer', // Make sure to register this route in your main.dart
+                                      '/imageViewer',
                                       arguments: {
                                         "image": complaintHistory![0].fileUrl,
                                         "title": "Complaint Image",
@@ -287,28 +373,22 @@ class ComplaintHistoryPage extends StatelessWidget {
                                     );
                                   },
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(
-                                        8.0),
+                                    borderRadius: BorderRadius.circular(8.0),
                                     child: CachedNetworkImage(
                                       imageUrl: complaintHistory![0].fileUrl,
-                                      height:
-                                          100.0, 
-                                      width:
-                                          100.0, 
-                                      fit: BoxFit
-                                          .cover, 
+                                      height: 100.0,
+                                      width: 100.0,
+                                      fit: BoxFit.cover,
                                       placeholder: (context, url) =>
-                                          const CircularProgressIndicator(), 
+                                          const CircularProgressIndicator(),
                                       errorWidget: (context, url, error) =>
-                                          const Icon(Icons
-                                              .error), 
+                                          const Icon(Icons.error),
                                     ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                         
                         ],
                       ),
                     ),
@@ -318,4 +398,140 @@ class ComplaintHistoryPage extends StatelessWidget {
       ),
     );
   }
+
+ Future<void> updateStatus(
+  BuildContext context,
+  ComplaintHistoryCubit cubit,
+) async {
+  await cubit.getComplaintStatuses();
+
+  return showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) {
+      return BlocBuilder<ComplaintHistoryCubit, ComplaintHistoryState>(
+        builder: (context, state) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              List<ComplaintStatus> statusList = [];
+              if (state is ComplaintStatusSuccess) {
+                statusList = state.statuses;
+              }
+
+              return AlertDialog(
+                backgroundColor: Colors.white,
+                content: SizedBox(
+                  height: image != null ? 480 : 350,
+                  child: SingleChildScrollView(
+                    child: Form(
+                      key: formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(top: 16.0, bottom: 25),
+                            child: Text(
+                              "Update Status",
+                              style: TextStyle(
+                                  color: AppColors.primaryColor,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.95,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: DropdownButtonFormField<String>(
+                              value: selectedStatus,
+                              items: statusList.map((data) {
+                                return DropdownMenuItem<String>(
+                                  value: data.id,
+                                  child: Text(data.name),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedStatus = value;
+                                });
+                              },
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Select a Status";
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.all(10),
+                                labelText: 'Status*',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                prefixIcon: const Icon(Icons.info),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.95,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: TextFormField(
+                              keyboardType: TextInputType.text,
+                              controller: comment,
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.all(10),
+                                labelText: 'Comment',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                prefixIcon: const Icon(Icons.text_fields),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                        
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          GestureDetector(
+                            // onTap: () async {
+                            //   if (formKey.currentState!.validate()) {
+                            //     cubit.updateComplaintStatus(
+                            //         complaintId,
+                            //         comment.text,
+                            //         selectedStatus!);
+                            //     image = null;
+                            //     selectedStatus = null;
+                            //     comment.clear();
+                            //     Navigator.pop(context);
+                            //   }
+                            // },
+                            child: LargeButton(title: "Update"),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Close'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      );
+    },
+  );
+}
 }

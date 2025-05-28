@@ -227,9 +227,10 @@ class LoginScreen extends StatelessWidget {
                             .read<ConnectivityCubit>()
                             .checkConnection();
                         if (context.mounted) {
-                          if (cubit.selectedServer == null) {
-                            snackBar(context, "Select Server", Colors.red);
-                          } else if (_usernameController.text.isEmpty) {
+                          // if (cubit.selectedServer == null) {
+                          //   snackBar(context, "Select Server", Colors.red);
+                          // } else 
+                          if (_usernameController.text.isEmpty) {
                             snackBar(context, "Enter username", Colors.red);
                           } else if (_passwordController.text.isEmpty) {
                             snackBar(context, "Enter Password", Colors.red);

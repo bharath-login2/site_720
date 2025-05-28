@@ -456,7 +456,19 @@ class DashboardScreen extends StatelessWidget {
                                                                   .data
                                                                   .expenseData[
                                                                       i]
-                                                                  .projectId
+                                                                  .projectId,
+                                                                    "expenseid": state
+                                                                  .response
+                                                                  .data
+                                                                  .expenseData[
+                                                                      i]
+                                                                  .expenseHeadId,
+                                                                    "type":state
+                                                                  .response
+                                                                  .data
+                                                                  .expenseData[
+                                                                      i]
+                                                                  .expenseName
                                                             });
                                                       },
                                                       child: Column(

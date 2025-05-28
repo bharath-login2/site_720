@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:site_720/data/models/succes_response/success_response.dart';
+import '../../../data/models/task/milestoneModel.dart';
 import '../../../data/models/task/task_details_model.dart';
 import '../../../data/models/task/task_status.dart';
 import '../../../data/services/http_services.dart';
@@ -10,6 +11,7 @@ import 'task_state.dart';
 class TaskDetailsCubit extends Cubit<TaskState> {
   TaskDetailsCubit(String taskId) : super(TaskInitial()) {
     getTaskDetails(taskId);
+     getTaskMilestone(taskId);
   }
 
   Future<void> getTaskDetails(String taskId) async {
@@ -42,6 +44,22 @@ class TaskDetailsCubit extends Cubit<TaskState> {
       emit(TaskStatusFailure('Failed to fetch data: ${e.toString()}'));
     }
   }
+  Future<void> getTaskMilestone(String taskId) async {
+  emit(TaskLoading());
+  try {
+    MilestoneModel? response = await HttpServices.getTaskMilestone(taskId);
+
+    if (response != null && response.status == true) {
+      emit(TaskMilestoneSuccess(response));
+      await getTaskStatus();
+    } else {
+      emit(TaskDetailsFailure(response?.message ?? 'No response from server'));
+    }
+  } catch (e) {
+    emit(TaskDetailsFailure('Failed to fetch data: ${e.toString()}'));
+  }
+}
+
 
   Future<void> addTaskDetails(
     String taskId,
@@ -116,4 +134,27 @@ class TaskDetailsCubit extends Cubit<TaskState> {
       emit(TaskStatusupdateFailed('Failed to update status: ${e.toString()}'));
     }
   }
+
+
+  Future<void> updateTaskMilestone(
+    String taskId,
+    String selectedMilestone,
+   
+  ) async {
+    try {
+      emit(TaskLoading());
+      SuccessResponse response = await HttpServices.updateTaskMilestone(
+          taskId, selectedMilestone);
+
+      if (response.status == true) {
+        emit(TaskStatusUpdated(response));
+        await getTaskDetails(taskId);
+      } else {
+        emit(TaskStatusupdateFailed(response.message));
+      }
+    } catch (e) {
+      emit(TaskStatusupdateFailed('Failed to update status: ${e.toString()}'));
+    }
+  }
+
 }

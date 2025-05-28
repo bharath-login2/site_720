@@ -1,6 +1,7 @@
 import 'package:image_picker/image_picker.dart';
 import 'package:site_720/data/models/succes_response/success_response.dart';
 
+import '../../../data/models/complaint/complaintStatus_model.dart';
 import '../../../data/models/complaint/complaint_history_model.dart';
 import '../../../data/models/task/task_history.dart';
 
@@ -84,6 +85,20 @@ class ComplaintHistoryDetailsSuccessWithMessage extends ComplaintHistoryState {
   final String message;
 
   ComplaintHistoryDetailsSuccessWithMessage(this.message);
+}
+
+class ComplaintStatusLoading extends ComplaintHistoryState {}
+
+class ComplaintStatusSuccess extends ComplaintHistoryState {
+  final List<ComplaintStatus> statuses;
+  
+  ComplaintStatusSuccess(this.statuses);
+}
+
+class ComplaintStatusFailure extends ComplaintHistoryState {
+  final String message;
+  
+  ComplaintStatusFailure(this.message);
 }
 
 

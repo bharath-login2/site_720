@@ -11,8 +11,10 @@ import 'package:site_720/features/task_management/cubit/task_state.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/widgets/buttons.dart';
 import '../../../core/widgets/connectivity_dialog.dart';
+import '../../../core/widgets/milestoneWidget.dart';
 import '../../../core/widgets/shimmer.dart';
 import '../../../core/widgets/snack_bar.dart';
+import '../../../data/models/task/milestoneModel.dart';
 import '../../../data/models/task/task_details_model.dart';
 import '../../../data/models/task/task_status.dart';
 import '../../connectivity/cubit/connectivity_cubit.dart';
@@ -24,10 +26,13 @@ class TaskDetails extends StatelessWidget {
   TaskDetailsData? taskDetails;
   final formKey = GlobalKey<FormState>();
   String? selectedStatus;
+
   List<AvailableStatus> statusList = [];
+  List<Milestone> milestoneList = [];
   TextEditingController comment = TextEditingController();
   XFile? image;
   String taskId = "";
+  String? selectedMilestone;
   bool isExpanded = false;
   FocusNode focusNode = FocusNode();
   TextEditingController textController = TextEditingController();
@@ -73,22 +78,28 @@ class TaskDetails extends StatelessWidget {
                 taskDetails = state.response.data;
               } else if (state is TaskStatusSuccess) {
                 statusList = state.response.data.availableStatuses;
-              } else if (state is ImageSuccess) {
+              }
+              if (state is TaskMilestoneSuccess) {
+                milestoneList = state.response.data;
+              }
+              if (state is ImageSuccess) {
                 image = state.image;
               } else if (state is TaskStatusUpdated) {
                 snackBar(context, state.response.message, Colors.green);
-              } else if (state is TaskStatusupdateFailed) {
-                snackBar(context, state.message, Colors.red);
               }
+              // else if (state is TaskStatusupdateFailed) {
+              //   snackBar(context, state.message, Colors.red);
+              // }
             },
           ),
           BlocListener<TaskDetailsCubit, TaskState>(
             listener: (context, state) {
               if (state is TaskDetailsSuccessWithMessage) {
                 snackBar(context, state.message, Colors.green);
-              } else if (state is TaskDetailsFailure) {
-                snackBar(context, state.message, Colors.red);
               }
+              // else if (state is TaskDetailsFailure) {
+              //   snackBar(context, state.message, Colors.red);
+              // }
             },
           ),
         ],
@@ -140,6 +151,34 @@ class TaskDetails extends StatelessWidget {
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold),
                                             ),
+                                            Text(
+                                              taskDetails!.staffName,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                            taskDetails!.workType ==
+                                                    "Office Work"
+                                                ? Text(
+                                                    "Office Category: ${taskDetails!.officeCategoryName}",
+                                                    style: const TextStyle(
+                                                      fontSize: 14,
+                                                    ),
+                                                  )
+                                                : Text(
+                                                    "Site Category: ${taskDetails!.siteCategoryName}",
+                                                    style: const TextStyle(
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                            if (taskDetails!.projectName != "")
+                                              Text(
+                                                taskDetails!.projectName,
+                                                style: const TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight:
+                                                        FontWeight.normal),
+                                              ),
                                             if (taskDetails!.stageName != "")
                                               Text(
                                                 taskDetails!.stageName,
@@ -215,9 +254,15 @@ class TaskDetails extends StatelessWidget {
                                             amount: taskDetails!.toDate,
                                             valueColor: AppColors.primaryColor),
                                         AmountContainer(
-                                            title: "Work Type",
-                                            amount: taskDetails!.workType,
-                                            valueColor: AppColors.primaryColor),
+                                            title: "Priority",
+                                            amount: taskDetails!.priority,
+                                            //  valueColor: taskDetails!.priority=="High"?AppColors.primaryColor),
+                                            valueColor: taskDetails!.priority ==
+                                                    "High"
+                                                ? Colors.red
+                                                : taskDetails!.priority == "Low"
+                                                    ? Colors.blue
+                                                    : Colors.orange),
                                       ],
                                     )
                                   ],
@@ -225,6 +270,27 @@ class TaskDetails extends StatelessWidget {
                               ),
                             ),
                           ),
+                          // Padding(
+                          //   padding: const EdgeInsets.only(
+                          //       left: 16.0, right: 16.0, top: 16.0),
+                          //   child: Column(
+                          //     crossAxisAlignment: CrossAxisAlignment.start,
+                          //     children: [
+                          //       const Text(
+                          //         "Remark :",
+                          //         style: TextStyle(
+                          //             fontSize: 16,
+                          //             fontWeight: FontWeight.bold),
+                          //       ),
+                          //       Text(
+                          //         taskDetails!.description,
+                          //         style: const TextStyle(
+                          //             fontSize: 12,
+                          //             fontWeight: FontWeight.w400),
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
                           Padding(
                             padding: const EdgeInsets.only(
                                 left: 16.0, right: 16.0, top: 16.0),
@@ -232,7 +298,7 @@ class TaskDetails extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Text(
-                                  "Description :",
+                                  "Remark:",
                                   style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold),
@@ -243,12 +309,93 @@ class TaskDetails extends StatelessWidget {
                                       fontSize: 12,
                                       fontWeight: FontWeight.w400),
                                 ),
+                                taskDetails!.workType == "Site Work" &&
+                                        taskDetails!.mileStones != ""
+                                    ? const SizedBox(height: 16)
+                                    : SizedBox(),
+                                taskDetails!.workType == "Site Work" &&
+                                        taskDetails!.mileStones != ""
+                                    ? const Text(
+                                        "Milestone:",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                      )
+                                    : SizedBox(),
+                                taskDetails!.workType == "Site Work"
+                                    ? const SizedBox(height: 16)
+                                    : SizedBox(),
+                                taskDetails!.workType == "Site Work" &&
+                                        taskDetails!.mileStones != ""
+                                    ? MilestoneWidget(
+                                        milestoneList: milestoneList,
+                                        currentMilestone:
+                                            taskDetails!.mileStones,
+                                      )
+                                    : SizedBox(),
+                                const SizedBox(height: 16),
+                                taskDetails!.workType == "Site Work" &&
+                                        taskDetails!.mileStones != ""
+                                    ? SizedBox(
+                                        width: 120,
+                                        height: 30,
+                                        child: InkWell(
+                                          onTap: () {
+                                            updateMilestone(context, cubit);
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              color: AppColors.backgroundColor,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.grey
+                                                      .withOpacity(0.8),
+                                                  blurRadius: 6,
+                                                  offset: const Offset(1, 1),
+                                                ),
+                                              ],
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8.0,
+                                                      vertical: 4.0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Flexible(
+                                                    child: Text(
+                                                      taskDetails!.mileStones,
+                                                      style: const TextStyle(
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                      overflow: TextOverflow
+                                                          .ellipsis,
+                                                      maxLines: 1,
+                                                      softWrap: false,
+                                                    ),
+                                                  ),
+                                                  const Icon(
+                                                    Icons.arrow_forward_ios,
+                                                    size: 14,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : const SizedBox()
                               ],
                             ),
                           ),
-                          const SizedBox(
-                            height:8
-                          ),
+                          const SizedBox(height: 8),
                           Padding(
                             padding: const EdgeInsets.only(
                                 left: 16.0, right: 16.0, top: 16.0),
@@ -256,13 +403,13 @@ class TaskDetails extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Text(
-                                  "Comment :",
+                                  "Days Left :",
                                   style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 Text(
-                                  taskDetails!.comment,
+                                  taskDetails!.daysLeft,
                                   style: const TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w400),
@@ -270,7 +417,34 @@ class TaskDetails extends StatelessWidget {
                               ],
                             ),
                           ),
-                          
+                          taskDetails!.comment != ""
+                              ? const SizedBox(height: 8)
+                              : SizedBox(),
+                          taskDetails!.comment != ""
+                              ? Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 16.0, right: 16.0, top: 16.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        "Comment :",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        taskDetails!.comment,
+                                        style: const TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : SizedBox(),
+
                           const SizedBox(
                             height: 15,
                           ),
@@ -283,7 +457,7 @@ class TaskDetails extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const Text(
-                                    "Attachments :",
+                                    "Image :",
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold),
@@ -520,6 +694,106 @@ class TaskDetails extends StatelessWidget {
                             }
                           },
                           child: LargeButton(title: "Update"),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Close'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> updateMilestone(
+    BuildContext context,
+    TaskDetailsCubit cubit,
+  ) async {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              content: SizedBox(
+                height: 250,
+                child: SingleChildScrollView(
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(top: 16.0, bottom: 25),
+                          child: Text(
+                            "Update Milestone",
+                            style: TextStyle(
+                              color: AppColors.primaryColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.95,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: DropdownButtonFormField<String>(
+                            value: selectedMilestone,
+                            items: milestoneList.map((data) {
+                              return DropdownMenuItem<String>(
+                                value: data.id,
+                                child: Text(data.milestone),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                selectedMilestone = value;
+                              });
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return "Select a Milestone";
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.all(10),
+                              labelText: 'Milestones*',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              prefixIcon: const Icon(Icons.info),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        GestureDetector(
+                          onTap: () async {
+                            if (formKey.currentState!.validate()) {
+                              await cubit.updateTaskMilestone(
+                                  taskId, selectedMilestone!);
+                              Navigator.pop(context);
+                              snackBar(
+                                  context,
+                                  "Milestone updated successfully",
+                                  Colors.green);
+                            }
+                          },
+                          child: LargeButton(
+                            title: "Update",
+                          ),
                         ),
                         TextButton(
                           onPressed: () {

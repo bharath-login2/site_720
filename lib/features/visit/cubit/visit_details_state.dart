@@ -1,5 +1,6 @@
 
 
+import '../../../data/models/succes_response/success_response.dart';
 import '../../../data/models/visit/visit_details_model.dart';
 
 class VisitDetailsState {
@@ -11,7 +12,7 @@ class VisitDetailInitial extends VisitDetailsState {}
 class VisitDetailLoading extends VisitDetailsState {}
 
 class VisitDetailSuccess extends VisitDetailsState {
-  ListVisitDetailsModel response;
+  final  ListVisitDetailsModel response;
  VisitDetailSuccess(this.response);
 }
 
@@ -35,4 +36,12 @@ class VisitDetailSuccessWithMessage extends VisitDetailsState {
   final String message;
 
   VisitDetailSuccessWithMessage(this.message);
+}
+
+
+
+
+class VisitStatusUpdateSuccess extends VisitDetailsState {
+  final SuccessResponse response;
+  VisitStatusUpdateSuccess(this.response);
 }

@@ -122,235 +122,274 @@ class TaskList extends StatelessWidget {
                             ],
                           ),
                         ),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          itemCount: taskList.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(6.0),
-                              child: InkWell(
-                                onTap: () {
-                                  connStatus = true;
-                                  Navigator.pushNamed(
-                                      context, AppRoutes.taskDetails,
-                                      arguments: {
-                                        "task_id": taskList[index].id
-                                      });
-                                },
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width * .9,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    color: taskList[index].status == "New"
-                                        ? Colors.blue.shade50
-                                        : taskList[index].status ==
-                                                "in progress"
-                                            ? Colors.orange.shade50
-                                            : taskList[index].status ==
-                                                    "not-started"
-                                                ? Colors.red.shade50
-                                                : taskList[index].status ==
-                                                        "Completed"
-                                                    ? Colors.green.shade50
-                                                    : Colors.grey.shade50,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.8),
-                                        blurRadius: 3,
-                                        offset: const Offset(0, 3),
-                                      ),
-                                    ],
-                                  ),
-                                  child: SizedBox(
-                                    width:
-                                        MediaQuery.of(context).size.width * .7,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 8.0,
-                                          left: 8.0,
-                                          right: 8.0,
-                                          bottom: 8.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
+                        SingleChildScrollView(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ListView.builder(
+                                shrinkWrap: true,
+                                physics:
+                                    const NeverScrollableScrollPhysics(), 
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                itemCount: taskList.length,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(6.0),
+                                    child: InkWell(
+                                      onTap: () {
+                                        connStatus = true;
+                                        Navigator.pushNamed(
+                                          context,
+                                          AppRoutes.taskDetails,
+                                          arguments: {
+                                            "task_id": taskList[index].id
+                                          },
+                                        );
+                                      },
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                .9,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          color: taskList[index].status == "New"
+                                              ? Colors.blue.shade50
+                                              : taskList[index].status ==
+                                                      "in progress"
+                                                  ? Colors.orange.shade50
+                                                  : taskList[index].status ==
+                                                          "not-started"
+                                                      ? Colors.red.shade50
+                                                      : taskList[index]
+                                                                  .status ==
+                                                              "Completed"
+                                                          ? Colors.green.shade50
+                                                          : Colors.grey.shade50,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.8),
+                                              blurRadius: 3,
+                                              offset: const Offset(0, 3),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Column(
+                                              Row(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
                                                 children: [
-                                                  Text(
-                                                    taskList[index].taskTitle,
-                                                    style: const TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        taskList[index]
+                                                            .workType,
+                                                        style: const TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        taskList[index]
+                                                            .taskTitle,
+                                                        style: const TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                      if (taskList[index]
+                                                              .staffName !=
+                                                          "")
+                                                        Text(
+                                                          taskList[index]
+                                                              .staffName,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 10,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      if (taskList[index]
+                                                              .stageName !=
+                                                          "")
+                                                        Text(
+                                                          taskList[index]
+                                                              .stageName,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 10,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                    ],
                                                   ),
-                                                  if (taskList[index]
-                                                          .staffName !=
-                                                      "")
-                                                    Text(
-                                                      taskList[index].staffName,
-                                                      style: const TextStyle(
-                                                        fontSize: 10,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                  Row(
+                                                    children: [
+                                                      InkWell(
+                                                        onTap: () {
+                                                          attendanceDialog(
+                                                              context,
+                                                              cubit,
+                                                              taskList[index]
+                                                                  .id);
+                                                        },
+                                                        child: Container(
+                                                          height: 25,
+                                                          width: 25,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        5),
+                                                            color: AppColors
+                                                                .primaryColor,
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                color: Colors
+                                                                    .grey
+                                                                    .withOpacity(
+                                                                        0.8),
+                                                                blurRadius: 6,
+                                                                offset:
+                                                                    const Offset(
+                                                                        1, 1),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          child: const Icon(
+                                                            Icons.person_add,
+                                                            size: 16,
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
                                                       ),
-                                                    ),
-                                                  if (taskList[index]
-                                                          .stageName !=
-                                                      "")
-                                                    Text(
-                                                      taskList[index].stageName,
-                                                      style: const TextStyle(
-                                                        fontSize: 10,
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                      const SizedBox(width: 7),
+                                                      InkWell(
+                                                        onTap: () {
+                                                          connStatus = true;
+                                                          Navigator.pushNamed(
+                                                            context,
+                                                            AppRoutes
+                                                                .taskHistory,
+                                                            arguments: {
+                                                              "task_id":
+                                                                  taskList[
+                                                                          index]
+                                                                      .id
+                                                            },
+                                                          );
+                                                        },
+                                                        child: Container(
+                                                          height: 25,
+                                                          width: 25,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        5),
+                                                            color: AppColors
+                                                                .primaryColor,
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                color: Colors
+                                                                    .grey
+                                                                    .withOpacity(
+                                                                        0.8),
+                                                                blurRadius: 6,
+                                                                offset:
+                                                                    const Offset(
+                                                                        1, 1),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          child: const Icon(
+                                                            Icons.history,
+                                                            size: 18,
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
                                                       ),
-                                                    ),
+                                                    ],
+                                                  ),
                                                 ],
                                               ),
+                                              const SizedBox(height: 10),
                                               Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
                                                 children: [
-                                                  InkWell(
-                                                    onTap: () {
-                                                      attendanceDialog(
-                                                          context,
-                                                          cubit,
-                                                          taskList[index].id);
-                                                    },
-                                                    child: Container(
-                                                      height: 25,
-                                                      width: 25,
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                        color: AppColors
-                                                            .primaryColor,
-                                                        boxShadow: [
-                                                          BoxShadow(
-                                                            color: Colors.grey
-                                                                .withOpacity(
-                                                                    0.8),
-                                                            blurRadius: 6,
-                                                            offset:
-                                                                const Offset(
-                                                                    1, 1),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      child: const Icon(
-                                                        Icons.person_add,
-                                                        size: 16,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
+                                                  AmountContainer(
+                                                    title: "From Date",
+                                                    amount: taskList[index]
+                                                        .fromDate,
+                                                    valueColor:
+                                                        AppColors.primaryColor,
                                                   ),
-                                                  const SizedBox(
-                                                    width: 7,
+                                                  AmountContainer(
+                                                    title: "To Date",
+                                                    amount:
+                                                        taskList[index].toDate,
+                                                    valueColor:
+                                                        AppColors.primaryColor,
                                                   ),
-                                                  InkWell(
-                                                    onTap: () {
-                                                      connStatus = true;
-                                                      Navigator.pushNamed(
-                                                          context,
-                                                          AppRoutes.taskHistory,
-                                                          arguments: {
-                                                            "task_id":
-                                                                taskList[index]
-                                                                    .id
-                                                          });
-                                                    },
-                                                    child: Container(
-                                                      height: 25,
-                                                      width: 25,
-                                                      decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5),
-                                                        color: AppColors
-                                                            .primaryColor,
-                                                        boxShadow: [
-                                                          BoxShadow(
-                                                            color: Colors.grey
-                                                                .withOpacity(
-                                                                    0.8),
-                                                            blurRadius: 6,
-                                                            offset:
-                                                                const Offset(
-                                                                    1, 1),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      child: const Icon(
-                                                        Icons.history,
-                                                        size: 18,
-                                                        color: Colors.white,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              AmountContainer(
-                                                  title: "From Date",
-                                                  amount:
-                                                      taskList[index].fromDate,
-                                                  valueColor:
-                                                      AppColors.primaryColor),
-                                              AmountContainer(
-                                                  title: "To Date",
-                                                  amount:
-                                                      taskList[index].toDate,
-                                                  valueColor:
-                                                      AppColors.primaryColor),
-                                              AmountContainer(
-                                                title: "Status",
-                                                amount: taskList[index].status,
-                                                valueColor: taskList[index]
-                                                            .status ==
-                                                        "New"
-                                                    ? Colors.blue
-                                                    : taskList[index].status ==
-                                                            "In-Progress"
-                                                        ? Colors.orange
+                                                  AmountContainer(
+                                                    title: "Status",
+                                                    amount:
+                                                        taskList[index].status,
+                                                    valueColor: taskList[index]
+                                                                .status ==
+                                                            "New"
+                                                        ? Colors.blue
                                                         : taskList[index]
                                                                     .status ==
-                                                                "Cancelled"
-                                                            ? Colors.red
+                                                                "In-Progress"
+                                                            ? Colors.orange
                                                             : taskList[index]
                                                                         .status ==
-                                                                    "Completed"
-                                                                ? Colors.green
-                                                                : Colors.grey,
+                                                                    "Cancelled"
+                                                                ? Colors.red
+                                                                : taskList[index]
+                                                                            .status ==
+                                                                        "Completed"
+                                                                    ? Colors
+                                                                        .green
+                                                                    : Colors
+                                                                        .grey,
+                                                  ),
+                                                ],
                                               ),
                                             ],
                                           ),
-                                        ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
+                            ],
+                          ),
+                        )
                       ],
                     ),
                   );
@@ -367,8 +406,7 @@ class TaskList extends StatelessWidget {
 
   Widget _buildStatusCountCard(String title, int count, Color color) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-          horizontal: 8.0, vertical: 4.0), 
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       decoration: BoxDecoration(
         color: color.withOpacity(0.2),
         borderRadius: BorderRadius.circular(8.0),
@@ -379,16 +417,16 @@ class TaskList extends StatelessWidget {
           Text(
             title,
             style: TextStyle(
-              fontSize: 14, 
+              fontSize: 14,
               fontWeight: FontWeight.bold,
               color: color,
             ),
           ),
-          const SizedBox(height: 2.0), 
+          const SizedBox(height: 2.0),
           Text(
             count.toString(),
             style: TextStyle(
-              fontSize: 18, 
+              fontSize: 18,
               fontWeight: FontWeight.bold,
               color: color,
             ),

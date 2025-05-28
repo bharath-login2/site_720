@@ -24,7 +24,6 @@ class ProjectDetails extends StatelessWidget {
     final args =
         ModalRoute.of(context)!.settings.arguments as Map<String, String>;
     id = args["id"]!;
-
     return BlocProvider(
       create: (context) => ProjectDetailsCubit(id),
       child: BlocBuilder<ProjectDetailsCubit, ProjectDetailsState>(

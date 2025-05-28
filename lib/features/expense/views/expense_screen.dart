@@ -19,6 +19,8 @@ class Expense extends StatelessWidget {
     final args =
         ModalRoute.of(context)!.settings.arguments as Map<String, String>;
     String projectId = args["id"]!;
+      String expenseId = args["expenseid"]!;
+       String type = args["type"]!;
     return Scaffold(
         backgroundColor: AppColors.backgroundColor,
         appBar: PreferredSize(
@@ -86,7 +88,7 @@ class Expense extends StatelessWidget {
           ),
         ),
         body: BlocProvider(
-          create: (context) => ExpenseCubit(projectId),
+          create: (context) => ExpenseCubit(projectId,expenseId,type),
           child: MultiBlocListener(
             listeners: [
               BlocListener<ConnectivityCubit, ConnectivityState>(

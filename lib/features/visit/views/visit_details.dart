@@ -203,7 +203,7 @@ class VisitList extends StatelessWidget {
                   amount: item.status ?? "Unknown",
                   valueColor: item.status == "Not-Started"
                       ? Colors.blue
-                      : item.status == "Progress"
+                      : item.status == "Inprogress"
                           ? Colors.orange
                           : item.status == "Completed"
                               ? const Color.fromARGB(255, 10, 233, 103)

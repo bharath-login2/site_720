@@ -32,7 +32,6 @@ class VisitDetailsCubit extends Cubit<VisitDetailsState> {
     emit(VisitDetailLoading());
     try {
       TaskStatusModel response = await HttpServices.getTaskStatus();
-
       if (response.status == true) {
        // emit(VisitStatusSuccess(response));
       } else {
@@ -78,26 +77,70 @@ Future<void> addTaskDetails(
   }
 }
 
+// Future<void> updateVisitStatus(
+//   String visitId,
+//   String comment,
+//   String status,
+// ) async {
+//   try {
+//     emit(VisitDetailLoading());
+//     SuccessResponse response = await HttpServices.updateVisitStatus(
+//       visitId, comment, status);
 
+//     if (response.status == true) {
+//       emit(VisitStatusUpdateSuccess(response));
+//     } else {
+//       emit(VisitDetailFailure(response.message));
+//     }
+//   } catch (e) {
+//     emit(VisitDetailFailure('Failed to update status: ${e.toString()}'));
+//   }
+// }
 
-
-
-  XFile? image;
-
-  selectImage(
-    ImageSource source,
-  ) async {
-    try {
-      final XFile? selectedImage =
-          await ImagePicker().pickImage(source: source);
-      if (selectedImage != null) {
-        image = selectedImage;
-      }
-     // emit(ImageSuccess(image!));
-    } catch (e) {
-    //  emit(ImageFailure("Failed to get image, Please Select once again.."));
+Future<void> updateVisitStatus(
+  String visitId,
+  String comment,
+  String status,
+) async {
+  try {
+    emit(VisitDetailLoading());
+     SuccessResponse response = await HttpServices.updateVisitStatus(
+      visitId, comment, status,
+    );
+    if (response.status == true) {
+   emit(VisitDetailSuccessWithMessage(response.message));
+    }else {
+      emit(VisitDetailFailure(response.message ?? 'Error occurred'));
     }
+  } catch (e) {
+    emit(VisitDetailFailure('Failed to update status: ${e.toString()}')); 
   }
+}
+
+
+
+
+
+
+
+
+
+    XFile? image;
+
+    selectImage(
+      ImageSource source,
+    ) async {
+      try {
+        final XFile? selectedImage =
+            await ImagePicker().pickImage(source: source);
+        if (selectedImage != null) {
+          image = selectedImage;
+        }
+      // emit(ImageSuccess(image!));
+      } catch (e) {
+      //  emit(ImageFailure("Failed to get image, Please Select once again.."));
+      }
+    }
 
   
 }

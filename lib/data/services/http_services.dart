@@ -12,6 +12,7 @@ import '../models/clientlist/client_list_model.dart';
 import '../models/clientlist/client_type_list.dart';
 import '../models/clientlist/district_list.dart';
 import '../models/clientlist/state_list_model.dart';
+import '../models/complaint/complaintStatus_model.dart';
 import '../models/complaint/complaint_details_model.dart';
 import '../models/complaint/complaint_history_model.dart';
 import '../models/complaint/complaint_list_model.dart';
@@ -38,6 +39,7 @@ import '../models/stages/stagephase_model.dart';
 import '../models/stock/stock_list.dart';
 import '../models/stockconsume/stockconsume_model.dart';
 import '../models/succes_response/success_response.dart';
+import '../models/task/milestoneModel.dart';
 import '../models/task/task_details_model.dart';
 import '../models/task/task_history.dart';
 import '../models/task/task_status.dart';
@@ -74,9 +76,8 @@ class HttpServices {
     try {
       http.Response response =
           await http.post(Uri.parse("${await Config.getUrl()}get_version"));
-         // print('Response: ${response.body}');
+      print('Response: ${response.body}');
       if (response.statusCode == 200) {
-       
         return versionModelFromJson(response.body);
       }
     } catch (e) {
@@ -425,7 +426,7 @@ class HttpServices {
     String projectId,
     String clintId,
     String stageId,
-  //  selectedStatus,
+    //  selectedStatus,
     String stages,
     String estDays,
     String curingdays,
@@ -439,7 +440,7 @@ class HttpServices {
         "project_id": projectId,
         "client_id": clintId,
         "stage_id": stageId,
-      //  "phase_id": selectedStatus,
+        //  "phase_id": selectedStatus,
         "stages": stages,
         "est_days": estDays,
         "curingdays": curingdays,
@@ -469,12 +470,14 @@ class HttpServices {
     }
   }
 
-  static Future getExpenseList(projectId) async {
+  static Future getExpenseList(projectId, expenseId, type) async {
     try {
       http.Response response = await http
           .post(Uri.parse("${await Config.getUrl()}expense_list"), body: {
         'token': await getSharedPreference('token'),
-        "project_id": projectId
+        "project_id": projectId,
+        "expense_id": expenseId,
+        "type": type
       });
       if (response.statusCode == 200) {
         return getExpenseListFromJson(response.body);
@@ -1232,8 +1235,28 @@ class HttpServices {
     }
   }
 
+  static Future<MilestoneModel?> getTaskMilestone(String taskId) async {
+    try {
+      http.Response response = await http.post(
+        Uri.parse("${await Config.getUrl()}get_task_milestone"),
+        body: {
+          'token': await getSharedPreference('token'),
+          'task_id': taskId,
+        },
+      );
 
-   static Future getVisitDetails() async {
+      if (response.statusCode == 200) {
+        return milestoneModelFromJson(response.body);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      log("Error fetching milestone: $e");
+      return null;
+    }
+  }
+
+  static Future getVisitDetails() async {
     try {
       http.Response response = await http
           .post(Uri.parse("${await Config.getUrl()}get_visit_details"), body: {
@@ -1247,13 +1270,14 @@ class HttpServices {
     }
   }
 
-   static Future getVisitalldetails(visitId) async {
+  static Future getVisitalldetails(visitId) async {
     try {
-      http.Response response = await http
-          .post(Uri.parse("${await Config.getUrl()}get_visitall_details"), body: {
-        'token': await getSharedPreference('token'),
-        'visit_id':visitId,
-      });
+      http.Response response = await http.post(
+          Uri.parse("${await Config.getUrl()}get_visitall_details"),
+          body: {
+            'token': await getSharedPreference('token'),
+            'visit_id': visitId,
+          });
       if (response.statusCode == 200) {
         return listVisitDetailsModelFromJson(response.body);
       }
@@ -1263,7 +1287,7 @@ class HttpServices {
   }
 
   static Future addTaskDetails(
-   // String taskId,
+    // String taskId,
     String visitId,
     List<String> textQuestionNumbers,
     List<String> textAnswers,
@@ -1278,7 +1302,7 @@ class HttpServices {
       var request = http.MultipartRequest('POST', uri)
         ..headers['Content-Type'] = 'multipart/form-data'
         ..fields['token'] = await getSharedPreference('token')
-       // ..fields['task_id'] = taskId
+        // ..fields['task_id'] = taskId
         ..fields['visit_id'] = visitId
         ..fields['text_question_numbers'] = jsonEncode(textQuestionNumbers)
         ..fields['text_answers'] = jsonEncode(textAnswers)
@@ -1304,7 +1328,7 @@ class HttpServices {
       var response = await request.send();
 
       if (response.statusCode == 200) {
-          return successResponseFromJson(await response.stream.bytesToString());
+        return successResponseFromJson(await response.stream.bytesToString());
       } else {
         throw Exception('Failed to add task details');
       }
@@ -1356,6 +1380,63 @@ class HttpServices {
     }
   }
 
+  //  static Future updateVisitStatus(
+  //   String visitId,
+  //   String comment,
+  //   String status,
+  // ) async {
+  //   try {
+  //     var uri = Uri.parse("${await Config.getUrl()}update_visit_status");
+  //     var request = http.MultipartRequest('POST', uri);
+  //     request.fields.addAll({
+  //       'token': await getSharedPreference('token'),
+  //       'visitId': visitId,
+  //       'status': status,
+  //       'comment': comment
+  //     });
+
+  //     var response = await request.send();
+  //     if (response.statusCode == 200) {
+  //       return VisitDetailsSuccess(response.message);
+  //     }
+  //   } catch (e) {
+  //     log("Error: ${e.toString()}");
+  //   }
+  // }
+
+  static Future<SuccessResponse> updateVisitStatus(
+    String visitId,
+    String comment,
+    String status,
+  ) async {
+    try {
+      var uri = Uri.parse("${await Config.getUrl()}update_visit_status");
+      var request = http.MultipartRequest('POST', uri);
+      request.fields.addAll({
+        'token': await getSharedPreference('token'),
+        'visitId': visitId,
+        'status': status,
+        'comment': comment
+      });
+
+      var response = await request.send();
+      if (response.statusCode == 200) {
+        String body = await response.stream.bytesToString();
+        return SuccessResponse.fromJson(jsonDecode(body));
+      } else {
+        return SuccessResponse(
+          status: false,
+          message: "Failed to update status",
+          data: false,
+        );
+      }
+    } catch (e) {
+      log("Error: ${e.toString()}");
+      return SuccessResponse(
+          status: false, message: "Error: ${e.toString()}", data: false);
+    }
+  }
+
   static Future addAttendance(
     String taskId,
     String imagePath,
@@ -1384,8 +1465,7 @@ class HttpServices {
     }
   }
 
-
-    static Future addAttendanceVisit(
+  static Future addAttendanceVisit(
     String visitId,
     String imagePath,
     String latitude,
@@ -1485,13 +1565,14 @@ class HttpServices {
     }
   }
 
-   static Future getVisitHistoryDetails(visitId) async {
+  static Future getVisitHistoryDetails(visitId) async {
     try {
-      http.Response response = await http
-          .post(Uri.parse("${await Config.getUrl()}get_visithistory_details"), body: {
-        'token': await getSharedPreference('token'),
-        'visit_id':visitId,
-      });
+      http.Response response = await http.post(
+          Uri.parse("${await Config.getUrl()}get_visithistory_details"),
+          body: {
+            'token': await getSharedPreference('token'),
+            'visit_id': visitId,
+          });
       if (response.statusCode == 200) {
         return visitHistoryDetailsModelFromJson(response.body);
       }
@@ -1500,15 +1581,52 @@ class HttpServices {
     }
   }
 
-   static Future getComplaintHistory(String complaintId) async {
+  static Future getComplaintHistory(String complaintId) async {
     try {
-      http.Response response = await http
-          .post(Uri.parse("${await Config.getUrl()}get_complaint_history"), body: {
-        'token': await getSharedPreference('token'),
-        'complaint_id': complaintId,
-      });
+      http.Response response = await http.post(
+          Uri.parse("${await Config.getUrl()}get_complaint_history"),
+          body: {
+            'token': await getSharedPreference('token'),
+            'complaint_id': complaintId,
+          });
       if (response.statusCode == 200) {
         return complaintHistoryModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+
+   static Future getComplaintHistoryStatus() async {
+    try {
+      http.Response response = await http.post(
+          Uri.parse("${await Config.getUrl()}get_complaint_status"),
+          body: {
+            'token': await getSharedPreference('token'),
+           
+          });
+      if (response.statusCode == 200) {
+        return complaintStatusModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  static Future updateTaskMilestone(
+    String taskId,
+    String selectedMilestone,
+  ) async {
+    try {
+      http.Response response = await http
+          .post(Uri.parse("${await Config.getUrl()}update_milestone"), body: {
+        'token': await getSharedPreference('token'),
+        "task_id": taskId,
+        "milestone": selectedMilestone,
+      });
+      if (response.statusCode == 200) {
+        return successResponseFromJson(response.body);
       }
     } catch (e) {
       log(e.toString());

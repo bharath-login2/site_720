@@ -126,6 +126,7 @@ class VisitDetailsAll {
   final DateTime fromDate;
   final DateTime toDate;
   final String description;
+   final String visitStatus;
   final String priority;
   final String staffName;
   final String projectName;
@@ -142,6 +143,7 @@ class VisitDetailsAll {
     required this.fromDate,
     required this.toDate,
     required this.description,
+    required this.visitStatus,
     required this.priority,
     required this.staffName,
     required this.projectName,
@@ -160,6 +162,7 @@ class VisitDetailsAll {
         fromDate: DateTime.parse(json["from_date"] ?? ""),
         toDate: DateTime.parse(json["to_date"] ?? ""),
         description: json["description"] ?? "",
+           visitStatus: json["visit_status"] ?? "",
         priority: json["priority"] ?? "",
         staffName: json["staff_name"] ?? "",
         projectName: json["project_name"] ?? "",
@@ -179,6 +182,7 @@ class VisitDetailsAll {
         "to_date":
             "${toDate.year.toString().padLeft(4, '0')}-${toDate.month.toString().padLeft(2, '0')}-${toDate.day.toString().padLeft(2, '0')}",
         "description": description,
+         "visit_status": visitStatus,
         "priority": priority,
         "staff_name": staffName,
         "project_name": projectName,

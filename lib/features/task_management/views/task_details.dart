@@ -312,7 +312,7 @@ class TaskDetails extends StatelessWidget {
                                 taskDetails!.workType == "Site Work" &&
                                         taskDetails!.mileStones != ""
                                     ? const SizedBox(height: 16)
-                                    : SizedBox(),
+                                    : const SizedBox(),
                                 taskDetails!.workType == "Site Work" &&
                                         taskDetails!.mileStones != ""
                                     ? const Text(
@@ -321,10 +321,10 @@ class TaskDetails extends StatelessWidget {
                                             fontSize: 16,
                                             fontWeight: FontWeight.bold),
                                       )
-                                    : SizedBox(),
+                                    : const SizedBox(),
                                 taskDetails!.workType == "Site Work"
                                     ? const SizedBox(height: 16)
-                                    : SizedBox(),
+                                    : const SizedBox(),
                                 taskDetails!.workType == "Site Work" &&
                                         taskDetails!.mileStones != ""
                                     ? MilestoneWidget(
@@ -332,7 +332,7 @@ class TaskDetails extends StatelessWidget {
                                         currentMilestone:
                                             taskDetails!.mileStones,
                                       )
-                                    : SizedBox(),
+                                    : const SizedBox(),
                                 const SizedBox(height: 16),
                                 taskDetails!.workType == "Site Work" &&
                                         taskDetails!.mileStones != ""
@@ -419,7 +419,7 @@ class TaskDetails extends StatelessWidget {
                           ),
                           taskDetails!.comment != ""
                               ? const SizedBox(height: 8)
-                              : SizedBox(),
+                              : const SizedBox(),
                           taskDetails!.comment != ""
                               ? Padding(
                                   padding: const EdgeInsets.only(
@@ -443,7 +443,7 @@ class TaskDetails extends StatelessWidget {
                                     ],
                                   ),
                                 )
-                              : SizedBox(),
+                              : const SizedBox(),
 
                           const SizedBox(
                             height: 15,

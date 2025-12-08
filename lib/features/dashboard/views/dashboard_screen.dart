@@ -406,7 +406,7 @@ class DashboardScreen extends StatelessWidget {
                                       ),
                                       child: const Padding(
                                         padding: EdgeInsets.symmetric(
-                                            horizontal: 8.0, vertical: 12.0),
+                                            horizontal: 8.0, vertical: 12 ),
                                         child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,

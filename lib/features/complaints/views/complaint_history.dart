@@ -221,14 +221,14 @@ class ComplaintHistoryPage extends StatelessWidget {
                                               complaintHistory![0].incidentDate,
                                           valueColor: AppColors.primaryColor,
                                         ),
-                                        SizedBox(width:8),
+                                        const SizedBox(width:8),
                                         AmountContainer(
                                           title: "Complaint Nature",
                                           amount: complaintHistory![0]
                                               .complaintNature,
                                           valueColor: AppColors.primaryColor,
                                         ),
-                                         SizedBox(width:8),
+                                         const SizedBox(width:8),
                                        InkWell(
                                           onTap: () {
                                             updateStatus(context, cubit);
@@ -354,7 +354,7 @@ class ComplaintHistoryPage extends StatelessWidget {
                                       fontSize: 14,
                                     ),
                                 ),
-                                SizedBox(height: 8,),
+                                const SizedBox(height: 8,),
                                 const Text(
                                   "Added Image:",
                                   style: TextStyle(

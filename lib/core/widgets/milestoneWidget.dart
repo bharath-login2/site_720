@@ -7,10 +7,10 @@ class MilestoneWidget extends StatelessWidget {
   final String currentMilestone;
 
   const MilestoneWidget({
-    Key? key,
+    super.key,
     required this.milestoneList,
     required this.currentMilestone,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

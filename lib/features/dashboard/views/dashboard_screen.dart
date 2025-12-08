@@ -16,10 +16,8 @@ import '../../connectivity/cubit/connectivity_cubit.dart';
 import '../../connectivity/cubit/connectivity_state.dart';
 import '../widgets/dash_container.dart';
 import '../widgets/date_container.dart';
-
 class DashboardScreen extends StatelessWidget {
   DashboardScreen({super.key});
-
   TextEditingController searchController = TextEditingController();
   TextEditingController fdate = TextEditingController();
   TextEditingController tdate = TextEditingController();
@@ -42,7 +40,7 @@ class DashboardScreen extends StatelessWidget {
               if (state is ConnectivityDisconnected) {
                 if (connStatus == true) {
                   connStatus = false;
-                   connectivityDialog(context);
+                  connectivityDialog(context);
                 }
               } else {
                 connStatus = true;
@@ -251,9 +249,7 @@ class DashboardScreen extends StatelessWidget {
                                         : state.response.data.fromDate,
                                   ),
                                 ),
-                                const SizedBox(
-                                    width:
-                                        10), 
+                                const SizedBox(width: 10),
                                 const Text(
                                   "To",
                                   style: TextStyle(
@@ -457,13 +453,13 @@ class DashboardScreen extends StatelessWidget {
                                                                   .expenseData[
                                                                       i]
                                                                   .projectId,
-                                                                    "expenseid": state
+                                                              "expenseid": state
                                                                   .response
                                                                   .data
                                                                   .expenseData[
                                                                       i]
                                                                   .expenseHeadId,
-                                                                    "type":state
+                                                              "type": state
                                                                   .response
                                                                   .data
                                                                   .expenseData[

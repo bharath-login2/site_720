@@ -80,20 +80,55 @@ class Consumption extends StatelessWidget {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              "Material: ${state.response.data[index]
+                                                  .materialName}",
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 110,
+                                            ),
+                                            Row(
+                                              children: [
+                                                const Icon(
+                                                  Icons.calendar_month,
+                                                  size: 16,
+                                                  color: AppColors
+                                                      .coffie, // or any color you prefer
+                                                ),
+                                                const SizedBox(width: 4),
+                                                Text(
+                                                  "${state.response.data[index].dateConsumed}",
+                                                  style: const TextStyle(
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: AppColors.coffie,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
                                         Text(
-                                          state.response.data[index]
-                                              .materialName,
+                                          "Location: ${state.response.data[index].locationName}",
                                           style: const TextStyle(
-                                            fontSize: 14,
+                                            fontSize: 10,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                         const SizedBox(
-                                          height: 3,
+                                          height: 10,
                                         ),
                                         Text(
-                                          state.response.data[index]
-                                              .supplierName,
+                                          "Unit: ${state.response.data[index].unit}",
                                           style: const TextStyle(
                                             fontSize: 10,
                                             fontWeight: FontWeight.bold,
@@ -107,21 +142,21 @@ class Consumption extends StatelessWidget {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             AmountContainer(
-                                                title: "Used Quantity",
-                                                amount: state.response
-                                                    .data[index].quantity,
+                                                title: "Unit Price",
+                                                amount: "₹ ${state.response
+                                                    .data[index].unitPrice}",
                                                 valueColor:
                                                     AppColors.primaryColor),
                                             AmountContainer(
-                                                title: "Unit Price",
+                                                title: "In Stock",
                                                 amount:
-                                                    "₹ ${state.response.data[index].unitPrice}",
+                                                    " ${state.response.data[index].inStock}",
                                                 valueColor:
                                                     AppColors.primaryColor),
                                             AmountContainer(
-                                                title: "Unit Price",
+                                                title: "Total Quantity",
                                                 amount:
-                                                    "₹ ${state.response.data[index].unitPrice}",
+                                                    " ${state.response.data[index].quantity}",
                                                 valueColor:
                                                     AppColors.primaryColor),
                                           ],

@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/shimmer.dart';
 import 'package:site_720/core/widgets/snack_bar.dart';
@@ -148,234 +149,457 @@ class DeductionWork extends StatelessWidget {
                         },
                       )
                     : workList.isNotEmpty
-                        ? RefreshIndicator(
+                        ?
+                        // RefreshIndicator(
+                        //     onRefresh: () async {
+                        //       cubit.getDeductionWorkList(projectId);
+                        //     },
+                        //     child: ListView.builder(
+                        //       shrinkWrap: true,
+                        //       padding:
+                        //           const EdgeInsets.symmetric(horizontal: 8.0),
+                        //       itemCount: workList.length,
+                        //       itemBuilder: (context, index) {
+                        //         return Padding(
+                        //           padding: const EdgeInsets.all(6.0),
+                        //           child: InkWell(
+                        //             onTap: () {
+                        //               // Navigator.of(context).pushNamed(AppRoutes.stageHistory);
+                        //             },
+                        //             child: Container(
+                        //               width: MediaQuery.of(context).size.width *
+                        //                   .9,
+                        //               decoration: BoxDecoration(
+                        //                 borderRadius: BorderRadius.circular(5),
+                        //                 color: Colors.white,
+                        //                 boxShadow: [
+                        //                   BoxShadow(
+                        //                     color: Colors.grey.withOpacity(0.8),
+                        //                     blurRadius: 3,
+                        //                     offset: const Offset(0, 3),
+                        //                   ),
+                        //                 ],
+                        //               ),
+                        //               child: SizedBox(
+                        //                 width:
+                        //                     MediaQuery.of(context).size.width *
+                        //                         .7,
+                        //                 child: Padding(
+                        //                   padding: const EdgeInsets.only(
+                        //                       top: 8.0,
+                        //                       left: 8.0,
+                        //                       right: 8.0,
+                        //                       bottom: 8.0),
+                        //                   child: Column(
+                        //                     crossAxisAlignment:
+                        //                         CrossAxisAlignment.start,
+                        //                     children: [
+                        //                       Row(
+                        //                         crossAxisAlignment:
+                        //                             CrossAxisAlignment.start,
+                        //                         mainAxisAlignment:
+                        //                             MainAxisAlignment
+                        //                                 .spaceBetween,
+                        //                         children: [
+                        //                           Column(
+                        //                             crossAxisAlignment:
+                        //                                 CrossAxisAlignment
+                        //                                     .start,
+                        //                             children: [
+                        //                               Text(
+                        //                                 "Work: ${workList[index]
+                        //                                     .workName}",
+                        //                                 style: const TextStyle(
+                        //                                     fontSize: 14,
+                        //                                     fontWeight:
+                        //                                         FontWeight.bold,
+                        //                                     color: AppColors
+                        //                                         .coffie),
+                        //                               ),
+                        //                               Text(
+                        //                                 "Stage: ${workList[index]
+                        //                                     .stageName}",
+                        //                                 style: const TextStyle(
+                        //                                   fontSize: 12,
+                        //                                 ),
+                        //                               ),
+                        //                               Text(
+                        //                                 "Description: ${workList[index]
+                        //                                     .description}",
+                        //                                 style: const TextStyle(
+                        //                                   fontSize: 10,
+                        //                                   overflow: TextOverflow.ellipsis
+                        //                                 ),
+                        //                               ),
+                        //                             ],
+                        //                           ),
+                        //                           Column(
+                        //                             crossAxisAlignment:
+                        //                                 CrossAxisAlignment.end,
+                        //                             children: [
+                        //                               Row(
+                        //                                 children: [
+                        //                                   InkWell(
+                        //                                     onTap: () {
+                        //                                       work.text =
+                        //                                           workList[
+                        //                                                   index]
+                        //                                               .workName;
+                        //                                       selectedStatus =
+                        //                                           workList[
+                        //                                                   index]
+                        //                                               .phaseId;
+                        //                                       percentage.text =
+                        //                                           workList[
+                        //                                                   index]
+                        //                                               .percentage;
+                        //                                       amount.text =
+                        //                                           workList[
+                        //                                                   index]
+                        //                                               .amount;
+                        //                                       description.text =
+                        //                                           workList[
+                        //                                                   index]
+                        //                                               .description;
+                        //                                       String workId =
+                        //                                           workList[
+                        //                                                   index]
+                        //                                               .id;
+                        //                                       workDialog(
+                        //                                           context,
+                        //                                           cubit,
+                        //                                           phaseList,
+                        //                                           projectId,
+                        //                                           clientId,
+                        //                                           workId,
+                        //                                           "edit",
+                        //                                           "update");
+                        //                                     },
+                        //                                     child: Container(
+                        //                                       height: 25,
+                        //                                       width: 25,
+                        //                                       decoration:
+                        //                                           BoxDecoration(
+                        //                                         borderRadius:
+                        //                                             BorderRadius
+                        //                                                 .circular(
+                        //                                                     5),
+                        //                                         color: AppColors
+                        //                                             .lightBlue,
+                        //                                         boxShadow: [
+                        //                                           BoxShadow(
+                        //                                             color: Colors
+                        //                                                 .grey
+                        //                                                 .withOpacity(
+                        //                                                     0.8),
+                        //                                             blurRadius:
+                        //                                                 6,
+                        //                                             offset:
+                        //                                                 const Offset(
+                        //                                                     1,
+                        //                                                     1),
+                        //                                           ),
+                        //                                         ],
+                        //                                       ),
+                        //                                       child: const Icon(
+                        //                                         Icons.edit,
+                        //                                         size: 18,
+                        //                                         color: Colors
+                        //                                             .white,
+                        //                                       ),
+                        //                                     ),
+                        //                                   ),
+                        //                                   const SizedBox(
+                        //                                     width: 7,
+                        //                                   ),
+                        //                                   InkWell(
+                        //                                     onTap: () {
+                        //                                       String workId =
+                        //                                           workList[
+                        //                                                   index]
+                        //                                               .id;
+                        //                                       deleteDialog(
+                        //                                           context,
+                        //                                           cubit,
+                        //                                           projectId,
+                        //                                           workId, () {
+                        //                                         Navigator.pop(
+                        //                                             context);
+                        //                                       });
+                        //                                     },
+                        //                                     child: Container(
+                        //                                       height: 25,
+                        //                                       width: 25,
+                        //                                       decoration:
+                        //                                           BoxDecoration(
+                        //                                         borderRadius:
+                        //                                             BorderRadius
+                        //                                                 .circular(
+                        //                                                     5),
+                        //                                         color:
+                        //                                             Colors.red,
+                        //                                         boxShadow: [
+                        //                                           BoxShadow(
+                        //                                             color: Colors
+                        //                                                 .grey
+                        //                                                 .withOpacity(
+                        //                                                     0.8),
+                        //                                             blurRadius:
+                        //                                                 6,
+                        //                                             offset:
+                        //                                                 const Offset(
+                        //                                                     1,
+                        //                                                     1),
+                        //                                           ),
+                        //                                         ],
+                        //                                       ),
+                        //                                       child: const Icon(
+                        //                                         Icons.delete,
+                        //                                         size: 18,
+                        //                                         color: Colors
+                        //                                             .white,
+                        //                                       ),
+                        //                                     ),
+                        //                                   ),
+                        //                                 ],
+                        //                               ),
+                        //                               const SizedBox(
+                        //                                 height: 10,
+                        //                               ),
+                        //                               AmountContainer(
+                        //                                   title: "Cost",
+                        //                                   amount:
+                        //                                       "${workList[index].amount}₹",
+                        //                                   valueColor: AppColors
+                        //                                       .primaryColor),
+                        //                             ],
+                        //                           )
+                        //                         ],
+                        //                       ),
+                        //                     ],
+                        //                   ),
+                        //                 ),
+                        //               ),
+                        //             ),
+                        //           ),
+                        //         );
+                        //       },
+                        //     ),
+                        //   )
+                        RefreshIndicator(
                             onRefresh: () async {
                               cubit.getDeductionWorkList(projectId);
                             },
                             child: ListView.builder(
                               shrinkWrap: true,
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0, vertical: 6.0),
                               itemCount: workList.length,
                               itemBuilder: (context, index) {
+                                final work = workList[index];
                                 return Padding(
-                                  padding: const EdgeInsets.all(6.0),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 6.0),
                                   child: InkWell(
                                     onTap: () {
-                                      // Navigator.of(context).pushNamed(AppRoutes.stageHistory);
+                                      // Optional: Navigate to details page
                                     },
                                     child: Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          .9,
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
+                                        borderRadius: BorderRadius.circular(8),
                                         color: Colors.white,
                                         boxShadow: [
                                           BoxShadow(
-                                            color: Colors.grey.withOpacity(0.8),
-                                            blurRadius: 3,
+                                            color: Colors.grey.withOpacity(0.2),
+                                            blurRadius: 6,
                                             offset: const Offset(0, 3),
                                           ),
                                         ],
                                       ),
-                                      child: SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                .7,
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 8.0,
-                                              left: 8.0,
-                                              right: 8.0,
-                                              bottom: 8.0),
-                                          child: Column(
+                                      padding: const EdgeInsets.all(12),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          // Work Name & Stage
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                                CrossAxisAlignment.center,
                                             children: [
-                                              Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        workList[index]
-                                                            .workName,
-                                                        style: const TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: AppColors
-                                                                .coffie),
-                                                      ),
-                                                      Text(
-                                                        workList[index]
-                                                            .stageName,
-                                                        style: const TextStyle(
-                                                          fontSize: 10,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        workList[index]
-                                                            .description,
-                                                        style: const TextStyle(
-                                                          fontSize: 10,
-                                                        ),
-                                                      ),
-                                                    ],
+                                              // Work Name
+                                              Expanded(
+                                                child: Text(
+                                                  "Work: ${work.workName}",
+                                                  style: const TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: AppColors.coffie,
                                                   ),
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.end,
-                                                    children: [
-                                                      Row(
-                                                        children: [
-                                                          InkWell(
-                                                            onTap: () {
-                                                              work.text =
-                                                                  workList[
-                                                                          index]
-                                                                      .workName;
-                                                              selectedStatus =
-                                                                  workList[
-                                                                          index]
-                                                                      .phaseId;
-                                                              percentage.text =
-                                                                  workList[
-                                                                          index]
-                                                                      .percentage;
-                                                              amount.text =
-                                                                  workList[
-                                                                          index]
-                                                                      .amount;
-                                                              description.text =
-                                                                  workList[
-                                                                          index]
-                                                                      .description;
-                                                              String workId =
-                                                                  workList[
-                                                                          index]
-                                                                      .id;
-                                                              workDialog(
-                                                                  context,
-                                                                  cubit,
-                                                                  phaseList,
-                                                                  projectId,
-                                                                  clientId,
-                                                                  workId,
-                                                                  "edit",
-                                                                  "update");
-                                                            },
-                                                            child: Container(
-                                                              height: 25,
-                                                              width: 25,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            5),
-                                                                color: AppColors
-                                                                    .lightBlue,
-                                                                boxShadow: [
-                                                                  BoxShadow(
-                                                                    color: Colors
-                                                                        .grey
-                                                                        .withOpacity(
-                                                                            0.8),
-                                                                    blurRadius:
-                                                                        6,
-                                                                    offset:
-                                                                        const Offset(
-                                                                            1,
-                                                                            1),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              child: const Icon(
-                                                                Icons.edit,
-                                                                size: 18,
-                                                                color: Colors
-                                                                    .white,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                            width: 7,
-                                                          ),
-                                                          InkWell(
-                                                            onTap: () {
-                                                              String workId =
-                                                                  workList[
-                                                                          index]
-                                                                      .id;
-                                                              deleteDialog(
-                                                                  context,
-                                                                  cubit,
-                                                                  projectId,
-                                                                  workId, () {
-                                                                Navigator.pop(
-                                                                    context);
-                                                              });
-                                                            },
-                                                            child: Container(
-                                                              height: 25,
-                                                              width: 25,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            5),
-                                                                color:
-                                                                    Colors.red,
-                                                                boxShadow: [
-                                                                  BoxShadow(
-                                                                    color: Colors
-                                                                        .grey
-                                                                        .withOpacity(
-                                                                            0.8),
-                                                                    blurRadius:
-                                                                        6,
-                                                                    offset:
-                                                                        const Offset(
-                                                                            1,
-                                                                            1),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              child: const Icon(
-                                                                Icons.delete,
-                                                                size: 18,
-                                                                color: Colors
-                                                                    .white,
-                                                              ),
-                                                            ),
+                                                  overflow: TextOverflow
+                                                      .ellipsis, // prevents overflow
+                                                ),
+                                              ),
+
+                                              // Action buttons: Edit & Delete
+                                              Row(
+                                                children: [
+                                                  // Edit button
+                                                  InkWell(
+                                                    onTap: () {
+                                                      workDialog(
+                                                        context,
+                                                        cubit,
+                                                        phaseList,
+                                                        projectId,
+                                                        clientId,
+                                                        work.id,
+                                                        "edit",
+                                                        "update",
+                                                      );
+                                                    },
+                                                    child: Container(
+                                                      height: 28,
+                                                      width: 28,
+                                                      decoration: BoxDecoration(
+                                                        color:
+                                                            AppColors.lightBlue,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(6),
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.grey
+                                                                .withOpacity(
+                                                                    0.3),
+                                                            blurRadius: 4,
+                                                            offset:
+                                                                const Offset(
+                                                                    1, 1),
                                                           ),
                                                         ],
                                                       ),
-                                                      const SizedBox(
-                                                        height: 10,
+                                                      child: const Icon(
+                                                        Icons.edit,
+                                                        size: 18,
+                                                        color: Colors.white,
                                                       ),
-                                                      AmountContainer(
-                                                          title: "Cost",
-                                                          amount:
-                                                              "${workList[index].amount}₹",
-                                                          valueColor: AppColors
-                                                              .primaryColor),
-                                                    ],
-                                                  )
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 8),
+
+                                                  // Delete button
+                                                  InkWell(
+                                                    onTap: () {
+                                                      deleteDialog(
+                                                          context,
+                                                          cubit,
+                                                          projectId,
+                                                          work.id, () {
+                                                        Navigator.pop(context);
+                                                      });
+                                                    },
+                                                    child: Container(
+                                                      height: 28,
+                                                      width: 28,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.red,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(6),
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.grey
+                                                                .withOpacity(
+                                                                    0.3),
+                                                            blurRadius: 4,
+                                                            offset:
+                                                                const Offset(
+                                                                    1, 1),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      child: const Icon(
+                                                        Icons.delete,
+                                                        size: 18,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
                                                 ],
                                               ),
                                             ],
                                           ),
-                                        ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            "Stage: ${work.stageName}",
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 6),
+
+                                          // Description
+                                          Text(
+                                            "Description: ${work.description}",
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.black87,
+                                            ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          const SizedBox(height: 10),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  const Icon(
+                                                    Icons.calendar_month,
+                                                    size: 16,
+                                                    color: AppColors.coffie,
+                                                  ),
+                                                  const SizedBox(width: 4),
+                                                  Text(
+                                                    "Created At: ${DateFormat('dd-MM-yyyy').format(work.createdAt)}",
+                                                    style: const TextStyle(
+                                                      fontSize: 12,
+                                                      color: AppColors.coffie,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+
+                                              //  const SizedBox(height: 10),
+
+                                              // Amount Container
+                                              Row(
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 50),
+                                                    child: AmountContainer(
+                                                      title: "Cost",
+                                                      amount:
+                                                          "${work.amount} ₹",
+                                                      valueColor: AppColors
+                                                          .primaryColor,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+
+                                              // Edit & Delete buttons
+                                            ],
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),

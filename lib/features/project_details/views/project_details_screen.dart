@@ -375,7 +375,7 @@ class ProjectDetails extends StatelessWidget {
                                           arguments: {"id": id});
                                     },
                                     child: DetailsButtonContainer(
-                                      title: "Contractors",
+                                      title: "Sub Contractors",
                                       color: AppColors.primaryColor,
                                       width: MediaQuery.of(context).size.width *
                                           .43,
@@ -495,7 +495,7 @@ class ProjectDetails extends StatelessWidget {
                                           arguments: {"id": id});
                                     },
                                     child: DetailsButtonContainer(
-                                      title: "Payment Details",
+                                      title: "Payment History",
                                       color: AppColors.primaryColor,
                                       width: MediaQuery.of(context).size.width *
                                           .43,
@@ -519,7 +519,7 @@ class ProjectDetails extends StatelessWidget {
                                           arguments: {"id": id});
                                     },
                                     child: DetailsButtonContainer(
-                                      title: "Estimation",
+                                      title: "Estimate",
                                       color: AppColors.primaryColor,
                                       width: MediaQuery.of(context).size.width *
                                           .43,

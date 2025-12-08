@@ -110,7 +110,7 @@ class ProjectList extends StatelessWidget {
                                     children: [
                                       Row(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start, 
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Padding(
                                             padding: const EdgeInsets.all(4.0),
@@ -565,6 +565,63 @@ class ProjectList extends StatelessWidget {
                                                           ),
                                                           Row(
                                                             children: [
+                                                              state
+                                                                          .response
+                                                                          .data
+                                                                          .projectList[
+                                                                              index]
+                                                                          .workStatus ==
+                                                                      'running'
+                                                                  ? InkWell(
+                                                                      onTap:
+                                                                          () {
+                                                                        final projectId = state
+                                                                            .response
+                                                                            .data
+                                                                            .projectList[index]
+                                                                            .id;
+                                                                        cubit.getPrintPdf(
+                                                                            projectId,
+                                                                            context);
+                                                                      },
+                                                                      child:
+                                                                          Container(
+                                                                        height:
+                                                                            25,
+                                                                        width:
+                                                                            25,
+                                                                        decoration:
+                                                                            BoxDecoration(
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(5),
+                                                                          color: const Color
+                                                                              .fromARGB(
+                                                                              255,
+                                                                              88,
+                                                                              115,
+                                                                              235),
+                                                                          boxShadow: [
+                                                                            BoxShadow(
+                                                                              color: Colors.grey.withOpacity(0.8),
+                                                                              blurRadius: 6,
+                                                                              offset: const Offset(2, 3),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        child:
+                                                                            const Icon(
+                                                                          Icons
+                                                                              .print,
+                                                                          size:
+                                                                              18,
+                                                                          color:
+                                                                              Colors.white,
+                                                                        ),
+                                                                      ),
+                                                                    )
+                                                                  : const SizedBox(),
+                                                              const SizedBox(
+                                                                  width: 10),
                                                               InkWell(
                                                                 onTap: () {
                                                                   connStatus =

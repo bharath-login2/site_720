@@ -22,7 +22,7 @@ class PaymentDetails extends StatelessWidget {
     String projectId = args["id"]!;
     return Scaffold(
         backgroundColor: AppColors.backgroundColor,
-        appBar: simpleAppbar(context, "Payment Details", true),
+        appBar: simpleAppbar(context, "Payment History", true),
         body: BlocProvider(
           create: (context) => PaymentDetailsCubit(projectId),
           child: MultiBlocListener(
@@ -92,7 +92,7 @@ class PaymentDetails extends StatelessWidget {
                                             children: [
                                               Text(
                                                 state.response.data[index]
-                                                    .stageName,
+                                                    .phaseName,
                                                 style: const TextStyle(
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.bold,
@@ -150,13 +150,39 @@ class PaymentDetails extends StatelessWidget {
                                               )
                                             ],
                                           ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
                                           Text(
-                                            state
-                                                .response.data[index].phaseName,
+                                            "Account Head: ${state.response.data[index].accountHead}",
                                             style: const TextStyle(
-                                              fontSize: 10,
+                                              fontSize: 12,
                                               fontWeight: FontWeight.bold,
                                             ),
+                                          ),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                Icons
+                                                    .calendar_month, 
+                                                size: 14,
+                                                color: AppColors
+                                                    .coffie,
+                                              ),
+                                              const SizedBox(
+                                                  width: 4), 
+                                              Text(
+                                                "Transaction Date: ${state.response.data[index].transactionDate}",
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: AppColors.coffie,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                           const SizedBox(
                                             height: 10,
@@ -166,21 +192,21 @@ class PaymentDetails extends StatelessWidget {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               AmountContainer(
-                                                  title: "Estimated Amount",
+                                                  title: "Collected By",
                                                   amount:
-                                                      "${state.response.data[index].amount} ₹",
+                                                      "${state.response.data[index].collectedBy} ",
+                                                  valueColor:
+                                                      AppColors.primaryColor),
+                                              AmountContainer(
+                                                  title: "Created By",
+                                                  amount:
+                                                      "${state.response.data[index].createdBy}",
                                                   valueColor:
                                                       AppColors.primaryColor),
                                               AmountContainer(
                                                   title: "Paid Amount",
                                                   amount:
-                                                      "${state.response.data[index].paidAmount} ₹",
-                                                  valueColor:
-                                                      AppColors.primaryColor),
-                                              AmountContainer(
-                                                  title: "Balance",
-                                                  amount:
-                                                      "${state.response.data[index].balanceAmount} ₹",
+                                                      " ₹ ${state.response.data[index].paidAmount}",
                                                   valueColor:
                                                       AppColors.primaryColor),
                                             ],

@@ -163,8 +163,8 @@ class PurchaseList extends StatelessWidget {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    state.response.data[index]
-                                                        .materialName,
+                                                    "Material: ${state.response.data[index]
+                                                        .materialName}",
                                                     style: const TextStyle(
                                                         fontSize: 14,
                                                         fontWeight:
@@ -182,9 +182,9 @@ class PurchaseList extends StatelessWidget {
                                                 ],
                                               ),
                                               Text(
-                                                DateFormat('yyyy-MM-dd').format(
+                                               "Purchased: ${DateFormat('yyyy-MM-dd').format(
                                                     state.response.data[index]
-                                                        .billDate),
+                                                        .billDate)}",
                                                 style: const TextStyle(
                                                   fontSize: 12,
                                                   fontWeight: FontWeight.bold,

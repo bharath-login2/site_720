@@ -114,26 +114,38 @@ class TaskDetailsCubit extends Cubit<TaskState> {
   }
 
   Future<void> updateTaskStatus(
-    String taskId,
-    String imagePath,
-    String comment,
-    String status,
-  ) async {
-    try {
-      emit(TaskLoading());
-      SuccessResponse response = await HttpServices.updateTaskStatus(
-          taskId, imagePath, comment, status);
+  String taskId,
+  List<String> imagePaths, 
+  String comment,
+  String statusId,
+  {String? transferStaffId,
+   String? dateTime,
+   String? viewMode}
+) async {
+  try {
+    emit(TaskLoading());
+    
+   
+    SuccessResponse response = await HttpServices.updateTaskStatus(
+      taskId: taskId,
+      imagePaths: imagePaths, 
+      comment: comment,
+      statusId: statusId,
+      transferStaffId: transferStaffId,
+      dateTime: dateTime,
+      viewMode: viewMode,
+    );
 
-      if (response.status == true) {
-        emit(TaskStatusUpdated(response));
-        await getTaskDetails(taskId);
-      } else {
-        emit(TaskStatusupdateFailed(response.message));
-      }
-    } catch (e) {
-      emit(TaskStatusupdateFailed('Failed to update status: ${e.toString()}'));
+    if (response.status == true) {
+      emit(TaskStatusUpdated(response));
+      await getTaskDetails(taskId);
+    } else {
+      emit(TaskStatusupdateFailed(response.message));
     }
+  } catch (e) {
+    emit(TaskStatusupdateFailed(e.toString()));
   }
+}
 
 
   Future<void> updateTaskMilestone(

@@ -77,327 +77,345 @@ class WorkDetailsScreen extends StatelessWidget {
           builder: (context, state) {
             final cubit = context.read<WorkDetailsCubit>();
             return Scaffold(
-                backgroundColor: AppColors.backgroundColor,
-                appBar: PreferredSize(
-                  preferredSize:
-                      Size.fromHeight(MediaQuery.of(context).size.height * 0.2),
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * .15,
-                    width: MediaQuery.of(context).size.width,
-                    decoration: const BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage("assets/images/appbar.png"),
-                            fit: BoxFit.fill),
-                        color: AppColors.primaryColor,
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(25),
-                          bottomRight: Radius.circular(25),
-                        )),
-                    child: Padding(
-                      padding:
-                          const EdgeInsets.only(left: 20.0, top: 35, right: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Icon(
-                                  Icons.arrow_back_ios,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              const Text(
-                                "Work Details",
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 1,
-                                    fontFamily: "Lobster",
-                                    color: Colors.white),
-                              ),
-                            ],
-                          ),
-                          InkWell(
-                            onTap: () {
-                              date.text = DateFormat('dd-MM-yyyy')
-                                  .format(DateTime.now());
-                              if (issuesList.isNotEmpty) {
-                                workDialog(context, cubit, issuesList,
-                                        stageList, id, clientId, "add", "")
-                                    .then((_) {
-                                  date.clear();
-                                  noOfLabours.clear();
-                                  description.clear();
-                                  selectedStatus = null;
-                                  isWorking = 'Yes';
-                                });
-                              } else {
-                                snackBar(context, "Something went wrong",
-                                    Colors.red);
-                              }
-                            },
-                            child: const CircleAvatar(
-                              radius: 20,
-                              backgroundColor: AppColors.lightPrimary,
-                              child: Icon(
-                                Icons.add,
+              backgroundColor: AppColors.backgroundColor,
+              appBar: PreferredSize(
+                preferredSize:
+                    Size.fromHeight(MediaQuery.of(context).size.height * 0.2),
+                child: Container(
+                  height: MediaQuery.of(context).size.height * .15,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: const BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage("assets/images/appbar.png"),
+                          fit: BoxFit.fill),
+                      color: AppColors.primaryColor,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(25),
+                        bottomRight: Radius.circular(25),
+                      )),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.only(left: 20.0, top: 35, right: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Icon(
+                                Icons.arrow_back_ios,
                                 color: Colors.white,
                               ),
                             ),
-                          )
-                        ],
-                      ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            const Text(
+                              "Work Details",
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1,
+                                  fontFamily: "Lobster",
+                                  color: Colors.white),
+                            ),
+                          ],
+                        ),
+                        // Removed the add button from app bar
+                      ],
                     ),
                   ),
                 ),
-                body: RefreshIndicator(
-                  onRefresh: () async {
-                    cubit.getWorkDetails(id);
-                  },
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.all(8),
-                    itemCount:
-                        state is WorkDetailsLoading ? 7 : workList.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: state is WorkDetailsLoading
-                              ? shimmerContainer(
-                                  MediaQuery.of(context).size.height * .1,
-                                  MediaQuery.of(context).size.width * .9)
-                              : InkWell(
-                                  onTap: () {},
-                                  child: Container(
-                                    width:
-                                        MediaQuery.of(context).size.width * .9,
-                                    height:
-                                        MediaQuery.of(context).size.height * .1,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.withOpacity(0.8),
-                                          blurRadius: 3,
-                                          offset: const Offset(0, 3),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                .2,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                              image: const DecorationImage(
-                                                  image: AssetImage(
-                                                      "assets/images/appbar.png"),
-                                                  fit: BoxFit.fill),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Colors.grey
-                                                      .withOpacity(0.8),
-                                                  blurRadius: 6,
-                                                  offset: const Offset(1, 1),
-                                                ),
-                                              ],
+              ),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () {
+                  date.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
+                  if (issuesList.isNotEmpty) {
+                    workDialog(context, cubit, issuesList, stageList, id,
+                            clientId, "add", "")
+                        .then((_) {
+                      date.clear();
+                      noOfLabours.clear();
+                      description.clear();
+                      selectedStatus = null;
+                      isWorking = 'Yes';
+                    });
+                  } else {
+                    snackBar(context, "Something went wrong", Colors.red);
+                  }
+                },
+                backgroundColor: AppColors.lightPrimary,
+                child: const Icon(
+                  Icons.add,
+                  color: Colors.white,
+                ),
+              ),
+              body: RefreshIndicator(
+                onRefresh: () async {
+                  cubit.getWorkDetails(id);
+                },
+                child: workList.isEmpty && state is! WorkDetailsLoading
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/images/no_data.png',
+                              height: 100,
+                              width: 100,
+                            ),
+                            const SizedBox(height: 20),
+                            const Text(
+                              'No Data Found',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            TextButton(
+                              onPressed: () {
+                                cubit.getWorkDetails(id);
+                              },
+                              child: const Text(
+                                'Refresh',
+                                style: TextStyle(
+                                  color: AppColors.primaryColor,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.all(8),
+                        itemCount:
+                            state is WorkDetailsLoading ? 7 : workList.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: state is WorkDetailsLoading
+                                  ? shimmerContainer(
+                                      MediaQuery.of(context).size.height * .1,
+                                      MediaQuery.of(context).size.width * .9)
+                                  : InkWell(
+                                      onTap: () {},
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                .9,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                .1,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.8),
+                                              blurRadius: 3,
+                                              offset: const Offset(0, 3),
                                             ),
-                                            alignment: Alignment.center,
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  workList[index].workDay,
-                                                  style: const TextStyle(
-                                                      fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: AppColors
-                                                          .backgroundColor),
-                                                ),
-                                                Text(
-                                                  workList[index].workMonthName,
-                                                  style: const TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: AppColors
-                                                          .backgroundColor),
-                                                ),
-                                                Text(
-                                                  workList[index].workYear,
-                                                  style: const TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: AppColors
-                                                          .backgroundColor),
-                                                )
-                                              ],
-                                            )),
-                                        SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              .7,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 8.0,
-                                                left: 8.0,
-                                                right: 8.0,
-                                                bottom: 8.0),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      workList[index]
-                                                                  .isWorking ==
-                                                              "No"
-                                                          ? workList[index]
-                                                              .workStatus
-                                                          : "Labour No:${workList[index].laboursNo}",
-                                                      style: const TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      workList[index]
-                                                          .description,
-                                                      style: const TextStyle(
-                                                          fontSize: 10,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color:
-                                                              AppColors.coffie),
+                                          ],
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    .2,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                  image: const DecorationImage(
+                                                      image: AssetImage(
+                                                          "assets/images/appbar.png"),
+                                                      fit: BoxFit.fill),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.8),
+                                                      blurRadius: 6,
+                                                      offset:
+                                                          const Offset(1, 1),
                                                     ),
                                                   ],
                                                 ),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.end,
+                                                alignment: Alignment.center,
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      workList[index].workDay,
+                                                      style: const TextStyle(
+                                                          fontSize: 20,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: AppColors
+                                                              .backgroundColor),
+                                                    ),
+                                                    Text(
+                                                      workList[index]
+                                                          .workMonthName,
+                                                      style: const TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: AppColors
+                                                              .backgroundColor),
+                                                    ),
+                                                    Text(
+                                                      workList[index].workYear,
+                                                      style: const TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: AppColors
+                                                              .backgroundColor),
+                                                    )
+                                                  ],
+                                                )),
+                                            SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  .7,
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 8.0,
+                                                    left: 8.0,
+                                                    right: 8.0,
+                                                    bottom: 8.0),
+                                                child: Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: [
-                                                    Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(5),
-                                                          color: AppColors
-                                                              .backgroundColor,
-                                                          boxShadow: [
-                                                            BoxShadow(
-                                                              color: Colors.grey
-                                                                  .withOpacity(
-                                                                      0.8),
-                                                              blurRadius: 6,
-                                                              offset:
-                                                                  const Offset(
-                                                                      1, 1),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        alignment:
-                                                            Alignment.center,
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .symmetric(
-                                                            horizontal: 20.0,
-                                                          ),
-                                                          child: Text(
+                                                    // Column(
+                                                    //   crossAxisAlignment:
+                                                    //       CrossAxisAlignment
+                                                    //           .start,
+                                                    //   children: [
+                                                    //     Text(
+                                                    //       workList[index]
+                                                    //                   .isWorking ==
+                                                    //               "No"
+                                                    //           ? workList[index]
+                                                    //               .workStatus
+                                                    //           : "Labour No:${workList[index].laboursNo}",
+                                                    //       style:
+                                                    //           const TextStyle(
+                                                    //         fontSize: 14,
+                                                    //         fontWeight:
+                                                    //             FontWeight.bold,
+                                                    //       ),
+                                                    //     ),
+                                                    //     Text(
+                                                    //       "Stage Name : ${workList[index].stageName ?? ''}",
+                                                    //       style: const TextStyle(
+                                                    //           fontSize: 10,
+                                                    //           fontWeight:
+                                                    //               FontWeight
+                                                    //                   .bold,
+                                                    //           color: AppColors
+                                                    //               .coffie),
+                                                    //     ),
+                                                    //     Text(
+                                                    //       "Description: ${workList[index].description ?? ''}",
+                                                    //       style:
+                                                    //           const TextStyle(
+                                                    //         fontSize: 10,
+                                                    //         fontWeight:
+                                                    //             FontWeight.bold,
+                                                    //         color: AppColors
+                                                    //             .coffie,
+                                                    //       ),
+                                                    //       maxLines:
+                                                    //           3,
+                                                    //       overflow: TextOverflow
+                                                    //           .ellipsis,
+                                                    //     )
+                                                    //   ],
+                                                    // ),
+                                                    Flexible(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start, // avoid stretching
+                                                        children: [
+                                                          Text(
                                                             workList[index]
                                                                         .isWorking ==
                                                                     "No"
-                                                                ? "Not Worked"
-                                                                : "Worked",
-                                                            style: TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: workList[index]
-                                                                            .isWorking ==
-                                                                        "No"
-                                                                    ? AppColors
-                                                                        .primaryColor
-                                                                    : Colors
-                                                                        .green),
+                                                                ? workList[
+                                                                        index]
+                                                                    .workStatus
+                                                                : "Labour No:${workList[index].laboursNo}",
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
                                                           ),
-                                                        )),
-                                                    Row(
+                                                          Text(
+                                                            "Stage Name : ${workList[index].stageName ?? ''}",
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 10,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color: AppColors
+                                                                  .coffie,
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            "Description: ${workList[index].description ?? ''}",
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 10,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color: AppColors
+                                                                  .coffie,
+                                                            ),
+                                                            maxLines: 2,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            softWrap: true,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 10,),
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .end,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
                                                       children: [
-                                                        InkWell(
-                                                          onTap: () {
-                                                            isWorking =
-                                                                workList[index]
-                                                                    .isWorking;
-                                                            date.text =
-                                                                workList[index]
-                                                                    .workDate;
-                                                            noOfLabours.text =
-                                                                workList[index]
-                                                                    .laboursNo;
-                                                            selectedStatus =
-                                                                workList[index]
-                                                                    .workStatusId;
-                                                            selectedStage =
-                                                                workList[index]
-                                                                    .stageId;
-                                                            description.text =
-                                                                workList[index]
-                                                                    .description;
-                                                            workDialog(
-                                                                    context,
-                                                                    cubit,
-                                                                    issuesList,
-                                                                    stageList,
-                                                                    id,
-                                                                    clientId,
-                                                                    "edit",
-                                                                    workList[
-                                                                            index]
-                                                                        .id)
-                                                                .then((_) {
-                                                              date.clear();
-                                                              noOfLabours
-                                                                  .clear();
-                                                              description
-                                                                  .clear();
-                                                              selectedStatus =
-                                                                  null;
-                                                              isWorking = 'Yes';
-                                                            });
-                                                          },
-                                                          child: Container(
-                                                            height: 25,
-                                                            width: 25,
+                                                        Container(
                                                             decoration:
                                                                 BoxDecoration(
                                                               borderRadius:
@@ -405,7 +423,7 @@ class WorkDetailsScreen extends StatelessWidget {
                                                                       .circular(
                                                                           5),
                                                               color: AppColors
-                                                                  .lightBlue,
+                                                                  .backgroundColor,
                                                               boxShadow: [
                                                                 BoxShadow(
                                                                   color: Colors
@@ -419,76 +437,187 @@ class WorkDetailsScreen extends StatelessWidget {
                                                                 ),
                                                               ],
                                                             ),
-                                                            child: const Icon(
-                                                              Icons.edit,
-                                                              size: 18,
-                                                              color:
-                                                                  Colors.white,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                          width: 7,
-                                                        ),
-                                                        InkWell(
-                                                          onTap: () {
-                                                            deleteDialog(
-                                                                context, () {
-                                                              cubit.deleteWorkDetails(
-                                                                  id,
-                                                                  workList[
-                                                                          index]
-                                                                      .id);
-                                                              Navigator.pop(
-                                                                  context);
-                                                            });
-                                                          },
-                                                          child: Container(
-                                                            height: 25,
-                                                            width: 25,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5),
-                                                              color: Colors.red,
-                                                              boxShadow: [
-                                                                BoxShadow(
-                                                                  color: Colors
-                                                                      .grey
-                                                                      .withOpacity(
-                                                                          0.8),
-                                                                  blurRadius: 6,
-                                                                  offset:
-                                                                      const Offset(
-                                                                          1, 1),
+                                                            alignment: Alignment
+                                                                .center,
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                horizontal:
+                                                                    20.0,
+                                                              ),
+                                                              child: Text(
+                                                                workList[index]
+                                                                            .isWorking ==
+                                                                        "No"
+                                                                    ? "Not Worked"
+                                                                    : "Worked",
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    color: workList[index].isWorking ==
+                                                                            "No"
+                                                                        ? AppColors
+                                                                            .primaryColor
+                                                                        : Colors
+                                                                            .green),
+                                                              ),
+                                                            )),
+                                                        Row(
+                                                          children: [
+                                                            InkWell(
+                                                              onTap: () {
+                                                                isWorking = workList[
+                                                                        index]
+                                                                    .isWorking;
+                                                                date.text =
+                                                                    workList[
+                                                                            index]
+                                                                        .workDate;
+                                                                noOfLabours
+                                                                    .text = workList[
+                                                                        index]
+                                                                    .laboursNo;
+                                                                selectedStatus =
+                                                                    workList[
+                                                                            index]
+                                                                        .workStatusId;
+                                                                selectedStage =
+                                                                    workList[
+                                                                            index]
+                                                                        .stageId;
+                                                                description
+                                                                    .text = workList[
+                                                                        index]
+                                                                    .description;
+                                                                workDialog(
+                                                                        context,
+                                                                        cubit,
+                                                                        issuesList,
+                                                                        stageList,
+                                                                        id,
+                                                                        clientId,
+                                                                        "edit",
+                                                                        workList[index]
+                                                                            .id)
+                                                                    .then((_) {
+                                                                  date.clear();
+                                                                  noOfLabours
+                                                                      .clear();
+                                                                  description
+                                                                      .clear();
+                                                                  selectedStatus =
+                                                                      null;
+                                                                  isWorking =
+                                                                      'Yes';
+                                                                });
+                                                              },
+                                                              child: Container(
+                                                                height: 25,
+                                                                width: 25,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              5),
+                                                                  color: AppColors
+                                                                      .lightBlue,
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                      color: Colors
+                                                                          .grey
+                                                                          .withOpacity(
+                                                                              0.8),
+                                                                      blurRadius:
+                                                                          6,
+                                                                      offset:
+                                                                          const Offset(
+                                                                              1,
+                                                                              1),
+                                                                    ),
+                                                                  ],
                                                                 ),
-                                                              ],
+                                                                child:
+                                                                    const Icon(
+                                                                  Icons.edit,
+                                                                  size: 18,
+                                                                  color: Colors
+                                                                      .white,
+                                                                ),
+                                                              ),
                                                             ),
-                                                            child: const Icon(
-                                                              Icons.delete,
-                                                              size: 18,
-                                                              color:
-                                                                  Colors.white,
+                                                            const SizedBox(
+                                                              width: 7,
                                                             ),
-                                                          ),
+                                                            InkWell(
+                                                              onTap: () {
+                                                                deleteDialog(
+                                                                    context,
+                                                                    () {
+                                                                  cubit.deleteWorkDetails(
+                                                                      id,
+                                                                      workList[
+                                                                              index]
+                                                                          .id);
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                });
+                                                              },
+                                                              child: Container(
+                                                                height: 25,
+                                                                width: 25,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              5),
+                                                                  color: Colors
+                                                                      .red,
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                      color: Colors
+                                                                          .grey
+                                                                          .withOpacity(
+                                                                              0.8),
+                                                                      blurRadius:
+                                                                          6,
+                                                                      offset:
+                                                                          const Offset(
+                                                                              1,
+                                                                              1),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                child:
+                                                                    const Icon(
+                                                                  Icons.delete,
+                                                                  size: 18,
+                                                                  color: Colors
+                                                                      .white,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
                                                       ],
                                                     ),
                                                   ],
                                                 ),
-                                              ],
+                                              ),
                                             ),
-                                          ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                ));
-                    },
-                  ),
-                ));
+                                      ),
+                                    ));
+                        },
+                      ),
+              ),
+            );
           },
         ),
       ),

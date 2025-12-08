@@ -1,27 +1,23 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:site_720/data/services/http_services.dart';
 import 'estimation_state.dart';
 
 class EstimationCubit extends Cubit<EstimationState> {
-  EstimationCubit() : super(EstimationInitial());
+  EstimationCubit(String projectId) : super(EstimationInitial()) {
+    getEstimateList(projectId);
+  }
 
-  void startLoading() {
+  Future<void> getEstimateList(String projectId) async {
     emit(EstimationLoading());
-  }
-
-  void emitSuccess(String message) {
-    emit(EstimationSuccess(message));
-  }
-
-  void emitFailure(String message) {
-    emit(EstimationFailure(message));
-  }
-
-  void updateFromDate(String? date) {
-    emit(state.copyWith(fromDate: date));
-  }
-
-  void updateToDate(String? date) {
-    emit(state.copyWith(toDate: date));
+    try {
+      final response = await HttpServices.getEstimateList(projectId);
+      if (response != null && response.status) {
+        emit(EstimationSuccess(response));
+      } else {
+        emit(EstimationFailure("No data found"));
+      }
+    } catch (e) {
+      emit(EstimationFailure('Failed to fetch data: ${e.toString()}'));
+    }
   }
 }

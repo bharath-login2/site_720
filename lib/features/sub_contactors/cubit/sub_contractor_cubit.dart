@@ -5,19 +5,26 @@ import '../../../data/services/http_services.dart';
 import 'sub_contractor_state.dart';
 
 class SubContractorCubit extends Cubit<SubContractorState> {
-  SubContractorCubit() : super(SubContractorInitial()){
+  final String projectId; 
+  SubContractorCubit(this.projectId) : super(SubContractorInitial()) {
     getContractorList();
   }
+
   Future<void> getContractorList() async {
-      emit(SubContractorLoading());
-      try {
-        ContractorListModel response = await HttpServices.getContractorList();
-        
-        if (response.status == true) {
-          emit(SubContractorSuccess(response));
-        }
-      } catch (e) {
-        emit(SubContractorFailure('Failed to fetch data: ${e.toString()}'));
+    emit(SubContractorLoading());
+    try {
+     
+      ContractorListModel response =
+          await HttpServices.getSubContractorList(projectId);
+
+      if (response.status == true) {
+        emit(SubContractorSuccess(response));
+      } else {
+        emit(SubContractorFailure('No contractors found'));
       }
+    } catch (e) {
+      emit(SubContractorFailure('Failed to fetch data: ${e.toString()}'));
     }
+  }
 }
+

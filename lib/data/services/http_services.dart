@@ -4,8 +4,15 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:site_720/core/utilities/shared_preferences.dart';
+import 'package:site_720/data/models/estimate/estimate_model.dart';
+import 'package:site_720/data/models/extraworklist/officeCategoryModel.dart';
+import 'package:site_720/data/models/extraworklist/siteWorkCategoryModel.dart';
+import 'package:site_720/data/models/extraworklist/staffListModel.dart';
+import 'package:site_720/data/models/extraworklist/successresponseModel.dart';
 import 'package:site_720/data/models/galery/galery_list_model.dart';
 import 'package:site_720/data/models/project_list/project_list_model.dart';
+import 'package:site_720/data/models/task/runningDashboard.dart';
+import 'package:site_720/data/models/task/task_edit_model.dart';
 import '../../core/config/config.dart';
 import '../models/clientlist/client_details.dart';
 import '../models/clientlist/client_list_model.dart';
@@ -32,7 +39,7 @@ import '../models/login/login_model.dart';
 import '../models/project_details/project_detais_model.dart';
 import '../models/project_list/add_project_response.dart';
 import '../models/project_list/edit_data_model.dart';
-import '../models/project_list/project_data_model.dart';
+import '../models/project_list/project_data_model.dart' hide ProjectList;
 import '../models/purchasebilllist/purchasebill_list_model.dart';
 import '../models/site_drawings/drawing_list.dart';
 import '../models/stages/stagephase_model.dart';
@@ -53,6 +60,7 @@ import '../models/workdetails/add_work_details_model.dart';
 import '../models/stages/stage_model.dart';
 import '../models/workdetails/work_detail_model.dart';
 import '../models/workdetails/work_stage_model.dart';
+import 'package:site_720/data/models/project_list/project_print_pdf_model.dart';
 
 class HttpServices {
   static Future apiAuth() async {
@@ -85,17 +93,40 @@ class HttpServices {
     }
   }
 
+  // static Future login(mobile, password, firebaseId) async {
+  //   try {
+  //     http.Response response = await http.post(
+  //         Uri.parse("${await Config.getUrl()}login"),
+  //         body: ({
+  //           'user_name': mobile,
+  //           'password': password,
+  //           "firebase_id": firebaseId
+  //         }));
+  //     if (response.statusCode == 200) {
+  //       return loginModelFromJson(response.body);
+  //     }
+  //   } catch (e) {
+  //     log(e.toString());
+  //   }
+  // }
+
   static Future login(mobile, password, firebaseId) async {
     try {
       http.Response response = await http.post(
-          Uri.parse("${await Config.getUrl()}login"),
-          body: ({
-            'user_name': mobile,
-            'password': password,
-            "firebase_id": firebaseId
-          }));
+        Uri.parse("${await Config.getUrl()}login"),
+        body: ({
+          'user_name': mobile,
+          'password': password,
+          'firebase_id': firebaseId
+        }),
+      );
       if (response.statusCode == 200) {
-        return loginModelFromJson(response.body);
+        final loginResponse = loginModelFromJson(response.body);
+        await saveSharedPreference("userId", loginResponse.data.userId);
+        await saveSharedPreference("token", loginResponse.data.token);
+        await saveSharedPreference("branchId", loginResponse.data.branchId);
+        await saveSharedPreference("roleId", loginResponse.data.roleId);
+        return loginResponse;
       }
     } catch (e) {
       log(e.toString());
@@ -210,14 +241,31 @@ class HttpServices {
     }
   }
 
+  // static Future getWorkStages(projectId) async {
+  //   try {
+  //     http.Response response = await http.post(
+  //         Uri.parse("${await Config.getUrl()}get_work_stages"),
+  //         body: ({
+  //           "project_id": projectId,
+  //           'token': await getSharedPreference('token')
+  //         }));
+  //     if (response.statusCode == 200) {
+  //       return workStagesModelFromJson(response.body);
+  //     }
+  //   } catch (e) {
+  //     log(e.toString());
+  //   }
+  // }
   static Future getWorkStages(projectId) async {
     try {
       http.Response response = await http.post(
-          Uri.parse("${await Config.getUrl()}get_work_stages"),
-          body: ({
-            "project_id": projectId,
-            'token': await getSharedPreference('token')
-          }));
+        Uri.parse("${await Config.getUrl()}get_work_stages"),
+        body: ({
+          "project_id": projectId,
+          'token': await getSharedPreference('token')
+        }),
+      );
+
       if (response.statusCode == 200) {
         return workStagesModelFromJson(response.body);
       }
@@ -239,11 +287,48 @@ class HttpServices {
     }
   }
 
+  static Future<StaffListModel?> getStaffsList() async {
+    try {
+      final token = await getSharedPreference('token');
+
+      final response = await http.post(
+        Uri.parse("${await Config.getUrl()}getStaffsList"),
+        body: {'token': token},
+      );
+
+      if (response.statusCode == 200) {
+        return StaffListModel.fromRawJson(response.body);
+      } else {
+        log("❌ API Error: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      log("❌ Exception in getStaffsList: $e");
+      return null;
+    }
+  }
+
   static Future getContractorList() async {
     try {
       http.Response response = await http.post(
           Uri.parse("${await Config.getUrl()}get_contractor_list"),
           body: ({'token': await getSharedPreference('token')}));
+      if (response.statusCode == 200) {
+        return contractorListModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  static Future getSubContractorList(projectId) async {
+    try {
+      http.Response response = await http.post(
+          Uri.parse("${await Config.getUrl()}get_subcontractor_list"),
+          body: ({
+            'token': await getSharedPreference('token'),
+            "project_id": projectId
+          }));
       if (response.statusCode == 200) {
         return contractorListModelFromJson(response.body);
       }
@@ -470,14 +555,12 @@ class HttpServices {
     }
   }
 
-  static Future getExpenseList(projectId, expenseId, type) async {
+  static Future getExpenseList(projectId) async {
     try {
       http.Response response = await http
           .post(Uri.parse("${await Config.getUrl()}expense_list"), body: {
         'token': await getSharedPreference('token'),
         "project_id": projectId,
-        "expense_id": expenseId,
-        "type": type
       });
       if (response.statusCode == 200) {
         return getExpenseListFromJson(response.body);
@@ -727,22 +810,18 @@ class HttpServices {
     try {
       var uri = Uri.parse("${await Config.getUrl()}add_gallery");
       var request = http.MultipartRequest('POST', uri);
-
       request.fields['token'] = await getSharedPreference('token');
       request.fields['project_id'] = projectId;
       request.fields['client_id'] = clientId;
       request.fields['stage_id'] = stageId;
       request.fields['yt_link'] = ytLink;
-
       for (var image in images) {
         if (image.path.isNotEmpty) {
           request.files
               .add(await http.MultipartFile.fromPath('image_list', image.path));
         }
       }
-
       var response = await request.send();
-
       if (response.statusCode == 200) {
         return successResponseFromJson(await response.stream.bytesToString());
       }
@@ -961,6 +1040,26 @@ class HttpServices {
     } catch (e) {
       log(e.toString());
     }
+  }
+
+  static Future<EstimateModel?> getEstimateList(String projectId) async {
+    try {
+      http.Response response = await http.post(
+        Uri.parse("${await Config.getUrl()}get_estimate_list"),
+        body: {
+          'token': await getSharedPreference('token'),
+          "project_id": projectId,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonData = jsonDecode(response.body);
+        return EstimateModel.fromJson(jsonData);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+    return null;
   }
 
   static Future uploadDrawings(
@@ -1220,6 +1319,35 @@ class HttpServices {
     }
   }
 
+  static Future<ProjectWorkModel?> getTaskListRunning() async {
+    try {
+      final url = "${await Config.getUrl()}ProjectWork";
+      final token = await getSharedPreference('token');
+
+      final response = await http.post(
+        Uri.parse(url),
+        body: {
+          'token': token,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        if (responseData['status'] == true) {
+          return ProjectWorkModel.fromJson(responseData);
+        } else {
+          log("Server returned status=false: ${responseData['message']}");
+        }
+      } else {
+        log("HTTP Error: ${response.statusCode}");
+      }
+    } catch (e) {
+      log("Exception in getTaskListRunning: $e");
+    }
+
+    return null;
+  }
+
   static Future getTaskDetails(String taskId) async {
     try {
       http.Response response = await http
@@ -1229,6 +1357,21 @@ class HttpServices {
       });
       if (response.statusCode == 200) {
         return taskDetailsModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  static Future getTaskEdit(String taskId) async {
+    try {
+      http.Response response = await http
+          .post(Uri.parse("${await Config.getUrl()}get_task_edit"), body: {
+        'token': await getSharedPreference('token'),
+        'task_id': taskId,
+      });
+      if (response.statusCode == 200) {
+        return taskEditModelFromJson(response.body);
       }
     } catch (e) {
       log(e.toString());
@@ -1352,33 +1495,90 @@ class HttpServices {
     }
   }
 
-  static Future updateTaskStatus(
-    String taskId,
-    String imagePath,
-    String comment,
-    String status,
-  ) async {
-    try {
-      var uri = Uri.parse("${await Config.getUrl()}update_task_status");
-      var request = http.MultipartRequest('POST', uri);
-      request.fields.addAll({
-        'token': await getSharedPreference('token'),
-        'task_id': taskId,
-        'status': status,
-        'comment': comment
-      });
-      if (imagePath.isNotEmpty) {
-        request.files
-            .add(await http.MultipartFile.fromPath('task_image', imagePath));
-      }
-      var response = await request.send();
-      if (response.statusCode == 200) {
-        return successResponseFromJson(await response.stream.bytesToString());
-      }
-    } catch (e) {
-      log("Error: ${e.toString()}");
+  // static Future updateTaskStatus(
+  //   String taskId,
+  //   String imagePath,
+  //   String comment,
+  //   String status,
+  // ) async {
+  //   try {
+  //     var uri = Uri.parse("${await Config.getUrl()}update_task_status");
+  //     var request = http.MultipartRequest('POST', uri);
+  //     request.fields.addAll({
+  //       'token': await getSharedPreference('token'),
+  //       'task_id': taskId,
+  //       'status': status,
+  //       'comment': comment
+  //     });
+  //     if (imagePath.isNotEmpty) {
+  //       request.files
+  //           .add(await http.MultipartFile.fromPath('task_image', imagePath));
+  //     }
+  //     var response = await request.send();
+  //     if (response.statusCode == 200) {
+  //       return successResponseFromJson(await response.stream.bytesToString());
+  //     }
+  //   } catch (e) {
+  //     log("Error: ${e.toString()}");
+  //   }
+  // }
+  static Future<SuccessResponse> updateTaskStatus({
+  required String taskId,
+  required List<String> imagePaths,
+  required String comment,
+  required String statusId,
+  String? transferStaffId,
+  String? dateTime,
+  String? viewMode,
+}) async {
+  try {
+    var uri = Uri.parse("${await Config.getUrl()}update_task_status");
+    var request = http.MultipartRequest('POST', uri);
+    request.fields.addAll({
+      'token': await getSharedPreference('token') ?? '',
+      'task_id': taskId,
+      'status': statusId, 
+      'comment': comment
+    });
+    if (transferStaffId != null && transferStaffId.isNotEmpty) {
+      request.fields['transfer_staff_id'] = transferStaffId;
     }
+    if (dateTime != null && dateTime.isNotEmpty) {
+      request.fields['date_time'] = dateTime;
+    }
+    if (viewMode != null && viewMode.isNotEmpty) {
+      request.fields['view_mode'] = viewMode;
+    }
+    for (String imagePath in imagePaths) {
+      if (imagePath.isNotEmpty) {
+        final file = File(imagePath);
+        if (await file.exists()) {
+          request.files.add(
+            await http.MultipartFile.fromPath('task_image[]', imagePath),
+          );
+        }
+      }
+    }
+    
+    var response = await request.send();
+    if (response.statusCode == 200) {
+      final responseStr = await response.stream.bytesToString();
+      return successResponseFromJson(responseStr);
+    } else {
+      final responseStr = await response.stream.bytesToString();
+      return SuccessResponse(
+        status: false,
+        message: "Server error: ${response.statusCode} - $responseStr",
+      );
+    }
+  } catch (e) {
+    log("Error in updateTaskStatus: ${e.toString()}");
+    return SuccessResponse(
+      status: false,
+      message: "Error: ${e.toString()}",
+    );
   }
+}
 
   //  static Future updateVisitStatus(
   //   String visitId,
@@ -1597,20 +1797,64 @@ class HttpServices {
     }
   }
 
-
-   static Future getComplaintHistoryStatus() async {
+  static Future getComplaintHistoryStatus() async {
     try {
       http.Response response = await http.post(
           Uri.parse("${await Config.getUrl()}get_complaint_status"),
           body: {
             'token': await getSharedPreference('token'),
-           
           });
       if (response.statusCode == 200) {
         return complaintStatusModelFromJson(response.body);
       }
     } catch (e) {
       log(e.toString());
+    }
+  }
+
+  static Future<OfficeCategoryModel?> getOfficeCategory() async {
+    try {
+      final token = await getSharedPreference('token');
+
+      final url = "${await Config.getUrl()}get_office_categories";
+
+      http.Response response = await http.post(
+        Uri.parse(url),
+        body: {'token': token},
+      );
+
+      if (response.statusCode == 200 && response.body.isNotEmpty) {
+        return OfficeCategoryModel.fromRawJson(response.body);
+      } else {
+        log("Error: Status Code ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      log("getOfficeCategory Error: $e");
+      return null;
+    }
+  }
+
+  static Future<SiteCategoryModel?> getSiteCategory() async {
+    try {
+      final token = await getSharedPreference('token');
+
+      final url = "${await Config.getUrl()}get_site_categories";
+
+      http.Response response = await http.post(
+        Uri.parse(url),
+        body: {'token': token},
+      );
+
+      if (response.statusCode == 200 && response.body.isNotEmpty) {
+        return SiteCategoryModel.fromRawJson(response.body);
+      } else {
+        log("Error: Status Code ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      log("getSiteCategory Error: $e");
+      return null;
     }
   }
 
@@ -1632,4 +1876,161 @@ class HttpServices {
       log(e.toString());
     }
   }
+
+  static Future<ProjectPrintPdfModel?> getPrintPdf(String projectId) async {
+    try {
+      http.Response response = await http.post(
+        Uri.parse("${await Config.getUrl()}project_report"),
+        body: {
+          'token': await getSharedPreference('token'),
+          'project_id': projectId,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return projectPrintPdfModelFromJson(response.body);
+      }
+    } catch (e) {
+      log("getPrintPdf Error: $e");
+    }
+    return null;
+  }
+
+  static Future<SuccessResponseModel?> submitAssignTask({
+    required String taskName,
+    required String staffId,
+    required String projectId,
+    required String stageId,
+    required String priority,
+    required String categoryId,
+    required String workType,
+    required String startDate,
+    required String endDate,
+    required String remarks,
+    required List<String> milestones,
+    required List<String> filePaths,
+  }) async {
+    try {
+      final url = "${await Config.getUrl()}submit_assign_task";
+      var request = http.MultipartRequest("POST", Uri.parse(url));
+      request.fields["token"] = await getSharedPreference("token") ?? "";
+      request.fields["user_id"] = await getSharedPreference("userId") ?? "";
+      request.fields["task_name"] = taskName;
+      request.fields["staff_id"] = staffId;
+      request.fields["project_id"] = projectId;
+      request.fields["stage_id"] = stageId;
+      request.fields["priority"] = priority;
+      request.fields["category_id"] = categoryId;
+      request.fields["work_type"] = workType;
+      request.fields["start_date"] = startDate;
+      request.fields["end_date"] = endDate;
+      request.fields["remarks"] = remarks;
+      for (int i = 0; i < milestones.length; i++) {
+        request.fields["milestones[$i]"] = milestones[i];
+      }
+      for (String path in filePaths) {
+        request.files
+            .add(await http.MultipartFile.fromPath("attachments[]", path));
+      }
+      final response = await request.send();
+
+      if (response.statusCode == 200) {
+        final resStr = await response.stream.bytesToString();
+        final jsonData = jsonDecode(resStr);
+        print("🟢 Submit Task Response: $jsonData");
+        return SuccessResponseModel.fromJson(jsonData);
+      } else {
+        print("❌ Server Error: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      print("🔥 submitAssignTask error: $e");
+      return null;
+    }
+  }
+
+static Future<dynamic> updateTask({
+  required String taskId,
+  required String taskName,
+  required String staffId,
+  required String priority,
+  required String categoryId,
+  required String workType,
+  String projectId = "",
+  String stageId = "",
+  required String startDate,
+  required String endDate,
+  required String remarks,
+  List<Map<String, String>> milestones = const [],
+  List<String> filePaths = const [],
+  List<Attachment> existingAttachments = const [], 
+}) async {
+  try {
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse("${await Config.getUrl()}update_task"),
+    );
+    request.fields.addAll({
+      'token': await getSharedPreference('token') ?? '',
+      'task_id': taskId,
+      'task_name': taskName,
+      'staff_id': staffId,
+      'priority': priority,
+      'category_id': categoryId,
+      'work_type': workType,
+      'project_id': projectId,
+      'stage_id': stageId,
+      'start_date': startDate,
+      'end_date': endDate,
+      'remarks': remarks,
+    });
+    if (existingAttachments.isNotEmpty) {
+      final attachmentsString = existingAttachments
+          .map((att) => '${att.id}')
+          .join(',');
+      request.fields['existing_attachments'] = attachmentsString;
+    }
+    if (milestones.isNotEmpty) {
+      request.fields['milestones'] = json.encode(milestones);
+    }
+    for (var filePath in filePaths) {
+      if (filePath.isNotEmpty && File(filePath).existsSync()) {
+        var file = await http.MultipartFile.fromPath('attachments[]', filePath);
+        request.files.add(file);
+      }
+    }
+    var streamedResponse = await request.send();
+    var response = await http.Response.fromStream(streamedResponse);
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      print("❌ Update task failed: ${response.statusCode}");
+      print("Response: ${response.body}");
+    }
+  } catch (e) {
+    log("Update task error: $e");
+  }
+  return null;
+}
+
+static Future<SuccessResponse?> deleteTask(String taskId) async {
+  try {
+    final token = await getSharedPreference('token');
+    final response = await http.post(
+      Uri.parse("${await Config.getUrl()}delete_task"),
+      body: {
+        'token': token ?? '',
+        'task_id': taskId,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return successResponseFromJson(response.body);
+    }
+  } catch (e) {
+    log("Error deleting task: ${e.toString()}");
+  }
+  return null;
+}
 }

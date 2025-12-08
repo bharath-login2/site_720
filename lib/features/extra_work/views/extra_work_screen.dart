@@ -179,14 +179,40 @@ class ExtraWork extends StatelessWidget {
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                      state.response.data[index]
-                                                          .workName,
+                                                      "Phase: ${state.response.data[index].phaseName}",
                                                       style: const TextStyle(
-                                                          fontSize: 16,
+                                                          fontSize: 13,
                                                           fontWeight:
                                                               FontWeight.bold,
                                                           color:
                                                               AppColors.coffie),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 5,
+                                                    ),
+                                                    Text(
+                                                      "Stage: ${state.response.data[index].stageName}",
+                                                      style: const TextStyle(
+                                                          fontSize: 13,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color:
+                                                              AppColors.coffie),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 5,
+                                                    ),
+                                                    Text(
+                                                      "Work: ${state.response.data[index].workName}",
+                                                      style: const TextStyle(
+                                                          fontSize: 13,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color:
+                                                              AppColors.coffie),
+                                                    ),
+                                                    SizedBox(
+                                                      height: 5,
                                                     ),
                                                     SizedBox(
                                                       width:
@@ -195,17 +221,40 @@ class ExtraWork extends StatelessWidget {
                                                                   .width *
                                                               .5,
                                                       child: Text(
-                                                        state
-                                                            .response
-                                                            .data[index]
-                                                            .description,
+                                                        "Description: ${state.response.data[index].description}",
                                                         style: const TextStyle(
                                                           fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.bold,
                                                         ),
                                                       ),
                                                     ),
+                                                    SizedBox(height: 5),
+                                                    Row(
+                                                      children: [
+                                                        const Icon(
+                                                          Icons
+                                                              .calendar_month, // calendar icon
+                                                          size: 16,
+                                                          color:
+                                                              AppColors.coffie,
+                                                        ),
+                                                        const SizedBox(
+                                                            width: 4),
+                                                        Text(
+                                                          "Created At: ${state.response.data[index].createdAt}",
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 13,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: AppColors
+                                                                .coffie,
+                                                          ),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        ),
+                                                      ],
+                                                    ),
+
                                                     // SizedBox(
                                                     //   width:
                                                     //       MediaQuery.of(context)
@@ -349,7 +398,7 @@ class ExtraWork extends StatelessWidget {
                                                       ],
                                                     ),
                                                     const SizedBox(
-                                                      height: 10,
+                                                      height: 45,
                                                     ),
                                                     AmountContainer(
                                                         title: "Cost",

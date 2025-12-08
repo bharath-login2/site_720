@@ -38,40 +38,39 @@ class GetPaymentDetails {
 
 class PaymentHistory {
   String phaseName;
-  String percentage;
-  String amount;
   String paidAmount;
-  String balanceAmount;
   String paymentStatus;
-  String stageName;
-
+  String transactionDate;
+  String collectedBy;
+  String accountHead;
+  String createdBy;
   PaymentHistory({
     required this.phaseName,
-    required this.percentage,
-    required this.amount,
     required this.paidAmount,
-    required this.balanceAmount,
     required this.paymentStatus,
-    required this.stageName,
+    required this.transactionDate,
+    required this.collectedBy,
+    required this.accountHead,
+    required this.createdBy,
   });
 
   factory PaymentHistory.fromJson(Map<String, dynamic> json) => PaymentHistory(
-        phaseName: json["phase_name"] ?? "",
-        percentage: json["percentage"] ?? "",
-        amount: json["amount"] ?? "",
+        phaseName: json["phase_names"] ?? "",
         paidAmount: json["paid_amount"] ?? "",
-        balanceAmount: json["balance_amount"] ?? "",
-        paymentStatus: json["payment_status"] ?? "",
-        stageName: json["stage_name"] ?? "",
+        paymentStatus: json["payment_method"] ?? "",
+        transactionDate: json["transaction_date"] ?? "",
+        collectedBy: json["collected_by"] ?? "",
+        accountHead: json["account_head"] ?? "",
+        createdBy: json["created_by"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {
-        "phase_name": phaseName,
-        "percentage": percentage,
-        "amount": amount,
+        "phase_names": phaseName,
         "paid_amount": paidAmount,
-        "balance_amount": balanceAmount,
-        "payment_status": paymentStatus,
-        "stage_name": stageName,
+        "payment_method": paymentStatus,
+        "transaction_date": transactionDate,
+        "collected_by": collectedBy,
+        "account_head": accountHead,
+        "created_by": createdBy,
       };
 }

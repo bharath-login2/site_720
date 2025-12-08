@@ -1,26 +1,15 @@
-class EstimationState {
-  final DateTime? fromDate;
-  final DateTime? toDate;
+import 'package:site_720/data/models/estimate/estimate_model.dart';
 
-  EstimationState({this.fromDate, this.toDate});
 
-  EstimationState copyWith({String? fromDate, String? toDate}) {
-    return EstimationState(
-      fromDate: this.fromDate,
-      toDate: this.toDate,
-    );
-  }
-}
+abstract class EstimationState {}
 
-class EstimationInitial extends EstimationState {
-  
-}
+class EstimationInitial extends EstimationState {}
 
 class EstimationLoading extends EstimationState {}
 
 class EstimationSuccess extends EstimationState {
-  final String message;
-  EstimationSuccess(this.message);
+  final EstimateModel response;
+  EstimationSuccess(this.response);
 }
 
 class EstimationFailure extends EstimationState {

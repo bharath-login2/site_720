@@ -1,4 +1,4 @@
-// To parse this JSON data, do
+// To parse this JSON data:
 //
 //     final taskHistoryModel = taskHistoryModelFromJson(jsonString);
 
@@ -41,25 +41,36 @@ class TaskHistory {
   String taskId;
   String reStatus;
   String comment;
-  String attachment;
+  String viewMode;
+  List<String> attachments;
+  String? historyTitle; // Make this nullable
   String updatedDate;
+  String statusName;
 
   TaskHistory({
     required this.id,
     required this.taskId,
     required this.reStatus,
     required this.comment,
-    required this.attachment,
+    required this.viewMode,
+    required this.attachments,
+    this.historyTitle, // Now nullable
     required this.updatedDate,
+    required this.statusName,
   });
 
   factory TaskHistory.fromJson(Map<String, dynamic> json) => TaskHistory(
-        id: json["id"],
-        taskId: json["task_id"],
-        reStatus: json["re_status"],
-        comment: json["comment"],
-        attachment: json["attachment"],
-        updatedDate: json["updated_date"],
+        id: json["id"] ?? "",
+        taskId: json["task_id"] ?? "",
+        reStatus: json["re_status"] ?? "",
+        comment: json["comment"] ?? "",
+        viewMode: json["view_mode"] ?? "",
+        attachments: json["attachments"] == null
+            ? []
+            : List<String>.from(json["attachments"].map((x) => x)),
+        historyTitle: json["history_title"], // Can be null
+        updatedDate: json["updated_date"] ?? "",
+        statusName: json["status_name"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {
@@ -67,7 +78,10 @@ class TaskHistory {
         "task_id": taskId,
         "re_status": reStatus,
         "comment": comment,
-        "attachment": attachment,
+        "view_mode": viewMode,
+        "attachments": List<dynamic>.from(attachments.map((x) => x)),
+        "history_title": historyTitle,
         "updated_date": updatedDate,
+        "status_name": statusName,
       };
 }

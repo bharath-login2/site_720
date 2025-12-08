@@ -4,9 +4,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/buttons.dart';
 import 'package:site_720/core/widgets/shimmer.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import '../../../core/widgets/appbar.dart';
 import '../../../core/widgets/connectivity_dialog.dart';
 import '../../../core/widgets/dialogs.dart';
@@ -108,74 +110,179 @@ class DrawingScreen extends StatelessWidget {
                                           ),
                                           child: Column(
                                             children: [
-                                              Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    .35,
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    fit: BoxFit.fitWidth,
-                                                    image: NetworkImage(
-                                                        drawingList[index]
-                                                            .fileName),
-                                                  ),
-                                                  border: Border.all(
-                                                    color: AppColors.lightA,
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
-                                                ),
-                                                margin: const EdgeInsets.all(8),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 16.0,
-                                                    right: 16.0,
-                                                    top: 4.0,
-                                                    bottom: 8.0),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    if (drawingList[index]
-                                                            .remarks !=
-                                                        "")
-                                                      Text(
-                                                        drawingList[index]
-                                                            .remarks,
-                                                        style: const TextStyle(
-                                                          color: AppColors
-                                                              .primaryColor,
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      )
-                                                    else
-                                                      const SizedBox(),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        deleteDialog(context,
-                                                            () {
-                                                          cubit.deleteDrawing(
-                                                              projectId,
-                                                              drawingList[index]
-                                                                  .id);
-                                                          Navigator.pop(
-                                                              context);
-                                                        });
-                                                      },
-                                                      child: const Icon(
-                                                        Icons.delete,
-                                                        color: Colors.red,
-                                                        size: 22,
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
+                                              // Container(
+                                              //   height: MediaQuery.of(context)
+                                              //           .size
+                                              //           .height *
+                                              //       .35,
+                                              //   decoration: BoxDecoration(
+                                              //     image: DecorationImage(
+                                              //       fit: BoxFit.fitWidth,
+                                              //       image: NetworkImage(
+                                              //           drawingList[index]
+                                              //               .fileName),
+                                              //     ),
+                                              //     border: Border.all(
+                                              //       color: AppColors.lightA,
+                                              //     ),
+                                              //     borderRadius:
+                                              //         BorderRadius.circular(12),
+                                              //   ),
+                                              //   margin: const EdgeInsets.all(8),
+                                              // ),
+                                        Container(
+  decoration: BoxDecoration(
+    borderRadius: BorderRadius.circular(12),
+    color: Colors.white,
+    boxShadow: [
+      BoxShadow(
+        color: Colors.grey.withOpacity(0.8),
+        blurRadius: 3,
+        offset: const Offset(0, 3),
+      ),
+    ],
+  ),
+  child: Column(
+    children: [
+      InkWell(
+        onTap: () {
+          final fileUrl = drawingList[index].fileName;
+          if (fileUrl.toLowerCase().endsWith(".pdf")) {
+            // Open PDF Viewer directly
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => Scaffold(
+                  appBar: AppBar(title: const Text("PDF Viewer")),
+                  body: SfPdfViewer.network(fileUrl),
+                ),
+              ),
+            );
+          } else {
+            // Open zoomable image
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => Scaffold(
+                  appBar: AppBar(title: const Text("Image Viewer")),
+                  body: PhotoView(
+                    imageProvider: NetworkImage(fileUrl),
+                    backgroundDecoration:
+                        const BoxDecoration(color: Colors.black),
+                  ),
+                ),
+              ),
+            );
+          }
+        },
+        child: Container(
+          height: MediaQuery.of(context).size.height * .35,
+          margin: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            border: Border.all(color: AppColors.lightA),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: drawingList[index].fileName.toLowerCase().endsWith(".pdf")
+              ? const Center(
+                  child: Icon(
+                    Icons.picture_as_pdf,
+                    color: Colors.red,
+                    size: 60,
+                  ),
+                )
+              : ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(
+                    drawingList[index].fileName,
+                    fit: BoxFit.fitWidth,
+                  ),
+                ),
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.only(
+            left: 16.0, right: 16.0, top: 4.0, bottom: 8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            if (drawingList[index].remarks.isNotEmpty)
+              Text(
+                drawingList[index].remarks,
+                style: const TextStyle(
+                  color: AppColors.primaryColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            InkWell(
+              onTap: () {
+                deleteDialog(context, () {
+                  cubit.deleteDrawing(projectId, drawingList[index].id);
+                  Navigator.pop(context);
+                });
+              },
+              child: const Icon(
+                Icons.delete,
+                color: Colors.red,
+                size: 22,
+              ),
+            )
+          ],
+        ),
+      ),
+    ],
+  ),
+)
+
+
+                                              // Padding(
+                                              //   padding: const EdgeInsets.only(
+                                              //       left: 16.0,
+                                              //       right: 16.0,
+                                              //       top: 4.0,
+                                              //       bottom: 8.0),
+                                              //   child: Row(
+                                              //     mainAxisAlignment:
+                                              //         MainAxisAlignment
+                                              //             .spaceBetween,
+                                              //     children: [
+                                              //       if (drawingList[index]
+                                              //               .remarks !=
+                                              //           "")
+                                              //         Text(
+                                              //           drawingList[index]
+                                              //               .remarks,
+                                              //           style: const TextStyle(
+                                              //             color: AppColors
+                                              //                 .primaryColor,
+                                              //             fontSize: 16,
+                                              //             fontWeight:
+                                              //                 FontWeight.bold,
+                                              //           ),
+                                              //         )
+                                              //       else
+                                              //         const SizedBox(),
+                                              //       InkWell(
+                                              //         onTap: () {
+                                              //           deleteDialog(context,
+                                              //               () {
+                                              //             cubit.deleteDrawing(
+                                              //                 projectId,
+                                              //                 drawingList[index]
+                                              //                     .id);
+                                              //             Navigator.pop(
+                                              //                 context);
+                                              //           });
+                                              //         },
+                                              //         child: const Icon(
+                                              //           Icons.delete,
+                                              //           color: Colors.red,
+                                              //           size: 22,
+                                              //         ),
+                                              //       )
+                                              //     ],
+                                              //   ),
+                                              // ),
                                             ],
                                           ),
                                         ),

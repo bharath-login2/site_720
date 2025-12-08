@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
+
 GetDeductionWork getDeductionWorkFromJson(String str) => GetDeductionWork.fromJson(json.decode(str));
 
 String getDeductionWorkToJson(GetDeductionWork data) => json.encode(data.toJson());
@@ -62,7 +64,7 @@ class DeductionWorkist {
         phaseId: json["phase_id"]??"",
         amount: json["amount"]??"",
         description: json["description"]??"",
-        createdAt: DateTime.parse(json["created_at"]),
+        createdAt: DateFormat("dd-MM-yyyy").parse(json["created_at"]),
         stageName: json["stage_name"]??"",
         phaseName: json["phase_name"]??"",
     );
@@ -74,7 +76,7 @@ class DeductionWorkist {
         "phase_id": phaseId,
         "amount": amount,
         "description": description,
-        "created_at": createdAt.toIso8601String(),
+        "created_at": DateFormat("dd-MM-yyyy").format(createdAt),
         "stage_name": stageName,
         "phase_name": phaseName,
     };

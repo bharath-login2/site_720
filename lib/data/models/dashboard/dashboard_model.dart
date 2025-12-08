@@ -21,9 +21,9 @@ class DashboardModel {
   });
 
   factory DashboardModel.fromJson(Map<String, dynamic> json) => DashboardModel(
-        data: Data.fromJson(json["data"]),
-        message: json["message"],
-        status: json["status"],
+        data: json["data"] != null ? Data.fromJson(json["data"]) : Data.empty(),
+        message: json["message"] ?? "",
+        status: json["status"] ?? false,
       );
 
   Map<String, dynamic> toJson() => {
@@ -46,20 +46,35 @@ class Data {
   Data({
     required this.username,
     required this.designation,
-     required this.fromDate,
-      required this.toDate,
+    required this.fromDate,
+    required this.toDate,
     required this.projectCounts,
     required this.complaintCounts,
     required this.workissuesCounts,
     required this.expenseData,
   });
 
+  factory Data.empty() => Data(
+        username: '',
+        designation: '',
+        fromDate: '',
+        toDate: '',
+        projectCounts: ProjectCounts(
+          upcoming: '',
+          running: '',
+          completed: '',
+          all: '',
+        ),
+        complaintCounts: [],
+        workissuesCounts: [],
+        expenseData: [],
+      );
+
   factory Data.fromJson(Map<String, dynamic> json) => Data(
         username: json["username"] ?? "",
         designation: json["designation"] ?? "",
-         fromDate: json["from_date"] ?? "",
-         toDate: json["to_date"] ?? "",
-      
+        fromDate: json["from_date"] ?? "",
+        toDate: json["to_date"] ?? "",
         projectCounts: ProjectCounts.fromJson(json["project_counts"]),
         complaintCounts: List<ComplaintCount>.from(
             json["complaint_counts"].map((x) => ComplaintCount.fromJson(x))),
@@ -72,8 +87,8 @@ class Data {
   Map<String, dynamic> toJson() => {
         "username": username,
         "designation": designation,
-          "from_date": fromDate,
-            "to_date": toDate,
+        "from_date": fromDate,
+        "to_date": toDate,
         "project_counts": projectCounts.toJson(),
         "complaint_counts":
             List<dynamic>.from(complaintCounts.map((x) => x.toJson())),
@@ -104,38 +119,39 @@ class ComplaintCount {
 }
 
 class ExpenseDatum {
-    String projectId;
-     String expenseHeadId;
-    String expenseName;
-    String percentage;
-    String count;
+  String projectId;
+  String expenseHeadId;
+  String expenseName;
+  String percentage;
+  String count;
 
-    ExpenseDatum({
-      required this.projectId,
-       required this.expenseHeadId,
-        required this.expenseName,
-        required this.percentage,
-        required this.count,
-    });
+  ExpenseDatum({
+    required this.projectId,
+    required this.expenseHeadId,
+    required this.expenseName,
+    required this.percentage,
+    required this.count,
+  });
 
-    factory ExpenseDatum.fromJson(Map<String, dynamic> json) => ExpenseDatum(
-        projectId: json["project_id"],
-         expenseHeadId: json["expense_head_id"],
-        expenseName: json["expense_name"],
-        percentage: json["percentage"],
-        count: json["count"],
-    );
+  factory ExpenseDatum.fromJson(Map<String, dynamic> json) => ExpenseDatum(
+        projectId: json["project_id"] ?? "",
+        expenseHeadId: json["expense_head_id"] ?? "",
+        expenseName: json["expense_name"] ?? "",
+        percentage: json["percentage"] ?? "",
+        count: json["count"] ?? "",
+      );
 
- // get projectId => null;
+  // get projectId => null;
 
-    Map<String, dynamic> toJson() => {
-      "project_id":projectId,
-         "expense_head_id":expenseHeadId,
+  Map<String, dynamic> toJson() => {
+        "project_id": projectId,
+        "expense_head_id": expenseHeadId,
         "expense_name": expenseName,
         "percentage": percentage,
         "count": count,
-    };
+      };
 }
+
 class ProjectCounts {
   String upcoming;
   String running;

@@ -41,6 +41,8 @@ class GetStages {
   String curingDays;
   DateTime startDate;
   DateTime endDate;
+   String isLocked;
+    String stageStatus;
 
   GetStages({
     required this.stageId,
@@ -51,6 +53,8 @@ class GetStages {
     required this.curingDays,
     required this.startDate,
     required this.endDate,
+        required this.isLocked,
+            required this.stageStatus,
   });
 
   factory GetStages.fromJson(Map<String, dynamic> json) => GetStages(
@@ -66,6 +70,8 @@ class GetStages {
         endDate: json["end_date"] != null && json["end_date"] != ""
             ? DateTime.parse(json["end_date"])
             : DateTime(1970, 1, 1),
+             isLocked: json["is_locked"] ?? "",
+              stageStatus: json["stage_status"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {
@@ -79,5 +85,7 @@ class GetStages {
             "${startDate.year.toString().padLeft(4, '0')}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}",
         "end_date":
             "${endDate.year.toString().padLeft(4, '0')}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}",
+        "is_locked": isLocked,
+          "stage_status": stageStatus,
       };
 }

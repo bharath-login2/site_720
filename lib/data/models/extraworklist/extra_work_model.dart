@@ -37,12 +37,18 @@ class ExtraWorkList {
     String workName;
     String amount;
     String description;
+     String phaseName;
+        String stageName;
+           String createdAt;
 
     ExtraWorkList({
         required this.id,
         required this.workName,
         required this.amount,
         required this.description,
+         required this.phaseName,
+          required this.stageName,
+           required this.createdAt,
     });
 
     factory ExtraWorkList.fromJson(Map<String, dynamic> json) => ExtraWorkList(
@@ -50,6 +56,9 @@ class ExtraWorkList {
         workName: json["work_name"]??"",
         amount: json["amount"]??"",
         description: json["description"]??"",
+           phaseName: json["phase_name"]??"",
+              stageName: json["stage_name"]??"",
+                 createdAt: json["created_at"]??"",
     );
 
     Map<String, dynamic> toJson() => {
@@ -57,5 +66,8 @@ class ExtraWorkList {
         "work_name": workName,
         "amount": amount,
         "description": description,
+         "phase_name": phaseName,
+          "stage_name": stageName,
+           "created_at": createdAt,
     };
 }

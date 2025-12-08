@@ -106,18 +106,45 @@ class Stock extends StatelessWidget {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        stockList[index].materialName,
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "Material: ${stockList[index].materialName}",
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 110,
+                                          ),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 12, vertical: 6),
+                                            decoration: BoxDecoration(
+                                              color: Colors
+                                                  .green, // Green background
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      20), // Oval pill shape
+                                            ),
+                                            child: Text(
+                                              "In Stock:${stockList[index].quantity}",
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color:
+                                                    Colors.white, // White text
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                       const SizedBox(
                                         height: 3,
                                       ),
                                       Text(
-                                        stockList[index].supplierName,
+                                        "Supplier: ${stockList[index].supplierName}",
                                         style: const TextStyle(
                                           fontSize: 10,
                                           fontWeight: FontWeight.bold,
@@ -136,17 +163,16 @@ class Stock extends StatelessWidget {
                                                   stockList[index].unitPrice,
                                               valueColor:
                                                   AppColors.primaryColor),
-                                          AmountContainer(
-                                              title: "In Stock",
-                                              amount: stockList[index].quantity,
-                                              valueColor:
-                                                  AppColors.primaryColor),
-                                          AmountContainer(
-                                              title: "Total Amount",
-                                              amount:
-                                                  stockList[index].totalAmount,
-                                              valueColor:
-                                                  AppColors.primaryColor),
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 90),
+                                            child: AmountContainer(
+                                                title: "Total Amount",
+                                                amount: stockList[index]
+                                                    .totalAmount,
+                                                valueColor:
+                                                    AppColors.primaryColor),
+                                          ),
                                         ],
                                       ),
                                     ],

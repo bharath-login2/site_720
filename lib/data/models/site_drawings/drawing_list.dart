@@ -3,28 +3,22 @@
 //     final siteDrawingsList = siteDrawingsListFromJson(jsonString);
 
 import 'dart:convert';
-
 SiteDrawingsList siteDrawingsListFromJson(String str) => SiteDrawingsList.fromJson(json.decode(str));
-
 String siteDrawingsListToJson(SiteDrawingsList data) => json.encode(data.toJson());
-
 class SiteDrawingsList {
     List<Drawings> data;
     String message;
     bool status;
-
     SiteDrawingsList({
         required this.data,
         required this.message,
         required this.status,
     });
-
     factory SiteDrawingsList.fromJson(Map<String, dynamic> json) => SiteDrawingsList(
         data: List<Drawings>.from(json["data"].map((x) => Drawings.fromJson(x))),
         message: json["message"],
         status: json["status"],
     );
-
     Map<String, dynamic> toJson() => {
         "data": List<dynamic>.from(data.map((x) => x.toJson())),
         "message": message,

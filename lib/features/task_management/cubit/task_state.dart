@@ -1,5 +1,6 @@
 import 'package:image_picker/image_picker.dart';
 import 'package:site_720/data/models/succes_response/success_response.dart';
+import 'package:site_720/data/models/task/runningDashboard.dart';
 
 import '../../../data/models/task/milestoneModel.dart';
 import '../../../data/models/task/task_details_model.dart';
@@ -17,6 +18,7 @@ class TaskLoading extends TaskState {}
 
 class TaskSuccess extends TaskState {
   GetTaskList response;
+  
   TaskSuccess(this.response);
 }
 
@@ -113,6 +115,14 @@ class TaskMilestoneUpdateFailed extends TaskState {
   final String message;
 
   TaskMilestoneUpdateFailed(this.message);
+}
+
+
+
+class RunningTaskListSuccess extends TaskState {
+  final ProjectWorkModel response;
+
+  RunningTaskListSuccess(this.response);
 }
 
 

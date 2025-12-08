@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/dialogs.dart';
 import 'package:site_720/features/dashboard/views/dashboard_screen.dart';
+import 'package:site_720/features/task_management/cubit/task_cubit.dart';
+import 'package:site_720/features/task_management/views/task_list_screen.dart';
 import '../project_list/views/add_projects.dart';
 import '../task_management/views/task_list.dart';
 import '../visit/views/visit_details.dart';
@@ -19,6 +22,10 @@ class _HomeState extends State<Home> {
   static final List<Widget> _widgetOptions = <Widget>[
     DashboardScreen(),
     TaskList(),
+    //  BlocProvider(
+    //   create: (_) => TaskCubit()..getTaskListRunning(),
+    //   child: const TaskListScreen(),
+    // ),
     AddProjectScreen(fromHome: true),
    VisitList(),
 

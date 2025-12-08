@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:site_720/data/models/task/runningDashboard.dart';
 import '../../../data/models/succes_response/success_response.dart';
 import '../../../data/models/task/tasklist_model.dart';
 import '../../../data/services/http_services.dart';
@@ -11,6 +12,7 @@ import 'task_state.dart';
 class TaskCubit extends Cubit<TaskState> {
   TaskCubit() : super(TaskInitial()) {
     getTaskList();
+      getTaskListRunning();
   }
 
   Future<void> getTaskList() async {
@@ -27,7 +29,19 @@ class TaskCubit extends Cubit<TaskState> {
       emit(TaskFailure('Failed to fetch data: ${e.toString()}'));
     }
   }
-
+    Future<void> getTaskListRunning() async {
+    emit(TaskLoading());
+    try {
+      final ProjectWorkModel? response = await HttpServices.getTaskListRunning();
+      if (response != null && response.status == true) {
+        emit(RunningTaskListSuccess(response));
+      } else {
+        emit(TaskFailure('Failed to fetch data'));
+      }
+    } catch (e) {
+      emit(TaskFailure('Failed to fetch data: ${e.toString()}'));
+    }
+  }
   XFile? image;
 
   selectImage(

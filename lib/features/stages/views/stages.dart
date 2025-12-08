@@ -151,7 +151,7 @@ class Stages extends StatelessWidget {
                                       cubit,
                                       "",
                                       "",
-                                     // phaseList,
+                                      // phaseList,
                                       projectId,
                                       clientId,
                                       "",
@@ -234,292 +234,423 @@ class Stages extends StatelessWidget {
                                     physics:
                                         const NeverScrollableScrollPhysics(),
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0),
+                                        horizontal: 8.0, vertical: 6),
                                     itemCount: stages.length,
                                     itemBuilder: (context, index) {
+                                      final stageItem = stages[index];
+
+                                      String startDate =
+                                          stageItem.startDate.year == 1970
+                                              ? "-"
+                                              : DateFormat("dd/MM/yyyy")
+                                                  .format(stageItem.startDate);
+                                      String endDate =
+                                          stageItem.endDate.year == 1970
+                                              ? "-"
+                                              : DateFormat("dd/MM/yyyy")
+                                                  .format(stageItem.endDate);
+
                                       return Padding(
-                                        padding: const EdgeInsets.all(6.0),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 6.0),
                                         child: InkWell(
                                           onTap: () {
-                                            // Navigator.of(context)
-                                            //     .pushNamed(AppRoutes.stageHistory);
+                                            // open stage details if needed
                                           },
                                           child: Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                .9,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                .12,
                                             decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
                                               color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                               boxShadow: [
                                                 BoxShadow(
                                                   color: Colors.grey
-                                                      .withOpacity(0.8),
-                                                  blurRadius: 3,
+                                                      .withOpacity(0.2),
+                                                  blurRadius: 6,
                                                   offset: const Offset(0, 3),
                                                 ),
                                               ],
                                             ),
                                             child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
                                               children: [
+                                                // Left side Est Days block
                                                 Container(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            .2,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5),
-                                                      image: const DecorationImage(
-                                                          image: AssetImage(
-                                                              "assets/images/appbar.png"),
-                                                          fit: BoxFit.cover),
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                          color: Colors.grey
-                                                              .withOpacity(0.8),
-                                                          blurRadius: 6,
-                                                          offset: const Offset(
-                                                              1, 1),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    alignment: Alignment.center,
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Text(
-                                                          stages[index].estDays,
-                                                          style: const TextStyle(
-                                                              fontSize: 20,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              color: AppColors
-                                                                  .backgroundColor),
-                                                        ),
-                                                        const Text(
-                                                          "Est Days",
-                                                          style: TextStyle(
-                                                              fontSize: 10,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              color: AppColors
-                                                                  .backgroundColor),
-                                                        )
-                                                      ],
-                                                    )),
-                                                SizedBox(
                                                   width: MediaQuery.of(context)
                                                           .size
                                                           .width *
-                                                      .7,
+                                                      0.22,
+                                                  height: 110,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        const BorderRadius.only(
+                                                      topLeft:
+                                                          Radius.circular(10),
+                                                      bottomLeft:
+                                                          Radius.circular(10),
+                                                    ),
+                                                    image:
+                                                        const DecorationImage(
+                                                      image: AssetImage(
+                                                          "assets/images/appbar.png"),
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                  alignment: Alignment.center,
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Text(
+                                                        stageItem.estDays,
+                                                        style: const TextStyle(
+                                                          fontSize: 22,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 4),
+                                                      const Text(
+                                                        "Est Days",
+                                                        style: TextStyle(
+                                                          fontSize: 11,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+
+                                                // Right side content
+                                                Expanded(
                                                   child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 8.0,
-                                                            left: 8.0,
-                                                            right: 8.0,
-                                                            bottom: 8.0),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 10,
+                                                        vertical: 8),
                                                     child: Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
                                                               .start,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceAround,
                                                       children: [
                                                         Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
                                                           children: [
                                                             Text(
-                                                              stages[index]
+                                                              stageItem
                                                                   .stageName,
-                                                              style: const TextStyle(
-                                                                  fontSize: 16,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color: AppColors
-                                                                      .coffie),
-                                                            ),
-                                                            Row(
-                                                              children: [
-                                                                Container(
-                                                                  height: 25,
-                                                                  width: 25,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    borderRadius:
-                                                                        BorderRadius
-                                                                            .circular(5),
-                                                                    color: AppColors
-                                                                        .primaryColor,
-                                                                    boxShadow: [
-                                                                      BoxShadow(
-                                                                        color: Colors
-                                                                            .grey
-                                                                            .withOpacity(0.8),
-                                                                        blurRadius:
-                                                                            6,
-                                                                        offset: const Offset(
-                                                                            1,
-                                                                            1),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                  child:
-                                                                      InkWell(
-                                                                    onTap: () {
-                                                                     curingdays.text =
-                                                                          stages[index]
-                                                                              .curingDays;
-                                                                      stage.text =
-                                                                          stages[index]
-                                                                              .stageName;
-                                                                      startDateController
-                                                                          .text = DateFormat(
-                                                                              'dd/MM/yyyy')
-                                                                          .format(
-                                                                              stages[index].startDate);
-                                                                      endDateController
-                                                                          .text = DateFormat(
-                                                                              'dd/MM/yyyy')
-                                                                          .format(
-                                                                              stages[index].endDate);
-                                                                      String
-                                                                          stageId =
-                                                                          stages[index]
-                                                                              .stageId;
-                                                                      est_days.text =
-                                                                          stages[index]
-                                                                              .estDays;
-                                                                      addStageDialog(
-                                                                          context,
-                                                                          cubit,
-                                                                          curingdays.text,
-                                                                          est_days.text,
-                                                                          projectId,
-                                                                          clientId,
-                                                                          stageId,
-                                                                          "Edit Stage",
-                                                                          "Update");
-                                                                    },
-                                                                    child:
-                                                                        const Icon(
-                                                                      Icons
-                                                                          .edit,
-                                                                      size: 18,
-                                                                      color: Colors
-                                                                          .white,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            )
-                                                          ],
-                                                        ),
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Text(
-                                                              stages[index]
-                                                                  .curingDays,
-                                                              style: const TextStyle(
-                                                                  fontSize: 12,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color: AppColors
-                                                                      .coffie),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        const SizedBox(
-                                                          height: 10,
-                                                        ),
-                                                        Row(
-                                                          // mainAxisAlignment:
-                                                          //     MainAxisAlignment.spaceBetween,
-                                                          children: [
-                                                            const Text(
-                                                              "Created by",
-                                                              style: TextStyle(
-                                                                fontSize: 10,
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 16,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .bold,
+                                                                color: AppColors
+                                                                    .coffie,
                                                               ),
                                                             ),
+                                                            SizedBox(
+                                                                width: 145),
+                                                            Container(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                          12,
+                                                                      vertical:
+                                                                          6),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: stageItem
+                                                                            .stageStatus
+                                                                            .toLowerCase() ==
+                                                                        "running"
+                                                                    ? Colors
+                                                                        .blue
+                                                                        .withOpacity(
+                                                                            0.15)
+                                                                    : stageItem.stageStatus.toLowerCase() ==
+                                                                            "pending"
+                                                                        ? Colors
+                                                                            .amber
+                                                                            .withOpacity(
+                                                                                0.2)
+                                                                        : Colors
+                                                                            .green
+                                                                            .withOpacity(0.2),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            20), // 👈 oval shape
+                                                              ),
+                                                              child: Text(
+                                                                stageItem
+                                                                    .stageStatus,
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color: stageItem
+                                                                              .stageStatus
+                                                                              .toLowerCase() ==
+                                                                          "running"
+                                                                      ? Colors
+                                                                          .blue
+                                                                      : stageItem.stageStatus.toLowerCase() ==
+                                                                              "pending"
+                                                                          ? Colors.amber[
+                                                                              800]
+                                                                          : Colors
+                                                                              .green[700],
+                                                                ),
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+
+                                                        const SizedBox(
+                                                            height: 4),
+
+                                                        // Start - End date row with icons
+                                                        Row(
+                                                          children: [
+                                                            const Icon(
+                                                                Icons
+                                                                    .date_range,
+                                                                size: 16,
+                                                                color: AppColors
+                                                                    .primaryColor),
                                                             const SizedBox(
-                                                              width: 5,
+                                                                width: 4),
+                                                            Text(
+                                                              "$startDate → $endDate",
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 13,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color: AppColors
+                                                                    .coffie,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+
+                                                        const SizedBox(
+                                                            height: 6),
+                                                        Row(
+                                                          children: [
+                                                            Text(
+                                                              "Curing Days: ${stageItem.curingDays}",
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 13,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                color: Colors
+                                                                    .black54,
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                                width: 60),
+                                                            Container(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                          12,
+                                                                      vertical:
+                                                                          5),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: stageItem
+                                                                            .isLocked
+                                                                            .toUpperCase() ==
+                                                                        "Y"
+                                                                    ? Colors.red
+                                                                        .withOpacity(
+                                                                            0.15) // 🔒 Locked bg
+                                                                    : Colors
+                                                                        .green
+                                                                        .withOpacity(
+                                                                            0.15), // 🔓 Unlocked bg
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            30), // 👈 pill shape
+                                                              ),
+                                                              child: Row(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                children: [
+                                                                  Icon(
+                                                                    stageItem.isLocked.toUpperCase() ==
+                                                                            "Y"
+                                                                        ? Icons
+                                                                            .lock
+                                                                        : Icons
+                                                                            .lock_open,
+                                                                    color: stageItem.isLocked
+                                                                                .toUpperCase() ==
+                                                                            "Y"
+                                                                        ? Colors
+                                                                            .red
+                                                                        : Colors
+                                                                            .green,
+                                                                    size: 15,
+                                                                  ),
+                                                                  const SizedBox(
+                                                                      width: 6),
+                                                                  Text(
+                                                                    stageItem.isLocked.toUpperCase() ==
+                                                                            "Y"
+                                                                        ? "Locked"
+                                                                        : "Unlocked",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          11,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      color: stageItem.isLocked.toUpperCase() ==
+                                                                              "Y"
+                                                                          ? Colors
+                                                                              .red
+                                                                          : Colors
+                                                                              .green,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            )
+                                                          ],
+                                                        ),
+
+                                                        const SizedBox(
+                                                            height: 6),
+
+                                                        // Created by row
+                                                        Row(
+                                                          children: [
+                                                            const Text(
+                                                              "Created by: ",
+                                                              style: TextStyle(
+                                                                fontSize: 11,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color: Colors
+                                                                    .black54,
+                                                              ),
                                                             ),
                                                             Container(
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              12),
-                                                                  color: AppColors
-                                                                      .coffie,
-                                                                  boxShadow: [
-                                                                    BoxShadow(
-                                                                      color: Colors
-                                                                          .grey
-                                                                          .withOpacity(
-                                                                              0.8),
-                                                                      blurRadius:
-                                                                          6,
-                                                                      offset:
-                                                                          const Offset(
-                                                                              1,
-                                                                              1),
-                                                                    ),
-                                                                  ],
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: AppColors
+                                                                    .coffie,
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            12),
+                                                              ),
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                          8,
+                                                                      vertical:
+                                                                          2),
+                                                              child: Text(
+                                                                stageItem
+                                                                    .createdBy,
+                                                                style:
+                                                                    const TextStyle(
+                                                                  fontSize: 11,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color: Colors
+                                                                      .white,
                                                                 ),
-                                                                alignment:
-                                                                    Alignment
-                                                                        .center,
-                                                                child: Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                          .symmetric(
-                                                                    horizontal:
-                                                                        10.0,
-                                                                  ),
-                                                                  child: Text(
-                                                                    stages[index]
-                                                                        .username,
-                                                                    style: const TextStyle(
-                                                                        fontSize:
-                                                                            10,
-                                                                        fontWeight:
-                                                                            FontWeight
-                                                                                .bold,
-                                                                        color: Colors
-                                                                            .white),
-                                                                  ),
-                                                                )),
+                                                              ),
+                                                            ),
                                                           ],
+                                                        ),
+                                                        Align(
+                                                          alignment: Alignment
+                                                              .bottomRight,
+                                                          child: InkWell(
+                                                            onTap: () {
+                                                              curingdays
+                                                                  .text = stages[
+                                                                      index]
+                                                                  .curingDays;
+                                                              stage.text =
+                                                                  stages[index]
+                                                                      .stageName;
+                                                              startDateController
+                                                                  .text = DateFormat(
+                                                                      'dd/MM/yyyy')
+                                                                  .format(stages[
+                                                                          index]
+                                                                      .startDate);
+                                                              endDateController
+                                                                  .text = DateFormat(
+                                                                      'dd/MM/yyyy')
+                                                                  .format(stages[
+                                                                          index]
+                                                                      .endDate);
+                                                              String stageId =
+                                                                  stages[index]
+                                                                      .stageId;
+                                                              est_days.text =
+                                                                  stages[index]
+                                                                      .estDays;
+                                                              addStageDialog(
+                                                                  context,
+                                                                  cubit,
+                                                                  curingdays
+                                                                      .text,
+                                                                  est_days.text,
+                                                                  projectId,
+                                                                  clientId,
+                                                                  stageId,
+                                                                  "Edit Stage",
+                                                                  "Update");
+                                                            },
+                                                            child: Container(
+                                                              margin:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      top: 8),
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(6),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: AppColors
+                                                                    .primaryColor,
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            6),
+                                                              ),
+                                                              child: const Icon(
+                                                                Icons.edit,
+                                                                size: 18,
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
+                                                            ),
+                                                          ),
                                                         ),
                                                       ],
                                                     ),
@@ -532,6 +663,327 @@ class Stages extends StatelessWidget {
                                       );
                                     },
                                   )
+
+                                // ListView.builder(
+                                //     shrinkWrap: true,
+                                //     physics:
+                                //         const NeverScrollableScrollPhysics(),
+                                //     padding: const EdgeInsets.symmetric(
+                                //         horizontal: 8.0),
+                                //     itemCount: stages.length,
+                                //     itemBuilder: (context, index) {
+                                //       return Padding(
+                                //         padding: const EdgeInsets.all(6.0),
+                                //         child: InkWell(
+                                //           onTap: () {
+                                //             // Navigator.of(context)
+                                //             //     .pushNamed(AppRoutes.stageHistory);
+                                //           },
+                                //           child: Container(
+                                //             width: MediaQuery.of(context)
+                                //                     .size
+                                //                     .width *
+                                //                 .9,
+                                //             height: MediaQuery.of(context)
+                                //                     .size
+                                //                     .height *
+                                //                 .12,
+                                //             decoration: BoxDecoration(
+                                //               borderRadius:
+                                //                   BorderRadius.circular(5),
+                                //               color: Colors.white,
+                                //               boxShadow: [
+                                //                 BoxShadow(
+                                //                   color: Colors.grey
+                                //                       .withOpacity(0.8),
+                                //                   blurRadius: 3,
+                                //                   offset: const Offset(0, 3),
+                                //                 ),
+                                //               ],
+                                //             ),
+                                //             child: Row(
+                                //               mainAxisAlignment:
+                                //                   MainAxisAlignment
+                                //                       .spaceBetween,
+                                //               children: [
+                                //                 Container(
+                                //                     width:
+                                //                         MediaQuery.of(context)
+                                //                                 .size
+                                //                                 .width *
+                                //                             .2,
+                                //                     decoration: BoxDecoration(
+                                //                       borderRadius:
+                                //                           BorderRadius.circular(
+                                //                               5),
+                                //                       image: const DecorationImage(
+                                //                           image: AssetImage(
+                                //                               "assets/images/appbar.png"),
+                                //                           fit: BoxFit.cover),
+                                //                       boxShadow: [
+                                //                         BoxShadow(
+                                //                           color: Colors.grey
+                                //                               .withOpacity(0.8),
+                                //                           blurRadius: 6,
+                                //                           offset: const Offset(
+                                //                               1, 1),
+                                //                         ),
+                                //                       ],
+                                //                     ),
+                                //                     alignment: Alignment.center,
+                                //                     child: Column(
+                                //                       mainAxisAlignment:
+                                //                           MainAxisAlignment
+                                //                               .center,
+                                //                       children: [
+                                //                         Text(
+                                //                           stages[index].estDays,
+                                //                           style: const TextStyle(
+                                //                               fontSize: 20,
+                                //                               fontWeight:
+                                //                                   FontWeight
+                                //                                       .bold,
+                                //                               color: AppColors
+                                //                                   .backgroundColor),
+                                //                         ),
+                                //                         const Text(
+                                //                           "Est Days",
+                                //                           style: TextStyle(
+                                //                               fontSize: 10,
+                                //                               fontWeight:
+                                //                                   FontWeight
+                                //                                       .bold,
+                                //                               color: AppColors
+                                //                                   .backgroundColor),
+                                //                         )
+                                //                       ],
+                                //                     )),
+                                //                 SizedBox(
+                                //                   width: MediaQuery.of(context)
+                                //                           .size
+                                //                           .width *
+                                //                       .7,
+                                //                   child: Padding(
+                                //                     padding:
+                                //                         const EdgeInsets.only(
+                                //                             top: 8.0,
+                                //                             left: 8.0,
+                                //                             right: 8.0,
+                                //                             bottom: 8.0),
+                                //                     child: Column(
+                                //                       crossAxisAlignment:
+                                //                           CrossAxisAlignment
+                                //                               .start,
+                                //                       mainAxisAlignment:
+                                //                           MainAxisAlignment
+                                //                               .spaceAround,
+                                //                       children: [
+                                //                         Row(
+                                //                           mainAxisAlignment:
+                                //                               MainAxisAlignment
+                                //                                   .spaceBetween,
+                                //                           children: [
+                                //                             Text(
+                                //                               "Stage: ${stages[index]
+                                //                                   .stageName}",
+                                //                               style: const TextStyle(
+                                //                                   fontSize: 16,
+                                //                                   fontWeight:
+                                //                                       FontWeight
+                                //                                           .bold,
+                                //                                   color: AppColors
+                                //                                       .coffie),
+                                //                             ),
+                                //                             SizedBox(width: 46,),
+                                //                               Text(
+                                //                               "${stages[index]
+                                //                                   .startDate} -${stages[index]
+                                //                                   .endDate} ",
+                                //                               style: const TextStyle(
+                                //                                   fontSize: 12,
+                                //                                   fontWeight:
+                                //                                       FontWeight
+                                //                                           .bold,
+                                //                                   color: AppColors
+                                //                                       .coffie),
+                                //                             ),
+                                //                             Row(
+                                //                               children: [
+                                //                                 Container(
+                                //                                   height: 25,
+                                //                                   width: 25,
+                                //                                   decoration:
+                                //                                       BoxDecoration(
+                                //                                     borderRadius:
+                                //                                         BorderRadius
+                                //                                             .circular(5),
+                                //                                     color: AppColors
+                                //                                         .primaryColor,
+                                //                                     boxShadow: [
+                                //                                       BoxShadow(
+                                //                                         color: Colors
+                                //                                             .grey
+                                //                                             .withOpacity(0.8),
+                                //                                         blurRadius:
+                                //                                             6,
+                                //                                         offset: const Offset(
+                                //                                             1,
+                                //                                             1),
+                                //                                       ),
+                                //                                     ],
+                                //                                   ),
+                                //                                   child:
+                                //                                       InkWell(
+                                //                                     onTap: () {
+                                //                                       curingdays
+                                //                                           .text = stages[
+                                //                                               index]
+                                //                                           .curingDays;
+                                //                                       stage.text =
+                                //                                           stages[index]
+                                //                                               .stageName;
+                                //                                       startDateController
+                                //                                           .text = DateFormat(
+                                //                                               'dd/MM/yyyy')
+                                //                                           .format(
+                                //                                               stages[index].startDate);
+                                //                                       endDateController
+                                //                                           .text = DateFormat(
+                                //                                               'dd/MM/yyyy')
+                                //                                           .format(
+                                //                                               stages[index].endDate);
+                                //                                       String
+                                //                                           stageId =
+                                //                                           stages[index]
+                                //                                               .stageId;
+                                //                                       est_days
+                                //                                           .text = stages[
+                                //                                               index]
+                                //                                           .estDays;
+                                //                                       addStageDialog(
+                                //                                           context,
+                                //                                           cubit,
+                                //                                           curingdays
+                                //                                               .text,
+                                //                                           est_days
+                                //                                               .text,
+                                //                                           projectId,
+                                //                                           clientId,
+                                //                                           stageId,
+                                //                                           "Edit Stage",
+                                //                                           "Update");
+                                //                                     },
+                                //                                     child:
+                                //                                         const Icon(
+                                //                                       Icons
+                                //                                           .edit,
+                                //                                       size: 18,
+                                //                                       color: Colors
+                                //                                           .white,
+                                //                                     ),
+                                //                                   ),
+                                //                                 ),
+                                //                               ],
+                                //                             )
+                                //                           ],
+                                //                         ),
+                                //                         Row(
+                                //                           mainAxisAlignment:
+                                //                               MainAxisAlignment
+                                //                                   .spaceBetween,
+                                //                           children: [
+                                //                             Text(
+                                //                               "Curing Days: ${stages[index]
+                                //                                   .curingDays}",
+                                //                               style: const TextStyle(
+                                //                                   fontSize: 12,
+                                //                                   fontWeight:
+                                //                                       FontWeight
+                                //                                           .bold,
+                                //                                   color: AppColors
+                                //                                       .coffie),
+                                //                             ),
+                                //                           ],
+                                //                         ),
+                                //                         const SizedBox(
+                                //                           height: 10,
+                                //                         ),
+                                //                         Row(
+                                //                           // mainAxisAlignment:
+                                //                           //     MainAxisAlignment.spaceBetween,
+                                //                           children: [
+                                //                             const Text(
+                                //                               "Created by",
+                                //                               style: TextStyle(
+                                //                                 fontSize: 10,
+                                //                                 fontWeight:
+                                //                                     FontWeight
+                                //                                         .bold,
+                                //                               ),
+                                //                             ),
+                                //                             const SizedBox(
+                                //                               width: 5,
+                                //                             ),
+                                //                             Container(
+                                //                                 decoration:
+                                //                                     BoxDecoration(
+                                //                                   borderRadius:
+                                //                                       BorderRadius
+                                //                                           .circular(
+                                //                                               12),
+                                //                                   color: AppColors
+                                //                                       .coffie,
+                                //                                   boxShadow: [
+                                //                                     BoxShadow(
+                                //                                       color: Colors
+                                //                                           .grey
+                                //                                           .withOpacity(
+                                //                                               0.8),
+                                //                                       blurRadius:
+                                //                                           6,
+                                //                                       offset:
+                                //                                           const Offset(
+                                //                                               1,
+                                //                                               1),
+                                //                                     ),
+                                //                                   ],
+                                //                                 ),
+                                //                                 alignment:
+                                //                                     Alignment
+                                //                                         .center,
+                                //                                 child: Padding(
+                                //                                   padding:
+                                //                                       const EdgeInsets
+                                //                                           .symmetric(
+                                //                                     horizontal:
+                                //                                         10.0,
+                                //                                   ),
+                                //                                   child: Text(
+                                //                                     stages[index]
+                                //                                         .createdBy,
+                                //                                     style: const TextStyle(
+                                //                                         fontSize:
+                                //                                             10,
+                                //                                         fontWeight:
+                                //                                             FontWeight
+                                //                                                 .bold,
+                                //                                         color: Colors
+                                //                                             .white),
+                                //                                   ),
+                                //                                 )),
+                                //                           ],
+                                //                         ),
+                                //                       ],
+                                //                     ),
+                                //                   ),
+                                //                 ),
+                                //               ],
+                                //             ),
+                                //           ),
+                                //         ),
+                                //       );
+                                //     },
+                                //   )
                                 : const Center(
                                     child: Text("No Stages Added"),
                                   ),
@@ -548,9 +1000,9 @@ class Stages extends StatelessWidget {
   Future<void> addStageDialog(
     BuildContext context,
     StagesCubit cubit,
-  //  List<StagePhase> list,
-  String curingDays,
-  String estDays,
+    //  List<StagePhase> list,
+    String curingDays,
+    String estDays,
     String projectId,
     String clientId,
     String stageId,
@@ -746,7 +1198,7 @@ class Stages extends StatelessWidget {
                           String endFormattedDate =
                               "${calculatedEndDate.day}/${calculatedEndDate.month}/${calculatedEndDate.year}";
                           endDateController.text = endFormattedDate;
-                                                },
+                        },
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.all(10),
                           labelText: 'Start Date',
@@ -784,7 +1236,7 @@ class Stages extends StatelessWidget {
                               "${selectedDate!.day}/${selectedDate.month}/${selectedDate.year}";
 
                           endDateController.text = formattedDate;
-                                                },
+                        },
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.all(10),
                           labelText: 'End Date',
@@ -806,7 +1258,7 @@ class Stages extends StatelessWidget {
                             cubit.addStageDetails(
                               projectId,
                               clientId,
-                             // selectedPhase,
+                              // selectedPhase,
                               stage.text,
                               est_days.text,
                               curingdays.text,
@@ -818,7 +1270,7 @@ class Stages extends StatelessWidget {
                               projectId,
                               clientId,
                               stageId,
-                             // selectedPhase,
+                              // selectedPhase,
                               stage.text,
                               est_days.text,
                               curingdays.text,
@@ -829,7 +1281,7 @@ class Stages extends StatelessWidget {
                           selectedPhase = null;
                           stage.clear();
                           est_days.clear();
-                            curingdays.clear();
+                          curingdays.clear();
                           startDateController.clear();
                           endDateController.clear();
                           Navigator.pop(context);
@@ -841,8 +1293,8 @@ class Stages extends StatelessWidget {
                     TextButton(
                       onPressed: () {
                         stage.clear();
-                          est_days.clear();
-                            curingdays.clear();
+                        est_days.clear();
+                        curingdays.clear();
                         selectedPhase = null;
                         startDateController.clear();
                         endDateController.clear();

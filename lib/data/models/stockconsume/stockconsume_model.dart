@@ -4,61 +4,74 @@
 
 import 'dart:convert';
 
-StockConsumeModel stockConsumeModelFromJson(String str) => StockConsumeModel.fromJson(json.decode(str));
+StockConsumeModel stockConsumeModelFromJson(String str) =>
+    StockConsumeModel.fromJson(json.decode(str));
 
-String stockConsumeModelToJson(StockConsumeModel data) => json.encode(data.toJson());
+String stockConsumeModelToJson(StockConsumeModel data) =>
+    json.encode(data.toJson());
 
 class StockConsumeModel {
-    List<StockConsume> data;
-    String message;
-    bool status;
+  List<StockConsume> data;
+  String message;
+  bool status;
 
-    StockConsumeModel({
-        required this.data,
-        required this.message,
-        required this.status,
-    });
+  StockConsumeModel({
+    required this.data,
+    required this.message,
+    required this.status,
+  });
 
-    factory StockConsumeModel.fromJson(Map<String, dynamic> json) => StockConsumeModel(
-        data: List<StockConsume>.from(json["data"].map((x) => StockConsume.fromJson(x))),
+  factory StockConsumeModel.fromJson(Map<String, dynamic> json) =>
+      StockConsumeModel(
+        data: List<StockConsume>.from(
+            json["data"].map((x) => StockConsume.fromJson(x))),
         message: json["message"],
         status: json["status"],
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "data": List<dynamic>.from(data.map((x) => x.toJson())),
         "message": message,
         "status": status,
-    };
+      };
 }
 
 class StockConsume {
-    String materialName;
-    String supplierName;
-    String unitPrice;
-    String quantity;
-    String totalAmount;
+  String quantity;
+  String unit;
+  String inStock;
+  String dateConsumed;
+  String locationName;
+  String materialName;
+  String unitPrice;
 
-    StockConsume({
-        required this.materialName,
-        required this.supplierName,
-        required this.unitPrice,
-        required this.quantity,
-        required this.totalAmount,
-    });
+  StockConsume({
+    required this.quantity,
+    required this.unit,
+    required this.inStock,
+    required this.dateConsumed,
+    required this.locationName,
+    required this.materialName,
+    required this.unitPrice,
+  });
 
-    factory StockConsume.fromJson(Map<String, dynamic> json) => StockConsume(
-        materialName: json["material_name"]??"",
-        supplierName: json["supplier_name"]??"",
-        unitPrice: json["unit_price"]??"",
-        quantity: json["quantity"]??"",
-        totalAmount: json["total_amount"]??"",
-    );
+  factory StockConsume.fromJson(Map<String, dynamic> json) => StockConsume(
+        quantity: json["quantity"] ?? "",
+        unit: json["unit"] ?? "",
+        inStock: json["in_stock"] ?? "",
+        dateConsumed: json["date_consumed"] ?? "",
+        locationName: json["location_name"] ?? "",
+        materialName: json["material_name"] ?? "",
+        unitPrice: json["unit_price"] ?? "",
+      );
 
-    Map<String, dynamic> toJson() => {
-        "material_name": materialName,
-        "supplier_name": supplierName,
-        "unit_price": unitPrice,
+  Map<String, dynamic> toJson() => {
         "quantity": quantity,
-    };
+        "unit": unit,
+        "in_stock": inStock,
+        "date_consumed": dateConsumed,
+        "location_name": locationName,
+        "material_name": materialName,
+        "unit_price": unitPrice,
+      };
 }

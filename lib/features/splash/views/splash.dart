@@ -40,28 +40,43 @@ class Splash extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+      print("✅ Splash screen loaded");
+
     return BlocProvider(
       create: (context) => SplashCubit(),
-      child: BlocListener<SplashCubit, SplashState>(
-        listener: (context, state) {
-          if (state is VersionSuccess) {
-            initSplash(context);
-          } else if (state is LowerVersion) {
-            forceUpdate(context, () {
-              launchAppStore(context);
-            });
-          }
-        },
-        child: Scaffold(
-          body: Center(
-            child: Container(
-              width: 200,
-              decoration: const BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage("assets/images/logo.png"))),
+      child: Builder(
+        builder: (context) {
+          // Call version check on first frame
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+        print("🧪 Calling checkVersion()");
+        context.read<SplashCubit>().checkVersion();
+      });
+
+
+          return BlocListener<SplashCubit, SplashState>(
+            listener: (context, state) {
+              if (state is VersionSuccess) {
+                initSplash(context);
+              } else if (state is LowerVersion) {
+                forceUpdate(context, () {
+                  launchAppStore(context);
+                });
+              }
+            },
+            child: Scaffold(
+              body: Center(
+                child: Container(
+                  width: 200,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("assets/images/logo.png"),
+                    ),
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

@@ -75,10 +75,6 @@ class LoginCubit extends Cubit<LoginState> {
 
         while (apnsToken == null && retry < maxRetry) {
           apnsToken = await messaging.getAPNSToken();
-          if (apnsToken == null) {
-            await Future.delayed(delay);
-            retry++;
-          }
         }
 
         if (apnsToken != null) {
@@ -97,10 +93,6 @@ class LoginCubit extends Cubit<LoginState> {
 
       while (firebaseToken == null && retry < maxRetry) {
         firebaseToken = await messaging.getToken();
-        if (firebaseToken == null) {
-          await Future.delayed(delay);
-          retry++;
-        }
       }
 
       if (firebaseToken == null) {

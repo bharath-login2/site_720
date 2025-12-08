@@ -50,6 +50,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Firebase
+  print("FirebaseOptions: ${DefaultFirebaseOptions.currentPlatform}");
+
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Initialize NotificationServices

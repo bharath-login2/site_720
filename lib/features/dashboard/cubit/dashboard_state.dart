@@ -14,9 +14,7 @@ class DashboardState {
   }
 }
 
-class DashboardInitial extends DashboardState {
-  
-}
+class DashboardInitial extends DashboardState {}
 
 class DashboardLoading extends DashboardState {}
 
@@ -28,4 +26,18 @@ class DashboardSuccess extends DashboardState {
 class DashboardFailure extends DashboardState {
   final String message;
   DashboardFailure(this.message);
+}
+
+class GetExpenseLoading extends DashboardState {}
+
+class GetExpenseSuccess extends DashboardState {
+  final dynamic response;
+
+  GetExpenseSuccess(this.response);
+}
+
+class GetExpenseFailure extends DashboardState {
+  final String error;
+
+  GetExpenseFailure(this.error);
 }

@@ -5,7 +5,8 @@ import 'package:site_720/core/widgets/dialogs.dart';
 import 'package:site_720/features/dashboard/views/dashboard_screen.dart';
 import 'package:site_720/features/task_management/cubit/task_cubit.dart';
 import 'package:site_720/features/task_management/views/task_list_screen.dart';
-import '../project_list/views/add_projects.dart';
+import 'package:site_720/features/work/views/work_screen.dart';
+
 import '../task_management/views/task_list.dart';
 import '../visit/views/visit_details.dart';
 
@@ -19,16 +20,18 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _selectedIndex = 0;
 
-  static final List<Widget> _widgetOptions = <Widget>[
+  final List<Widget> _widgetOptions = <Widget>[
+    /// HOME
     DashboardScreen(),
-    TaskList(),
-    //  BlocProvider(
-    //   create: (_) => TaskCubit()..getTaskListRunning(),
-    //   child: const TaskListScreen(),
-    // ),
-    AddProjectScreen(fromHome: true),
-   VisitList(),
 
+    /// WORK
+    const WorkScreen(),
+
+    /// TASK
+    TaskList(),
+
+    /// LOCATION
+    VisitList(),
   ];
 
   void _onItemTapped(int index) {
@@ -50,33 +53,33 @@ class _HomeState extends State<Home> {
           children: _widgetOptions,
         ),
         bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.work),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.add_circle),
-              label: '',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.location_pin),
-              label: '',
-            ),
-          ],
           currentIndex: _selectedIndex,
           selectedItemColor: AppColors.primaryColor,
           backgroundColor: AppColors.secondaryColor,
-          onTap: _onItemTapped,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
           unselectedItemColor: Colors.grey,
           type: BottomNavigationBarType.fixed,
+          showSelectedLabels: true,
+          showUnselectedLabels: true,
           enableFeedback: false,
+          onTap: _onItemTapped,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.work),
+              label: 'Work',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.task_alt),
+              label: 'Task',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.location_pin),
+              label: 'Location',
+            ),
+          ],
         ),
       ),
     );

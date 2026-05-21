@@ -131,11 +131,12 @@ class ProjectDetails extends StatelessWidget {
                                           icon: Icons.currency_rupee,
                                         ),
                                         DetailsItem(
-                                          title: "CCTV Address",
+                                          title: "Client Issues",
                                           value: state is ProjectDetailsSuccess
-                                              ? state.response.data.cctvId
+                                              ? state.response.data
+                                                  .clientIssueCount
                                               : null,
-                                          icon: Icons.video_camera_back,
+                                          icon: Icons.person_remove,
                                         ),
                                       ],
                                     ),
@@ -155,12 +156,12 @@ class ProjectDetails extends StatelessWidget {
                                           icon: Icons.location_city,
                                         ),
                                         DetailsItem(
-                                          title: "Client Issues",
+                                          title: "Payment Delay",
                                           value: state is ProjectDetailsSuccess
                                               ? state.response.data
-                                                  .clientIssueCount
+                                                  .paymentPendingCount
                                               : null,
-                                          icon: Icons.person_remove,
+                                          icon: Icons.currency_rupee,
                                         ),
                                       ],
                                     ),
@@ -178,14 +179,6 @@ class ProjectDetails extends StatelessWidget {
                                                   .generalIssueCount
                                               : null,
                                           icon: Icons.public,
-                                        ),
-                                        DetailsItem(
-                                          title: "Payment Delay",
-                                          value: state is ProjectDetailsSuccess
-                                              ? state.response.data
-                                                  .paymentPendingCount
-                                              : null,
-                                          icon: Icons.currency_rupee,
                                         ),
                                       ],
                                     ),

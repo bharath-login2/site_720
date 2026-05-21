@@ -4,29 +4,42 @@ class ExpenseState {
   final DateTime? fromDate;
   final DateTime? toDate;
 
-  ExpenseState({this.fromDate, this.toDate});
+  const ExpenseState({
+    this.fromDate,
+    this.toDate,
+  });
 
-  ExpenseState copyWith({String? fromDate, String? toDate}) {
+  ExpenseState copyWith({
+    DateTime? fromDate,
+    DateTime? toDate,
+  }) {
     return ExpenseState(
-      fromDate: this.fromDate,
-      toDate: this.toDate,
+      fromDate: fromDate ?? this.fromDate,
+      toDate: toDate ?? this.toDate,
     );
   }
 }
 
 class ExpenseInitial extends ExpenseState {
-  
+  const ExpenseInitial();
 }
 
-class ExpenseLoading extends ExpenseState {}
+class ExpenseLoading extends ExpenseState {
+  const ExpenseLoading();
+}
 
 class ExpenseSuccess extends ExpenseState {
- GetExpenseList response;
- 
-  ExpenseSuccess(this.response);
+  final GetExpenseList response;
+
+  const ExpenseSuccess(
+    this.response,
+  );
 }
 
 class ExpenseFailure extends ExpenseState {
   final String message;
-  ExpenseFailure(this.message);
+
+  const ExpenseFailure(
+    this.message,
+  );
 }

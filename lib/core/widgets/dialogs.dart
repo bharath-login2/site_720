@@ -97,6 +97,54 @@ Future<void> exitApp(BuildContext context) async {
   );
 }
 
+// Future<void> logOut(BuildContext context) async {
+//   return showDialog(
+//     context: context,
+//     builder: (context) {
+//       return AlertDialog(
+//         backgroundColor: Colors.white,
+//         content: SizedBox(
+//           height: 200,
+//           child: SingleChildScrollView(
+//             child: Column(
+//               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//               children: [
+//                 const Padding(
+//                   padding: EdgeInsets.only(
+//                       top: 30.0, bottom: 20, left: 20, right: 20),
+//                   child: Text(
+//                     "Are you sure ?",
+//                     style: TextStyle(
+//                         color: AppColors.primaryColor,
+//                         fontSize: 20,
+//                         fontWeight: FontWeight.bold),
+//                   ),
+//                 ),
+//                 const SizedBox(
+//                   height: 20,
+//                 ),
+//                 GestureDetector(
+//                   onTap: () {
+//                     clearSharedPreference();
+//                     connStatus = true;
+//                     Navigator.pushReplacementNamed(context, AppRoutes.login);
+//                   },
+//                   child: LargeButton(title: "Logout"),
+//                 ),
+//                 TextButton(
+//                   onPressed: () {
+//                     Navigator.pop(context);
+//                   },
+//                   child: const Text('Cancel'),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ),
+//       );
+//     },
+//   );
+// }
 Future<void> logOut(BuildContext context) async {
   return showDialog(
     context: context,
@@ -111,25 +159,47 @@ Future<void> logOut(BuildContext context) async {
               children: [
                 const Padding(
                   padding: EdgeInsets.only(
-                      top: 30.0, bottom: 20, left: 20, right: 20),
+                    top: 30.0,
+                    bottom: 20,
+                    left: 20,
+                    right: 20,
+                  ),
                   child: Text(
                     "Are you sure ?",
                     style: TextStyle(
-                        color: AppColors.primaryColor,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
+                      color: AppColors.primaryColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
+                const SizedBox(height: 20),
                 GestureDetector(
-                  onTap: () {
-                    clearSharedPreference();
+                  onTap: () async {
+                    /// GET SAVED PIN
+                    String savedPin = await getSharedPreference("pin") ?? "";
+
+                    /// CLEAR ALL DATA
+                    await clearSharedPreference();
+
+                    /// SAVE PIN AGAIN
+                    if (savedPin.isNotEmpty) {
+                      await saveSharedPreference(
+                        "pin",
+                        savedPin,
+                      );
+                    }
+
                     connStatus = true;
-                    Navigator.pushReplacementNamed(context, AppRoutes.login);
+
+                    Navigator.pushReplacementNamed(
+                      context,
+                      AppRoutes.login,
+                    );
                   },
-                  child: LargeButton(title: "Logout"),
+                  child: LargeButton(
+                    title: "Logout",
+                  ),
                 ),
                 TextButton(
                   onPressed: () {

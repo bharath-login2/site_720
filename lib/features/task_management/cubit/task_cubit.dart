@@ -15,10 +15,28 @@ class TaskCubit extends Cubit<TaskState> {
       getTaskListRunning();
   }
 
-  Future<void> getTaskList() async {
+  Future<void> getTaskList({
+    String? fromDate,
+    String? toDate,
+    String? workType,
+    String? category,
+    String? assignedBy,
+    String? assignedTo,
+    String? status,
+    String? viewType,
+  }) async {
     emit(TaskLoading());
     try {
-      GetTaskList response = await HttpServices.getTaskList();
+      GetTaskList response = await HttpServices.getTaskList(
+        fromDate: fromDate,
+        toDate: toDate,
+        workType: workType,
+        category: category,
+        assignedBy: assignedBy,
+        assignedTo: assignedTo,
+        status: status,
+        viewType: viewType,
+      );
 
       if (response.status == true) {
         emit(TaskSuccess(response));

@@ -36,7 +36,7 @@ class DateContainer extends StatelessWidget {
           children: [
             const CircleAvatar(
               radius: 10,
-              backgroundColor: AppColors.coffie,
+              backgroundColor: AppColors.primaryColor,
               foregroundColor: Colors.white,
               child: Icon(
                 Icons.calendar_month,

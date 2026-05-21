@@ -5,21 +5,42 @@ import '../../../data/services/http_services.dart';
 import 'expense_state.dart';
 
 class ExpenseCubit extends Cubit<ExpenseState> {
-  ExpenseCubit(String projectId) : super(ExpenseInitial()){
+  ExpenseCubit(String projectId)
+      : super(
+          const ExpenseInitial(),
+        ) {
     getExpenseList(projectId);
   }
-   Future<void> getExpenseList(String projectId) async {
-    emit(ExpenseLoading());
+
+  Future<void> getExpenseList(
+    String projectId,
+  ) async {
+    emit(
+      const ExpenseLoading(),
+    );
+
     try {
-      GetExpenseList response = await HttpServices.getExpenseList(projectId);
+      GetExpenseList response = await HttpServices.getExpenseList(
+        projectId,
+      );
 
       if (response.status == true) {
-        emit(ExpenseSuccess(response));
+        emit(
+          ExpenseSuccess(response),
+        );
       } else {
-        emit(ExpenseFailure('Failed to fetch data}')); 
+        emit(
+          const ExpenseFailure(
+            'Failed to fetch data',
+          ),
+        );
       }
     } catch (e) {
-      emit(ExpenseFailure('Failed to fetch data: ${e.toString()}'));
+      emit(
+        ExpenseFailure(
+          'Failed to fetch data: ${e.toString()}',
+        ),
+      );
     }
   }
 }

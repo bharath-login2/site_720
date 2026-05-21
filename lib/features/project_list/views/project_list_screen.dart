@@ -22,7 +22,7 @@ class ProjectList extends StatelessWidget {
   dynamic status;
   List statuses = ["upcoming", "running", "completed", "all"];
   String sts = "";
-  bool addProjectPermission = false;
+  bool addProjectPermission = true;
   bool editProjectPermission = false;
   bool deleteProjectPermission = false;
 

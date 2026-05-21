@@ -16,6 +16,10 @@ import '../../connectivity/cubit/connectivity_cubit.dart';
 import '../../connectivity/cubit/connectivity_state.dart';
 import '../widgets/dash_container.dart';
 import '../widgets/date_container.dart';
+import 'package:site_720/features/travel_expense/views/travel_expense_dashboard_screen.dart';
+import 'package:site_720/features/dashboard/views/change_password.dart';
+import 'package:site_720/features/dashboard/views/profile_screen.dart';
+
 class DashboardScreen extends StatelessWidget {
   DashboardScreen({super.key});
   TextEditingController searchController = TextEditingController();
@@ -28,6 +32,9 @@ class DashboardScreen extends StatelessWidget {
     Colors.orange,
     Colors.red,
   ];
+  Map<String, dynamic>? profileData;
+
+  bool profileLoading = true;
 
   @override
   Widget build(BuildContext context) {
@@ -189,7 +196,7 @@ class DashboardScreen extends StatelessWidget {
                                     final dashboardCubit =
                                         BlocProvider.of<DashboardCubit>(
                                             context);
-                                    showDateRangeDialog(
+                                    showDateRangeProfile(
                                         context, dashboardCubit);
                                   },
                                   child: Container(
@@ -208,7 +215,7 @@ class DashboardScreen extends StatelessWidget {
                                     ),
                                     alignment: Alignment.center,
                                     child: const Icon(
-                                      Icons.calendar_month,
+                                      Icons.menu,
                                       color: AppColors.lightA,
                                       size: 16,
                                     ),
@@ -235,51 +242,51 @@ class DashboardScreen extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 30.0),
-                      child: state is DashboardSuccess
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                InkWell(
-                                  child: DateContainer(
-                                    count: state.response.data.fromDate.isEmpty
-                                        ? DateFormat('dd-MM-yyyy')
-                                            .format(DateTime.now())
-                                        : state.response.data.fromDate,
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                const Text(
-                                  "To",
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(
-                                    width:
-                                        10), // Adds some space between the "To" and the second date
-                                InkWell(
-                                  child: DateContainer(
-                                    count: state.response.data.toDate.isEmpty
-                                        ? DateFormat('dd-MM-yyyy')
-                                            .format(DateTime.now())
-                                        : state.response.data.toDate,
-                                  ),
-                                ),
-                              ],
-                            )
-                          : Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                shimmerContainer(
-                                    85, MediaQuery.of(context).size.width * .4),
-                                shimmerContainer(
-                                    85, MediaQuery.of(context).size.width * .4),
-                              ],
-                            ),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(top: 30.0),
+                    //   child: state is DashboardSuccess
+                    //       ? Row(
+                    //           mainAxisAlignment: MainAxisAlignment.center,
+                    //           children: [
+                    //             InkWell(
+                    //               child: DateContainer(
+                    //                 count: state.response.data.fromDate.isEmpty
+                    //                     ? DateFormat('dd-MM-yyyy')
+                    //                         .format(DateTime.now())
+                    //                     : state.response.data.fromDate,
+                    //               ),
+                    //             ),
+                    //             const SizedBox(width: 10),
+                    //             const Text(
+                    //               "To",
+                    //               style: TextStyle(
+                    //                 fontSize: 12,
+                    //                 fontWeight: FontWeight.bold,
+                    //               ),
+                    //             ),
+                    //             const SizedBox(
+                    //                 width:
+                    //                     10), // Adds some space between the "To" and the second date
+                    //             InkWell(
+                    //               child: DateContainer(
+                    //                 count: state.response.data.toDate.isEmpty
+                    //                     ? DateFormat('dd-MM-yyyy')
+                    //                         .format(DateTime.now())
+                    //                     : state.response.data.toDate,
+                    //               ),
+                    //             ),
+                    //           ],
+                    //         )
+                    //       : Row(
+                    //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    //           children: [
+                    //             shimmerContainer(
+                    //                 85, MediaQuery.of(context).size.width * .4),
+                    //             shimmerContainer(
+                    //                 85, MediaQuery.of(context).size.width * .4),
+                    //           ],
+                    //         ),
+                    // ),
                     Padding(
                       padding: const EdgeInsets.only(top: 30.0),
                       child: state is DashboardSuccess
@@ -393,31 +400,78 @@ class DashboardScreen extends StatelessWidget {
                               child: Column(
                                 children: [
                                   Container(
-                                      decoration: const BoxDecoration(
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(5),
-                                          topRight: Radius.circular(5),
-                                        ),
-                                        color: AppColors.dashContainer,
+                                    decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(5),
+                                        topRight: Radius.circular(5),
                                       ),
-                                      child: const Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 8.0, vertical: 12 ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              "Expense",
-                                              style: TextStyle(
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.bold,
-                                                // color: AppColors.coffie,
+                                      color: AppColors.dashContainer,
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0,
+                                        vertical: 12,
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              const Text(
+                                                "Expense",
+                                                style: TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      )),
+
+                                              /// Calendar Icon
+                                              InkWell(
+                                                onTap: () {
+                                                  final dashboardCubit =
+                                                      BlocProvider.of<
+                                                              DashboardCubit>(
+                                                          context);
+
+                                                  showDateRangeExpenseDialog(
+                                                      context, dashboardCubit);
+                                                },
+                                                child: Container(
+                                                  width: 30,
+                                                  height: 30,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5),
+                                                    color:
+                                                        AppColors.primaryColor,
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.grey
+                                                            .withOpacity(0.8),
+                                                        blurRadius: 6,
+                                                        offset:
+                                                            const Offset(3, 3),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  alignment: Alignment.center,
+                                                  child: const Icon(
+                                                    Icons.calendar_month,
+                                                    color: AppColors.lightA,
+                                                    size: 16,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                                   state.response.data.expenseData.isNotEmpty
                                       ? Padding(
                                           padding: const EdgeInsets.symmetric(
@@ -439,7 +493,7 @@ class DashboardScreen extends StatelessWidget {
                                                     padding: const EdgeInsets
                                                         .symmetric(
                                                         vertical: 6.0,
-                                                        horizontal: 6.0),
+                                                        horizontal: 5.0),
                                                     child: InkWell(
                                                       onTap: () {
                                                         // connStatus = true;
@@ -606,48 +660,71 @@ class DashboardScreen extends StatelessWidget {
                               child: Column(
                                 children: [
                                   Container(
-                                      decoration: const BoxDecoration(
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(5),
-                                          topRight: Radius.circular(5),
-                                        ),
-                                        color: AppColors.dashContainer,
+                                    decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(5),
+                                        topRight: Radius.circular(5),
                                       ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8.0, vertical: 6.0),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                const Text(
-                                                  "Complaints",
-                                                  style: TextStyle(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.bold,
-                                                    // color: AppColors.coffie,
-                                                  ),
-                                                ),
-                                                if (fdate.text != '' &&
-                                                    tdate.text != '')
-                                                  Text(
-                                                    "from ${fdate.text} To ${tdate.text}",
-                                                    style: const TextStyle(
-                                                      fontSize: 10,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      // color: AppColors.coffie,
-                                                    ),
-                                                  ),
-                                              ],
+                                      color: AppColors.dashContainer,
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0,
+                                        vertical: 6.0,
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          /// Title
+                                          const Text(
+                                            "Complaints",
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
                                             ),
-                                          ],
-                                        ),
-                                      )),
+                                          ),
+
+                                          /// Calendar Icon
+                                          // InkWell(
+                                          //   onTap: () {
+                                          //     final dashboardCubit =
+                                          //         BlocProvider.of<
+                                          //             DashboardCubit>(context);
+
+                                          //     showDateRangeDialog(
+                                          //         context, dashboardCubit);
+                                          //   },
+                                          //   child: Container(
+                                          //     width: 30,
+                                          //     height: 30,
+                                          //     decoration: BoxDecoration(
+                                          //       borderRadius:
+                                          //           BorderRadius.circular(5),
+                                          //       color: AppColors.primaryColor,
+                                          //       boxShadow: [
+                                          //         BoxShadow(
+                                          //           color: Colors.grey
+                                          //               .withOpacity(0.8),
+                                          //           blurRadius: 6,
+                                          //           offset: const Offset(3, 3),
+                                          //         ),
+                                          //       ],
+                                          //     ),
+                                          //     alignment: Alignment.center,
+                                          //     child: const Icon(
+                                          //       Icons.calendar_month,
+                                          //       color: AppColors.lightA,
+                                          //       size: 16,
+                                          //     ),
+                                          //   ),
+                                          // ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                                   state.response.data.complaintCounts.isNotEmpty
                                       ? DashboardPieChart(
                                           values: state
@@ -765,36 +842,60 @@ class DashboardScreen extends StatelessWidget {
                                       ),
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(
-                                            horizontal: 8.0, vertical: 6.0),
+                                          horizontal: 8.0,
+                                          vertical: 6.0,
+                                        ),
                                         child: Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
                                           children: [
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                const Text(
-                                                  "Work issues",
-                                                  style: TextStyle(
-                                                    fontSize: 13,
-                                                    fontWeight: FontWeight.bold,
-                                                    // color: AppColors.coffie,
-                                                  ),
-                                                ),
-                                                if (fdate.text != '' &&
-                                                    tdate.text != '')
-                                                  Text(
-                                                    "from ${fdate.text} To ${tdate.text}",
-                                                    style: const TextStyle(
-                                                      fontSize: 10,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      // color: AppColors.coffie,
-                                                    ),
-                                                  ),
-                                              ],
+                                            /// Title
+                                            const Text(
+                                              "Work issues",
+                                              style: TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
+
+                                            /// Calendar Icon
+                                            // InkWell(
+                                            //   onTap: () {
+                                            //     final dashboardCubit =
+                                            //         BlocProvider.of<
+                                            //                 DashboardCubit>(
+                                            //             context);
+
+                                            //     showDateRangeDialog(
+                                            //         context, dashboardCubit);
+                                            //   },
+                                            //   child: Container(
+                                            //     width: 30,
+                                            //     height: 30,
+                                            //     decoration: BoxDecoration(
+                                            //       borderRadius:
+                                            //           BorderRadius.circular(5),
+                                            //       color: AppColors.primaryColor,
+                                            //       boxShadow: [
+                                            //         BoxShadow(
+                                            //           color: Colors.grey
+                                            //               .withOpacity(0.8),
+                                            //           blurRadius: 6,
+                                            //           offset:
+                                            //               const Offset(3, 3),
+                                            //         ),
+                                            //       ],
+                                            //     ),
+                                            //     alignment: Alignment.center,
+                                            //     child: const Icon(
+                                            //       Icons.calendar_month,
+                                            //       color: AppColors.lightA,
+                                            //       size: 16,
+                                            //     ),
+                                            //   ),
+                                            // ),
                                           ],
                                         ),
                                       )),
@@ -1065,6 +1166,619 @@ class DashboardScreen extends StatelessWidget {
       },
     );
   }
+
+  Future<dynamic> showDateRangeExpenseDialog(
+    BuildContext context,
+    DashboardCubit cubit,
+  ) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          content: SizedBox(
+            height: 300,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(
+                      top: 16.0,
+                      bottom: 25,
+                    ),
+                    child: Text(
+                      "Select Range",
+                      style: TextStyle(
+                        color: AppColors.primaryColor,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      /// FROM DATE
+                      SizedBox(
+                        width: MediaQuery.sizeOf(context).width * .8,
+                        height: 50,
+                        child: TextFormField(
+                          onTap: () async {
+                            String? selectedDate = await selectDate(context);
+
+                            if (selectedDate != null) {
+                              fdate.text = selectedDate;
+                            }
+                          },
+                          readOnly: true,
+                          controller: fdate,
+                          decoration: const InputDecoration(
+                            hintText: 'From Date',
+                            contentPadding: EdgeInsets.all(10),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: AppColors.primaryColor,
+                              ),
+                            ),
+                            suffixIcon: Icon(
+                              Icons.calendar_today,
+                              size: 20,
+                              color: AppColors.primaryColor,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      /// TO DATE
+                      SizedBox(
+                        height: 50,
+                        width: MediaQuery.sizeOf(context).width * .8,
+                        child: TextFormField(
+                          onTap: () async {
+                            String? selectedDate = await selectDate(context);
+
+                            if (selectedDate != null) {
+                              tdate.text = selectedDate;
+                            }
+                          },
+                          readOnly: true,
+                          controller: tdate,
+                          decoration: const InputDecoration(
+                            hintText: 'To Date',
+                            contentPadding: EdgeInsets.all(10),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: AppColors.primaryColor,
+                              ),
+                            ),
+                            suffixIcon: Icon(
+                              Icons.calendar_today,
+                              size: 20,
+                              color: AppColors.primaryColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  /// CONTINUE BUTTON
+                  GestureDetector(
+                    onTap: () async {
+                      /// DASHBOARD API
+                      cubit.getDashboard(
+                        fdate.text,
+                        tdate.text,
+                      );
+
+                      /// EXPENSE API
+                      cubit.getExpense(
+                        fromDate: fdate.text,
+                        toDate: tdate.text,
+                      );
+
+                      Navigator.pop(context);
+                    },
+                    child: LargeButton(
+                      title: "Continue",
+                    ),
+                  ),
+
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Close'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  /// Show Profile Drawer (slides from right/left like a drawer)
+  void showDateRangeProfile(BuildContext context, cubit) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: "Close",
+      transitionDuration: const Duration(milliseconds: 300),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return Align(
+          alignment: Alignment.centerRight, // Slides from right
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
+              width: MediaQuery.sizeOf(context).width * 0.85,
+              height: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(28),
+                  bottomLeft: Radius.circular(28),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 20,
+                    offset: const Offset(-5, 0),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  /// Gradient Header
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 40),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          AppColors.primaryColor,
+                          AppColors.primaryColor.withOpacity(0.9),
+                        ],
+                      ),
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(28),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        /// Close Button
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 16, top: 8),
+                            child: InkWell(
+                              onTap: () => Navigator.pop(context),
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.2),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.close_rounded,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 3,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 10,
+                                offset: const Offset(0, 5),
+                              ),
+                            ],
+                          ),
+                          child: const CircleAvatar(
+                            radius: 45,
+                            backgroundColor: Colors.white,
+                            child: Icon(
+                              Icons.person_rounded,
+                              color: AppColors.primaryColor,
+                              size: 50,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        const Text(
+                          "Welcome Back!",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white70,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          "Site 720",
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Text(
+                            "@2026",
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  /// Menu Items (Scrollable)
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Column(
+                        children: [
+                          _buildModernMenuTile(
+                            icon: Icons.person_outline_rounded,
+                            title: "My Profile",
+                            subtitle: "View and edit your profile",
+                            onTap: () {
+                              Navigator.pop(context);
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const ProfileScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                          _buildDivider(),
+                          _buildModernMenuTile(
+                            icon: Icons.lock_outline_rounded,
+                            title: "Change Password",
+                            subtitle: "Update your security settings",
+                            onTap: () {
+                              Navigator.pop(context);
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const ChangePasswordScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                          _buildDivider(),
+                          _buildExpenseMenu(context),
+                          _buildDivider(),
+                          _buildModernMenuTile(
+                            icon: Icons.account_balance_wallet_rounded,
+                            title: "Expense",
+                            subtitle: "Track your expenses",
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                "/expense",
+                              );
+                            },
+                          ),
+                          _buildDivider(),
+                          _buildModernMenuTile(
+                            icon: Icons.logout_rounded,
+                            title: "Logout",
+                            subtitle: "Sign out from your account",
+                            iconColor: Colors.red.shade400,
+                            textColor: Colors.red.shade400,
+                            isDestructive: true,
+                            onTap: () {
+                              logOut(context);
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(1.0, 0.0); // Slide from right
+        const end = Offset.zero;
+        const curve = Curves.easeOutCubic;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        var offsetAnimation = animation.drive(tween);
+
+        return SlideTransition(
+          position: offsetAnimation,
+          child: child,
+        );
+      },
+    );
+  }
+
+  /// Modern Menu Tile Widget
+  Widget _buildModernMenuTile({
+    required IconData icon,
+    required String title,
+    String? subtitle,
+    required VoidCallback onTap,
+    Color iconColor = AppColors.primaryColor,
+    Color textColor = Colors.black87,
+    bool isDestructive = false,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: isDestructive
+                      ? Colors.red.shade50
+                      : iconColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  icon,
+                  color: isDestructive ? Colors.red.shade400 : iconColor,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: isDestructive ? Colors.red.shade400 : textColor,
+                      ),
+                    ),
+                    if (subtitle != null)
+                      Text(
+                        subtitle,
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.grey.shade500,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 16,
+                color: Colors.grey.shade400,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Expense Menu with Submenu
+  Widget _buildExpenseMenu(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(18),
+      onTap: () {
+        Navigator.pop(context);
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const TravelExpenseDashboardScreen(),
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 6,
+        ),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 10,
+          vertical: 14,
+        ),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.03),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            /// ICON
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.primaryColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: const Icon(
+                Icons.travel_explore_rounded,
+                color: AppColors.primaryColor,
+                size: 24,
+              ),
+            ),
+
+            const SizedBox(width: 14),
+
+            /// TEXT
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Travel Expense",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    "Manage your travel expenses",
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 16,
+                color: Colors.grey.shade600,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSubMenuItem({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return ListTile(
+      contentPadding: EdgeInsets.zero,
+      leading: Icon(
+        icon,
+        size: 20,
+        color: Colors.grey.shade600,
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontSize: 14,
+          color: Colors.grey.shade700,
+        ),
+      ),
+      onTap: onTap,
+    );
+  }
+
+  /// Divider Widget
+  Widget _buildDivider() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Divider(
+        height: 1,
+        thickness: 1,
+        color: Colors.grey.shade100,
+      ),
+    );
+  }
+
+  /// Logout Confirmation Dialog
+  // void _showLogoutConfirmation(BuildContext context, cubit) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) => AlertDialog(
+  //       shape: RoundedRectangleBorder(
+  //         borderRadius: BorderRadius.circular(20),
+  //       ),
+  //       title: const Text(
+  //         "Logout",
+  //         style: TextStyle(
+  //           fontSize: 18,
+  //           fontWeight: FontWeight.bold,
+  //         ),
+  //       ),
+  //       content: const Text(
+  //         "Are you sure you want to logout?",
+  //         style: TextStyle(fontSize: 14),
+  //       ),
+  //       actions: [
+  //         TextButton(
+  //           onPressed: () => Navigator.pop(context),
+  //           child: const Text(
+  //             "Cancel",
+  //             style: TextStyle(color: Colors.grey),
+  //           ),
+  //         ),
+  //         ElevatedButton(
+  //           onPressed: () {
+  //             Navigator.pop(context);
+  //             cubit.logout();
+  //           },
+  //           style: ElevatedButton.styleFrom(
+  //             backgroundColor: Colors.red.shade400,
+  //             foregroundColor: Colors.white,
+  //             shape: RoundedRectangleBorder(
+  //               borderRadius: BorderRadius.circular(10),
+  //             ),
+  //           ),
+  //           child: const Text("Logout"),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(

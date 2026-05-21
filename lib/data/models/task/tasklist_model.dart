@@ -36,6 +36,7 @@ class GetTaskList {
 class Tasks {
   String id;
   String assignedStaffId;
+  String assignedStaffUserId;
   String taskTitle;
   String fromDate;
   String toDate;
@@ -50,6 +51,7 @@ class Tasks {
   Tasks({
     required this.id,
     required this.assignedStaffId,
+    required this.assignedStaffUserId,
     required this.taskTitle,
     required this.fromDate,
     required this.toDate,
@@ -63,8 +65,9 @@ class Tasks {
   });
 
   factory Tasks.fromJson(Map<String, dynamic> json) => Tasks(
-        id: json["id"],
-        assignedStaffId: json["to_staff_id"],
+        id: json["id"] ?? "",
+        assignedStaffId: json["to_staff_id"] ?? "",
+        assignedStaffUserId: json["to_user_id"] ?? "",
         taskTitle: json["task_title"] ?? "",
         fromDate: json["from_date"] ?? "",
         toDate: json["to_date"] ?? "",
@@ -80,6 +83,7 @@ class Tasks {
   Map<String, dynamic> toJson() => {
         "id": id,
         "to_staff_id": assignedStaffId,
+           "to_user_id": assignedStaffUserId,
         "task_title": taskTitle,
         "from_date": fromDate,
         "to_date": toDate,

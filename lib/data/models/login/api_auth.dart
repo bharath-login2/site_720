@@ -3,7 +3,7 @@
 //     final apiAuth = apiAuthFromJson(jsonString);
 
 import 'dart:convert';
-
+ 
 ApiAuth apiAuthFromJson(String str) => ApiAuth.fromJson(json.decode(str));
 
 String apiAuthToJson(ApiAuth data) => json.encode(data.toJson());

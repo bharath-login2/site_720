@@ -15,7 +15,7 @@ class LoginLoading extends LoginState {}
 class LoginSuccess extends LoginState {
   final String message;
   final String token;
-  LoginSuccess(this.message,this.token);
+  LoginSuccess(this.message, this.token);
 }
 
 class LoginFailure extends LoginState {
@@ -27,7 +27,9 @@ class ServerSuccess extends LoginState {
   final String message;
 
   ServerSuccess(this.message);
-}class ServerFailed extends LoginState {
+}
+
+class ServerFailed extends LoginState {
   final String message;
   ServerFailed(this.message);
 }

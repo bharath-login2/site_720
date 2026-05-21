@@ -10,12 +10,18 @@ class SuccessResponseModel {
   });
 
   factory SuccessResponseModel.fromJson(Map<String, dynamic> json) {
+    final rawStatus = json["status"];
+
     return SuccessResponseModel(
       data: json["data"],
       message: json["message"] ?? "",
-      status: json["status"] is bool
-          ? json["status"]
-          : json["status"] == 1,   // handle int also
+      status: rawStatus is bool
+          ? rawStatus
+          : rawStatus is int
+              ? rawStatus == 1
+              : rawStatus is String
+                  ? rawStatus.toLowerCase() == "true" || rawStatus == "1"
+                  : false,
     );
   }
 }

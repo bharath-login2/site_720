@@ -12,6 +12,7 @@ import '../../../data/models/login/api_auth.dart';
 import '../../connectivity/cubit/connectivity_cubit.dart';
 import '../../connectivity/cubit/connectivity_state.dart';
 import '../cubit/login_cubit.dart';
+import 'package:site_720/features/complaints/pin_setup_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -70,14 +71,55 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 40),
-                const Text(
-                  "Login",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1,
-                    fontFamily: "Lobster",
+                const SizedBox(height: 30),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const PinSetupScreen(),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.2),
+                                blurRadius: 5,
+                                offset: const Offset(2, 2),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.arrow_back_ios_new,
+                            size: 18,
+                            color: AppColors.primaryColor,
+                          ),
+                        ),
+                      ),
+                      const Expanded(
+                        child: Center(
+                          child: Text(
+                            "Login",
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1,
+                              fontFamily: "Lobster",
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 35),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -85,9 +127,9 @@ class LoginScreen extends StatelessWidget {
                   "Enter your login details",
                   style: TextStyle(
                     fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1,
-                    fontFamily: "Lobster",
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.5,
+                    color: Colors.black54,
                   ),
                 ),
                 const SizedBox(height: 25),
@@ -229,7 +271,7 @@ class LoginScreen extends StatelessWidget {
                         if (context.mounted) {
                           // if (cubit.selectedServer == null) {
                           //   snackBar(context, "Select Server", Colors.red);
-                          // } else 
+                          // } else
                           if (_usernameController.text.isEmpty) {
                             snackBar(context, "Enter username", Colors.red);
                           } else if (_passwordController.text.isEmpty) {

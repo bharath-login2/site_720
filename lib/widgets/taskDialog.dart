@@ -10,13 +10,16 @@ import 'package:site_720/data/models/project_list/project_list_model.dart';
 import 'package:site_720/data/models/task/task_edit_model.dart';
 import 'package:site_720/data/models/workdetails/work_stage_model.dart';
 import 'package:site_720/data/services/http_services.dart';
+
 class AddTaskDialog extends StatefulWidget {
   final String? taskId;
   final Function? onTaskUpdated;
   const AddTaskDialog({super.key, this.taskId, this.onTaskUpdated});
+
   @override
   State<AddTaskDialog> createState() => _AddTaskDialogState();
 }
+
 class _AddTaskDialogState extends State<AddTaskDialog> {
   final _formKey = GlobalKey<FormState>();
   bool _isEditMode = false;
@@ -833,7 +836,9 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
       }
       categoryId = selectedSiteCategory!.id;
     }
+
     setState(() => isSubmitting = true);
+
     List<String> milestones = milestoneControllers
         .where((c) => c.text.trim().isNotEmpty)
         .map((c) => c.text.trim())
@@ -843,6 +848,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
         .where((file) => file != null)
         .map((file) => file!.path)
         .toList();
+
     final response = await HttpServices.submitAssignTask(
       taskName: taskNameController.text,
       staffId: selectedStaff!.staffId,
@@ -863,10 +869,15 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
     if (response != null && response.status == true) {
       Navigator.pop(context);
       snackBar(context, "Task Submitted Successfully!", Colors.green);
+      if (widget.onTaskUpdated != null) {
+        widget.onTaskUpdated!();
+        print("✅ onTaskUpdated callback called (new task)");
+      }
     } else {
       snackBar(context, "Failed to submit task", Colors.red);
     }
   }
+
   Future<void> updateTask() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -878,6 +889,7 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
       snackBar(context, "Please select a staff", Colors.red);
       return;
     }
+
     String? categoryId;
     if (workType == "office") {
       if (selectedOfficeCategory == null) {
@@ -892,8 +904,11 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
       }
       categoryId = selectedSiteCategory!.id;
     }
+
     if (widget.taskId == null) return;
+
     setState(() => isSubmitting = true);
+
     List<Map<String, String>> milestones = [];
     for (var controller in milestoneControllers) {
       if (controller.text.trim().isNotEmpty) {
@@ -907,8 +922,6 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
         .where((file) => file != null)
         .map((file) => file!.path)
         .toList();
-    List<String> existingAttachmentUrls =
-        existingAttachments.map((attachment) => attachment.url).toList();
 
     final response = await HttpServices.updateTask(
       taskId: widget.taskId!,
@@ -929,11 +942,12 @@ class _AddTaskDialogState extends State<AddTaskDialog> {
 
     setState(() => isSubmitting = false);
 
-    if (response != null && response.status == true) {
+    if (response != null && response["status"] == true) {
       Navigator.pop(context);
       snackBar(context, "Task Updated Successfully!", Colors.green);
       if (widget.onTaskUpdated != null) {
         widget.onTaskUpdated!();
+        print("✅ onTaskUpdated callback called (edit task)");
       }
     } else {
       snackBar(context, "Failed to update task", Colors.red);

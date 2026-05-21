@@ -53,7 +53,7 @@ class DashContainer extends StatelessWidget {
                 alignment: Alignment.bottomRight,
                 child: CircleAvatar(
                   radius: 12,
-                  backgroundColor: AppColors.coffie,
+                  backgroundColor: AppColors.primaryColor,
                   foregroundColor: Colors.white,
                   child: Icon(
                     Icons.arrow_forward,

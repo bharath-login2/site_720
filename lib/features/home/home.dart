@@ -3,9 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/dialogs.dart';
 import 'package:site_720/features/dashboard/views/dashboard_screen.dart';
-import 'package:site_720/features/task_management/cubit/task_cubit.dart';
-import 'package:site_720/features/task_management/views/task_list_screen.dart';
 import 'package:site_720/features/work/views/work_screen.dart';
+import 'package:site_720/features/work/cubit/work_cubit.dart';
 
 import '../task_management/views/task_list.dart';
 import '../visit/views/visit_details.dart';
@@ -20,20 +19,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _selectedIndex = 0;
 
-  final List<Widget> _widgetOptions = <Widget>[
-    /// HOME
-    DashboardScreen(),
-
-    /// WORK
-    const WorkScreen(),
-
-    /// TASK
-    TaskList(),
-
-    /// LOCATION
-    VisitList(),
-  ];
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -42,6 +27,23 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> widgetOptions = <Widget>[
+      /// HOME
+      DashboardScreen(),
+
+      /// WORK
+      BlocProvider(
+        create: (_) => WorkCubit()..getExternalWorkDetailsList(),
+        child: const WorkScreen(),
+      ),
+
+      /// TASK
+      TaskList(),
+
+      /// LOCATION
+      VisitList(),
+    ];
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
@@ -50,7 +52,7 @@ class _HomeState extends State<Home> {
       child: Scaffold(
         body: IndexedStack(
           index: _selectedIndex,
-          children: _widgetOptions,
+          children: widgetOptions,
         ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _selectedIndex,

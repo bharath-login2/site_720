@@ -3,8 +3,7 @@ import 'dart:convert';
 GetStagesModel getStagesModelFromJson(String str) =>
     GetStagesModel.fromJson(json.decode(str));
 
-String getStagesModelToJson(GetStagesModel data) =>
-    json.encode(data.toJson());
+String getStagesModelToJson(GetStagesModel data) => json.encode(data.toJson());
 
 class GetStagesModel {
   List<GetStages> data;
@@ -17,8 +16,7 @@ class GetStagesModel {
     required this.status,
   });
 
-  factory GetStagesModel.fromJson(Map<String, dynamic> json) =>
-      GetStagesModel(
+  factory GetStagesModel.fromJson(Map<String, dynamic> json) => GetStagesModel(
         data: List<GetStages>.from(
             json["data"].map((x) => GetStages.fromJson(x))),
         message: json["message"] ?? "",
@@ -41,8 +39,10 @@ class GetStages {
   String curingDays;
   DateTime startDate;
   DateTime endDate;
-   String isLocked;
-    String stageStatus;
+  String isLocked;
+  String stageStatus;
+  String projectId;
+  String clientId;
 
   GetStages({
     required this.stageId,
@@ -53,8 +53,10 @@ class GetStages {
     required this.curingDays,
     required this.startDate,
     required this.endDate,
-        required this.isLocked,
-            required this.stageStatus,
+    required this.isLocked,
+    required this.stageStatus,
+    required this.projectId,
+    required this.clientId,
   });
 
   factory GetStages.fromJson(Map<String, dynamic> json) => GetStages(
@@ -70,8 +72,10 @@ class GetStages {
         endDate: json["end_date"] != null && json["end_date"] != ""
             ? DateTime.parse(json["end_date"])
             : DateTime(1970, 1, 1),
-             isLocked: json["is_locked"] ?? "",
-              stageStatus: json["stage_status"] ?? "",
+        isLocked: json["is_locked"] ?? "",
+        stageStatus: json["stage_status"] ?? "",
+        projectId: json["project_id"] ?? "",
+        clientId: json["client_id"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {
@@ -86,6 +90,8 @@ class GetStages {
         "end_date":
             "${endDate.year.toString().padLeft(4, '0')}-${endDate.month.toString().padLeft(2, '0')}-${endDate.day.toString().padLeft(2, '0')}",
         "is_locked": isLocked,
-          "stage_status": stageStatus,
+        "stage_status": stageStatus,
+        "project_id": projectId,
+        "client_id": clientId,
       };
 }

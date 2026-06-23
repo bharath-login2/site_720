@@ -164,23 +164,34 @@ class PaymentDetails extends StatelessWidget {
                                             height: 10,
                                           ),
                                           Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
-                                              const Icon(
-                                                Icons
-                                                    .calendar_month, 
-                                                size: 14,
-                                                color: AppColors
-                                                    .coffie,
+                                              Row(
+                                                children: [
+                                                  const Icon(
+                                                    Icons.calendar_month,
+                                                    size: 14,
+                                                    color: AppColors.coffie,
+                                                  ),
+                                                  const SizedBox(width: 4),
+                                                  Text(
+                                                    "Transaction Date: ${state.response.data[index].transactionDate}",
+                                                    style: const TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: AppColors.coffie,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                              const SizedBox(
-                                                  width: 4), 
-                                              Text(
-                                                "Transaction Date: ${state.response.data[index].transactionDate}",
-                                                style: const TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: AppColors.coffie,
-                                                ),
+                                              AmountContainer(
+                                                title: "Paid Amount",
+                                                amount:
+                                                    " ₹ ${state.response.data[index].paidAmount}",
+                                                valueColor:
+                                                    AppColors.primaryColor,
                                               ),
                                             ],
                                           ),
@@ -191,24 +202,18 @@ class PaymentDetails extends StatelessWidget {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
-                                              AmountContainer(
-                                                  title: "Collected By",
-                                                  amount:
-                                                      "${state.response.data[index].collectedBy} ",
-                                                  valueColor:
-                                                      AppColors.primaryColor),
-                                              AmountContainer(
-                                                  title: "Created By",
-                                                  amount:
-                                                      "${state.response.data[index].createdBy}",
-                                                  valueColor:
-                                                      AppColors.primaryColor),
-                                              AmountContainer(
-                                                  title: "Paid Amount",
-                                                  amount:
-                                                      " ₹ ${state.response.data[index].paidAmount}",
-                                                  valueColor:
-                                                      AppColors.primaryColor),
+                                              // AmountContainer(
+                                              //     title: "Collected By",
+                                              //     amount:
+                                              //         "${state.response.data[index].collectedBy} ",
+                                              //     valueColor:
+                                              //         AppColors.primaryColor),
+                                              // AmountContainer(
+                                              //     title: "Created By",
+                                              //     amount:
+                                              //         "${state.response.data[index].createdBy}",
+                                              //     valueColor:
+                                              //         AppColors.primaryColor),
                                             ],
                                           ),
                                         ],

@@ -11,6 +11,9 @@ import '../../connectivity/cubit/connectivity_cubit.dart';
 import '../../connectivity/cubit/connectivity_state.dart';
 import '../cubit/expense_cubit.dart';
 import 'package:site_720/features/expense/views/add_expense_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../cubit/project_cubit.dart';
 
 class Expense extends StatelessWidget {
   const Expense({super.key});
@@ -70,7 +73,10 @@ class Expense extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const AddExpenseScreen(),
+                        builder: (_) => BlocProvider(
+                          create: (_) => ProjectCubit(),
+                          child: const AddExpenseScreen(),
+                        ),
                       ),
                     );
                   },

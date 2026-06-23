@@ -10,6 +10,7 @@ import '../../../core/widgets/connectivity_dialog.dart';
 import '../../connectivity/cubit/connectivity_cubit.dart';
 import '../../connectivity/cubit/connectivity_state.dart';
 import '../../payment_details/widgets/amount_container.dart';
+import '../widget/add_consumption_dialog.dart';
 import '../cubit/consumption_cubit.dart';
 
 class Consumption extends StatelessWidget {
@@ -19,91 +20,122 @@ class Consumption extends StatelessWidget {
   Widget build(BuildContext context) {
     final args =
         ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+
     String projectId = args["id"]!;
-    return Scaffold(
-        backgroundColor: AppColors.backgroundColor,
-        appBar: simpleAppbar(context, "Consumption", true),
-        body: BlocProvider(
-          create: (context) => ConsumptionCubit(projectId),
-          child: MultiBlocListener(
-            listeners: [
-              BlocListener<ConnectivityCubit, ConnectivityState>(
-                listener: (context, state) {
-                  if (state is ConnectivityDisconnected) {
-                    if (connStatus == true) {
-                      connStatus = false;
-                      connectivityDialog(context);
+
+    return BlocProvider(
+      create: (_) => ConsumptionCubit(projectId),
+      child: Builder(
+        builder: (context) {
+          return Scaffold(
+            backgroundColor: AppColors.backgroundColor,
+            appBar: simpleAppbar(
+              context,
+              "Consumption",
+              true,
+              actions: [
+                InkWell(
+                  onTap: () async {
+                    final result = await showDialog(
+                      context: context,
+                      builder: (_) => AddConsumptionDialog(
+                        projectId: projectId,
+                      ),
+                    );
+
+                    if (result == true && context.mounted) {
+                      await context.read<ConsumptionCubit>().getConsumeList();
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            "Stock Consumption Added Successfully",
+                          ),
+                        ),
+                      );
                     }
-                  } else {
-                    connStatus = true;
-                  }
-                },
-              ),
-            ],
-            child: BlocBuilder<ConsumptionCubit, ConsumptionState>(
-              builder: (context, state) {
-                return state is ConsumptionSuccess
-                    ? ListView.builder(
-                        shrinkWrap: true,
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        itemCount: state.response.data.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.all(6.0),
-                            child: InkWell(
-                              onTap: () {
-                                // Navigator.of(context)
-                                //     .pushNamed(AppRoutes.stageHistory);
-                              },
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * .9,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.8),
-                                      blurRadius: 3,
-                                      offset: const Offset(0, 3),
-                                    ),
-                                  ],
-                                ),
-                                child: SizedBox(
-                                  width: MediaQuery.of(context).size.width * .7,
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(.2),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(
+                      Icons.add,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            body: MultiBlocListener(
+              listeners: [
+                BlocListener<ConnectivityCubit, ConnectivityState>(
+                  listener: (context, state) {
+                    if (state is ConnectivityDisconnected) {
+                      if (connStatus == true) {
+                        connStatus = false;
+                        connectivityDialog(context);
+                      }
+                    } else {
+                      connStatus = true;
+                    }
+                  },
+                ),
+              ],
+              child: BlocBuilder<ConsumptionCubit, ConsumptionState>(
+                builder: (context, state) {
+                  return state is ConsumptionSuccess
+                      ? ListView.builder(
+                          shrinkWrap: true,
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          itemCount: state.response.data.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(6.0),
+                              child: InkWell(
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width * .9,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.8),
+                                        blurRadius: 3,
+                                        offset: const Offset(0, 3),
+                                      ),
+                                    ],
+                                  ),
                                   child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 8.0,
-                                        left: 8.0,
-                                        right: 8.0,
-                                        bottom: 8.0),
+                                    padding: const EdgeInsets.all(8),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
                                         Row(
                                           children: [
-                                            Text(
-                                              "Material: ${state.response.data[index]
-                                                  .materialName}",
-                                              style: const TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold,
+                                            Expanded(
+                                              child: Text(
+                                                "Material: ${state.response.data[index].materialName}",
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
-                                            ),
-                                            SizedBox(
-                                              width: 110,
                                             ),
                                             Row(
                                               children: [
                                                 const Icon(
                                                   Icons.calendar_month,
                                                   size: 16,
-                                                  color: AppColors
-                                                      .coffie, // or any color you prefer
+                                                  color: AppColors.coffie,
                                                 ),
                                                 const SizedBox(width: 4),
                                                 Text(
-                                                  "${state.response.data[index].dateConsumed}",
+                                                  state.response.data[index]
+                                                      .dateConsumed,
                                                   style: const TextStyle(
                                                     fontSize: 13,
                                                     fontWeight: FontWeight.bold,
@@ -114,9 +146,7 @@ class Consumption extends StatelessWidget {
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
+                                        const SizedBox(height: 10),
                                         Text(
                                           "Location: ${state.response.data[index].locationName}",
                                           style: const TextStyle(
@@ -124,9 +154,7 @@ class Consumption extends StatelessWidget {
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
+                                        const SizedBox(height: 10),
                                         Text(
                                           "Unit: ${state.response.data[index].unit}",
                                           style: const TextStyle(
@@ -134,31 +162,32 @@ class Consumption extends StatelessWidget {
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
+                                        const SizedBox(height: 10),
                                         Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             AmountContainer(
-                                                title: "Unit Price",
-                                                amount: "₹ ${state.response
-                                                    .data[index].unitPrice}",
-                                                valueColor:
-                                                    AppColors.primaryColor),
+                                              title: "Unit Price",
+                                              amount:
+                                                  "₹ ${state.response.data[index].unitPrice}",
+                                              valueColor:
+                                                  AppColors.primaryColor,
+                                            ),
                                             AmountContainer(
-                                                title: "In Stock",
-                                                amount:
-                                                    " ${state.response.data[index].inStock}",
-                                                valueColor:
-                                                    AppColors.primaryColor),
+                                              title: "In Stock",
+                                              amount:
+                                                  "${state.response.data[index].inStock}",
+                                              valueColor:
+                                                  AppColors.primaryColor,
+                                            ),
                                             AmountContainer(
-                                                title: "Total Quantity",
-                                                amount:
-                                                    " ${state.response.data[index].quantity}",
-                                                valueColor:
-                                                    AppColors.primaryColor),
+                                              title: "Total Quantity",
+                                              amount:
+                                                  "${state.response.data[index].quantity}",
+                                              valueColor:
+                                                  AppColors.primaryColor,
+                                            ),
                                           ],
                                         ),
                                       ],
@@ -166,26 +195,28 @@ class Consumption extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                            ),
-                          );
-                        },
-                      )
-                    : state is ConsumptionLoading
-                        ? ListView.builder(
-                            itemCount: 7,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: shimmerContainer(100, 70),
-                              );
-                            },
-                          )
-                        : const Center(
-                            child: Text(""),
-                          );
-              },
+                            );
+                          },
+                        )
+                      : state is ConsumptionLoading
+                          ? ListView.builder(
+                              itemCount: 7,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: shimmerContainer(100, 70),
+                                );
+                              },
+                            )
+                          : const Center(
+                              child: Text(""),
+                            );
+                },
+              ),
             ),
-          ),
-        ));
+          );
+        },
+      ),
+    );
   }
 }

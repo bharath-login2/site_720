@@ -33,6 +33,7 @@ class AddExpenseCubit extends Cubit<AddExpenseState> {
         trReferenceDate: body['tr_reference_date'],
         transactionRemarks: body['transaction_remarks'],
         balanceAmount: body['balance_amount'],
+        gstAmount: body['gst_amount'],
         billCopy: body['bill_copy'],
       );
 

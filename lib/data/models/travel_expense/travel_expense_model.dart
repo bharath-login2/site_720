@@ -72,18 +72,36 @@ class TravelExpenseData {
 
 class TravelExpenseItem {
   int sl;
+
   String travelId;
+
   String name;
+
   String date;
+
   String from;
+
   String to;
+
   String km;
+
   String status;
+
   String remark;
+
   String totalAmount;
+
   String vehicleType;
+
+  String paymentstatus;
+
   String vehicleId;
+
+  String totalKm;
+
   List<dynamic> files;
+
+  List<TravelDetail> travelDetails;
 
   TravelExpenseItem({
     required this.sl,
@@ -97,8 +115,11 @@ class TravelExpenseItem {
     required this.remark,
     required this.totalAmount,
     required this.vehicleType,
+    required this.paymentstatus,
     required this.vehicleId,
+    required this.totalKm,
     required this.files,
+    required this.travelDetails,
   });
 
   factory TravelExpenseItem.fromJson(
@@ -107,20 +128,31 @@ class TravelExpenseItem {
       TravelExpenseItem(
         sl: json["sl"] ?? 0,
         travelId: json["travel_id"]?.toString() ?? "",
-        name: json["name"] ?? "",
-        date: json["date"] ?? "",
-        from: json["from"] ?? "",
-        to: json["to"] ?? "",
+        name: json["name"]?.toString() ?? "",
+        date: json["date"]?.toString() ?? "",
+        from: json["from"]?.toString() ?? "",
+        to: json["to"]?.toString() ?? "",
         km: json["km"]?.toString() ?? "",
-        status: json["status"] ?? "",
-        remark: json["remark"] ?? "",
+        status: json["status"]?.toString() ?? "",
+        remark: json["remark"]?.toString() ?? "",
         totalAmount: json["total_amount"]?.toString() ?? "",
         vehicleType: json["vehicle_type"]?.toString() ?? "",
+        paymentstatus: json["payment_status"]?.toString() ?? "",
         vehicleId: json["vehicle_id"]?.toString() ?? "",
+        totalKm: json["total_km"]?.toString() ?? "",
         files: json["files"] == null
             ? []
             : List<dynamic>.from(
-                json["files"].map((x) => x),
+                json["files"].map(
+                  (x) => x,
+                ),
+              ),
+        travelDetails: json["travel_details"] == null
+            ? []
+            : List<TravelDetail>.from(
+                json["travel_details"].map(
+                  (x) => TravelDetail.fromJson(x),
+                ),
               ),
       );
 
@@ -136,10 +168,17 @@ class TravelExpenseItem {
         "remark": remark,
         "total_amount": totalAmount,
         "vehicle_type": vehicleType,
+        "payment_status": paymentstatus,
         "vehicle_id": vehicleId,
+        "total_km": totalKm,
         "files": List<dynamic>.from(
           files.map(
             (x) => x,
+          ),
+        ),
+        "travel_details": List<dynamic>.from(
+          travelDetails.map(
+            (x) => x.toJson(),
           ),
         ),
       };
@@ -165,4 +204,34 @@ class VehicleTypeModel {
       ratePerKm: json["rate_per_km"].toString(),
     );
   }
+}
+
+class TravelDetail {
+  String to;
+
+  String km;
+
+  String image;
+
+  TravelDetail({
+    required this.to,
+    required this.km,
+    required this.image,
+  });
+
+  factory TravelDetail.fromJson(
+    Map<String, dynamic> json,
+  ) {
+    return TravelDetail(
+      to: json["to"]?.toString() ?? "",
+      km: json["km"]?.toString() ?? "",
+      image: json["image"]?.toString() ?? "",
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        "to": to,
+        "km": km,
+        "image": image,
+      };
 }

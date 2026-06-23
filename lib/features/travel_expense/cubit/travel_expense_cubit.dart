@@ -89,6 +89,54 @@ class TravelExpenseCubit extends Cubit<TravelExpenseState> {
     }
   }
 
+  /// UPDATE TRAVEL EXPENSE
+
+  Future<void> updateTravelExpense({
+    required String travelId,
+    required String date,
+    required String from,
+    required String vehicleType,
+    required String totalAmount,
+    required String remark,
+    required List<Map<String, dynamic>> rows,
+  }) async {
+    try {
+      emit(
+        TravelExpensePostLoading(),
+      );
+
+      final response = await HttpServices.updateTravelExpense(
+        travelId: travelId,
+        date: date,
+        from: from,
+        vehicleType: vehicleType,
+        totalAmount: totalAmount,
+        remark: remark,
+        rows: rows,
+      );
+
+      if (response["status"] == true) {
+        emit(
+          TravelExpensePostSuccess(
+            response["message"].toString(),
+          ),
+        );
+      } else {
+        emit(
+          TravelExpenseFailure(
+            response["message"].toString(),
+          ),
+        );
+      }
+    } catch (e) {
+      emit(
+        TravelExpenseFailure(
+          e.toString(),
+        ),
+      );
+    }
+  }
+
   /// GET VEHICLE TYPES
   Future<List<VehicleTypeModel>> getVehicleType() async {
     try {

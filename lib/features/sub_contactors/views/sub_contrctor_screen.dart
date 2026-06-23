@@ -9,6 +9,7 @@ import '../../connectivity/cubit/connectivity_cubit.dart';
 import '../../connectivity/cubit/connectivity_state.dart';
 import '../cubit/sub_contractor_cubit.dart';
 import '../cubit/sub_contractor_state.dart';
+import 'package:site_720/core/constants/routes.dart';
 
 class Contractor extends StatelessWidget {
   Contractor({super.key});
@@ -66,187 +67,129 @@ class Contractor extends StatelessWidget {
                       return Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 8),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.15),
-                                blurRadius: 8,
-                                offset: const Offset(0, 4),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              AppRoutes.subContractorDetails,
+                              arguments: {
+                                "contractor_id": contractor.contractorId,
+                                "work_id": contractor.id,
+                              },
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.15),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
                               ),
-                            ],
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(14.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  contractor.name,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.coffie,
-                                  ),
+                              child: Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
-                                const SizedBox(height: 10),
-                                Row(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(6),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.primaryColor
-                                            .withOpacity(0.1),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: const Icon(
-                                        Icons.phone,
-                                        size: 16,
-                                        color: AppColors.primaryColor,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: Text(
-                                        contractor.phone,
-                                        style: const TextStyle(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.black87,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 25),
-                                    contractor.totalEstimatedAmount !=""?
-                                    Expanded(
-                                      child: Row(
-                                        children: [
-                                          const Text(
-                                            "Est.Amt:",
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.green,
-                                            ),
-                                          ),
-                                          const Icon(
-                                            Icons.currency_rupee,
-                                            size: 16,
-                                            color: Colors.green,
-                                          ),
-                                          Text(
-                                            "${contractor.totalEstimatedAmount}",
-                                            style: const TextStyle(
-                                                fontSize: 11,
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.green,
-                                                overflow:
-                                                    TextOverflow.ellipsis),
-                                          ),
-                                        ],
-                                      ),
-                                    ):SizedBox(),
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                                Row(
+                                child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(6),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.primaryColor
-                                            .withOpacity(0.1),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: const Icon(
-                                        Icons.location_on,
-                                        size: 16,
-                                        color: AppColors.primaryColor,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: Text(
-                                        contractor.address,
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.black87,
+                                    /// Contractor Name
+                                    Row(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 20,
+                                          backgroundColor: AppColors
+                                              .primaryColor
+                                              .withOpacity(.1),
+                                          child: const Icon(
+                                            Icons.person,
+                                            color: AppColors.primaryColor,
+                                          ),
                                         ),
-                                      ),
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          child: Text(
+                                            contractor.name,
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: AppColors.coffie,
+                                            ),
+                                          ),
+                                        ),
+                                        const Icon(
+                                          Icons.arrow_forward_ios,
+                                          size: 16,
+                                          color: Colors.grey,
+                                        ),
+                                      ],
                                     ),
+
+                                    const SizedBox(height: 12),
+
+                                    _infoRow(
+                                      Icons.work_outline,
+                                      "Work",
+                                      contractor.subContractWorkName,
+                                    ),
+
+                                    if (contractor.stageDisplayName.isNotEmpty)
+                                      _infoRow(
+                                        Icons.straight,
+                                        "Stage",
+                                        contractor.stageDisplayName,
+                                      ),
+
+                                    _infoRow(
+                                      Icons.assignment,
+                                      "Contract",
+                                      contractor.contractTypes,
+                                    ),
+
+                                    const Divider(height: 20),
+
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: _amountBox(
+                                            "Estimated",
+                                            contractor.totalEstimatedAmount,
+                                            Colors.blue,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        // Expanded(
+                                        //   child: _amountBox(
+                                        //     "Payable",
+                                        //     contractor.totalPayableAmount,
+                                        //     Colors.orange,
+                                        //   ),
+                                        // ),
+
+                                        _amountBox(
+                                          "Balance Payable",
+                                          contractor.balancePayableAmount,
+                                          Colors.red,
+                                        ),
+                                      ],
+                                    ),
+
+                                    const SizedBox(height: 8),
                                   ],
                                 ),
-                                SizedBox(height: 8),
-                                contractor.stageName != ""
-                                    ? Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.all(6),
-                                            decoration: BoxDecoration(
-                                              color: AppColors.primaryColor
-                                                  .withOpacity(0.1),
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: const Icon(
-                                              Icons.straight_rounded,
-                                              size: 16,
-                                              color: AppColors.primaryColor,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Expanded(
-                                            child: Text(
-                                              "Stage: ${contractor.stageName}",
-                                              style: const TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.black87,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    : SizedBox(),
-                                const SizedBox(height: 8),
-                                contractor.paidAmount != ""
-                                    ? Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.all(6),
-                                            decoration: BoxDecoration(
-                                              color: AppColors.primaryColor
-                                                  .withOpacity(0.1),
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: const Icon(
-                                              Icons.currency_rupee,
-                                              size: 16,
-                                              color: AppColors.primaryColor,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Expanded(
-                                            child: Text(
-                                              "Paid Amount: ${contractor.paidAmount}",
-                                              style: const TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.black87,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    : SizedBox(),
-                              ],
+                              ),
                             ),
                           ),
                         ),
@@ -265,4 +208,86 @@ class Contractor extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget _infoRow(
+  IconData icon,
+  String title,
+  String value,
+) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 8),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(
+          icon,
+          size: 18,
+          color: AppColors.primaryColor,
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: RichText(
+            text: TextSpan(
+              style: const TextStyle(
+                color: Colors.black87,
+                fontSize: 13,
+              ),
+              children: [
+                TextSpan(
+                  text: "$title : ",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                TextSpan(text: value),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget _amountBox(
+  String title,
+  String amount,
+  Color color,
+) {
+  return Container(
+    padding: const EdgeInsets.symmetric(
+      horizontal: 12,
+      vertical: 10,
+    ),
+    decoration: BoxDecoration(
+      color: color.withOpacity(.08),
+      borderRadius: BorderRadius.circular(8),
+      border: Border.all(
+        color: color.withOpacity(.3),
+      ),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 11,
+            color: color,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          "₹ $amount",
+          style: TextStyle(
+            fontSize: 14,
+            color: color,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    ),
+  );
 }

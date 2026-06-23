@@ -406,7 +406,9 @@ class WorkDetailsScreen extends StatelessWidget {
                                                         ],
                                                       ),
                                                     ),
-                                                    SizedBox(height: 10,),
+                                                    SizedBox(
+                                                      height: 10,
+                                                    ),
                                                     Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment

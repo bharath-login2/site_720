@@ -5,7 +5,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/constants/routes.dart';
 import 'package:site_720/features/project_details/cubit/project_details_cubit.dart';
+import 'package:site_720/features/payment_schedule/cubit/payment_schedule_cubit.dart';
+import 'package:site_720/features/installment/cubit/installment_cubit.dart';
 import 'package:site_720/features/project_details/cubit/project_details_state.dart';
+import 'package:site_720/features/installment/cubit/installment_state.dart';
+import 'package:site_720/features/payment_schedule/cubit/payment_schedule_state.dart';
+import 'package:site_720/features/installment/views/installment_screen.dart';
+import 'package:site_720/features/payment_schedule/views/payment_schedule_screen.dart';
 import '../../../core/widgets/appbar.dart';
 import '../../../core/widgets/connectivity_dialog.dart';
 import '../../connectivity/cubit/connectivity_cubit.dart';
@@ -18,6 +24,7 @@ class ProjectDetails extends StatelessWidget {
   ProjectDetails({super.key});
   String clientId = "";
   String id = "";
+  String projectId = "";
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +70,7 @@ class ProjectDetails extends StatelessWidget {
                               title: "Project Details",
                             ),
                             SizedBox(
-                              height: MediaQuery.of(context).size.height * .075,
+                              height: MediaQuery.of(context).size.height * .050,
                             ),
                             Container(
                               width: MediaQuery.of(context).size.width * .95,
@@ -246,7 +253,7 @@ class ProjectDetails extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(
-                              height: 20,
+                              height: 10,
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(
@@ -507,17 +514,51 @@ class ProjectDetails extends StatelessWidget {
                                   InkWell(
                                     onTap: () {
                                       connStatus = true;
-                                      Navigator.pushNamed(
-                                          context, AppRoutes.estimation,
-                                          arguments: {"id": id});
+
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => BlocProvider(
+                                            create: (_) =>
+                                                PaymentScheduleCubit(),
+                                            child: PaymentScheduleScreen(
+                                              projectId: id.toString(),
+                                            ),
+                                          ),
+                                        ),
+                                      );
                                     },
                                     child: DetailsButtonContainer(
-                                      title: "Estimate",
+                                      title: "Payment Schedule",
                                       color: AppColors.primaryColor,
                                       width: MediaQuery.of(context).size.width *
                                           .43,
                                     ),
                                   ),
+                                  // InkWell(
+                                  //   onTap: () {
+                                  //     connStatus = true;
+
+                                  //     Navigator.push(
+                                  //       context,
+                                  //       MaterialPageRoute(
+                                  //         builder: (_) => BlocProvider(
+                                  //           create: (_) => InstallmentCubit(),
+                                  //           child: InstallmentScreen(
+                                  //             projectId: id.toString(),
+                                  //           ),
+                                  //         ),
+                                  //       ),
+                                  //     );
+                                  //   },
+                                  //   child: DetailsButtonContainer(
+                                  //     title: "Installment",
+                                  //     color: AppColors.primaryColor,
+                                  //     width: MediaQuery.of(context).size.width *
+                                  //         .43,
+                                  //   ),
+                                  // ),
+
                                   InkWell(
                                     onTap: () {
                                       connStatus = true;
@@ -527,6 +568,30 @@ class ProjectDetails extends StatelessWidget {
                                     },
                                     child: DetailsButtonContainer(
                                       title: "Consumption",
+                                      color: AppColors.primaryColor,
+                                      width: MediaQuery.of(context).size.width *
+                                          .43,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 12.0, horizontal: 16.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      connStatus = true;
+                                      Navigator.pushNamed(
+                                          context, AppRoutes.estimation,
+                                          arguments: {"id": id});
+                                    },
+                                    child: DetailsButtonContainer(
+                                      title: "Estimate vs Purchase",
                                       color: AppColors.primaryColor,
                                       width: MediaQuery.of(context).size.width *
                                           .43,

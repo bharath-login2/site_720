@@ -41,7 +41,7 @@ class StagesCubit extends Cubit<StagesState> {
       emit(StagesFailure('Failed to fetch data: ${e.toString()}'));
     }
   }
-
+  
   Future<void> addStageDetails(
       String projectId,
       String clintId,

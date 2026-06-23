@@ -36,42 +36,89 @@ class ContractorListModel {
       };
 }
 
+// class ContractorList {
+//   String name;
+//   String phone;
+//   String address;
+//   String subContractWorkName;
+//   String stageName;
+//   String totalEstimatedAmount;
+//   String paidAmount;
+
+//   ContractorList({
+//     required this.name,
+//     required this.phone,
+//     required this.address,
+//     required this.subContractWorkName,
+//     required this.stageName,
+//     required this.totalEstimatedAmount,
+//     required this.paidAmount,
+//   });
+
+//   factory ContractorList.fromJson(Map<String, dynamic> json) => ContractorList(
+//         name: json["name"] ?? "",
+//         phone: json["phone"] ?? "",
+//         address: json["address"] ?? "",
+//         subContractWorkName: json["subcontract_work_name"] ?? "",
+//         stageName: json["stage_name"] ?? "",
+//         totalEstimatedAmount: json["total_estimated_amount"] ?? "",
+//         paidAmount: json["paid_amount"]?.toString() ?? "", // handles null
+//       );
+
+//   Map<String, dynamic> toJson() => {
+//         "name": name,
+//         "phone": phone,
+//         "address": address,
+//         "subcontract_work_name": subContractWorkName,
+//         "stage_name": stageName,
+//         "total_estimated_amount": totalEstimatedAmount,
+//         "paid_amount": paidAmount,
+//       };
+// }
 class ContractorList {
+  String id;
+  String contractorId;
   String name;
-  String phone;
-  String address;
   String subContractWorkName;
-  String stageName;
+  String stageDisplayName;
+  String contractTypes;
   String totalEstimatedAmount;
-  String paidAmount;
+  String totalPayableAmount;
+  String balancePayableAmount;
 
   ContractorList({
+    required this.id,
+    required this.contractorId,
     required this.name,
-    required this.phone,
-    required this.address,
     required this.subContractWorkName,
-    required this.stageName,
+    required this.stageDisplayName,
+    required this.contractTypes,
     required this.totalEstimatedAmount,
-    required this.paidAmount,
+    required this.totalPayableAmount,
+    required this.balancePayableAmount,
   });
 
   factory ContractorList.fromJson(Map<String, dynamic> json) => ContractorList(
+        id: json["id"] ?? "",
+        contractorId: json["contractor_id"] ?? "",
         name: json["name"] ?? "",
-        phone: json["phone"] ?? "",
-        address: json["address"] ?? "",
         subContractWorkName: json["subcontract_work_name"] ?? "",
-        stageName: json["stage_name"] ?? "",
-        totalEstimatedAmount: json["total_estimated_amount"] ?? "",
-        paidAmount: json["paid_amount"]?.toString() ?? "", // handles null
+        stageDisplayName: json["stage_display_name"] ?? "",
+        contractTypes: json["contract_types"] ?? "",
+        totalEstimatedAmount: json["total_estimated_amount"]?.toString() ?? "",
+        totalPayableAmount: json["total_payable_amount"]?.toString() ?? "",
+        balancePayableAmount: json["balance_payable_amount"]?.toString() ?? "",
       );
 
   Map<String, dynamic> toJson() => {
+        "id": id,
+        "contractor_id": contractorId,
         "name": name,
-        "phone": phone,
-        "address": address,
         "subcontract_work_name": subContractWorkName,
-        "stage_name": stageName,
+        "stage_display_name": stageDisplayName,
+        "contract_types": contractTypes,
         "total_estimated_amount": totalEstimatedAmount,
-        "paid_amount": paidAmount,
+        "total_payable_amount": totalPayableAmount,
+        "balance_payable_amount": balancePayableAmount,
       };
 }

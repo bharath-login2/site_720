@@ -6,11 +6,10 @@ import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/appbar.dart';
 import 'package:site_720/features/estimation/cubit/estimation_state.dart';
 import '../cubit/estimation_cubit.dart';
-import '../widgets/estimation_container.dart';
 
 class Estimation extends StatelessWidget {
   Estimation({super.key});
-
+  // final stages = state.response.data.purchaseVsEstimate;
   @override
   Widget build(BuildContext context) {
     final args =
@@ -34,82 +33,125 @@ class Estimation extends StatelessWidget {
                 return const Center(child: Text("No Estimates found"));
               }
               return ListView.builder(
-                padding: const EdgeInsets.all(8.0),
                 itemCount: list.length,
                 itemBuilder: (context, index) {
-                  final item = list[index];
+                  final stage = list[index];
+
                   return Card(
-                    elevation: 2,
-                    margin: const EdgeInsets.symmetric(vertical: 6),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Stage: ${item.stageName}",
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                    child: ListTile(
+                      title: Text(
+                        stage.stageName,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.coffie,
+                        ),
+                      ),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.orange.shade100,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            "Item Count : ${stage.count}",
                             style: const TextStyle(
-                              fontSize: 14,
+                              color: Colors.orange,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.coffie,
+                              fontSize: 12,
                             ),
                           ),
-                          const SizedBox(height: 10),
-                          Text(
-                            "Staff: ${item.staffName}",
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: Colors.black54,
+                        ),
+                      ),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(20),
                             ),
                           ),
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              const Icon(Icons.calendar_month,
-                                  size: 16, color: AppColors.coffie),
-                              const SizedBox(width: 5),
-                              Text(
-                                "Created At: ${item.createdAt}",
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.coffie,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                if (item.remarks.isNotEmpty)
-                                  Expanded(
-                                    child: Text(
-                                      "Remark: ${item.remarks}",
-                                      maxLines: 4,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColors.coffie,
-                                      ),
+                          builder: (_) {
+                            return Container(
+                              padding: const EdgeInsets.all(16),
+                              height: MediaQuery.of(context).size.height * 0.75,
+                              child: Column(
+                                children: [
+                                  Text(
+                                    stage.stageName,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                const SizedBox(width: 8),
-                                EstimationContainer(
-                                  title: "Total Amount",
-                                  value: item.totalAmount,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                                  const SizedBox(height: 15),
+                                  Expanded(
+                                    child: ListView.builder(
+                                      itemCount: stage.materials.length,
+                                      itemBuilder: (context, materialIndex) {
+                                        final item =
+                                            stage.materials[materialIndex];
+
+                                        return Card(
+                                          elevation: 2,
+                                          margin: const EdgeInsets.symmetric(
+                                              vertical: 6),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(12),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  item.materialName,
+                                                  style: const TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: AppColors.coffie,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 8),
+                                                Text(
+                                                    "Unit Price : ₹${item.unitPrice}"),
+                                                Text(
+                                                    "Estimation Qty : ${item.estimationQty}"),
+                                                Text(
+                                                    "Estimation Price : ₹${item.estimationUnitPrice}"),
+                                                Text(
+                                                    "Purchase Qty : ${item.purchaseQty}"),
+                                                Text(
+                                                    "Purchase Price : ₹${item.purchaseUnitPrice}"),
+                                                const SizedBox(height: 8),
+                                                Text(
+                                                    "Variation Qty : ${item.variation}"),
+                                                Text(
+                                                  "Variation Amount : ₹${item.variationPrice}",
+                                                  style: const TextStyle(
+                                                    color: Colors.red,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
                     ),
                   );
                 },

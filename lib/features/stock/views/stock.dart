@@ -75,109 +75,126 @@ class Stock extends StatelessWidget {
                       itemCount: stockList.length,
                       itemBuilder: (context, index) {
                         return Padding(
-                          padding: const EdgeInsets.all(6.0),
-                          child: InkWell(
-                            onTap: () {
-                              // Navigator.of(context)
-                              //     .pushNamed(AppRoutes.stageHistory);
-                            },
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * .9,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: Colors.white,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.8),
-                                    blurRadius: 3,
-                                    offset: const Offset(0, 3),
-                                  ),
-                                ],
-                              ),
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width * .7,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 8.0,
-                                      left: 8.0,
-                                      right: 8.0,
-                                      bottom: 8.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 4,
+                            vertical: 6,
+                          ),
+                          child: Card(
+                            elevation: 3,
+                            shadowColor: Colors.black12,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(14),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
                                     children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            "Material: ${stockList[index].materialName}",
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                      Expanded(
+                                        child: Text(
+                                          stockList[index].materialName,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w700,
                                           ),
-                                          SizedBox(
-                                            width: 110,
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 12, vertical: 6),
-                                            decoration: BoxDecoration(
-                                              color: Colors
-                                                  .green, // Green background
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      20), // Oval pill shape
-                                            ),
-                                            child: Text(
-                                              "In Stock:${stockList[index].quantity}",
-                                              style: const TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold,
-                                                color:
-                                                    Colors.white, // White text
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 3,
-                                      ),
-                                      Text(
-                                        "Supplier: ${stockList[index].supplierName}",
-                                        style: const TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          AmountContainer(
-                                              title: "Unit Price",
-                                              amount:
-                                                  stockList[index].unitPrice,
-                                              valueColor:
-                                                  AppColors.primaryColor),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                right: 90),
-                                            child: AmountContainer(
-                                                title: "Total Amount",
-                                                amount: stockList[index]
-                                                    .totalAmount,
-                                                valueColor:
-                                                    AppColors.primaryColor),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 6,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.green.shade600,
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                        ),
+                                        child: Text(
+                                          "Stock ${stockList[index].quantity}",
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 12,
                                           ),
-                                        ],
+                                        ),
                                       ),
                                     ],
                                   ),
-                                ),
+                                  const SizedBox(height: 14),
+                                  Container(
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey.shade50,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              const Icon(
+                                                Icons.currency_rupee,
+                                                color: AppColors.primaryColor,
+                                              ),
+                                              const SizedBox(height: 4),
+                                              const Text(
+                                                "Unit Price",
+                                                style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                "₹${stockList[index].unitPrice}",
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 15,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Container(
+                                          width: 1,
+                                          height: 50,
+                                          color: Colors.grey.shade300,
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            children: [
+                                              const Icon(
+                                                Icons
+                                                    .account_balance_wallet_outlined,
+                                                color: AppColors.primaryColor,
+                                              ),
+                                              const SizedBox(height: 4),
+                                              const Text(
+                                                "Total Amount",
+                                                style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Text(
+                                                "₹${stockList[index].totalAmount}",
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 15,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),

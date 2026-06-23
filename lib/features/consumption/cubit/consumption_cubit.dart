@@ -5,20 +5,22 @@ import '../../../data/services/http_services.dart';
 import 'consumption_state.dart';
 
 class ConsumptionCubit extends Cubit<ConsumptionState> {
-  ConsumptionCubit(String projectId) : super(ConsumptionInitial()){
-   getConsumeList(projectId); 
+  final String projectId;
+
+  ConsumptionCubit(this.projectId) : super(ConsumptionInitial()) {
+    getConsumeList();
   }
 
-  Future<void> getConsumeList(String projectId) async {
+  Future<void> getConsumeList() async {
     emit(ConsumptionLoading());
+
     try {
       StockConsumeModel response = await HttpServices.getConsumeList(projectId);
 
-      if (response.status == true) {
+      if (response.status) {
         emit(ConsumptionSuccess(response));
-      
       } else {
-        emit(ConsumptionFailure('Failed to fetch data}'));
+        emit(ConsumptionFailure('Failed to fetch data'));
       }
     } catch (e) {
       emit(ConsumptionFailure('Failed to fetch data: ${e.toString()}'));

@@ -13,7 +13,7 @@ class AppRoutes {
   static const workDetails = '/workDetails';
   static const stages = '/stages';
   static const stageHistory = '/stageHistory';
-    static const complaintHistory = '/complaintHistory';
+  static const complaintHistory = '/complaintHistory';
   static const contractor = '/contractor';
   static const extraWork = '/extraWork';
   static const deductionWork = '/deductionWork';
@@ -21,9 +21,13 @@ class AppRoutes {
   static const addPurchase = '/addPurchase';
   static const stock = '/stock';
   static const expense = '/expense';
+  static const myAccount = '/my_account';
+  static const petty = '/petty';
   static const paymentDetails = '/paymentDetails';
   static const estimation = '/estimation';
   static const consumption = '/consumption';
+  static const paymentSchedule = '/paymentSchedule';
+  static const installment = '/installment';
   static const package = '/package';
   static const phoneNumber = '/phoneNumber';
   static const otpScreen = '/otpScreen';
@@ -37,6 +41,7 @@ class AppRoutes {
   static const taskHistory = '/taskHistoryScreen';
   static const notification = '/notification';
   static const workIssuesList = '/workIssuesList';
-   static const vistDetails = '/visitDetails';
-     static const visitHistory = '/visitHistory';
+  static const vistDetails = '/visitDetails';
+  static const visitHistory = '/visitHistory';
+  static const subContractorDetails = '/subContractorDetails';
 }

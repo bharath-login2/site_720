@@ -37,8 +37,36 @@ class _TravelExpenseDashboardScreenState
 
           if (state is TravelExpenseFailure) {
             return Scaffold(
-              body: Center(
-                child: Text(state.error),
+              backgroundColor: const Color(0xffF4F6FA),
+              body: SafeArea(
+                child: Column(
+                  children: [
+                    const ExpenseHeader(),
+                    Expanded(
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.inbox_outlined,
+                              size: 80,
+                              color: Colors.grey.shade400,
+                            ),
+                            const SizedBox(height: 15),
+                            Text(
+                              "No Records Found",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.grey.shade700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           }
@@ -62,7 +90,40 @@ class _TravelExpenseDashboardScreenState
                     (e) => e.status == selectedFilter,
                   )
                   .toList();
-
+          if (filteredList.isEmpty) {
+            return Scaffold(
+              backgroundColor: const Color(0xffF4F6FA),
+              body: SafeArea(
+                child: Column(
+                  children: [
+                    const ExpenseHeader(),
+                    Expanded(
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.assignment_outlined,
+                              size: 90,
+                              color: Colors.grey.shade400,
+                            ),
+                            const SizedBox(height: 15),
+                            const Text(
+                              "No Travel Expenses Found",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
           return Scaffold(
             backgroundColor: const Color(0xffF4F6FA),
             body: SafeArea(
@@ -176,15 +237,40 @@ class _TravelExpenseDashboardScreenState
                                     MaterialPageRoute(
                                       builder: (_) => TravelExpenseViewScreen(
                                         item: {
+                                          "travel_id": item.travelId,
                                           "name": item.name,
                                           "date": item.date,
+
+                                          /// VEHICLE
                                           "vehicle": item.vehicleType,
+                                          "vehicle_type": item.vehicleType,
+
+                                          /// LOCATION
                                           "from": item.from,
                                           "to": item.to,
+
+                                          /// KM + AMOUNT
                                           "km": item.km,
                                           "amount": item.totalAmount,
+                                          "total_amount": item.totalAmount,
+
+                                          /// STATUS
                                           "status": item.status,
+
+                                          /// REMARK
                                           "remark": item.remark,
+
+                                          /// IMPORTANT
+                                          /// SEND FULL TRAVEL DETAILS FOR IMAGE VIEW
+                                          "travel_details": item.travelDetails
+                                              .map(
+                                                (e) => {
+                                                  "to": e.to,
+                                                  "km": e.km,
+                                                  "image": e.image,
+                                                },
+                                              )
+                                              .toList(),
                                         },
                                       ),
                                     ),
@@ -482,6 +568,116 @@ class _TravelExpenseDashboardScreenState
                                                   Icons.location_on_outlined,
                                                   "From",
                                                   item.from,
+                                                ),
+                                                const SizedBox(height: 15),
+                                                Align(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: Row(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      Text(
+                                                        "Payment Status : ",
+                                                        style: TextStyle(
+                                                          fontSize: 13,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: Colors
+                                                              .grey.shade700,
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                          horizontal: 10,
+                                                          vertical: 6,
+                                                        ),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: item.paymentstatus ==
+                                                                  "Paid"
+                                                              ? Colors.green
+                                                                  .withOpacity(
+                                                                      0.10)
+                                                              : item.paymentstatus ==
+                                                                      "Partially Paid"
+                                                                  ? Colors
+                                                                      .orange
+                                                                      .withOpacity(
+                                                                          0.10)
+                                                                  : Colors.red
+                                                                      .withOpacity(
+                                                                          0.10),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(20),
+                                                          border: Border.all(
+                                                            color: item.paymentstatus ==
+                                                                    "Paid"
+                                                                ? Colors.green
+                                                                : item.paymentstatus ==
+                                                                        "Partially Paid"
+                                                                    ? Colors
+                                                                        .orange
+                                                                    : Colors
+                                                                        .red,
+                                                          ),
+                                                        ),
+                                                        child: Row(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: [
+                                                            Icon(
+                                                              item.paymentstatus ==
+                                                                      "Paid"
+                                                                  ? Icons
+                                                                      .check_circle
+                                                                  : item.paymentstatus ==
+                                                                          "Partially Paid"
+                                                                      ? Icons
+                                                                          .pending
+                                                                      : Icons
+                                                                          .error_outline,
+                                                              size: 14,
+                                                              color: item.paymentstatus ==
+                                                                      "Paid"
+                                                                  ? Colors.green
+                                                                  : item.paymentstatus ==
+                                                                          "Partially Paid"
+                                                                      ? Colors
+                                                                          .orange
+                                                                      : Colors
+                                                                          .red,
+                                                            ),
+                                                            const SizedBox(
+                                                                width: 4),
+                                                            Text(
+                                                              item.paymentstatus ??
+                                                                  "Pending",
+                                                              style: TextStyle(
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w700,
+                                                                color: item.paymentstatus ==
+                                                                        "Paid"
+                                                                    ? Colors
+                                                                        .green
+                                                                    : item.paymentstatus ==
+                                                                            "Partially Paid"
+                                                                        ? Colors
+                                                                            .orange
+                                                                        : Colors
+                                                                            .red,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ],
                                             ),

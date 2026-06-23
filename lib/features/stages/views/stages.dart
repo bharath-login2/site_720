@@ -14,6 +14,7 @@ import '../../connectivity/cubit/connectivity_cubit.dart';
 import '../../connectivity/cubit/connectivity_state.dart';
 import '../cubit/stages_cubit.dart';
 import '../cubit/stages_state.dart';
+import '../../../data/services/http_services.dart';
 
 class Stages extends StatelessWidget {
   Stages({super.key});
@@ -39,6 +40,9 @@ class Stages extends StatelessWidget {
         ModalRoute.of(context)!.settings.arguments as Map<String, String>;
     String projectId = args["id"]!;
     String clientId = args["client_id"] ?? "";
+
+    print("PROJECT ID => $projectId");
+    print("CLIENTs ID => $clientId");
     return BlocProvider(
       create: (context) => StagesCubit(projectId),
       child: MultiBlocListener(
@@ -457,8 +461,7 @@ class Stages extends StatelessWidget {
                                                                     .black54,
                                                               ),
                                                             ),
-                                                            SizedBox(
-                                                                width: 60),
+                                                            SizedBox(width: 60),
                                                             Container(
                                                               padding:
                                                                   const EdgeInsets
@@ -584,74 +587,157 @@ class Stages extends StatelessWidget {
                                                             ),
                                                           ],
                                                         ),
-                                                        Align(
-                                                          alignment: Alignment
-                                                              .bottomRight,
-                                                          child: InkWell(
-                                                            onTap: () {
-                                                              curingdays
-                                                                  .text = stages[
-                                                                      index]
-                                                                  .curingDays;
-                                                              stage.text =
-                                                                  stages[index]
-                                                                      .stageName;
-                                                              startDateController
-                                                                  .text = DateFormat(
-                                                                      'dd/MM/yyyy')
-                                                                  .format(stages[
-                                                                          index]
-                                                                      .startDate);
-                                                              endDateController
-                                                                  .text = DateFormat(
-                                                                      'dd/MM/yyyy')
-                                                                  .format(stages[
-                                                                          index]
-                                                                      .endDate);
-                                                              String stageId =
-                                                                  stages[index]
-                                                                      .stageId;
-                                                              est_days.text =
-                                                                  stages[index]
-                                                                      .estDays;
-                                                              addStageDialog(
-                                                                  context,
-                                                                  cubit,
-                                                                  curingdays
-                                                                      .text,
-                                                                  est_days.text,
-                                                                  projectId,
-                                                                  clientId,
-                                                                  stageId,
-                                                                  "Edit Stage",
-                                                                  "Update");
-                                                            },
-                                                            child: Container(
-                                                              margin:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      top: 8),
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(6),
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                color: AppColors
-                                                                    .primaryColor,
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            6),
-                                                              ),
-                                                              child: const Icon(
-                                                                Icons.edit,
-                                                                size: 18,
-                                                                color: Colors
-                                                                    .white,
-                                                              ),
+                                                        if (stageItem.isLocked
+                                                                .toUpperCase() !=
+                                                            "Y")
+                                                          Align(
+                                                            alignment: Alignment
+                                                                .bottomRight,
+                                                            child: Row(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .min,
+                                                              children: [
+                                                                // Pending => Edit + Add Stage Days
+                                                                if (stageItem
+                                                                        .stageStatus
+                                                                        .toLowerCase() ==
+                                                                    "pending") ...[
+                                                                  _actionButton(
+                                                                    Icons.edit,
+                                                                    Colors.blue,
+                                                                    () {
+                                                                      curingdays
+                                                                              .text =
+                                                                          stageItem
+                                                                              .curingDays;
+                                                                      stage.text =
+                                                                          stageItem
+                                                                              .stageName;
+                                                                      est_days.text =
+                                                                          stageItem
+                                                                              .estDays;
+
+                                                                      startDateController
+                                                                          .text = DateFormat(
+                                                                              'dd/MM/yyyy')
+                                                                          .format(
+                                                                              stageItem.startDate);
+
+                                                                      endDateController
+                                                                          .text = DateFormat(
+                                                                              'dd/MM/yyyy')
+                                                                          .format(
+                                                                              stageItem.endDate);
+
+                                                                      addStageDialog(
+                                                                        context,
+                                                                        cubit,
+                                                                        curingdays
+                                                                            .text,
+                                                                        est_days
+                                                                            .text,
+                                                                        projectId,
+                                                                        clientId,
+                                                                        stageItem
+                                                                            .stageId,
+                                                                        "Edit Stage",
+                                                                        "Update",
+                                                                      );
+                                                                    },
+                                                                  ),
+                                                                  const SizedBox(
+                                                                      width: 8),
+                                                                  _actionButton(
+                                                                    Icons.add,
+                                                                    Colors
+                                                                        .green,
+                                                                    () {
+                                                                      showAddStageDaysPopup(
+                                                                        context,
+                                                                        stageItem,
+                                                                        cubit,
+                                                                      );
+                                                                    },
+                                                                  ),
+                                                                ],
+
+                                                                // Running => Edit + Update Status
+                                                                if (stageItem
+                                                                        .stageStatus
+                                                                        .toLowerCase() ==
+                                                                    "running") ...[
+                                                                  _actionButton(
+                                                                    Icons.edit,
+                                                                    Colors.blue,
+                                                                    () {
+                                                                      curingdays
+                                                                              .text =
+                                                                          stageItem
+                                                                              .curingDays;
+                                                                      stage.text =
+                                                                          stageItem
+                                                                              .stageName;
+                                                                      est_days.text =
+                                                                          stageItem
+                                                                              .estDays;
+
+                                                                      addStageDialog(
+                                                                        context,
+                                                                        cubit,
+                                                                        curingdays
+                                                                            .text,
+                                                                        est_days
+                                                                            .text,
+                                                                        projectId,
+                                                                        clientId,
+                                                                        stageItem
+                                                                            .stageId,
+                                                                        "Edit Stage",
+                                                                        "Update",
+                                                                      );
+                                                                    },
+                                                                  ),
+                                                                  const SizedBox(
+                                                                      width: 8),
+                                                                  _actionButton(
+                                                                    Icons
+                                                                        .update,
+                                                                    Colors
+                                                                        .orange,
+                                                                    () {
+                                                                      showUpdateStatusPopup(
+                                                                        context,
+                                                                        stageItem,
+                                                                        context.read<
+                                                                            StagesCubit>(),
+                                                                      );
+                                                                    },
+                                                                  ),
+                                                                ],
+
+                                                                // Completed => Update Status only
+                                                                if (stageItem
+                                                                        .stageStatus
+                                                                        .toLowerCase() ==
+                                                                    "completed")
+                                                                  _actionButton(
+                                                                    Icons
+                                                                        .update,
+                                                                    Colors
+                                                                        .orange,
+                                                                    () {
+                                                                      showUpdateStatusPopup(
+                                                                        context,
+                                                                        stageItem,
+                                                                        context.read<
+                                                                            StagesCubit>(),
+                                                                      );
+                                                                    },
+                                                                  ),
+                                                              ],
                                                             ),
                                                           ),
-                                                        ),
                                                       ],
                                                     ),
                                                   ),
@@ -994,6 +1080,263 @@ class Stages extends StatelessWidget {
           },
         ),
       ),
+    );
+  }
+
+  Widget _actionButton(
+    IconData icon,
+    Color color,
+    VoidCallback onTap,
+  ) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: Icon(
+          icon,
+          size: 18,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  void showAddStageDaysPopup(
+    BuildContext context,
+    GetStages stage,
+    StagesCubit cubit,
+  ) {
+    final startDateController = TextEditingController();
+    final endDateController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text("Add Stage Days"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: startDateController,
+                readOnly: true,
+                onTap: () async {
+                  final picked = await showDatePicker(
+                    context: dialogContext,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2020),
+                    lastDate: DateTime.now(), // disable future dates
+                  );
+
+                  if (picked != null) {
+                    startDateController.text =
+                        DateFormat('dd-MM-yyyy').format(picked);
+
+                    final estDays = int.tryParse(stage.estDays) ?? 0;
+
+                    final endDate = picked.add(
+                      Duration(days: estDays),
+                    );
+
+                    endDateController.text =
+                        DateFormat('dd-MM-yyyy').format(endDate);
+                  }
+                },
+                decoration: const InputDecoration(
+                  labelText: "Start Date *",
+                  suffixIcon: Icon(Icons.calendar_today),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: endDateController,
+                readOnly: true,
+                enabled: false,
+                decoration: const InputDecoration(
+                  labelText: "End Date *",
+                  suffixIcon: Icon(Icons.calendar_today),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            OutlinedButton.icon(
+              onPressed: () => Navigator.pop(dialogContext),
+              icon: const Icon(Icons.close),
+              label: const Text("Close"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                if (startDateController.text.isEmpty ||
+                    endDateController.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        "Please select Start Date",
+                      ),
+                    ),
+                  );
+                  return;
+                }
+
+                final response = await HttpServices.addStageDays(
+                  stageId: stage.stageId,
+                  projectId: stage.projectId,
+                  clientId: stage.clientId,
+                  startDate: startDateController.text,
+                  endDate: endDateController.text,
+                );
+
+                if (response != null && response["status"] == true) {
+                  Navigator.pop(dialogContext);
+
+                  // Refresh Stage List
+                  await cubit.getStagesList(
+                    stage.projectId,
+                  );
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        response["message"]?.toString() ??
+                            "Stage days added successfully",
+                      ),
+                      backgroundColor: Colors.green,
+                      duration: const Duration(seconds: 3),
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        response?["message"] ?? "Something went wrong",
+                      ),
+                    ),
+                  );
+                }
+              },
+              child: const Text("Submit"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showUpdateStatusPopup(
+    BuildContext context,
+    GetStages stage,
+    StagesCubit cubit,
+  ) {
+    final completedDateController = TextEditingController();
+
+    bool isCompleted = true;
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text("Update Status"),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    controller: completedDateController,
+                    readOnly: true,
+                    onTap: () async {
+                      final picked = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2020),
+                        lastDate: DateTime(2100), // Allow future dates
+                      );
+
+                      if (picked != null) {
+                        completedDateController.text =
+                            DateFormat('dd-MM-yyyy').format(picked);
+                      }
+                    },
+                    decoration: const InputDecoration(
+                      labelText: "Completed Date *",
+                      suffixIcon: Icon(Icons.calendar_today),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  CheckboxListTile(
+                    value: isCompleted,
+                    onChanged: (value) {
+                      setState(() {
+                        isCompleted = value ?? true;
+                      });
+                    },
+                    title: const Text("Is work completed?"),
+                    controlAffinity: ListTileControlAffinity.leading,
+                  ),
+                ],
+              ),
+              actions: [
+                OutlinedButton.icon(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.close),
+                  label: const Text("Close"),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    // if (completedDateController.text.isEmpty) {
+                    //   ScaffoldMessenger.of(context).showSnackBar(
+                    //     const SnackBar(
+                    //       content: Text("Please select completed date"),
+                    //     ),
+                    //   );
+                    //   return;
+                    // }
+
+                    final response = await HttpServices.updateStageStatus(
+                      projectId: stage.projectId,
+                      stageId: stage.stageId,
+                      isCompleted: isCompleted ? "Y" : "",
+                      completedDate: completedDateController.text,
+                    );
+
+                    if (response != null && response["status"] == true) {
+                      Navigator.pop(dialogContext);
+
+                      await cubit.getStagesList(stage.projectId);
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            response["message"]?.toString() ??
+                                "Stage status updated successfully",
+                          ),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            response?["message"]?.toString() ??
+                                "Failed to update status",
+                          ),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text("Update"),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 

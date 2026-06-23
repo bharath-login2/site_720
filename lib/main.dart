@@ -13,9 +13,11 @@ import 'package:site_720/features/estimation/views/estimation_screen.dart';
 import 'package:site_720/features/expense/views/expense_screen.dart';
 import 'package:site_720/features/extra_work/views/extra_work_screen.dart';
 import 'package:site_720/features/gallery/views/gallery_screen.dart';
+import 'package:site_720/features/my_account/views/my_account_screen.dart';
 import 'package:site_720/features/notifications/views/notification_list.dart';
 import 'package:site_720/features/package/views/package.dart';
 import 'package:site_720/features/payment_details/views/payment_details_screen.dart';
+import 'package:site_720/features/petty/views/petty_screen.dart';
 import 'package:site_720/features/project_details/views/image_view_screen.dart';
 import 'package:site_720/features/project_details/views/project_details_screen.dart';
 import 'package:site_720/features/project_list/views/edit_project.dart';
@@ -45,6 +47,12 @@ import 'features/task_management/views/task_history.dart';
 import 'features/visit/views/visit_detailed_list.dart';
 import 'features/visit/views/visit_history.dart';
 import 'features/work_details/views/work_details_screen.dart';
+import 'features/payment_details/views/payment_details_screen.dart';
+import 'features/payment_schedule/views/payment_schedule_screen.dart';
+import 'features/installment/views/installment_screen.dart';
+import 'package:site_720/features/payment_schedule/cubit/payment_schedule_cubit.dart';
+import 'package:site_720/features/installment/cubit/installment_cubit.dart';
+import 'package:site_720/features/sub_contactors/views/sub_contractor_details_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -57,7 +65,7 @@ Future<void> main() async {
   // Initialize NotificationServices
   final NotificationServices notificationServices = NotificationServices();
   notificationServices.initLocalNotifications();
-  
+
   // Request notification permissions for iOS (important for push notifications)
   await requestNotificationPermissions();
 
@@ -65,7 +73,8 @@ Future<void> main() async {
   notificationServices.firebaseInit();
 
   // Set background message handler for Firebase Messaging
-  FirebaseMessaging.onBackgroundMessage(NotificationServices.backgroundMessageHandler);
+  FirebaseMessaging.onBackgroundMessage(
+      NotificationServices.backgroundMessageHandler);
 
   runApp(
     MultiBlocProvider(
@@ -133,6 +142,18 @@ class MyApp extends StatelessWidget {
         '/paymentDetails': (context) => PaymentDetails(),
         '/estimation': (context) => Estimation(),
         '/consumption': (context) => Consumption(),
+        '/paymentSchedule': (context) => BlocProvider(
+              create: (_) => PaymentScheduleCubit(),
+              child: PaymentScheduleScreen(
+                projectId: "",
+              ),
+            ),
+        '/installment': (context) => BlocProvider(
+              create: (_) => InstallmentCubit(),
+              child: InstallmentScreen(
+                projectId: "",
+              ),
+            ),
         '/package': (context) => Package(),
         '/phoneNumber': (context) => PhoneNumberScreen(),
         '/changePasswordScreen': (context) => ChangePasswordScreen(),
@@ -147,6 +168,10 @@ class MyApp extends StatelessWidget {
         '/workIssuesList': (context) => WorkIssues(),
         '/visitDetails': (context) => const VisitDetails(),
         '/visitHistory': (context) => VisitHistory(),
+        '/myAccount': (context) => const MyAccount(),
+        '/petty': (context) => const PettyScreen(),
+        '/subContractorDetails': (context) =>
+            const SubContractorDetailsScreen(),
       },
     );
   }

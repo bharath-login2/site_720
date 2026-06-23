@@ -43,6 +43,7 @@ class _AddTravelExpenseScreenState extends State<AddTravelExpenseScreen> {
   void initState() {
     super.initState();
 
+    /// EDIT
     if (widget.isEdit && widget.item != null) {
       dateController.text = widget.item!.date;
 
@@ -52,24 +53,50 @@ class _AddTravelExpenseScreenState extends State<AddTravelExpenseScreen> {
 
       expenseRows.clear();
 
-      expenseRows.add({
-        "to": TextEditingController(
-          text: widget.item!.to,
-        ),
-        "km": TextEditingController(
-          text: widget.item!.km,
-        ),
-        "file": null,
-      });
+      /// LOAD MULTIPLE ROWS
+      final details = widget.item!.travelDetails ?? [];
 
-      routeController.text = widget.item!.to;
-    } else {
-      /// ADD PAGE
+      if (details.isNotEmpty) {
+        for (var detail in details) {
+          expenseRows.add({
+            "to": TextEditingController(
+              text: detail.to.toString(),
+            ),
+
+            "km": TextEditingController(
+              text: detail.km.toString(),
+            ),
+
+            /// EXISTING IMAGE URL
+            "image": detail.image.toString(),
+
+            /// NEW FILE
+            "file": null,
+          });
+        }
+      } else {
+        /// FALLBACK
+        expenseRows.add({
+          "to": TextEditingController(
+            text: widget.item!.to,
+          ),
+          "km": TextEditingController(
+            text: widget.item!.km,
+          ),
+          "image": "",
+          "file": null,
+        });
+      }
+
+      /// ROUTE
+      updateRoute();
+    }
+
+    /// ADD
+    else {
       dateController.text = DateFormat(
         "dd-MM-yyyy",
-      ).format(
-        DateTime.now(),
-      );
+      ).format(DateTime.now());
 
       addNewRow();
     }
@@ -107,11 +134,11 @@ class _AddTravelExpenseScreenState extends State<AddTravelExpenseScreen> {
     }
   }
 
-  /// ADD ROW
   void addNewRow() {
     expenseRows.add({
       "to": TextEditingController(),
       "km": TextEditingController(),
+      "image": "",
       "file": null,
     });
 
@@ -158,9 +185,9 @@ class _AddTravelExpenseScreenState extends State<AddTravelExpenseScreen> {
     for (var row in expenseRows) {
       if (row["to"].text.toString().isNotEmpty) {
         if (route.isEmpty) {
-          route = row["to"].text;
+          route = row["to"].text.toString();
         } else {
-          route += " → ${row["to"].text}";
+          route += " → ${row["to"].text.toString()}";
         }
       }
     }
@@ -243,14 +270,30 @@ class _AddTravelExpenseScreenState extends State<AddTravelExpenseScreen> {
       return;
     }
 
-    context.read<TravelExpenseCubit>().postTravelExpense(
-          date: dateController.text,
-          from: fromController.text,
-          vehicleType: selectedVehicle!.id,
-          totalAmount: totalAmount().toString(),
-          remark: remarkController.text,
-          rows: expenseRows,
-        );
+    /// UPDATE
+    if (widget.isEdit && widget.item != null) {
+      context.read<TravelExpenseCubit>().updateTravelExpense(
+            travelId: widget.item!.travelId.toString(),
+            date: dateController.text,
+            from: fromController.text,
+            vehicleType: selectedVehicle!.id,
+            totalAmount: totalAmount().toString(),
+            remark: remarkController.text,
+            rows: expenseRows,
+          );
+    }
+
+    /// ADD
+    else {
+      context.read<TravelExpenseCubit>().postTravelExpense(
+            date: dateController.text,
+            from: fromController.text,
+            vehicleType: selectedVehicle!.id,
+            totalAmount: totalAmount().toString(),
+            remark: remarkController.text,
+            rows: expenseRows,
+          );
+    }
   }
 
   @override
@@ -557,35 +600,104 @@ class _AddTravelExpenseScreenState extends State<AddTravelExpenseScreen> {
                                   const SizedBox(height: 14),
 
                                   /// FILE PICKER
+                                  /// FILE PICKER
                                   InkWell(
                                     onTap: () {
                                       pickFile(index);
                                     },
                                     child: Container(
-                                      height: 58,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 14,
-                                      ),
+                                      padding: const EdgeInsets.all(12),
                                       decoration: BoxDecoration(
                                         color: const Color(0xffF8F8F8),
                                         borderRadius: BorderRadius.circular(16),
                                       ),
-                                      child: Row(
+                                      child: Column(
                                         children: [
-                                          const Icon(
-                                            Icons.attach_file_rounded,
-                                          ),
-                                          const SizedBox(width: 10),
-                                          Expanded(
-                                            child: Text(
-                                              expenseRows[index]["file"] != null
-                                                  ? expenseRows[index]["file"]
-                                                      .path
-                                                      .split("/")
-                                                      .last
-                                                  : "Upload Bill / Receipt",
-                                              overflow: TextOverflow.ellipsis,
+                                          /// EXISTING NETWORK IMAGE
+                                          if (expenseRows[index]["image"] !=
+                                                  null &&
+                                              expenseRows[index]["image"]
+                                                  .toString()
+                                                  .isNotEmpty &&
+                                              expenseRows[index]["file"] ==
+                                                  null)
+                                            ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(14),
+                                              child: Image.network(
+                                                expenseRows[index]["image"]
+                                                    .toString(),
+                                                headers: const {
+                                                  "Accept": "*/*",
+                                                },
+                                                height: 170,
+                                                width: double.infinity,
+                                                fit: BoxFit.cover,
+                                                errorBuilder: (
+                                                  context,
+                                                  error,
+                                                  stackTrace,
+                                                ) {
+                                                  return Container(
+                                                    height: 170,
+                                                    width: double.infinity,
+                                                    color: Colors.grey.shade300,
+                                                    child: const Center(
+                                                      child: Icon(
+                                                        Icons.broken_image,
+                                                        size: 40,
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                              ),
                                             ),
+
+                                          /// LOCAL FILE IMAGE
+                                          if (expenseRows[index]["file"] !=
+                                              null)
+                                            ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(14),
+                                              child: Image.file(
+                                                expenseRows[index]["file"],
+                                                height: 170,
+                                                width: double.infinity,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+
+                                          const SizedBox(height: 12),
+
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.attach_file_rounded,
+                                              ),
+                                              const SizedBox(width: 10),
+                                              Expanded(
+                                                child: Text(
+                                                  expenseRows[index]["file"] !=
+                                                          null
+                                                      ? expenseRows[index]
+                                                              ["file"]
+                                                          .path
+                                                          .split("/")
+                                                          .last
+                                                      : expenseRows[index][
+                                                                      "image"] !=
+                                                                  null &&
+                                                              expenseRows[index]
+                                                                      ["image"]
+                                                                  .toString()
+                                                                  .isNotEmpty
+                                                          ? "Existing Image"
+                                                          : "Upload Bill / Receipt",
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),

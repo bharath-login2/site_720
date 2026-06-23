@@ -20,10 +20,20 @@ import 'package:site_720/features/travel_expense/views/travel_expense_dashboard_
 import 'package:site_720/features/dashboard/views/change_password.dart';
 import 'package:site_720/features/dashboard/views/profile_screen.dart';
 
-class DashboardScreen extends StatelessWidget {
-  DashboardScreen({super.key});
+class DashboardScreen extends StatefulWidget {
+  const DashboardScreen({super.key});
+
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  late DashboardCubit dashboardCubit;
+
   TextEditingController searchController = TextEditingController();
+
   TextEditingController fdate = TextEditingController();
+
   TextEditingController tdate = TextEditingController();
 
   List colors = [
@@ -32,14 +42,36 @@ class DashboardScreen extends StatelessWidget {
     Colors.orange,
     Colors.red,
   ];
+
   Map<String, dynamic>? profileData;
 
   bool profileLoading = true;
 
   @override
+  void initState() {
+    super.initState();
+
+    dashboardCubit = DashboardCubit(
+      fdate.text,
+      tdate.text,
+    );
+  }
+
+  @override
+  void dispose() {
+    dashboardCubit.close();
+
+    searchController.dispose();
+    fdate.dispose();
+    tdate.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => DashboardCubit(fdate.text, tdate.text),
+    return BlocProvider.value(
+      value: dashboardCubit,
       child: MultiBlocListener(
         listeners: [
           BlocListener<ConnectivityCubit, ConnectivityState>(
@@ -126,7 +158,7 @@ class DashboardScreen extends StatelessWidget {
                                           Text(
                                             state.response.data.designation,
                                             style: const TextStyle(
-                                              fontSize: 11,
+                                              fontSize: 14,
                                               fontWeight: FontWeight.bold,
                                               letterSpacing: 1,
                                               fontFamily: "Lobster",
@@ -538,13 +570,18 @@ class DashboardScreen extends StatelessWidget {
                                                           ),
                                                           Container(
                                                             width: 60,
-                                                            height: double.parse(state
-                                                                    .response
-                                                                    .data
-                                                                    .expenseData[
-                                                                        i]
-                                                                    .percentage) *
-                                                                1,
+                                                            height: (double
+                                                                        .tryParse(
+                                                                      state
+                                                                          .response
+                                                                          .data
+                                                                          .expenseData[
+                                                                              i]
+                                                                          .percentage
+                                                                          .toString(),
+                                                                    ) ??
+                                                                    0)
+                                                                .clamp(20, 120),
                                                             decoration: BoxDecoration(
                                                                 boxShadow: [
                                                                   BoxShadow(
@@ -730,7 +767,7 @@ class DashboardScreen extends StatelessWidget {
                                           values: state
                                               .response.data.complaintCounts,
                                           colors: const [
-                                            Colors.blue,
+                                            Colors.green,
                                             Colors.orange,
                                             Colors.green,
                                             Colors.red,
@@ -1484,6 +1521,8 @@ class DashboardScreen extends StatelessWidget {
                           _buildDivider(),
                           _buildExpenseMenu(context),
                           _buildDivider(),
+                          _buildAccountMenu(context),
+                          _buildDivider(),
                           _buildModernMenuTile(
                             icon: Icons.account_balance_wallet_rounded,
                             title: "Expense",
@@ -1698,6 +1737,218 @@ class DashboardScreen extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildAccountMenu(BuildContext context) {
+    return Theme(
+      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+      child: ExpansionTile(
+        tilePadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+        leading: Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: AppColors.primaryColor.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: const Icon(
+            Icons.account_balance_rounded,
+            color: AppColors.primaryColor,
+            size: 24,
+          ),
+        ),
+        title: const Text(
+          "Account",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+          ),
+        ),
+        subtitle: Text(
+          "Manage expenses & petty cash",
+          style: TextStyle(
+            fontSize: 13,
+            color: Colors.grey.shade500,
+          ),
+        ),
+        childrenPadding: const EdgeInsets.only(left: 60, right: 20, bottom: 10),
+        children: [
+          _buildSubMenuItem(
+            icon: Icons.account_balance_wallet_rounded,
+            title: "My Account",
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, "/myAccount");
+            },
+          ),
+          _buildSubMenuItem(
+            icon: Icons.money_rounded,
+            title: "Petty",
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, "/petty");
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  // bool isAccountExpanded = false;
+  // Widget _buildAccountMenu(BuildContext context) {
+  //   return StatefulBuilder(
+  //     builder: (context, setState) {
+  //       return Container(
+  //         margin: const EdgeInsets.symmetric(
+  //           horizontal: 12,
+  //           vertical: 6,
+  //         ),
+  //         decoration: BoxDecoration(
+  //           color: Colors.white,
+  //           borderRadius: BorderRadius.circular(18),
+  //           boxShadow: [
+  //             BoxShadow(
+  //               color: Colors.black.withOpacity(0.03),
+  //               blurRadius: 8,
+  //               offset: const Offset(0, 3),
+  //             ),
+  //           ],
+  //         ),
+  //         child: Column(
+  //           children: [
+  //             /// MAIN MENU
+  //             InkWell(
+  //               borderRadius: BorderRadius.circular(18),
+  //               onTap: () {
+  //                 setState(() {
+  //                   isAccountExpanded = !isAccountExpanded;
+  //                 });
+  //               },
+  //               child: Padding(
+  //                 padding: const EdgeInsets.symmetric(
+  //                   horizontal: 10,
+  //                   vertical: 14,
+  //                 ),
+  //                 child: Row(
+  //                   children: [
+  //                     /// ICON
+  //                     Container(
+  //                       padding: const EdgeInsets.all(12),
+  //                       decoration: BoxDecoration(
+  //                         color: AppColors.primaryColor.withOpacity(0.1),
+  //                         borderRadius: BorderRadius.circular(14),
+  //                       ),
+  //                       child: const Icon(
+  //                         Icons.account_circle_sharp,
+  //                         color: AppColors.primaryColor,
+  //                         size: 24,
+  //                       ),
+  //                     ),
+
+  //                     const SizedBox(width: 14),
+
+  //                     const Expanded(
+  //                       child: Column(
+  //                         crossAxisAlignment: CrossAxisAlignment.start,
+  //                         children: [
+  //                           Text(
+  //                             "Account",
+  //                             style: TextStyle(
+  //                               fontSize: 16,
+  //                               fontWeight: FontWeight.w700,
+  //                               color: Colors.black87,
+  //                             ),
+  //                           ),
+  //                           SizedBox(height: 4),
+  //                           Text(
+  //                             "Manage your accounts",
+  //                             style: TextStyle(
+  //                               fontSize: 13,
+  //                               color: Colors.grey,
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                     ),
+
+  //                     AnimatedRotation(
+  //                       turns: isAccountExpanded ? 0.5 : 0,
+  //                       duration: const Duration(milliseconds: 250),
+  //                       child: Icon(
+  //                         Icons.keyboard_arrow_down_rounded,
+  //                         color: Colors.grey.shade600,
+  //                         size: 28,
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //             ),
+
+  //             /// SUB MENU
+  //             AnimatedCrossFade(
+  //               duration: const Duration(milliseconds: 250),
+  //               crossFadeState: isAccountExpanded
+  //                   ? CrossFadeState.showFirst
+  //                   : CrossFadeState.showSecond,
+  //               firstChild: Container(
+  //                 width: double.infinity,
+  //                 padding: const EdgeInsets.only(
+  //                   left: 14,
+  //                   right: 14,
+  //                   bottom: 14,
+  //                 ),
+  //                 child: Column(
+  //                   children: [
+  //                     Divider(
+  //                       color: Colors.grey.shade200,
+  //                       height: 1,
+  //                     ),
+
+  //                     const SizedBox(height: 14),
+
+  //                     /// MY ACCOUNT
+  //                     _buildSubMenuItem(
+  //                       icon: Icons.person_outline_rounded,
+  //                       title: "My Account",
+  //                       onTap: () {
+  //                         Navigator.pop(context);
+
+  //                         Navigator.push(
+  //                           context,
+  //                           MaterialPageRoute(
+  //                             builder: (_) =>
+  //                                 const TravelExpenseDashboardScreen(),
+  //                           ),
+  //                         );
+  //                       },
+  //                     ),
+
+  //                     const SizedBox(height: 10),
+
+  //                     /// PETTY CASH
+  //                     _buildSubMenuItem(
+  //                       icon: Icons.account_balance_wallet_outlined,
+  //                       title: "Petty Cash",
+  //                       onTap: () {
+  //                         Navigator.pop(context);
+
+  //                         Navigator.pushNamed(
+  //                           context,
+  //                           "/pettyCash",
+  //                         );
+  //                       },
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //               secondChild: const SizedBox(),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   Widget _buildSubMenuItem({
     required IconData icon,

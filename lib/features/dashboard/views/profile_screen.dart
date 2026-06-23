@@ -188,11 +188,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         child: Column(
                           children: [
-                            buildProfileTile(
-                              icon: Icons.badge_outlined,
-                              title: "User ID",
-                              value: profile!["user_id"] ?? "",
-                            ),
+                            // buildProfileTile(
+                            //   icon: Icons.badge_outlined,
+                            //   title: "User ID",
+                            //   value: profile!["user_id"] ?? "",
+                            // ),
                             const Divider(height: 30),
                             buildProfileTile(
                               icon: Icons.email_outlined,

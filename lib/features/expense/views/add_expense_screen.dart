@@ -1,9 +1,15 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../data/services/http_services.dart';
+import '../../../data/models/project_list/project_list_model.dart';
+import 'package:dropdown_search/dropdown_search.dart';
+import '../../../data/models/expenselist/project_id_list_model.dart';
+import '../cubit/project_cubit.dart';
+import '../cubit/project_state.dart';
 
 class AddExpenseScreen extends StatefulWidget {
   const AddExpenseScreen({super.key});
@@ -13,6 +19,7 @@ class AddExpenseScreen extends StatefulWidget {
 }
 
 class _AddExpenseScreenState extends State<AddExpenseScreen> {
+  String? selectedProjectId;
   final billNoController = TextEditingController();
 
   final billAmountController = TextEditingController();
@@ -53,49 +60,100 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
   File? selectedFile;
 
+  String gstAmount = "0";
+
+  List<dynamic> pettyCashAccounts = [];
+
+  String? selectedPaidFromAccId;
+  List<dynamic> paymentMethodList = [];
+
+  String? selectedPaymentMethodId;
+
   @override
   void initState() {
     super.initState();
 
-    billDateController.text = DateFormat(
-      "dd-MM-yyyy",
-    ).format(
-      DateTime.now(),
-    );
+    expenseType = "Project Expense";
 
-    paidDateController.text = DateFormat(
-      "dd-MM-yyyy",
-    ).format(
-      DateTime.now(),
-    );
+    billDateController.text = DateFormat("dd-MM-yyyy").format(DateTime.now());
 
-    trDateController.text = DateFormat(
-      "dd-MM-yyyy",
-    ).format(
-      DateTime.now(),
-    );
+    paidDateController.text = DateFormat("dd-MM-yyyy").format(DateTime.now());
+
+    trDateController.text = DateFormat("dd-MM-yyyy").format(DateTime.now());
 
     billAmountController.addListener(calculateAmounts);
+
+    paidAmountController.addListener(calculateBalanceAmount);
+
+    getPettyCashAccounts();
+    getPaymentMethods();
   }
 
   void calculateAmounts() {
-    double billAmount = double.tryParse(
-          billAmountController.text,
-        ) ??
-        0;
+    double billAmount = double.tryParse(billAmountController.text) ?? 0;
 
-    double gstPercent = double.tryParse(
-          gst ?? "0",
-        ) ??
-        0;
+    double gstPercent = double.tryParse(gst ?? "0") ?? 0;
 
-    double gstAmount = (billAmount * gstPercent) / 100;
+    /// GST AMOUNT
+    double calculatedGstAmount = (billAmount * gstPercent) / 100;
 
-    double total = billAmount + gstAmount;
+    gstAmount = calculatedGstAmount.toStringAsFixed(2);
+
+    /// PAYABLE AMOUNT
+    double total = billAmount + calculatedGstAmount;
 
     payableAmountController.text = total.toStringAsFixed(2);
 
-    paidAmountController.text = total.toStringAsFixed(2);
+    calculateBalanceAmount();
+  }
+
+  void calculateBalanceAmount() {
+    double payable = double.tryParse(payableAmountController.text) ?? 0;
+
+    double paid = double.tryParse(paidAmountController.text) ?? 0;
+
+    /// VALIDATION
+    if (paid > payable) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            "Amount is greater than the payable amount!",
+          ),
+        ),
+      );
+
+      paidAmountController.text = payable.toStringAsFixed(2);
+
+      paidAmountController.selection = TextSelection.fromPosition(
+        TextPosition(
+          offset: paidAmountController.text.length,
+        ),
+      );
+
+      paid = payable;
+    }
+
+    double balance = payable - paid;
+
+    balanceAmountController.text = balance.toStringAsFixed(2);
+  }
+
+  Future<void> getPettyCashAccounts() async {
+    final response = await HttpServices.getPettyCashAccount();
+
+    if (response != null && response["status"] == true) {
+      setState(() {
+        pettyCashAccounts = response["data"] ?? [];
+
+        // Auto select if only one account exists
+        if (pettyCashAccounts.length == 1) {
+          selectedPaidFromAccId = pettyCashAccounts.first["id"].toString();
+
+          paidFromAccController.text = pettyCashAccounts.first["id"].toString();
+        }
+      });
+    }
   }
 
   /// PICK FILE
@@ -108,6 +166,16 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
       );
 
       setState(() {});
+    }
+  }
+
+  Future<void> getPaymentMethods() async {
+    final response = await HttpServices.getPaymentMethod();
+
+    if (response != null && response["status"] == true) {
+      setState(() {
+        paymentMethodList = response["data"] ?? [];
+      });
     }
   }
 
@@ -172,57 +240,219 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// =====================================
-            /// BILL DETAILS
-            /// =====================================
-
             sectionTitle("Bill Details"),
 
             const SizedBox(height: 20),
 
-            /// EXPENSE TYPE
             buildLabel("Expense Type *"),
 
             const SizedBox(height: 8),
 
-            buildDropdown(
-              hint: "Select Expense Type",
-              value: expenseType,
-              items: const [
-                "Suppliers",
-                "Transport",
-                "Materials",
-              ],
-              onChanged: (v) {
-                setState(() {
-                  expenseType = v;
-                });
-              },
+            buildField(
+              "Project Expense",
+              TextEditingController(text: "Project Expense"),
+              readOnly: true,
             ),
 
             const SizedBox(height: 16),
 
-            /// EXPENSE HEAD
-            buildLabel("Project"),
+            /// PROJECT
+            buildLabel("Project *"),
 
             const SizedBox(height: 8),
 
-            buildDropdown(
-              hint: "Select Project",
-              value: project,
-              items: const [
-                "Purchase",
-                "Fuel",
-                "Salary",
-                "Office Expense",
-              ],
-              onChanged: (v) {
-                setState(() {
-                  project = v;
-                });
+            BlocBuilder<ProjectCubit, ProjectState>(
+              builder: (context, state) {
+                if (state is ProjectLoading) {
+                  return Container(
+                    height: 60,
+                    alignment: Alignment.center,
+                    child: const CircularProgressIndicator(),
+                  );
+                }
+
+                if (state is ProjectFailure) {
+                  return Container(
+                    padding: const EdgeInsets.all(12),
+                    child: Text(
+                      state.message,
+                      style: const TextStyle(
+                        color: Colors.red,
+                      ),
+                    ),
+                  );
+                }
+
+                if (state is ProjectSuccess) {
+                  final List<ProjectIdList> projectList = state.projects;
+
+                  return SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: DropdownSearch<ProjectIdList>(
+                      items: (filter, loadProps) {
+                        if (filter.isEmpty) {
+                          return projectList;
+                        }
+
+                        return projectList.where((e) {
+                          return e.projectName.toLowerCase().contains(
+                                filter.toLowerCase(),
+                              );
+                        }).toList();
+                      },
+                      selectedItem: selectedProjectId == null
+                          ? null
+                          : projectList.firstWhere(
+                              (e) => e.id == selectedProjectId,
+                              orElse: () => projectList.first,
+                            ),
+                      itemAsString: (ProjectIdList item) => item.projectName,
+                      compareFn: (item, selectedItem) {
+                        return item.id == selectedItem.id;
+                      },
+                      onSelected: (ProjectIdList? value) {
+                        if (value != null) {
+                          setState(() {
+                            selectedProjectId = value.id;
+                            project = value.projectName;
+                          });
+
+                          debugPrint(
+                            "SELECTED PROJECT ID : $selectedProjectId",
+                          );
+                        }
+                      },
+                      popupProps: PopupProps.menu(
+                        showSearchBox: true,
+                        fit: FlexFit.loose,
+                        searchFieldProps: TextFieldProps(
+                          decoration: InputDecoration(
+                            hintText: "Search Project",
+                            prefixIcon: const Icon(Icons.search),
+                            filled: true,
+                            fillColor: Colors.grey.shade100,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                        ),
+                        emptyBuilder: (context, searchEntry) {
+                          return const Padding(
+                            padding: EdgeInsets.all(20),
+                            child: Center(
+                              child: Text(
+                                "No Projects Found",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        itemBuilder: (context, item, isSelected, isFocused) {
+                          return Container(
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 14,
+                            ),
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? const Color.fromARGB(
+                                      20,
+                                      100,
+                                      38,
+                                      53,
+                                    )
+                                  : Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: isSelected
+                                    ? const Color.fromARGB(
+                                        247,
+                                        100,
+                                        38,
+                                        53,
+                                      )
+                                    : Colors.grey.shade200,
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 10,
+                                  height: 10,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Color.fromARGB(
+                                      247,
+                                      100,
+                                      38,
+                                      53,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    item.projectName,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: isSelected
+                                          ? FontWeight.w600
+                                          : FontWeight.w500,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                      decoratorProps: DropDownDecoratorProps(
+                        decoration: InputDecoration(
+                          hintText: "Select Project",
+                          filled: true,
+                          fillColor: Colors.white,
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 16,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: BorderSide(
+                              color: Colors.grey.shade300,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(14),
+                            borderSide: const BorderSide(
+                              color: Color.fromARGB(
+                                247,
+                                100,
+                                38,
+                                53,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }
+
+                return const SizedBox();
               },
             ),
-
             const SizedBox(height: 16),
 
             /// BILL NO
@@ -436,7 +666,6 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
               "Paid Amount",
               paidAmountController,
               keyboard: TextInputType.number,
-              readOnly: true,
             ),
 
             const SizedBox(height: 16),
@@ -463,9 +692,52 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
             const SizedBox(height: 8),
 
-            buildField(
-              "Enter Paid From ACC",
-              paidFromAccController,
+            DropdownButtonFormField<String>(
+              value: selectedPaidFromAccId,
+              decoration: InputDecoration(
+                hintText: "Select Paid From ACC",
+                filled: true,
+                fillColor: Colors.white,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 16,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: BorderSide(
+                    color: Colors.grey.shade300,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(
+                      247,
+                      100,
+                      38,
+                      53,
+                    ),
+                  ),
+                ),
+              ),
+              items: pettyCashAccounts.map((e) {
+                return DropdownMenuItem<String>(
+                  value: e["id"].toString(),
+                  child: Text(
+                    e["account_head"].toString(),
+                  ),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedPaidFromAccId = value;
+
+                  paidFromAccController.text = value ?? "";
+                });
+              },
             ),
 
             const SizedBox(height: 16),
@@ -504,17 +776,54 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
             const SizedBox(height: 8),
 
-            buildDropdown(
-              hint: "Select Payment Mode",
-              value: paymentMode,
-              items: const [
-                "Cash",
-                "Bank",
-                "UPI",
-              ],
-              onChanged: (v) {
+            DropdownButtonFormField<String>(
+              value: selectedPaymentMethodId,
+              decoration: InputDecoration(
+                hintText: "Select Payment Mode",
+                filled: true,
+                fillColor: Colors.white,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 16,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: BorderSide(
+                    color: Colors.grey.shade300,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(
+                      247,
+                      100,
+                      38,
+                      53,
+                    ),
+                  ),
+                ),
+              ),
+              items: paymentMethodList.map((e) {
+                return DropdownMenuItem<String>(
+                  value: e["id"].toString(),
+                  child: Text(
+                    e["payment_method"].toString(),
+                  ),
+                );
+              }).toList(),
+              onChanged: (value) {
                 setState(() {
-                  paymentMode = v;
+                  selectedPaymentMethodId = value;
+
+                  final selected = paymentMethodList.firstWhere(
+                    (e) => e["id"].toString() == value,
+                  );
+
+                  paymentMode = selected["id"].toString();
                 });
               },
             ),
@@ -543,6 +852,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
               "Balance Amount",
               balanceAmountController,
               keyboard: TextInputType.number,
+              readOnly: true,
             ),
 
             const SizedBox(height: 35),
@@ -606,11 +916,12 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
                   /// API CALL
                   final response = await HttpServices.addExpense(
-                    expenseType: expenseType ?? "",
-                    expenseHead: project ?? "",
+                    expenseType: "Project Expense",
+                    expenseHead: selectedProjectId ?? "",
                     billNo: billNoController.text,
                     billDate: billDateController.text,
                     gst: gst ?? "0",
+                    gstAmount: gstAmount,
                     billAmount: billAmountController.text,
                     description: descriptionController.text,
                     gstNo: gstNoController.text,
@@ -619,7 +930,7 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                     billRemarks: remarkController.text,
                     paidAmount: paidAmountController.text,
                     paidDate: paidDateController.text,
-                    paidFromAcc: paidFromAccController.text,
+                    paidFromAcc: selectedPaidFromAccId ?? "",
                     paymentMode: paymentMode ?? "",
                     trReferenceNo: trRefController.text,
                     trReferenceDate: trDateController.text,
@@ -628,10 +939,8 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                     billCopy: selectedFile,
                   );
 
-                  /// CLOSE LOADER
                   Navigator.pop(context);
 
-                  /// SUCCESS
                   if (response != null && response['status'] == true) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(

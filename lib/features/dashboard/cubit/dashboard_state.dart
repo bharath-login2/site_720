@@ -6,10 +6,13 @@ class DashboardState {
 
   DashboardState({this.fromDate, this.toDate});
 
-  DashboardState copyWith({String? fromDate, String? toDate}) {
+  DashboardState copyWith({
+    DateTime? fromDate,
+    DateTime? toDate,
+  }) {
     return DashboardState(
-      fromDate: this.fromDate,
-      toDate: this.toDate,
+      fromDate: fromDate ?? this.fromDate,
+      toDate: toDate ?? this.toDate,
     );
   }
 }

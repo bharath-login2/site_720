@@ -1,7 +1,7 @@
 class SuccessResponseMain {
   final bool status;
   final String message;
-  final int? data;
+  dynamic data;
 
   SuccessResponseMain({
     required this.status,
@@ -9,11 +9,13 @@ class SuccessResponseMain {
     this.data,
   });
 
-  factory SuccessResponseMain.fromJson(Map<String, dynamic> json) {
+  factory SuccessResponseMain.fromJson(
+    Map<String, dynamic> json,
+  ) {
     return SuccessResponseMain(
       status: json["status"] ?? false,
       message: json["message"] ?? "",
-      data: json["data"] != null ? json["data"] as int : null,
+      data: json["data"],
     );
   }
 }

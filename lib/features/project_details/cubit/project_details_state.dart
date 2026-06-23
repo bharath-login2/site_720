@@ -15,5 +15,3 @@ class ProjectDetailsFailure extends ProjectDetailsState {
   final String message;
   ProjectDetailsFailure(this.message);
 }
-
-

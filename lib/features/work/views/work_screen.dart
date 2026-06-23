@@ -1,7 +1,13 @@
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
+import 'package:site_720/data/models/work/work_model.dart';
+import 'package:site_720/features/work/cubit/work_cubit.dart';
+import 'package:site_720/features/work/cubit/work_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../data/services/http_services.dart';
 
 class WorkScreen extends StatefulWidget {
   const WorkScreen({super.key});
@@ -11,448 +17,327 @@ class WorkScreen extends StatefulWidget {
 }
 
 class _WorkScreenState extends State<WorkScreen> {
-  final List<Map<String, dynamic>> workList = [
-    {
-      "project": "Lulu Mall Project",
-      "date": "20-05-2026",
-      "scheduled": "Yes",
-      "status": "Pending",
-    },
-    {
-      "project": "Bridge Construction",
-      "date": "19-05-2026",
-      "scheduled": "No",
-      "status": "Completed",
-    },
-    {
-      "project": "Smart City Work",
-      "date": "18-05-2026",
-      "scheduled": "Yes",
-      "status": "Pending",
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
 
-  final List<String> projectList = [
-    "Lulu Mall Project",
-    "Bridge Construction",
-    "Smart City Work",
-  ];
-
-  final List<String> statusList = [
-    "Pending",
-    "Completed",
-    "In Progress",
-  ];
-
-  final List<String> stateList = [
-    "Kerala",
-    "Tamil Nadu",
-  ];
-
-  final List<String> districtList = [
-    "Ernakulam",
-    "Kottayam",
-  ];
-
-  final List<String> updateStatusList = [
-    "Updated",
-    "Not Updated",
-  ];
-
-  final List<String> scheduleList = [
-    "Yes",
-    "No",
-  ];
-
-  final List<String> staffList = [
-    "Arun",
-    "Rahul",
-    "Vishnu",
-  ];
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<WorkCubit>().getExternalWorkDetailsList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            /// HEADER
-            Stack(
-              children: [
-                Container(
-                  height: MediaQuery.of(context).size.height * .24,
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: AppColors.primaryColor,
-                    image: DecorationImage(
-                      image: AssetImage("assets/images/appbar.png"),
-                      fit: BoxFit.fill,
+      body: BlocBuilder<WorkCubit, WorkState>(
+        builder: (context, state) {
+          /// LOADING
+          if (state is WorkLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (state is WorkFailure) {
+            return Center(
+              child: Text(
+                state.error,
+              ),
+            );
+          }
+
+          /// SUCCESS
+          if (state is WorkSuccess) {
+            final workList = state.workList;
+
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  /// HEADER
+                  Container(
+                    height: MediaQuery.of(context).size.height * .20,
+                    width: double.infinity,
+                    decoration: const BoxDecoration(
+                      color: AppColors.primaryColor,
+                      image: DecorationImage(
+                        image: AssetImage(
+                          "assets/images/appbar.png",
+                        ),
+                        fit: BoxFit.fill,
+                      ),
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(
+                          30,
+                        ),
+                        bottomRight: Radius.circular(
+                          30,
+                        ),
+                      ),
                     ),
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(30),
-                      bottomRight: Radius.circular(30),
+                    child: const SafeArea(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 18,
+                          vertical: 20,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Work Dashboard",
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Icon(
+                              Icons.work,
+                              color: Colors.white,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                  child: SafeArea(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 18,
-                        vertical: 20,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          /// TITLE
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
-                              SizedBox(height: 10),
-                              Text(
-                                "Work Dashboard",
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+
+                  const SizedBox(
+                    height: 20,
+                  ),
+
+                  ListView.builder(
+                    itemCount: workList.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    itemBuilder: (context, index) {
+                      final item = workList[index];
+
+                      bool isPending =
+                          item.updateStatus.toLowerCase().trim() == "pending";
+
+                      /// SAFE DATE
+                      String day = "--";
+                      String month = "--";
+                      String year = "--";
+
+                      try {
+                        final date = DateTime.parse(item.workDate);
+
+                        day = date.day.toString();
+                        month = _getMonth(date.month);
+                        year = date.year.toString();
+                      } catch (_) {}
+
+                      return InkWell(
+                        borderRadius: BorderRadius.circular(18),
+                        onTap: () {
+                          if (isPending) {
+                            addWorkPopup(item);
+                          }
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(18),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.shade300,
+                                blurRadius: 8,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              /// DATE BOX
+                              Container(
+                                width: 100,
+                                height: 140,
+                                decoration: BoxDecoration(
+                                  color: AppColors.primaryColor,
+                                  borderRadius: const BorderRadius.only(
+                                    topLeft: Radius.circular(18),
+                                    bottomLeft: Radius.circular(18),
+                                  ),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    CircleAvatar(
+                                      radius: 26,
+                                      backgroundColor: Colors.white24,
+                                      child: Icon(
+                                        Icons.construction_rounded,
+                                        color: Colors.white,
+                                        size: 32,
+                                      ),
+                                    ),
+                                    SizedBox(height: 12),
+                                    Text(
+                                      "WORK",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        letterSpacing: 1,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              /// DETAILS
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(14),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              item.projectName,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 14,
+                                              vertical: 6,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: isPending
+                                                  ? Colors.orange.shade50
+                                                  : Colors.green.shade50,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Text(
+                                              item.updateStatus,
+                                              style: TextStyle(
+                                                color: isPending
+                                                    ? Colors.orange
+                                                    : Colors.green,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 10),
+                                      Text(
+                                        "Working : ${item.isWorking}",
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 5),
+                                      Text(
+                                        "Labours : ${item.laboursNo}",
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 5),
+                                      Text(
+                                        "Date : ${item.workDate}",
+                                        style: TextStyle(
+                                          color: Colors.grey.shade700,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 5),
+                                      Text(
+                                        "Description : ${item.description}",
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: Colors.grey.shade700,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-
-                          Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: Colors.white24,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: const Icon(
-                              Icons.work,
-                              color: Colors.white,
-                              size: 24,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-
-                /// STATUS CARD
-                Positioned(
-                  bottom: 0,
-                  left: 20,
-                  right: 20,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 18,
-                      horizontal: 20,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(18),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(.18),
-                          blurRadius: 10,
-                          offset: const Offset(0, 5),
                         ),
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        _statusItem(
-                          title: "Unfreezed",
-                          count: "18",
-                          color: Colors.orange,
-                        ),
-                        Container(
-                          width: 1,
-                          height: 40,
-                          color: Colors.grey.shade300,
-                        ),
-                        _statusItem(
-                          title: "Freezed",
-                          count: "12",
-                          color: Colors.green,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 55),
-
-            /// FILTER BUTTON
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Work List",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
-                    ),
-                    onPressed: () {
-                      filterPopup();
+                      );
                     },
-                    icon: const Icon(
-                      Icons.filter_alt,
-                      color: Colors.white,
-                    ),
-                    label: const Text(
-                      "Filter",
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
                   ),
                 ],
               ),
-            ),
+            );
+          }
 
-            const SizedBox(height: 15),
-
-            /// DUMMY LIST
-            ListView.builder(
-              itemCount: workList.length,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemBuilder: (context, index) {
-                final data = workList[index];
-
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 14),
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(.12),
-                        blurRadius: 8,
-                        offset: const Offset(2, 4),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              data["project"],
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 5,
-                            ),
-                            decoration: BoxDecoration(
-                              color: data["status"] == "Pending"
-                                  ? Colors.orange.withOpacity(.15)
-                                  : Colors.green.withOpacity(.15),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: InkWell(
-                              onTap: () {
-                                if (data["status"] == "Pending") {
-                                  addWorkPopup();
-                                }
-                              },
-                              child: Text(
-                                data["status"],
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: data["status"] == "Pending"
-                                      ? Colors.orange
-                                      : Colors.green,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.calendar_month,
-                            size: 18,
-                            color: Colors.grey,
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            "Work Date : ${data["date"]}",
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.schedule,
-                            size: 18,
-                            color: Colors.grey,
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            "Is Scheduled : ${data["scheduled"]}",
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-
-            const SizedBox(height: 20),
-          ],
-        ),
+          return const SizedBox();
+        },
       ),
     );
   }
 
-  /// STATUS ITEM
-  Widget _statusItem({
-    required String title,
-    required String count,
-    required Color color,
-  }) {
-    return Column(
+  String _getMonth(int month) {
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ];
+
+    return months[month - 1];
+  }
+
+  /// ROW
+  Widget buildRow(
+    IconData icon,
+    String text,
+  ) {
+    return Row(
       children: [
-        Text(
-          count,
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: color,
-          ),
+        Icon(
+          icon,
+          size: 18,
+          color: Colors.grey,
         ),
-        const SizedBox(height: 5),
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: color,
-          ),
+        const SizedBox(width: 6),
+        Expanded(
+          child: Text(text),
         ),
       ],
     );
   }
 
-  /// FILTER POPUP
-  void filterPopup() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(25),
-        ),
-      ),
-      builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            left: 16,
-            right: 16,
-            top: 20,
-            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Center(
-                  child: Text(
-                    "Filter Works",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                _textField("From Date"),
-                _textField("To Date"),
-                _dropdown(projectList, "Project Name"),
-                _dropdown(statusList, "Select Status"),
-                _dropdown(stateList, "State"),
-                _dropdown(districtList, "District"),
-                _dropdown(updateStatusList, "Update Status"),
-                _dropdown(scheduleList, "Is Scheduled?"),
-                _dropdown(staffList, "Assigned Staff"),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primaryColor,
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text(
-                          "Apply Filter",
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey,
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text(
-                          "Clear",
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  /// ADD WORK POPUP
-  void addWorkPopup() {
+  /// POPUP
+  void addWorkPopup(
+    ExternalWorkItem item,
+  ) async {
     String? selectedStage;
+
     String workingStatus = "Yes";
+
+    String? selectedWorkStatusId;
 
     final TextEditingController dateController = TextEditingController();
 
@@ -460,26 +345,40 @@ class _WorkScreenState extends State<WorkScreen> {
 
     final TextEditingController descriptionController = TextEditingController();
 
-    final List<String> stageList = [
-      "Foundation",
-      "Piling",
-      "Electrical",
-      "Plumbing",
-      "Finishing",
-    ];
+    List<dynamic> stageList = [];
+
+    List<dynamic> workStatusList = [];
+
+    /// GET STAGES API
+    final stageResponse = await HttpServices.getStagesByprojectId(
+      projectId: item.projectId,
+    );
+
+    if (stageResponse != null && stageResponse["status"] == true) {
+      stageList = stageResponse["data"]["stages"] ?? [];
+    }
+
+    /// GET WORK STATUS API
+    final workStatusResponse = await HttpServices.getWorkStatusID();
+
+    if (workStatusResponse != null && workStatusResponse["status"] == true) {
+      workStatusList = workStatusResponse["data"] ?? [];
+    }
+
+    if (!mounted) return;
 
     showDialog(
       context: context,
-      builder: (context) {
+      builder: (dialogContext) {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(18),
               ),
-              title: const Text(
-                "Add Work Update",
-                style: TextStyle(
+              title: Text(
+                item.projectName,
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -505,6 +404,10 @@ class _WorkScreenState extends State<WorkScreen> {
                           onChanged: (value) {
                             setState(() {
                               workingStatus = value!;
+
+                              /// RESET
+                              selectedWorkStatusId = null;
+                              labourController.clear();
                             });
                           },
                         ),
@@ -516,6 +419,10 @@ class _WorkScreenState extends State<WorkScreen> {
                           onChanged: (value) {
                             setState(() {
                               workingStatus = value!;
+
+                              /// RESET
+                              selectedWorkStatusId = null;
+                              labourController.clear();
                             });
                           },
                         ),
@@ -525,20 +432,21 @@ class _WorkScreenState extends State<WorkScreen> {
 
                     const SizedBox(height: 10),
 
-                    /// STAGE
+                    /// STAGE DROPDOWN
                     DropdownButtonFormField<String>(
                       value: selectedStage,
                       decoration: InputDecoration(
                         labelText: "Stage *",
-                        hintText: "Select Stage",
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                       items: stageList.map((e) {
-                        return DropdownMenuItem(
-                          value: e,
-                          child: Text(e),
+                        return DropdownMenuItem<String>(
+                          value: e["stage_id"].toString(),
+                          child: Text(
+                            e["stage_name"].toString(),
+                          ),
                         );
                       }).toList(),
                       onChanged: (value) {
@@ -585,17 +493,43 @@ class _WorkScreenState extends State<WorkScreen> {
 
                     const SizedBox(height: 14),
 
-                    /// NO OF LABOURS
-                    TextFormField(
-                      controller: labourController,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        labelText: "No of Labours *",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+                    /// IF YES SHOW LABOUR FIELD
+                    if (workingStatus == "Yes")
+                      TextFormField(
+                        controller: labourController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: "No of Labours *",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
                       ),
-                    ),
+
+                    /// IF NO SHOW WORK STATUS
+                    if (workingStatus == "No")
+                      DropdownButtonFormField<String>(
+                        value: selectedWorkStatusId,
+                        decoration: InputDecoration(
+                          labelText: "Work Status *",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        items: workStatusList.map((e) {
+                          return DropdownMenuItem<String>(
+                            value: e["id"].toString(),
+                            child: Text(
+                              e["work_status"].toString(),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedWorkStatusId = value;
+                          });
+                        },
+                      ),
 
                     const SizedBox(height: 14),
 
@@ -618,7 +552,7 @@ class _WorkScreenState extends State<WorkScreen> {
                 /// CANCEL
                 TextButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.pop(dialogContext);
                   },
                   child: const Text(
                     "Cancel",
@@ -630,14 +564,123 @@ class _WorkScreenState extends State<WorkScreen> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryColor,
                   ),
-                  onPressed: () {
-                    Navigator.pop(context);
+                  onPressed: () async {
+                    /// VALIDATION
+                    if (selectedStage == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            "Please Select Stage",
+                          ),
+                        ),
+                      );
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Work Updated"),
-                      ),
+                      return;
+                    }
+
+                    if (dateController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            "Please Select Date",
+                          ),
+                        ),
+                      );
+
+                      return;
+                    }
+
+                    /// YES VALIDATION
+                    if (workingStatus == "Yes" &&
+                        labourController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            "Please Enter Labour Count",
+                          ),
+                        ),
+                      );
+
+                      return;
+                    }
+
+                    /// NO VALIDATION
+                    if (workingStatus == "No" && selectedWorkStatusId == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            "Please Select Work Status",
+                          ),
+                        ),
+                      );
+
+                      return;
+                    }
+
+                    /// API CALL
+                    final updateResponse =
+                        await HttpServices.updateExternalWork(
+                      stageId: selectedStage!,
+                      projectId: item.projectId,
+                      clientId: item.clientId,
+
+                      /// YES / NO
+                      workStatus: workingStatus,
+
+                      workDate: dateController.text,
+
+                      /// YES
+                      labourCount:
+                          workingStatus == "Yes" ? labourController.text : "0",
+
+                      /// NO
+                      workStatusId:
+                          workingStatus == "No" ? selectedWorkStatusId! : "0",
+
+                      description: descriptionController.text,
                     );
+
+                    /// SUCCESS
+                    if (updateResponse != null &&
+                        updateResponse["status"] == true) {
+                      /// CLOSE POPUP
+                      Navigator.pop(dialogContext);
+
+                      /// RELOAD LIST
+                      if (mounted) {
+                        BlocProvider.of<WorkCubit>(
+                          this.context,
+                        ).getExternalWorkDetailsList();
+                      }
+
+                      /// SUCCESS MESSAGE
+                      Future.delayed(
+                        const Duration(milliseconds: 300),
+                        () {
+                          if (mounted) {
+                            ScaffoldMessenger.of(this.context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: Colors.green,
+                                content: Text(
+                                  updateResponse["message"] ??
+                                      "Work Updated Successfully",
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                      );
+                    } else {
+                      ScaffoldMessenger.of(this.context).showSnackBar(
+                        SnackBar(
+                          backgroundColor: Colors.red,
+                          content: Text(
+                            updateResponse?["message"] ??
+                                "Something went wrong",
+                          ),
+                        ),
+                      );
+                    }
                   },
                   child: const Text(
                     "Submit",
@@ -651,50 +694,6 @@ class _WorkScreenState extends State<WorkScreen> {
           },
         );
       },
-    );
-  }
-
-  /// TEXTFIELD
-  Widget _textField(String hint) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
-      child: TextFormField(
-        decoration: InputDecoration(
-          hintText: hint,
-          filled: true,
-          fillColor: Colors.white,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// DROPDOWN
-  Widget _dropdown(
-    List<String> list,
-    String hint,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
-      child: DropdownButtonFormField<String>(
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.white,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        hint: Text(hint),
-        items: list.map((e) {
-          return DropdownMenuItem(
-            value: e,
-            child: Text(e),
-          );
-        }).toList(),
-        onChanged: (value) {},
-      ),
     );
   }
 }

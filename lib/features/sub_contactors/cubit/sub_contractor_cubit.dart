@@ -5,7 +5,7 @@ import '../../../data/services/http_services.dart';
 import 'sub_contractor_state.dart';
 
 class SubContractorCubit extends Cubit<SubContractorState> {
-  final String projectId; 
+  final String projectId;
   SubContractorCubit(this.projectId) : super(SubContractorInitial()) {
     getContractorList();
   }
@@ -13,7 +13,6 @@ class SubContractorCubit extends Cubit<SubContractorState> {
   Future<void> getContractorList() async {
     emit(SubContractorLoading());
     try {
-     
       ContractorListModel response =
           await HttpServices.getSubContractorList(projectId);
 
@@ -27,4 +26,3 @@ class SubContractorCubit extends Cubit<SubContractorState> {
     }
   }
 }
-

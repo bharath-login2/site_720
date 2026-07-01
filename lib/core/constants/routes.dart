@@ -25,6 +25,7 @@ class AppRoutes {
   static const petty = '/petty';
   static const paymentDetails = '/paymentDetails';
   static const estimation = '/estimation';
+  static const projectDocuments = '/projectDocuments';
   static const consumption = '/consumption';
   static const paymentSchedule = '/paymentSchedule';
   static const installment = '/installment';

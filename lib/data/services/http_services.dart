@@ -75,6 +75,7 @@ import '../models/stockconsume/material_details_consumption_model.dart';
 import '../models/stockconsume/material_dropdown_model.dart';
 import '../models/stockconsume/project_dropdown_model.dart';
 import '../models/stockconsume/stage_dropdown_model.dart';
+import '../models/projectdocument/project_document_model.dart';
 
 class HttpServices {
   static Future apiAuth() async {
@@ -482,6 +483,7 @@ class HttpServices {
         },
       );
       if (response.statusCode == 200) {
+        // print("GET EXPENSE RESPONSE : ${response.body}");
         return purchaseBillListModelFromJson(response.body);
       }
     } catch (e) {
@@ -1213,7 +1215,7 @@ class HttpServices {
 
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(response.body);
-        print("Estimate List Response: $jsonData");
+        // print("Estimate List Response: $jsonData");
         return EstimateModel.fromJson(jsonData);
       }
     } catch (e) {
@@ -1242,7 +1244,6 @@ class HttpServices {
     } catch (e) {
       log(e.toString());
     }
-
     return [];
   }
 
@@ -1578,6 +1579,7 @@ class HttpServices {
         },
       );
       if (response.statusCode == 200) {
+        print("Task List Response: ${response.body}");
         return getTaskListFromJson(response.body);
       }
     } catch (e) {
@@ -2754,7 +2756,7 @@ class HttpServices {
 
       if (response.statusCode == 200) {
         // );
-
+        // print("GET work RESPONSE : ${response.body}");
         return jsonDecode(response.body);
       }
     } catch (e) {
@@ -3311,5 +3313,35 @@ class HttpServices {
     }
 
     return false;
+  }
+
+  static Future<List<ProjectDocument>> getProjectDocs({
+    required String projectId,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse("${await Config.getUrl()}getProjectDocs"),
+        body: {
+          "token": await getSharedPreference("token"),
+          "project_id": projectId,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        print("Project Documents Response : ${response.body}");
+
+        final json = jsonDecode(response.body);
+
+        if (json["status"] == true) {
+          final List data = json["data"] ?? [];
+
+          return data.map((e) => ProjectDocument.fromJson(e)).toList();
+        }
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+
+    return [];
   }
 }

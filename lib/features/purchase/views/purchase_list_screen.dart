@@ -12,9 +12,74 @@ import '../../connectivity/cubit/connectivity_cubit.dart';
 import '../../connectivity/cubit/connectivity_state.dart';
 import '../cubit/purchase_cubit.dart';
 import '../cubit/purchase_state.dart';
+import '../../../data/models/purchasebilllist/purchasebill_list_model.dart';
 
 class PurchaseList extends StatelessWidget {
   const PurchaseList({super.key});
+  void showMaterialPopup(
+    BuildContext context,
+    PurchaseBill bill,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(bill.supplierName),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Bill Date : ${DateFormat('dd-MM-yyyy').format(bill.billDate)}",
+                ),
+                const SizedBox(height: 15),
+                ListView.builder(
+                  shrinkWrap: true,
+                  // physics: const NeverScrollableScrollPhysics(),
+                  itemCount: bill.materials.length,
+                  itemBuilder: (context, index) {
+                    final material = bill.materials[index];
+
+                    return Card(
+                      child: ListTile(
+                        title: Text(material.materialName),
+                        subtitle: Text(
+                          "Qty : ${material.quantity}",
+                        ),
+                        trailing: Text(
+                          "₹${material.amount}",
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  "Total Qty : ${bill.totalQuantity}",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  "Total Amount : ₹${bill.totalAmount}",
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Close"),
+            )
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,6 +178,7 @@ class PurchaseList extends StatelessWidget {
                 return state is PurchaseSuccess
                     ? ListView.builder(
                         shrinkWrap: true,
+                        // physics: const NeverScrollableScrollPhysics(),
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         itemCount: state.response.data.length,
                         itemBuilder: (context, index) {
@@ -120,7 +186,10 @@ class PurchaseList extends StatelessWidget {
                               padding: const EdgeInsets.all(6.0),
                               child: InkWell(
                                 onTap: () {
-                                  // Navigator.of(context).pushNamed(AppRoutes.stageHistory);
+                                  showMaterialPopup(
+                                    context,
+                                    state.response.data[index],
+                                  );
                                 },
                                 child: Container(
                                   width: MediaQuery.of(context).size.width * .9,
@@ -152,129 +221,247 @@ class PurchaseList extends StatelessWidget {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceAround,
                                         children: [
-                                          Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    "Material: ${state.response.data[index]
-                                                        .materialName}",
-                                                    style: const TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color:
-                                                            AppColors.coffie),
-                                                  ),
-                                                  //  Text(
-                                                  //    "Bill Date: ${state.response.data[index].billDate}",
-                                                  //   style: const TextStyle(
-                                                  //     fontSize: 12,
-                                                  //     fontWeight: FontWeight.bold,
-                                                  //   ),
-                                                  // ),
-                                                ],
+                                          Container(
+                                            padding: const EdgeInsets.all(12),
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              border: Border.all(
+                                                color: Colors.grey.shade200,
                                               ),
-                                              Text(
-                                               "Purchased: ${DateFormat('yyyy-MM-dd').format(
-                                                    state.response.data[index]
-                                                        .billDate)}",
-                                                style: const TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.bold,
+                                            ),
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          const Icon(
+                                                            Icons
+                                                                .person_outline,
+                                                            size: 16,
+                                                            color: AppColors
+                                                                .primaryColor,
+                                                          ),
+                                                          const SizedBox(
+                                                              width: 6),
+                                                          Expanded(
+                                                            child: Text(
+                                                              state
+                                                                  .response
+                                                                  .data[index]
+                                                                  .supplierName,
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w700,
+                                                                color: AppColors
+                                                                    .coffie,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      const SizedBox(height: 8),
+                                                      Row(
+                                                        children: [
+                                                          const Icon(
+                                                            Icons.flag_outlined,
+                                                            size: 16,
+                                                            color:
+                                                                Colors.orange,
+                                                          ),
+                                                          const SizedBox(
+                                                              width: 6),
+                                                          Text(
+                                                            state
+                                                                .response
+                                                                .data[index]
+                                                                .stages,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 13,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              color: Colors
+                                                                  .black87,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      const SizedBox(height: 8),
+                                                      Row(
+                                                        children: [
+                                                          const Icon(
+                                                            Icons
+                                                                .calendar_today_outlined,
+                                                            size: 14,
+                                                            color: Colors.grey,
+                                                          ),
+                                                          const SizedBox(
+                                                              width: 6),
+                                                          Text(
+                                                            DateFormat(
+                                                                    'dd-MM-yyyy')
+                                                                .format(state
+                                                                    .response
+                                                                    .data[index]
+                                                                    .billDate),
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 12,
+                                                              color:
+                                                                  Colors.grey,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                          Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  AmountContainer(
-                                                      title: "Quantity",
-                                                      amount: state.response
-                                                          .data[index].quantity,
-                                                      valueColor: AppColors
-                                                          .primaryColor),
-                                                  const SizedBox(
-                                                    width: 10,
+                                                Container(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                    horizontal: 12,
+                                                    vertical: 10,
                                                   ),
-                                                  AmountContainer(
-                                                      title: "Amount",
-                                                      amount:
-                                                          "₹ ${state.response.data[index].grandTotal}",
-                                                      valueColor: AppColors
-                                                          .primaryColor),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Container(
-                                                    height: 25,
-                                                    width: 25,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5),
-                                                      color:
-                                                          AppColors.lightBlue,
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                          color: Colors.grey
-                                                              .withOpacity(0.8),
-                                                          blurRadius: 6,
-                                                          offset: const Offset(
-                                                              1, 1),
+                                                  decoration: BoxDecoration(
+                                                    color: AppColors
+                                                        .primaryColor
+                                                        .withOpacity(.08),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                  ),
+                                                  child: Column(
+                                                    children: [
+                                                      const Text(
+                                                        "Amount",
+                                                        style: TextStyle(
+                                                          fontSize: 11,
+                                                          color: Colors.grey,
+                                                          fontWeight:
+                                                              FontWeight.w600,
                                                         ),
-                                                      ],
-                                                    ),
-                                                    child: const Icon(
-                                                      Icons.edit,
-                                                      size: 18,
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 7,
-                                                  ),
-                                                  Container(
-                                                    height: 25,
-                                                    width: 25,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              5),
-                                                      color: Colors.red,
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                          color: Colors.grey
-                                                              .withOpacity(0.8),
-                                                          blurRadius: 6,
-                                                          offset: const Offset(
-                                                              1, 1),
+                                                      ),
+                                                      const SizedBox(height: 4),
+                                                      Text(
+                                                        "₹${state.response.data[index].totalAmount}",
+                                                        style: const TextStyle(
+                                                          fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color: AppColors
+                                                              .primaryColor,
                                                         ),
-                                                      ],
-                                                    ),
-                                                    child: const Icon(
-                                                      Icons.delete,
-                                                      size: 18,
-                                                      color: Colors.white,
-                                                    ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                          // Row(
+                                          //   crossAxisAlignment:
+                                          //       CrossAxisAlignment.end,
+                                          //   mainAxisAlignment:
+                                          //       MainAxisAlignment.spaceBetween,
+                                          //   children: [
+                                          //     Row(
+                                          //       children: [
+                                          //         AmountContainer(
+                                          //           title: "Quantity",
+                                          //           amount: state
+                                          //               .response
+                                          //               .data[index]
+                                          //               .totalQuantity
+                                          //               .toString(),
+                                          //           valueColor:
+                                          //               AppColors.primaryColor,
+                                          //         ),
+                                          //         const SizedBox(
+                                          //           width: 10,
+                                          //         ),
+                                          //         AmountContainer(
+                                          //           title: "Amount",
+                                          //           amount:
+                                          //               "₹ ${state.response.data[index].totalAmount}",
+                                          //           valueColor:
+                                          //               AppColors.primaryColor,
+                                          //         ),
+                                          //       ],
+                                          //     ),
+                                          //     // Row(
+                                          //     //   children: [
+                                          //     //     Container(
+                                          //     //       height: 25,
+                                          //     //       width: 25,
+                                          //     //       decoration: BoxDecoration(
+                                          //     //         borderRadius:
+                                          //     //             BorderRadius.circular(
+                                          //     //                 5),
+                                          //     //         color:
+                                          //     //             AppColors.lightBlue,
+                                          //     //         boxShadow: [
+                                          //     //           BoxShadow(
+                                          //     //             color: Colors.grey
+                                          //     //                 .withOpacity(0.8),
+                                          //     //             blurRadius: 6,
+                                          //     //             offset: const Offset(
+                                          //     //                 1, 1),
+                                          //     //           ),
+                                          //     //         ],
+                                          //     //       ),
+                                          //     //       child: const Icon(
+                                          //     //         Icons.edit,
+                                          //     //         size: 18,
+                                          //     //         color: Colors.white,
+                                          //     //       ),
+                                          //     //     ),
+                                          //     //     const SizedBox(
+                                          //     //       width: 7,
+                                          //     //     ),
+                                          //     //     Container(
+                                          //     //       height: 25,
+                                          //     //       width: 25,
+                                          //     //       decoration: BoxDecoration(
+                                          //     //         borderRadius:
+                                          //     //             BorderRadius.circular(
+                                          //     //                 5),
+                                          //     //         color: Colors.red,
+                                          //     //         boxShadow: [
+                                          //     //           BoxShadow(
+                                          //     //             color: Colors.grey
+                                          //     //                 .withOpacity(0.8),
+                                          //     //             blurRadius: 6,
+                                          //     //             offset: const Offset(
+                                          //     //                 1, 1),
+                                          //     //           ),
+                                          //     //         ],
+                                          //     //       ),
+                                          //     //       child: const Icon(
+                                          //     //         Icons.delete,
+                                          //     //         size: 18,
+                                          //     //         color: Colors.white,
+                                          //     //       ),
+                                          //     //     ),
+                                          //     //   ],
+                                          //     // ),
+                                          //   ],
+                                          // ),
                                         ],
                                       ),
                                     ),

@@ -478,7 +478,7 @@ class ProjectDetails extends StatelessWidget {
                                       connStatus = true;
                                       Navigator.pushNamed(
                                           context, AppRoutes.expense,
-                                          arguments: {"id": id});
+                                          arguments: {"id": projectId});
                                     },
                                     child: DetailsButtonContainer(
                                       title: "Expense",
@@ -597,6 +597,25 @@ class ProjectDetails extends StatelessWidget {
                                           .43,
                                     ),
                                   ),
+                                  InkWell(
+                                    onTap: () {
+                                      connStatus = true;
+
+                                      Navigator.pushNamed(
+                                        context,
+                                        AppRoutes.projectDocuments,
+                                        arguments: {
+                                          "project_id": id,
+                                        },
+                                      );
+                                    },
+                                    child: DetailsButtonContainer(
+                                      title: "Project Documents",
+                                      color: AppColors.primaryColor,
+                                      width: MediaQuery.of(context).size.width *
+                                          .43,
+                                    ),
+                                  )
                                 ],
                               ),
                             ),

@@ -1,8 +1,18 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'dev.flutter.flutter-gradle-plugin'
     id 'com.google.gms.google-services'
+}
+
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file("key.properties")
+
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
 android {
@@ -19,12 +29,20 @@ android {
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion 36
 
-        versionCode 1
-        versionName "1.0"
+        versionCode flutter.versionCode
+        versionName flutter.versionName
+    }
+
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
     }
 
     compileOptions {
-
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
 
@@ -36,11 +54,9 @@ android {
     }
 
     buildTypes {
-
         release {
 
-            // TEMP RELEASE SIGNING
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
 
             minifyEnabled false
             shrinkResources false
@@ -49,7 +65,6 @@ android {
 }
 
 dependencies {
-
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
 }
 

@@ -18,7 +18,7 @@ class Estimation extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: simpleAppbar(context, "Estimate", true),
+      appBar: simpleAppbar(context, "Estimate Vs Purchase", true),
       body: BlocProvider(
         create: (context) => EstimationCubit(projectId),
         child: BlocBuilder<EstimationCubit, EstimationState>(

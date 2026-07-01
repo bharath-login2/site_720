@@ -53,6 +53,7 @@ import 'features/installment/views/installment_screen.dart';
 import 'package:site_720/features/payment_schedule/cubit/payment_schedule_cubit.dart';
 import 'package:site_720/features/installment/cubit/installment_cubit.dart';
 import 'package:site_720/features/sub_contactors/views/sub_contractor_details_screen.dart';
+import 'features/project_document/views/project_documents_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -154,6 +155,14 @@ class MyApp extends StatelessWidget {
                 projectId: "",
               ),
             ),
+        AppRoutes.projectDocuments: (context) {
+          final args = ModalRoute.of(context)!.settings.arguments
+              as Map<String, dynamic>;
+
+          return ProjectDocumentsPage(
+            projectId: args["project_id"].toString(),
+          );
+        },
         '/package': (context) => Package(),
         '/phoneNumber': (context) => PhoneNumberScreen(),
         '/changePasswordScreen': (context) => ChangePasswordScreen(),

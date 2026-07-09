@@ -54,6 +54,8 @@ import 'package:site_720/features/payment_schedule/cubit/payment_schedule_cubit.
 import 'package:site_720/features/installment/cubit/installment_cubit.dart';
 import 'package:site_720/features/sub_contactors/views/sub_contractor_details_screen.dart';
 import 'features/project_document/views/project_documents_page.dart';
+import 'features/project_info/views/project_info_page.dart';
+import 'package:site_720/features/project_info/cubit/project_info_cubit.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -181,6 +183,10 @@ class MyApp extends StatelessWidget {
         '/petty': (context) => const PettyScreen(),
         '/subContractorDetails': (context) =>
             const SubContractorDetailsScreen(),
+       '/projectInfo': (context) => BlocProvider(
+      create: (_) => ProjectInfoCubit(),
+      child: const ProjectInfoPage(),
+    ),
       },
     );
   }

@@ -37,6 +37,7 @@ class GetStages {
   String createdBy;
   String username;
   String curingDays;
+  String scheduleDate;
   DateTime startDate;
   DateTime endDate;
   String isLocked;
@@ -51,6 +52,7 @@ class GetStages {
     required this.createdBy,
     required this.username,
     required this.curingDays,
+    required this.scheduleDate,
     required this.startDate,
     required this.endDate,
     required this.isLocked,
@@ -66,6 +68,7 @@ class GetStages {
         createdBy: json["created_by"] ?? "",
         username: json["username"] ?? "",
         curingDays: json["curing_days"] ?? "",
+        scheduleDate: json["scheduled_date"] ?? "",
         startDate: json["start_date"] != null && json["start_date"] != ""
             ? DateTime.parse(json["start_date"])
             : DateTime(1970, 1, 1),
@@ -85,6 +88,7 @@ class GetStages {
         "created_by": createdBy,
         "username": username,
         "curing_days": curingDays,
+        "scheduled_date": scheduleDate,
         "start_date":
             "${startDate.year.toString().padLeft(4, '0')}-${startDate.month.toString().padLeft(2, '0')}-${startDate.day.toString().padLeft(2, '0')}",
         "end_date":

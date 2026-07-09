@@ -176,300 +176,338 @@ class PurchaseList extends StatelessWidget {
             child: BlocBuilder<PurchaseCubit, PurchaseState>(
               builder: (context, state) {
                 return state is PurchaseSuccess
-                    ? ListView.builder(
-                        shrinkWrap: true,
-                        // physics: const NeverScrollableScrollPhysics(),
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        itemCount: state.response.data.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                              padding: const EdgeInsets.all(6.0),
-                              child: InkWell(
-                                onTap: () {
-                                  showMaterialPopup(
-                                    context,
-                                    state.response.data[index],
-                                  );
-                                },
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width * .9,
-                                  height:
-                                      MediaQuery.of(context).size.height * .14,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    color: Colors.white,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.8),
-                                        blurRadius: 3,
-                                        offset: const Offset(0, 3),
-                                      ),
-                                    ],
+                    ? state.response.data.isEmpty
+                        ? const Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.inbox_outlined,
+                                  size: 70,
+                                  color: Colors.grey,
+                                ),
+                                SizedBox(height: 12),
+                                Text(
+                                  "No Data Found",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.grey,
                                   ),
-                                  child: SizedBox(
-                                    width:
-                                        MediaQuery.of(context).size.width * .7,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 8.0,
-                                          left: 8.0,
-                                          right: 8.0,
-                                          bottom: 8.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.all(12),
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              border: Border.all(
-                                                color: Colors.grey.shade200,
-                                              ),
-                                            ),
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Row(
+                                ),
+                              ],
+                            ),
+                          )
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            itemCount: state.response.data.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: InkWell(
+                                    onTap: () {
+                                      showMaterialPopup(
+                                        context,
+                                        state.response.data[index],
+                                      );
+                                    },
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          .9,
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              .14,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: Colors.white,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.withOpacity(0.8),
+                                            blurRadius: 3,
+                                            offset: const Offset(0, 3),
+                                          ),
+                                        ],
+                                      ),
+                                      child: SizedBox(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                .7,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 8.0,
+                                              left: 8.0,
+                                              right: 8.0,
+                                              bottom: 8.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: [
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.all(12),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                  border: Border.all(
+                                                    color: Colors.grey.shade200,
+                                                  ),
+                                                ),
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Expanded(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
                                                         children: [
-                                                          const Icon(
-                                                            Icons
-                                                                .person_outline,
-                                                            size: 16,
-                                                            color: AppColors
-                                                                .primaryColor,
-                                                          ),
-                                                          const SizedBox(
-                                                              width: 6),
-                                                          Expanded(
-                                                            child: Text(
-                                                              state
-                                                                  .response
-                                                                  .data[index]
-                                                                  .supplierName,
-                                                              style:
-                                                                  const TextStyle(
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w700,
+                                                          Row(
+                                                            children: [
+                                                              const Icon(
+                                                                Icons
+                                                                    .person_outline,
+                                                                size: 16,
                                                                 color: AppColors
-                                                                    .coffie,
+                                                                    .primaryColor,
                                                               ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      const SizedBox(height: 8),
-                                                      Row(
-                                                        children: [
-                                                          const Icon(
-                                                            Icons.flag_outlined,
-                                                            size: 16,
-                                                            color:
-                                                                Colors.orange,
-                                                          ),
-                                                          const SizedBox(
-                                                              width: 6),
-                                                          Text(
-                                                            state
-                                                                .response
-                                                                .data[index]
-                                                                .stages,
-                                                            style:
-                                                                const TextStyle(
-                                                              fontSize: 13,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              color: Colors
-                                                                  .black87,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      const SizedBox(height: 8),
-                                                      Row(
-                                                        children: [
-                                                          const Icon(
-                                                            Icons
-                                                                .calendar_today_outlined,
-                                                            size: 14,
-                                                            color: Colors.grey,
+                                                              const SizedBox(
+                                                                  width: 6),
+                                                              Expanded(
+                                                                child: Text(
+                                                                  state
+                                                                      .response
+                                                                      .data[
+                                                                          index]
+                                                                      .supplierName,
+                                                                  style:
+                                                                      const TextStyle(
+                                                                    fontSize:
+                                                                        16,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w700,
+                                                                    color: AppColors
+                                                                        .coffie,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
                                                           ),
                                                           const SizedBox(
-                                                              width: 6),
-                                                          Text(
-                                                            DateFormat(
-                                                                    'dd-MM-yyyy')
-                                                                .format(state
+                                                              height: 8),
+                                                          Row(
+                                                            children: [
+                                                              const Icon(
+                                                                Icons
+                                                                    .flag_outlined,
+                                                                size: 16,
+                                                                color: Colors
+                                                                    .orange,
+                                                              ),
+                                                              const SizedBox(
+                                                                  width: 6),
+                                                              Text(
+                                                                state
                                                                     .response
                                                                     .data[index]
-                                                                    .billDate),
-                                                            style:
-                                                                const TextStyle(
-                                                              fontSize: 12,
+                                                                    .stages,
+                                                                style:
+                                                                    const TextStyle(
+                                                                  fontSize: 13,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  color: Colors
+                                                                      .black87,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 8),
+                                                          Row(
+                                                            children: [
+                                                              const Icon(
+                                                                Icons
+                                                                    .calendar_today_outlined,
+                                                                size: 14,
+                                                                color:
+                                                                    Colors.grey,
+                                                              ),
+                                                              const SizedBox(
+                                                                  width: 6),
+                                                              Text(
+                                                                DateFormat(
+                                                                        'dd-MM-yyyy')
+                                                                    .format(state
+                                                                        .response
+                                                                        .data[
+                                                                            index]
+                                                                        .billDate),
+                                                                style:
+                                                                    const TextStyle(
+                                                                  fontSize: 12,
+                                                                  color: Colors
+                                                                      .grey,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                        horizontal: 12,
+                                                        vertical: 10,
+                                                      ),
+                                                      decoration: BoxDecoration(
+                                                        color: AppColors
+                                                            .primaryColor
+                                                            .withOpacity(.08),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                      ),
+                                                      child: Column(
+                                                        children: [
+                                                          const Text(
+                                                            "Amount",
+                                                            style: TextStyle(
+                                                              fontSize: 11,
                                                               color:
                                                                   Colors.grey,
                                                               fontWeight:
                                                                   FontWeight
-                                                                      .w500,
+                                                                      .w600,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 4),
+                                                          Text(
+                                                            "₹${state.response.data[index].totalAmount}",
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 15,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color: AppColors
+                                                                  .primaryColor,
                                                             ),
                                                           ),
                                                         ],
                                                       ),
-                                                    ],
-                                                  ),
+                                                    ),
+                                                  ],
                                                 ),
-                                                Container(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                    horizontal: 12,
-                                                    vertical: 10,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    color: AppColors
-                                                        .primaryColor
-                                                        .withOpacity(.08),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                  ),
-                                                  child: Column(
-                                                    children: [
-                                                      const Text(
-                                                        "Amount",
-                                                        style: TextStyle(
-                                                          fontSize: 11,
-                                                          color: Colors.grey,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(height: 4),
-                                                      Text(
-                                                        "₹${state.response.data[index].totalAmount}",
-                                                        style: const TextStyle(
-                                                          fontSize: 15,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color: AppColors
-                                                              .primaryColor,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                          // Row(
-                                          //   crossAxisAlignment:
-                                          //       CrossAxisAlignment.end,
-                                          //   mainAxisAlignment:
-                                          //       MainAxisAlignment.spaceBetween,
-                                          //   children: [
-                                          //     Row(
-                                          //       children: [
-                                          //         AmountContainer(
-                                          //           title: "Quantity",
-                                          //           amount: state
-                                          //               .response
-                                          //               .data[index]
-                                          //               .totalQuantity
-                                          //               .toString(),
-                                          //           valueColor:
-                                          //               AppColors.primaryColor,
-                                          //         ),
-                                          //         const SizedBox(
-                                          //           width: 10,
-                                          //         ),
-                                          //         AmountContainer(
-                                          //           title: "Amount",
-                                          //           amount:
-                                          //               "₹ ${state.response.data[index].totalAmount}",
-                                          //           valueColor:
-                                          //               AppColors.primaryColor,
-                                          //         ),
-                                          //       ],
-                                          //     ),
-                                          //     // Row(
-                                          //     //   children: [
-                                          //     //     Container(
-                                          //     //       height: 25,
-                                          //     //       width: 25,
-                                          //     //       decoration: BoxDecoration(
-                                          //     //         borderRadius:
-                                          //     //             BorderRadius.circular(
-                                          //     //                 5),
-                                          //     //         color:
-                                          //     //             AppColors.lightBlue,
-                                          //     //         boxShadow: [
-                                          //     //           BoxShadow(
-                                          //     //             color: Colors.grey
-                                          //     //                 .withOpacity(0.8),
-                                          //     //             blurRadius: 6,
-                                          //     //             offset: const Offset(
-                                          //     //                 1, 1),
-                                          //     //           ),
-                                          //     //         ],
-                                          //     //       ),
-                                          //     //       child: const Icon(
-                                          //     //         Icons.edit,
-                                          //     //         size: 18,
-                                          //     //         color: Colors.white,
-                                          //     //       ),
-                                          //     //     ),
-                                          //     //     const SizedBox(
-                                          //     //       width: 7,
-                                          //     //     ),
-                                          //     //     Container(
-                                          //     //       height: 25,
-                                          //     //       width: 25,
-                                          //     //       decoration: BoxDecoration(
-                                          //     //         borderRadius:
-                                          //     //             BorderRadius.circular(
-                                          //     //                 5),
-                                          //     //         color: Colors.red,
-                                          //     //         boxShadow: [
-                                          //     //           BoxShadow(
-                                          //     //             color: Colors.grey
-                                          //     //                 .withOpacity(0.8),
-                                          //     //             blurRadius: 6,
-                                          //     //             offset: const Offset(
-                                          //     //                 1, 1),
-                                          //     //           ),
-                                          //     //         ],
-                                          //     //       ),
-                                          //     //       child: const Icon(
-                                          //     //         Icons.delete,
-                                          //     //         size: 18,
-                                          //     //         color: Colors.white,
-                                          //     //       ),
-                                          //     //     ),
-                                          //     //   ],
-                                          //     // ),
-                                          //   ],
-                                          // ),
-                                        ],
+                                              )
+                                              // Row(
+                                              //   crossAxisAlignment:
+                                              //       CrossAxisAlignment.end,
+                                              //   mainAxisAlignment:
+                                              //       MainAxisAlignment.spaceBetween,
+                                              //   children: [
+                                              //     Row(
+                                              //       children: [
+                                              //         AmountContainer(
+                                              //           title: "Quantity",
+                                              //           amount: state
+                                              //               .response
+                                              //               .data[index]
+                                              //               .totalQuantity
+                                              //               .toString(),
+                                              //           valueColor:
+                                              //               AppColors.primaryColor,
+                                              //         ),
+                                              //         const SizedBox(
+                                              //           width: 10,
+                                              //         ),
+                                              //         AmountContainer(
+                                              //           title: "Amount",
+                                              //           amount:
+                                              //               "₹ ${state.response.data[index].totalAmount}",
+                                              //           valueColor:
+                                              //               AppColors.primaryColor,
+                                              //         ),
+                                              //       ],
+                                              //     ),
+                                              //     // Row(
+                                              //     //   children: [
+                                              //     //     Container(
+                                              //     //       height: 25,
+                                              //     //       width: 25,
+                                              //     //       decoration: BoxDecoration(
+                                              //     //         borderRadius:
+                                              //     //             BorderRadius.circular(
+                                              //     //                 5),
+                                              //     //         color:
+                                              //     //             AppColors.lightBlue,
+                                              //     //         boxShadow: [
+                                              //     //           BoxShadow(
+                                              //     //             color: Colors.grey
+                                              //     //                 .withOpacity(0.8),
+                                              //     //             blurRadius: 6,
+                                              //     //             offset: const Offset(
+                                              //     //                 1, 1),
+                                              //     //           ),
+                                              //     //         ],
+                                              //     //       ),
+                                              //     //       child: const Icon(
+                                              //     //         Icons.edit,
+                                              //     //         size: 18,
+                                              //     //         color: Colors.white,
+                                              //     //       ),
+                                              //     //     ),
+                                              //     //     const SizedBox(
+                                              //     //       width: 7,
+                                              //     //     ),
+                                              //     //     Container(
+                                              //     //       height: 25,
+                                              //     //       width: 25,
+                                              //     //       decoration: BoxDecoration(
+                                              //     //         borderRadius:
+                                              //     //             BorderRadius.circular(
+                                              //     //                 5),
+                                              //     //         color: Colors.red,
+                                              //     //         boxShadow: [
+                                              //     //           BoxShadow(
+                                              //     //             color: Colors.grey
+                                              //     //                 .withOpacity(0.8),
+                                              //     //             blurRadius: 6,
+                                              //     //             offset: const Offset(
+                                              //     //                 1, 1),
+                                              //     //           ),
+                                              //     //         ],
+                                              //     //       ),
+                                              //     //       child: const Icon(
+                                              //     //         Icons.delete,
+                                              //     //         size: 18,
+                                              //     //         color: Colors.white,
+                                              //     //       ),
+                                              //     //     ),
+                                              //     //   ],
+                                              //     // ),
+                                              //   ],
+                                              // ),
+                                            ],
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ),
-                              ));
-                        },
-                      )
+                                  ));
+                            },
+                          )
                     : state is PurchaseLoading
                         ? ListView.builder(
                             itemCount: 7,

@@ -32,90 +32,114 @@ class _AddTravelExpenseScreenState extends State<AddTravelExpenseScreen> {
   final dateController = TextEditingController();
 
   final fromController = TextEditingController();
+  final otherAmountController = TextEditingController();
+  final otherAmountCauseController = TextEditingController();
 
   final routeController = TextEditingController();
 
   List<VehicleTypeModel> vehicleList = [];
 
   VehicleTypeModel? selectedVehicle;
+  int? initialTotalAmount;
+  bool isTotalEdited = false;
 
   @override
   void initState() {
     super.initState();
 
-    /// EDIT
+    otherAmountController.addListener(() {
+      if (mounted) setState(() {});
+    });
+
     if (widget.isEdit && widget.item != null) {
       dateController.text = widget.item!.date;
-
       fromController.text = widget.item!.from;
-
       remarkController.text = widget.item!.remark;
+      initialTotalAmount = int.tryParse(widget.item!.totalAmount) ?? 0;
+      otherAmountController.text = widget.item!.otherAmount;
+      otherAmountCauseController.text = widget.item!.otherAmountCause;
 
       expenseRows.clear();
 
-      /// LOAD MULTIPLE ROWS
-      final details = widget.item!.travelDetails ?? [];
+      final details = widget.item!.travelDetails;
 
       if (details.isNotEmpty) {
         for (var detail in details) {
+          final toController = TextEditingController(
+            text: detail.to,
+          );
+
+          final kmController = TextEditingController(
+            text: detail.km,
+          );
+
+          toController.addListener(() {
+            updateRoute();
+          });
+
+          kmController.addListener(() {
+            if (mounted) {
+              setState(() {
+                isTotalEdited = true;
+              });
+            }
+          });
+
           expenseRows.add({
-            "to": TextEditingController(
-              text: detail.to.toString(),
-            ),
-
-            "km": TextEditingController(
-              text: detail.km.toString(),
-            ),
-
-            /// EXISTING IMAGE URL
-            "image": detail.image.toString(),
-
-            /// NEW FILE
+            "to": toController,
+            "km": kmController,
+            "image": detail.image,
             "file": null,
           });
         }
       } else {
-        /// FALLBACK
+        final toController = TextEditingController(
+          text: widget.item!.to,
+        );
+
+        final kmController = TextEditingController(
+          text: widget.item!.km,
+        );
+
+        toController.addListener(() {
+          updateRoute();
+        });
+
+        kmController.addListener(() {
+          if (mounted) setState(() {});
+        });
+
         expenseRows.add({
-          "to": TextEditingController(
-            text: widget.item!.to,
-          ),
-          "km": TextEditingController(
-            text: widget.item!.km,
-          ),
+          "to": toController,
+          "km": kmController,
           "image": "",
           "file": null,
         });
       }
 
-      /// ROUTE
       updateRoute();
-    }
-
-    /// ADD
-    else {
-      dateController.text = DateFormat(
-        "dd-MM-yyyy",
-      ).format(DateTime.now());
+    } else {
+      dateController.text = DateFormat("dd-MM-yyyy").format(DateTime.now());
 
       addNewRow();
     }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      getVehicleTypes();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await getVehicleTypes();
+
+      if (mounted) {
+        setState(() {});
+      }
     });
   }
 
-  /// GET VEHICLE TYPES
   Future<void> getVehicleTypes() async {
     try {
-      final cubit = BlocProvider.of<TravelExpenseCubit>(
-        context,
-      );
+      final cubit = context.read<TravelExpenseCubit>();
 
-      final response = await cubit.getVehicleType();
+      vehicleList = await cubit.getVehicleType();
 
-      vehicleList = response;
+      if (vehicleList.isEmpty) return;
 
       if (widget.isEdit && widget.item != null) {
         selectedVehicle = vehicleList.firstWhere(
@@ -123,21 +147,36 @@ class _AddTravelExpenseScreenState extends State<AddTravelExpenseScreen> {
           orElse: () => vehicleList.first,
         );
       } else {
-        if (vehicleList.isNotEmpty) {
-          selectedVehicle = vehicleList.first;
-        }
+        selectedVehicle = vehicleList.first;
       }
 
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 
   void addNewRow() {
+    final toController = TextEditingController();
+    final kmController = TextEditingController();
+
+    toController.addListener(() {
+      updateRoute();
+    });
+
+    kmController.addListener(() {
+      if (mounted) {
+        setState(() {
+          isTotalEdited = true;
+        });
+      }
+    });
+
     expenseRows.add({
-      "to": TextEditingController(),
-      "km": TextEditingController(),
+      "to": toController,
+      "km": kmController,
       "image": "",
       "file": null,
     });
@@ -213,23 +252,25 @@ class _AddTravelExpenseScreenState extends State<AddTravelExpenseScreen> {
 
   /// TOTAL AMOUNT
   int totalAmount() {
+    // Show API total until the user edits something
+    if (widget.isEdit && !isTotalEdited && initialTotalAmount != null) {
+      return initialTotalAmount!;
+    }
+
     int total = 0;
 
-    int rate = int.tryParse(
-          selectedVehicle?.ratePerKm ?? "0",
-        ) ??
-        0;
+    final int rate = int.tryParse(selectedVehicle?.ratePerKm ?? "0") ?? 0;
 
-    for (var row in expenseRows) {
-      int km = int.tryParse(
-            row["km"].text,
-          ) ??
-          0;
+    for (final row in expenseRows) {
+      final int km = int.tryParse(row["km"].text.trim()) ?? 0;
 
       total += km * rate;
     }
 
-    return total;
+    final int otherAmount =
+        int.tryParse(otherAmountController.text.trim()) ?? 0;
+
+    return total + otherAmount;
   }
 
   /// SUBMIT
@@ -272,12 +313,16 @@ class _AddTravelExpenseScreenState extends State<AddTravelExpenseScreen> {
 
     /// UPDATE
     if (widget.isEdit && widget.item != null) {
+      final int finalTotal = totalAmount();
+
       context.read<TravelExpenseCubit>().updateTravelExpense(
             travelId: widget.item!.travelId.toString(),
             date: dateController.text,
             from: fromController.text,
             vehicleType: selectedVehicle!.id,
-            totalAmount: totalAmount().toString(),
+            totalAmount: finalTotal.toString(),
+            otherAmount: otherAmountController.text,
+            otherAmountCause: otherAmountCauseController.text,
             remark: remarkController.text,
             rows: expenseRows,
           );
@@ -290,6 +335,8 @@ class _AddTravelExpenseScreenState extends State<AddTravelExpenseScreen> {
             from: fromController.text,
             vehicleType: selectedVehicle!.id,
             totalAmount: totalAmount().toString(),
+            otherAmount: otherAmountController.text,
+            otherAmountCause: otherAmountCauseController.text,
             remark: remarkController.text,
             rows: expenseRows,
           );
@@ -474,23 +521,24 @@ class _AddTravelExpenseScreenState extends State<AddTravelExpenseScreen> {
 
                         DropdownButtonFormField<VehicleTypeModel>(
                           value: selectedVehicle,
-                          decoration: inputDecoration(
-                            "Select Vehicle",
-                          ),
-                          items: vehicleList.map(
-                            (vehicle) {
-                              return DropdownMenuItem<VehicleTypeModel>(
-                                value: vehicle,
-                                child: Text(
-                                  "${vehicle.vehicleType} (${vehicle.ratePerKm}/KM)",
-                                ),
-                              );
-                            },
-                          ).toList(),
+                          decoration: inputDecoration("Select Vehicle"),
+                          items: vehicleList.map((vehicle) {
+                            return DropdownMenuItem<VehicleTypeModel>(
+                              value: vehicle,
+                              child: Text(
+                                "${vehicle.vehicleType} (${vehicle.ratePerKm}/KM)",
+                              ),
+                            );
+                          }).toList(),
                           onChanged: (value) {
-                            selectedVehicle = value;
+                            if (value == null) return;
 
-                            setState(() {});
+                            setState(() {
+                              selectedVehicle = value;
+
+                              // Switch from API total to calculated total
+                              isTotalEdited = true;
+                            });
                           },
                         ),
 
@@ -550,7 +598,9 @@ class _AddTravelExpenseScreenState extends State<AddTravelExpenseScreen> {
                                           hint: "KM",
                                           keyboard: TextInputType.number,
                                           onChanged: (v) {
-                                            setState(() {});
+                                            setState(() {
+                                              isTotalEdited = true;
+                                            });
                                           },
                                         ),
                                       ),
@@ -721,8 +771,77 @@ class _AddTravelExpenseScreenState extends State<AddTravelExpenseScreen> {
                           hint: "Route",
                           readOnly: true,
                         ),
-
                         const SizedBox(height: 20),
+
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: Colors.grey.shade300),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 8,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              /// HEADER
+                              Row(
+                                children: const [
+                                  Icon(
+                                    Icons.receipt_long,
+                                    color: Color.fromARGB(247, 100, 38, 53),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    "Other Expense",
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              const Divider(height: 24),
+
+                              /// AMOUNT
+                              buildTitle("Amount"),
+
+                              const SizedBox(height: 8),
+
+                              buildField(
+                                controller: otherAmountController,
+                                hint: "Enter Amount",
+                                keyboard: TextInputType.number,
+                                onChanged: (value) {
+                                  setState(() {
+                                    isTotalEdited = true;
+                                  });
+                                },
+                              ),
+
+                              const SizedBox(height: 18),
+
+                              /// DESCRIPTION
+                              buildTitle("Description"),
+
+                              const SizedBox(height: 8),
+
+                              buildField(
+                                controller: otherAmountCauseController,
+                                hint: "Enter Description",
+                                maxLines: 3,
+                              ),
+                            ],
+                          ),
+                        ),
 
                         /// TOTAL KM
                         Align(
@@ -742,7 +861,9 @@ class _AddTravelExpenseScreenState extends State<AddTravelExpenseScreen> {
                         Align(
                           alignment: Alignment.centerRight,
                           child: Text(
-                            "Total Amount : ₹ ${totalAmount()}",
+                            selectedVehicle == null
+                                ? "Total Amount : ₹ 0"
+                                : "Total Amount : ₹ ${totalAmount()}",
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 15,

@@ -15,6 +15,8 @@ import '../../connectivity/cubit/connectivity_state.dart';
 import '../../payment_details/widgets/amount_container.dart';
 import '../cubit/deducion_work_cubit.dart';
 import '../cubit/deduction_work_state.dart';
+import 'package:file_picker/file_picker.dart';
+import 'dart:io';
 
 class DeductionWork extends StatelessWidget {
   DeductionWork({super.key});
@@ -28,6 +30,7 @@ class DeductionWork extends StatelessWidget {
   List<DeductionWorkist> workList = [];
 
   String? selectedStatus;
+  PlatformFile? selectedFile;
 
   @override
   Widget build(BuildContext context) {
@@ -706,31 +709,6 @@ class DeductionWork extends StatelessWidget {
                             fontWeight: FontWeight.bold),
                       ),
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.95,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value == "") {
-                            return "Enter work";
-                          } else {
-                            return null;
-                          }
-                        },
-                        onTap: () {},
-                        controller: work,
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.all(10),
-                          labelText: 'work',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          prefixIcon: const Icon(Icons.badge),
-                        ),
-                      ),
-                    ),
                     const SizedBox(
                       height: 12,
                     ),
@@ -779,20 +757,20 @@ class DeductionWork extends StatelessWidget {
                       child: TextFormField(
                         validator: (value) {
                           if (value == "") {
-                            return "Enter Percentage";
+                            return "Enter work";
                           } else {
                             return null;
                           }
                         },
                         onTap: () {},
-                        controller: percentage,
+                        controller: work,
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.all(10),
-                          labelText: 'Percentage',
+                          labelText: 'work',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5),
                           ),
-                          prefixIcon: const Icon(Icons.percent),
+                          prefixIcon: const Icon(Icons.badge),
                         ),
                       ),
                     ),
@@ -856,6 +834,27 @@ class DeductionWork extends StatelessWidget {
                         ),
                       ),
                     ),
+                    StatefulBuilder(
+                      builder: (context, setState) {
+                        return ElevatedButton.icon(
+                          onPressed: () async {
+                            FilePickerResult? result =
+                                await FilePicker.platform.pickFiles();
+
+                            if (result != null) {
+                              setState(() {
+                                selectedFile = result.files.first;
+                              });
+                            }
+                          },
+                          icon: const Icon(Icons.attach_file),
+                          label: Text(
+                            selectedFile?.name ?? "Choose File",
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        );
+                      },
+                    ),
                     const SizedBox(
                       height: 20,
                     ),
@@ -864,23 +863,29 @@ class DeductionWork extends StatelessWidget {
                         if (formKey.currentState!.validate()) {
                           if (status == "add") {
                             cubit.addDeductionworkList(
-                                projectId,
-                                clientId,
-                                work.text,
-                                selectedStatus,
-                                percentage.text,
-                                amount.text,
-                                description.text);
+                              projectId,
+                              clientId,
+                              work.text,
+                              selectedStatus,
+                              amount.text,
+                              description.text,
+                              selectedFile != null
+                                  ? File(selectedFile!.path!)
+                                  : null,
+                            );
                           } else {
                             cubit.editDeductionworkList(
-                                projectId,
-                                clientId,
-                                workId,
-                                work.text,
-                                selectedStatus,
-                                percentage.text,
-                                amount.text,
-                                description.text);
+                              projectId,
+                              clientId,
+                              workId,
+                              work.text,
+                              selectedStatus,
+                              amount.text,
+                              description.text,
+                              selectedFile != null
+                                  ? File(selectedFile!.path!)
+                                  : null,
+                            );
                           }
                         }
                         work.clear();

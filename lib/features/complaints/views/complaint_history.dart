@@ -1,6 +1,5 @@
 // ignore_for_file: must_be_immutable
 
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -220,20 +219,20 @@ class ComplaintHistoryPage extends StatelessWidget {
                                               complaintHistory![0].incidentDate,
                                           valueColor: AppColors.primaryColor,
                                         ),
-                                        const SizedBox(width:8),
+                                        const SizedBox(width: 8),
                                         AmountContainer(
                                           title: "Complaint Nature",
                                           amount: complaintHistory![0]
                                               .complaintNature,
                                           valueColor: AppColors.primaryColor,
                                         ),
-                                         const SizedBox(width:8),
-                                       InkWell(
+                                        const SizedBox(width: 8),
+                                        InkWell(
                                           onTap: () {
                                             updateStatus(context, cubit);
                                           },
                                           child: Container(
-                                            width:98,
+                                            width: 98,
                                             decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(5),
@@ -258,26 +257,28 @@ class ComplaintHistoryPage extends StatelessWidget {
                                                         .spaceBetween,
                                                 children: [
                                                   Text(
-                                                   complaintHistory![0]
-                                                              .complaintStatus,
-                                              style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight:
-                                                      FontWeight.bold,
-                                                  color: complaintHistory![0]
-                                                            .complaintStatus ==
-                                                        "IN-PROGRESS"
-                                                    ? Colors.orange
-                                                    : complaintHistory![0]
-                                                                .complaintStatus ==
-                                                            "COMPLETED"
-                                                        ? Colors.green
-                                                        : complaintHistory![0]
-                                                                    .complaintStatus ==
-                                                                "REJECTED"
-                                                            ? Colors.red
-                                                            : Colors.blue,
-                                              ),
+                                                    complaintHistory![0]
+                                                        .complaintStatus,
+                                                    style: TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: complaintHistory![
+                                                                      0]
+                                                                  .complaintStatus ==
+                                                              "IN-PROGRESS"
+                                                          ? Colors.orange
+                                                          : complaintHistory![0]
+                                                                      .complaintStatus ==
+                                                                  "COMPLETED"
+                                                              ? Colors.green
+                                                              : complaintHistory![
+                                                                              0]
+                                                                          .complaintStatus ==
+                                                                      "REJECTED"
+                                                                  ? Colors.red
+                                                                  : Colors.blue,
+                                                    ),
                                                   ),
                                                   // const SizedBox(
                                                   //   width: 8,
@@ -341,7 +342,7 @@ class ComplaintHistoryPage extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                 const Text(
+                                const Text(
                                   "Description:",
                                   style: TextStyle(
                                       fontSize: 16,
@@ -350,41 +351,94 @@ class ComplaintHistoryPage extends StatelessWidget {
                                 Text(
                                   complaintHistory![0].description,
                                   style: const TextStyle(
-                                      fontSize: 14,
-                                    ),
+                                    fontSize: 14,
+                                  ),
                                 ),
-                                const SizedBox(height: 8,),
+                                const SizedBox(height: 8),
                                 const Text(
                                   "Added Image:",
                                   style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.pushNamed(
-                                      context,
-                                      '/imageViewer',
-                                      arguments: {
-                                        "image": complaintHistory![0].fileUrl,
-                                        "title": "Complaint Image",
-                                      },
-                                    );
-                                  },
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    child: CachedNetworkImage(
-                                      imageUrl: complaintHistory![0].fileUrl,
-                                      height: 100.0,
-                                      width: 100.0,
-                                      fit: BoxFit.cover,
-                                      placeholder: (context, url) =>
-                                          const CircularProgressIndicator(),
-                                      errorWidget: (context, url, error) =>
-                                          const Icon(Icons.error),
-                                    ),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
+                                const SizedBox(height: 8),
+                                complaintHistory![0].fileUrl.trim().isEmpty
+                                    ? Container(
+                                        height: 100,
+                                        width: 100,
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Colors.grey.shade300),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          color: Colors.grey.shade100,
+                                        ),
+                                        child: const Center(
+                                          child: Text(
+                                            "No Image Found",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : InkWell(
+                                        onTap: () {
+                                          Navigator.pushNamed(
+                                            context,
+                                            '/imageViewer',
+                                            arguments: {
+                                              "image":
+                                                  complaintHistory![0].fileUrl,
+                                              "title": "Complaint Image",
+                                            },
+                                          );
+                                        },
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
+                                          child: CachedNetworkImage(
+                                            imageUrl:
+                                                complaintHistory![0].fileUrl,
+                                            height: 100,
+                                            width: 100,
+                                            fit: BoxFit.cover,
+                                            placeholder: (context, url) =>
+                                                const SizedBox(
+                                              height: 100,
+                                              width: 100,
+                                              child: Center(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              ),
+                                            ),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Container(
+                                              height: 100,
+                                              width: 100,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                color: Colors.grey.shade100,
+                                              ),
+                                              child: const Center(
+                                                child: Text(
+                                                  "No Image Found",
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                               ],
                             ),
                           ),
@@ -398,139 +452,138 @@ class ComplaintHistoryPage extends StatelessWidget {
     );
   }
 
- Future<void> updateStatus(
-  BuildContext context,
-  ComplaintHistoryCubit cubit,
-) async {
-  await cubit.getComplaintStatuses();
+  Future<void> updateStatus(
+    BuildContext context,
+    ComplaintHistoryCubit cubit,
+  ) async {
+    await cubit.getComplaintStatuses();
 
-  return showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (context) {
-      return BlocBuilder<ComplaintHistoryCubit, ComplaintHistoryState>(
-        builder: (context, state) {
-          return StatefulBuilder(
-            builder: (context, setState) {
-              List<ComplaintStatus> statusList = [];
-              if (state is ComplaintStatusSuccess) {
-                statusList = state.statuses;
-              }
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return BlocBuilder<ComplaintHistoryCubit, ComplaintHistoryState>(
+          builder: (context, state) {
+            return StatefulBuilder(
+              builder: (context, setState) {
+                List<ComplaintStatus> statusList = [];
+                if (state is ComplaintStatusSuccess) {
+                  statusList = state.statuses;
+                }
 
-              return AlertDialog(
-                backgroundColor: Colors.white,
-                content: SizedBox(
-                  height: image != null ? 480 : 350,
-                  child: SingleChildScrollView(
-                    child: Form(
-                      key: formKey,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(top: 16.0, bottom: 25),
-                            child: Text(
-                              "Update Status",
-                              style: TextStyle(
-                                  color: AppColors.primaryColor,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.95,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: DropdownButtonFormField<String>(
-                              value: selectedStatus,
-                              items: statusList.map((data) {
-                                return DropdownMenuItem<String>(
-                                  value: data.id,
-                                  child: Text(data.name),
-                                );
-                              }).toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedStatus = value;
-                                });
-                              },
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return "Select a Status";
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.all(10),
-                                labelText: 'Status*',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                                prefixIcon: const Icon(Icons.info),
+                return AlertDialog(
+                  backgroundColor: Colors.white,
+                  content: SizedBox(
+                    height: image != null ? 480 : 350,
+                    child: SingleChildScrollView(
+                      child: Form(
+                        key: formKey,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(top: 16.0, bottom: 25),
+                              child: Text(
+                                "Update Status",
+                                style: TextStyle(
+                                    color: AppColors.primaryColor,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 12,
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.95,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: TextFormField(
-                              keyboardType: TextInputType.text,
-                              controller: comment,
-                              decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.all(10),
-                                labelText: 'Comment',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.95,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: DropdownButtonFormField<String>(
+                                value: selectedStatus,
+                                items: statusList.map((data) {
+                                  return DropdownMenuItem<String>(
+                                    value: data.id,
+                                    child: Text(data.name),
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedStatus = value;
+                                  });
+                                },
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return "Select a Status";
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.all(10),
+                                  labelText: 'Status*',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  prefixIcon: const Icon(Icons.info),
                                 ),
-                                prefixIcon: const Icon(Icons.text_fields),
                               ),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 12,
-                          ),
-                        
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          GestureDetector(
-                            // onTap: () async {
-                            //   if (formKey.currentState!.validate()) {
-                            //     cubit.updateComplaintStatus(
-                            //         complaintId,
-                            //         comment.text,
-                            //         selectedStatus!);
-                            //     image = null;
-                            //     selectedStatus = null;
-                            //     comment.clear();
-                            //     Navigator.pop(context);
-                            //   }
-                            // },
-                            child: LargeButton(title: "Update"),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text('Close'),
-                          ),
-                        ],
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.95,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: TextFormField(
+                                keyboardType: TextInputType.text,
+                                controller: comment,
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.all(10),
+                                  labelText: 'Comment',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  prefixIcon: const Icon(Icons.text_fields),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            GestureDetector(
+                              // onTap: () async {
+                              //   if (formKey.currentState!.validate()) {
+                              //     cubit.updateComplaintStatus(
+                              //         complaintId,
+                              //         comment.text,
+                              //         selectedStatus!);
+                              //     image = null;
+                              //     selectedStatus = null;
+                              //     comment.clear();
+                              //     Navigator.pop(context);
+                              //   }
+                              // },
+                              child: LargeButton(title: "Update"),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Close'),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              );
-            },
-          );
-        },
-      );
-    },
-  );
-}
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
 }

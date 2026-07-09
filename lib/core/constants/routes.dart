@@ -45,4 +45,5 @@ class AppRoutes {
   static const vistDetails = '/visitDetails';
   static const visitHistory = '/visitHistory';
   static const subContractorDetails = '/subContractorDetails';
+  static const projectInfo = '/projectInfo';
 }

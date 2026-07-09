@@ -76,6 +76,7 @@ import '../models/stockconsume/material_dropdown_model.dart';
 import '../models/stockconsume/project_dropdown_model.dart';
 import '../models/stockconsume/stage_dropdown_model.dart';
 import '../models/projectdocument/project_document_model.dart';
+import '../models/project_info/project_info_model.dart';
 
 class HttpServices {
   static Future apiAuth() async {
@@ -228,6 +229,7 @@ class HttpServices {
         }),
       );
       if (response.statusCode == 200) {
+        print("Project List Response: ${response.body}");
         return projectListModelFromJson(response.body);
       }
     } catch (e) {
@@ -270,6 +272,7 @@ class HttpServices {
         }),
       );
       if (response.statusCode == 200) {
+        print("Project Details Response: ${response.body}");
         return projectDetailsModelFromJson(response.body);
       }
     } catch (e) {
@@ -379,6 +382,7 @@ class HttpServices {
         body: ({'token': await getSharedPreference('token')}),
       );
       if (response.statusCode == 200) {
+        print("Complaint List Response: ${response.body}");
         return complaintListModelFromJson(response.body);
       }
     } catch (e) {
@@ -431,7 +435,7 @@ class HttpServices {
         }),
       );
       if (response.statusCode == 200) {
-        // print("Sub Contractor List Response: ${response.body}");
+        print("Sub Contractor List Response: ${response.body}");
         return contractorListModelFromJson(response.body);
       }
     } catch (e) {
@@ -689,7 +693,7 @@ class HttpServices {
         },
       );
       if (response.statusCode == 200) {
-        print("response : ${response.body}");
+        // print("response : ${response.body}");
         return getExpenseListFromJson(response.body);
       }
     } catch (e) {
@@ -706,7 +710,7 @@ class HttpServices {
         },
       );
       if (response.statusCode == 200) {
-        // print("responses : ${response.body}");
+        print("responses : ${response.body}");
         return salaryLedgerResponseFromJson(response.body);
       }
     } catch (e) {
@@ -1104,35 +1108,52 @@ class HttpServices {
     }
   }
 
-  static Future adddeductionWork(
+  static Future<SuccessResponse?> adddeductionWork(
     String projectId,
     String clintId,
     String work,
-    selectedStatus,
-    String percentage,
+    dynamic selectedStatus,
     String amount,
     String description,
+    File? file,
   ) async {
     try {
-      http.Response response = await http.post(
+      var request = http.MultipartRequest(
+        "POST",
         Uri.parse("${await Config.getUrl()}add_deduction_work"),
-        body: {
-          'token': await getSharedPreference('token'),
-          "project_id": projectId,
-          "client_id": clintId,
-          "work": work,
-          "phase": selectedStatus,
-          "percentage": percentage,
-          "amount": amount,
-          "description": description,
-        },
       );
+
+      request.fields['token'] = await getSharedPreference('token');
+      request.fields['project_id'] = projectId;
+      request.fields['client_id'] = clintId;
+      request.fields['work'] = work;
+      request.fields['phase'] = selectedStatus.toString();
+      request.fields['amount'] = amount;
+      request.fields['description'] = description;
+
+      if (file != null) {
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'file',
+            file.path,
+          ),
+        );
+      }
+
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+
       if (response.statusCode == 200) {
         return successResponseFromJson(response.body);
       }
+
+      log("Status Code: ${response.statusCode}");
+      log(response.body);
     } catch (e) {
       log(e.toString());
     }
+
+    return null;
   }
 
   static Future editdeductionWork(
@@ -1141,9 +1162,9 @@ class HttpServices {
     String workId,
     String work,
     selectedStatus,
-    String percentage,
     String amount,
     String description,
+    File? file,
   ) async {
     try {
       http.Response response = await http.post(
@@ -1155,9 +1176,9 @@ class HttpServices {
           "deduction_id": workId,
           "work": work,
           "phase": selectedStatus,
-          "percentage": percentage,
           "amount": amount,
           "description": description,
+          "file": file,
         },
       );
       if (response.statusCode == 200) {
@@ -2437,6 +2458,8 @@ class HttpServices {
     required String from,
     required String vehicleType,
     required String totalAmount,
+    required String otherAmount,
+    required String otherAmountCause,
     required String remark,
     required List<Map<String, dynamic>> rows,
   }) async {
@@ -2454,6 +2477,8 @@ class HttpServices {
       request.fields["from"] = from;
       request.fields["vehicle_type"] = vehicleType;
       request.fields["total_amount"] = totalAmount;
+      request.fields["other_amount"] = otherAmount;
+      request.fields["other_amount_cause"] = otherAmountCause;
       request.fields["remark"] = remark;
 
       /// ARRAY VALUES
@@ -2493,6 +2518,8 @@ class HttpServices {
     required String from,
     required String vehicleType,
     required String totalAmount,
+    required String otherAmount,
+    required String otherAmountCause,
     required String remark,
     required List<Map<String, dynamic>> rows,
   }) async {
@@ -2517,6 +2544,8 @@ class HttpServices {
       request.fields["from"] = from;
       request.fields["vehicle_type"] = vehicleType;
       request.fields["total_amount"] = totalAmount;
+      request.fields["other_amount"] = otherAmount;
+      request.fields["other_amount_cause"] = otherAmountCause;
       request.fields["remark"] = remark;
 
       for (int i = 0; i < rows.length; i++) {
@@ -2737,7 +2766,7 @@ class HttpServices {
       );
 
       if (response.statusCode == 200) {
-        print("GET EXPENSE RESPONSE : ${response.body}");
+        // print("GET EXPENSE RESPONSE : ${response.body}");
 
         return jsonDecode(response.body);
       }
@@ -3085,7 +3114,7 @@ class HttpServices {
       );
 
       if (response.statusCode == 200) {
-        print("Petty Cash Response : ${response.body}");
+        // print("Petty Cash Response : ${response.body}");
 
         return pettyCashResponseFromJson(response.body);
       }
@@ -3343,5 +3372,30 @@ class HttpServices {
     }
 
     return [];
+  }
+
+  static Future<ProjectInfoModel?> getProjectInfo({
+    required String projectId,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse("${await Config.getUrl()}projectInfoApi"),
+        body: {
+          "token": await getSharedPreference("token"),
+          "project_id": projectId,
+        },
+      );
+
+      print("Status Code: ${response.statusCode}");
+      print("Response: ${response.body}");
+
+      if (response.statusCode == 200) {
+        return projectInfoModelFromJson(response.body);
+      }
+    } catch (e) {
+      print("Exception: $e");
+    }
+
+    return null;
   }
 }

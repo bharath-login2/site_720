@@ -769,7 +769,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                           colors: const [
                                             Colors.green,
                                             Colors.orange,
-                                            Colors.green,
+                                            Colors.blue,
+                                            // AppColors.primaryColor,
                                             Colors.red,
                                           ],
                                           // labels: ["", "", "", ""],

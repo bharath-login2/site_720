@@ -24,6 +24,81 @@ class ProjectDocumentsPage extends StatelessWidget {
     }
   }
 
+  void _showImageDialog(
+    BuildContext context,
+    String imageUrl,
+    String title,
+  ) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: Colors.black,
+          insetPadding: const EdgeInsets.all(10),
+          child: Stack(
+            children: [
+              InteractiveViewer(
+                minScale: 0.5,
+                maxScale: 5,
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.contain,
+                  loadingBuilder: (context, child, progress) {
+                    if (progress == null) return child;
+                    return const SizedBox(
+                      height: 300,
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    return const SizedBox(
+                      height: 300,
+                      child: Center(
+                        child: Icon(
+                          Icons.broken_image,
+                          color: Colors.white,
+                          size: 80,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Positioned(
+                top: 10,
+                left: 15,
+                right: 50,
+                child: Text(
+                  title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 5,
+                right: 5,
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.close,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -65,7 +140,19 @@ class ProjectDocumentsPage extends StatelessWidget {
                     ),
                     child: InkWell(
                       borderRadius: BorderRadius.circular(12),
-                      onTap: () => _openDocument(doc.mediaUrl),
+                      onTap: () {
+                        final url = doc.mediaUrl.toLowerCase();
+
+                        if (url.endsWith(".jpg") ||
+                            url.endsWith(".jpeg") ||
+                            url.endsWith(".png") ||
+                            url.endsWith(".gif") ||
+                            url.endsWith(".webp")) {
+                          _showImageDialog(context, doc.mediaUrl, doc.title);
+                        } else {
+                          _openDocument(doc.mediaUrl);
+                        }
+                      },
                       child: Padding(
                         padding: const EdgeInsets.all(12),
                         child: Row(

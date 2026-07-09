@@ -40,23 +40,30 @@ class Data {
   String designation;
   String totalProjectCount;
   List<ProjectList> projectList;
-  // Permissions permissions;
+  Permissions permissions;
 
   Data({
     required this.username,
     required this.designation,
     required this.totalProjectCount,
     required this.projectList,
-    // required this.permissions,
+    required this.permissions,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-        username: json["username"]??"",
-        designation: json["designation"]??"",
-        totalProjectCount: json["total_project_count"]??"",
+        username: json["username"] ?? "",
+        designation: json["designation"] ?? "",
+        totalProjectCount: json["total_project_count"] ?? "",
         projectList: List<ProjectList>.from(
-            json["project_list"].map((x) => ProjectList.fromJson(x))),
-        // permissions: Permissions.fromJson(json["permissions"]),
+          (json["project_list"] ?? []).map((x) => ProjectList.fromJson(x)),
+        ),
+        permissions: json["permissions"] is Map<String, dynamic>
+            ? Permissions.fromJson(json["permissions"])
+            : Permissions(
+                addProjects: false,
+                editProjects: false,
+                deleteProjects: false,
+              ),
       );
 
   Map<String, dynamic> toJson() => {
@@ -91,15 +98,15 @@ class ProjectList {
   });
 
   factory ProjectList.fromJson(Map<String, dynamic> json) => ProjectList(
-        id: json["id"]??"",
-        projectName: json["project_name"]??"",
-        location: json["location"]??"",
-        clientId: json["client_id"]??"",
-        workStatus: json["work_status"]??"",
-        startingDate: json["starting_date"]??"",
-        completionDate: json["completion_date"]??"",
-        totalAmount: json["total_amount"]??"",
-        paymentStatus: json["payment_status"]??"",
+        id: json["id"] ?? "",
+        projectName: json["project_name"] ?? "",
+        location: json["location"] ?? "",
+        clientId: json["client_id"] ?? "",
+        workStatus: json["work_status"] ?? "",
+        startingDate: json["starting_date"] ?? "",
+        completionDate: json["completion_date"] ?? "",
+        totalAmount: json["total_amount"] ?? "",
+        paymentStatus: json["payment_status"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {
@@ -115,26 +122,30 @@ class ProjectList {
       };
 }
 
-// class Permissions {
-//   bool addUpcomingProjects;
-//   bool editListprojects;
-//   bool deleteListprojects;
+class Permissions {
+  bool addProjects;
+  bool editProjects;
+  bool deleteProjects;
 
-//   Permissions({
-//     required this.addUpcomingProjects,
-//     required this.editListprojects,
-//     required this.deleteListprojects,
-//   });
+  Permissions({
+    required this.addProjects,
+    required this.editProjects,
+    required this.deleteProjects,
+  });
 
-//   factory Permissions.fromJson(Map<String, dynamic> json) => Permissions(
-//         addUpcomingProjects: json["add upcoming projects"],
-//         editListprojects: json["edit listprojects"],
-//         deleteListprojects: json["delete listprojects"],
-//       );
+  factory Permissions.fromJson(dynamic json) {
+    if (json is! Map<String, dynamic>) {
+      return Permissions(
+        addProjects: false,
+        editProjects: false,
+        deleteProjects: false,
+      );
+    }
 
-//   Map<String, dynamic> toJson() => {
-//         "add upcoming projects": addUpcomingProjects,
-//         "edit listprojects": editListprojects,
-//         "delete listprojects": deleteListprojects,
-//       };
-// }
+    return Permissions(
+      addProjects: json["add projects"] ?? false,
+      editProjects: json["edit projects"] ?? false,
+      deleteProjects: json["delete projects"] ?? false,
+    );
+  }
+}

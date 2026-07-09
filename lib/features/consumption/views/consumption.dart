@@ -209,7 +209,7 @@ class Consumption extends StatelessWidget {
                               },
                             )
                           : const Center(
-                              child: Text(""),
+                              child: Text("No Data Found"),
                             );
                 },
               ),

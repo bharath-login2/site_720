@@ -91,6 +91,10 @@ class TravelExpenseItem {
 
   String totalAmount;
 
+  String otherAmount;
+
+  String otherAmountCause;
+
   String vehicleType;
 
   String paymentstatus;
@@ -114,6 +118,8 @@ class TravelExpenseItem {
     required this.status,
     required this.remark,
     required this.totalAmount,
+    required this.otherAmount,
+    required this.otherAmountCause,
     required this.vehicleType,
     required this.paymentstatus,
     required this.vehicleId,
@@ -136,6 +142,8 @@ class TravelExpenseItem {
         status: json["status"]?.toString() ?? "",
         remark: json["remark"]?.toString() ?? "",
         totalAmount: json["total_amount"]?.toString() ?? "",
+        otherAmount: json["other_amount"]?.toString() ?? "",
+        otherAmountCause: json["other_amount_cause"]?.toString() ?? "",
         vehicleType: json["vehicle_type"]?.toString() ?? "",
         paymentstatus: json["payment_status"]?.toString() ?? "",
         vehicleId: json["vehicle_id"]?.toString() ?? "",
@@ -167,6 +175,8 @@ class TravelExpenseItem {
         "status": status,
         "remark": remark,
         "total_amount": totalAmount,
+        "other_amount": otherAmount,
+        "other_amount_cause": otherAmountCause,
         "vehicle_type": vehicleType,
         "payment_status": paymentstatus,
         "vehicle_id": vehicleId,

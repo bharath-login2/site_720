@@ -254,6 +254,10 @@ class _TravelExpenseDashboardScreenState
                                           "amount": item.totalAmount,
                                           "total_amount": item.totalAmount,
 
+                                          "other_amount": item.otherAmount,
+                                          "other_amount_cause":
+                                              item.otherAmountCause,
+
                                           /// STATUS
                                           "status": item.status,
 
@@ -413,135 +417,125 @@ class _TravelExpenseDashboardScreenState
                                                   ),
                                                 ),
                                               ),
-                                              const SizedBox(
-                                                width: 6,
-                                              ),
-                                              PopupMenuButton<String>(
-                                                icon: const Icon(
-                                                  Icons.more_vert,
-                                                  color: Colors.black87,
-                                                ),
-                                                onSelected: (value) {
-                                                  if (value == "edit") {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (_) =>
-                                                            BlocProvider.value(
-                                                          value: context.read<
-                                                              TravelExpenseCubit>(),
-                                                          child:
-                                                              AddTravelExpenseScreen(
-                                                            item: item,
-                                                            isEdit: true,
+                                              if (item.status !=
+                                                  "Approved") ...[
+                                                const SizedBox(width: 6),
+                                                PopupMenuButton<String>(
+                                                  icon: const Icon(
+                                                    Icons.more_vert,
+                                                    color: Colors.black87,
+                                                  ),
+                                                  onSelected: (value) {
+                                                    if (value == "edit") {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (_) =>
+                                                              BlocProvider
+                                                                  .value(
+                                                            value: context.read<
+                                                                TravelExpenseCubit>(),
+                                                            child:
+                                                                AddTravelExpenseScreen(
+                                                              item: item,
+                                                              isEdit: true,
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ).then((value) {
-                                                      if (value == true) {
-                                                        context
-                                                            .read<
-                                                                TravelExpenseCubit>()
-                                                            .getTravelExpenseList();
-                                                      }
-                                                    });
-                                                  } else if (value ==
-                                                      "delete") {
-                                                    final cubit = BlocProvider
-                                                        .of<TravelExpenseCubit>(
-                                                      context,
-                                                    );
+                                                      ).then((value) {
+                                                        if (value == true) {
+                                                          context
+                                                              .read<
+                                                                  TravelExpenseCubit>()
+                                                              .getTravelExpenseList();
+                                                        }
+                                                      });
+                                                    } else if (value ==
+                                                        "delete") {
+                                                      final cubit = BlocProvider
+                                                          .of<TravelExpenseCubit>(
+                                                              context);
 
-                                                    showDialog(
-                                                      context: context,
-                                                      builder: (dialogContext) {
-                                                        return AlertDialog(
-                                                          title: const Text(
-                                                            "Delete",
-                                                          ),
-                                                          content: const Text(
-                                                            "Are you sure you want to delete this travel expense?",
-                                                          ),
-                                                          actions: [
-                                                            TextButton(
-                                                              onPressed: () {
-                                                                Navigator.pop(
-                                                                  dialogContext,
-                                                                );
-                                                              },
-                                                              child: const Text(
-                                                                "Cancel",
-                                                              ),
+                                                      showDialog(
+                                                        context: context,
+                                                        builder:
+                                                            (dialogContext) {
+                                                          return AlertDialog(
+                                                            title: const Text(
+                                                                "Delete"),
+                                                            content: const Text(
+                                                              "Are you sure you want to delete this travel expense?",
                                                             ),
-                                                            TextButton(
-                                                              onPressed:
-                                                                  () async {
-                                                                Navigator.pop(
-                                                                  dialogContext,
-                                                                );
+                                                            actions: [
+                                                              TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.pop(
+                                                                      dialogContext);
+                                                                },
+                                                                child: const Text(
+                                                                    "Cancel"),
+                                                              ),
+                                                              TextButton(
+                                                                onPressed:
+                                                                    () async {
+                                                                  Navigator.pop(
+                                                                      dialogContext);
 
-                                                                await cubit
-                                                                    .deleteTravelExpense(
-                                                                  context,
-                                                                  item.travelId,
-                                                                );
-                                                              },
-                                                              child: const Text(
-                                                                "Delete",
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .red,
+                                                                  await cubit
+                                                                      .deleteTravelExpense(
+                                                                    context,
+                                                                    item.travelId,
+                                                                  );
+                                                                },
+                                                                child:
+                                                                    const Text(
+                                                                  "Delete",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .red),
                                                                 ),
                                                               ),
-                                                            ),
-                                                          ],
-                                                        );
-                                                      },
-                                                    );
-                                                  }
-                                                },
-                                                itemBuilder: (context) => [
-                                                  const PopupMenuItem(
-                                                    value: "edit",
-                                                    child: Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons.edit,
-                                                          size: 20,
-                                                        ),
-                                                        SizedBox(
-                                                          width: 10,
-                                                        ),
-                                                        Text(
-                                                          "Edit",
-                                                        ),
-                                                      ],
+                                                            ],
+                                                          );
+                                                        },
+                                                      );
+                                                    }
+                                                  },
+                                                  itemBuilder: (context) =>
+                                                      const [
+                                                    PopupMenuItem(
+                                                      value: "edit",
+                                                      child: Row(
+                                                        children: [
+                                                          Icon(Icons.edit,
+                                                              size: 20),
+                                                          SizedBox(width: 10),
+                                                          Text("Edit"),
+                                                        ],
+                                                      ),
                                                     ),
-                                                  ),
-                                                  const PopupMenuItem(
-                                                    value: "delete",
-                                                    child: Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons.delete,
-                                                          size: 20,
-                                                          color: Colors.red,
-                                                        ),
-                                                        SizedBox(
-                                                          width: 10,
-                                                        ),
-                                                        Text(
-                                                          "Delete",
-                                                          style: TextStyle(
+                                                    PopupMenuItem(
+                                                      value: "delete",
+                                                      child: Row(
+                                                        children: [
+                                                          Icon(
+                                                            Icons.delete,
+                                                            size: 20,
                                                             color: Colors.red,
                                                           ),
-                                                        ),
-                                                      ],
+                                                          SizedBox(width: 10),
+                                                          Text(
+                                                            "Delete",
+                                                            style: TextStyle(
+                                                                color:
+                                                                    Colors.red),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
+                                                  ],
+                                                ),
+                                              ],
                                             ],
                                           ),
                                         ],

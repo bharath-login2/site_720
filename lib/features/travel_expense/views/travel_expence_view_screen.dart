@@ -191,7 +191,51 @@ class _TravelExpenseViewScreenState extends State<TravelExpenseViewScreen> {
                 "Total Amount",
                 "₹ ${item["amount"]?.toString() ?? "0"}",
               ),
-
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.symmetric(vertical: 10),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade50,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Colors.grey.shade300,
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Row(
+                      children: [
+                        Icon(
+                          Icons.receipt_long,
+                          color: Color.fromARGB(247, 100, 38, 53),
+                        ),
+                        SizedBox(width: 8),
+                        Text(
+                          "Other Expense Details",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Divider(height: 24),
+                    buildFullDetails(
+                      "Amount",
+                      "₹ ${item["other_amount"]?.toString() ?? "0"}",
+                    ),
+                    const SizedBox(height: 12),
+                    buildFullDetails(
+                      "Description",
+                      item["other_amount_cause"]?.toString().isNotEmpty == true
+                          ? item["other_amount_cause"].toString()
+                          : "No Description",
+                    ),
+                  ],
+                ),
+              ),
               buildFullDetails(
                 "Remark",
                 item["remark"]?.toString() ?? "",
@@ -259,7 +303,6 @@ class _TravelExpenseViewScreenState extends State<TravelExpenseViewScreen> {
 
                         const SizedBox(height: 14),
 
-                        /// IMAGE
                         /// IMAGE
                         ClipRRect(
                           borderRadius: BorderRadius.circular(16),

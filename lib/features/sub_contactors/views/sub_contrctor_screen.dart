@@ -56,6 +56,41 @@ class Contractor extends StatelessWidget {
                   },
                 );
               } else if (state is SubContractorSuccess) {
+                if (state.response.data.isEmpty) {
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      cubit.getContractorList();
+                    },
+                    child: ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: const [
+                        SizedBox(height: 180),
+                        Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.inbox_outlined,
+                                size: 70,
+                                color: Colors.grey,
+                              ),
+                              SizedBox(height: 12),
+                              Text(
+                                "No Data Found",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
                 return RefreshIndicator(
                   onRefresh: () async {
                     cubit.getContractorList();
@@ -64,9 +99,12 @@ class Contractor extends StatelessWidget {
                     itemCount: state.response.data.length,
                     itemBuilder: (context, index) {
                       final contractor = state.response.data[index];
+
                       return Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 8),
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
                         child: InkWell(
                           borderRadius: BorderRadius.circular(12),
                           onTap: () {
@@ -170,18 +208,12 @@ class Contractor extends StatelessWidget {
                                           ),
                                         ),
                                         const SizedBox(width: 8),
-                                        // Expanded(
-                                        //   child: _amountBox(
-                                        //     "Payable",
-                                        //     contractor.totalPayableAmount,
-                                        //     Colors.orange,
-                                        //   ),
-                                        // ),
-
-                                        _amountBox(
-                                          "Balance Payable",
-                                          contractor.balancePayableAmount,
-                                          Colors.red,
+                                        Expanded(
+                                          child: _amountBox(
+                                            "Balance Payable",
+                                            contractor.balancePayableAmount,
+                                            Colors.red,
+                                          ),
                                         ),
                                       ],
                                     ),

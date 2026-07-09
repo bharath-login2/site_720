@@ -87,12 +87,12 @@ class ProjectDetails extends StatelessWidget {
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
-                                    vertical: 16.0, horizontal: 16),
+                                    vertical: 15.0, horizontal: 15),
                                 child: Column(
                                   children: [
                                     const Padding(
                                       padding: EdgeInsets.only(
-                                          top: 12.0, bottom: 16.0),
+                                          top: 9.0, bottom: 15.0),
                                       child: Text(
                                         "OVERVIEW",
                                         style: TextStyle(
@@ -257,7 +257,7 @@ class ProjectDetails extends StatelessWidget {
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0, horizontal: 16.0),
+                                  vertical: 10.0, horizontal: 16.0),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -301,7 +301,7 @@ class ProjectDetails extends StatelessWidget {
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0, horizontal: 16.0),
+                                  vertical: 10.0, horizontal: 16.0),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -345,7 +345,7 @@ class ProjectDetails extends StatelessWidget {
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0, horizontal: 16.0),
+                                  vertical: 10.0, horizontal: 16.0),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -386,7 +386,7 @@ class ProjectDetails extends StatelessWidget {
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0, horizontal: 16.0),
+                                  vertical: 10.0, horizontal: 16.0),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -430,7 +430,7 @@ class ProjectDetails extends StatelessWidget {
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0, horizontal: 16.0),
+                                  vertical: 10.0, horizontal: 16.0),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -468,7 +468,7 @@ class ProjectDetails extends StatelessWidget {
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0, horizontal: 16.0),
+                                  vertical: 10.0, horizontal: 16.0),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -506,7 +506,7 @@ class ProjectDetails extends StatelessWidget {
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0, horizontal: 16.0),
+                                  vertical: 10.0, horizontal: 16.0),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -578,7 +578,7 @@ class ProjectDetails extends StatelessWidget {
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(
-                                  vertical: 12.0, horizontal: 16.0),
+                                  vertical: 10.0, horizontal: 16.0),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -616,6 +616,30 @@ class ProjectDetails extends StatelessWidget {
                                           .43,
                                     ),
                                   )
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10.0, horizontal: 16.0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      connStatus = true;
+                                      Navigator.pushNamed(
+                                          context, AppRoutes.projectInfo,
+                                          arguments: {"id": id});
+                                    },
+                                    child: DetailsButtonContainer(
+                                      title: "Project Info",
+                                      color: AppColors.primaryColor,
+                                      width: MediaQuery.of(context).size.width *
+                                          .43,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),

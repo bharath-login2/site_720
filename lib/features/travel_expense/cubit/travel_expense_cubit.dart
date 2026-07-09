@@ -50,6 +50,8 @@ class TravelExpenseCubit extends Cubit<TravelExpenseState> {
     required String from,
     required String vehicleType,
     required String totalAmount,
+    required String otherAmount,
+    required String otherAmountCause,
     required String remark,
     required List<Map<String, dynamic>> rows,
   }) async {
@@ -61,6 +63,8 @@ class TravelExpenseCubit extends Cubit<TravelExpenseState> {
         from: from,
         vehicleType: vehicleType,
         totalAmount: totalAmount,
+        otherAmount: otherAmount,
+        otherAmountCause: otherAmountCause,
         remark: remark,
         rows: rows,
       );
@@ -89,14 +93,14 @@ class TravelExpenseCubit extends Cubit<TravelExpenseState> {
     }
   }
 
-  /// UPDATE TRAVEL EXPENSE
-
   Future<void> updateTravelExpense({
     required String travelId,
     required String date,
     required String from,
     required String vehicleType,
     required String totalAmount,
+    required String otherAmount,
+    required String otherAmountCause,
     required String remark,
     required List<Map<String, dynamic>> rows,
   }) async {
@@ -111,6 +115,8 @@ class TravelExpenseCubit extends Cubit<TravelExpenseState> {
         from: from,
         vehicleType: vehicleType,
         totalAmount: totalAmount,
+        otherAmount: otherAmount,
+        otherAmountCause: otherAmountCause,
         remark: remark,
         rows: rows,
       );

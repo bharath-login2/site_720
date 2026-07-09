@@ -61,12 +61,14 @@ class ProjectList extends StatelessWidget {
                   BlocListener<ProjectListCubit, ProjectListState>(
                     listener: (context, state) {
                       if (state is ProjectListSuccess) {
-                        // addProjectPermission =
-                        //     state.response.data.permissions.addUpcomingProjects;
-                        // editProjectPermission =
-                        //     state.response.data.permissions.editListprojects;
-                        // deleteProjectPermission =
-                        //     state.response.data.permissions.deleteListprojects;
+                        addProjectPermission =
+                            state.response.data.permissions.addProjects;
+
+                        editProjectPermission =
+                            state.response.data.permissions.editProjects;
+
+                        deleteProjectPermission =
+                            state.response.data.permissions.deleteProjects;
                       }
                       if (state is ProjectDeleted) {
                         snackBar(
@@ -622,11 +624,13 @@ class ProjectList extends StatelessWidget {
                                                                   : const SizedBox(),
                                                               const SizedBox(
                                                                   width: 10),
-                                                              InkWell(
-                                                                onTap: () {
-                                                                  connStatus =
-                                                                      true;
-                                                                  Navigator.pushNamed(
+                                                              if (editProjectPermission)
+                                                                InkWell(
+                                                                  onTap: () {
+                                                                    connStatus =
+                                                                        true;
+                                                                    Navigator
+                                                                        .pushNamed(
                                                                       context,
                                                                       AppRoutes
                                                                           .editProjectScreen,
@@ -635,101 +639,107 @@ class ProjectList extends StatelessWidget {
                                                                             .response
                                                                             .data
                                                                             .projectList[index]
-                                                                            .id
-                                                                      }).then(
-                                                                      (_) {
-                                                                    cubit.getProjectList(
-                                                                        status,
-                                                                        search
-                                                                            .text);
-                                                                  });
-                                                                },
-                                                                child:
-                                                                    Container(
-                                                                  height: 25,
-                                                                  width: 25,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    borderRadius:
-                                                                        BorderRadius
-                                                                            .circular(5),
-                                                                    color: AppColors
-                                                                        .lightBlue,
-                                                                    boxShadow: [
-                                                                      BoxShadow(
-                                                                        color: Colors
-                                                                            .grey
-                                                                            .withOpacity(0.8),
-                                                                        blurRadius:
-                                                                            6,
-                                                                        offset: const Offset(
-                                                                            2,
-                                                                            3),
-                                                                      ),
-                                                                    ],
-                                                                  ),
+                                                                            .id,
+                                                                      },
+                                                                    ).then((_) {
+                                                                      cubit.getProjectList(
+                                                                          status,
+                                                                          search
+                                                                              .text);
+                                                                    });
+                                                                  },
                                                                   child:
-                                                                      const Icon(
-                                                                    Icons.edit,
-                                                                    size: 18,
-                                                                    color: Colors
-                                                                        .white,
+                                                                      Container(
+                                                                    height: 25,
+                                                                    width: 25,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              5),
+                                                                      color: AppColors
+                                                                          .lightBlue,
+                                                                      boxShadow: [
+                                                                        BoxShadow(
+                                                                          color: Colors
+                                                                              .grey
+                                                                              .withOpacity(0.8),
+                                                                          blurRadius:
+                                                                              6,
+                                                                          offset: const Offset(
+                                                                              2,
+                                                                              3),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    child:
+                                                                        const Icon(
+                                                                      Icons
+                                                                          .edit,
+                                                                      size: 18,
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
                                                                   ),
                                                                 ),
-                                                              ),
                                                               const SizedBox(
                                                                   width: 10),
-                                                              InkWell(
-                                                                onTap: () {
-                                                                  deleteDialog(
+                                                              if (deleteProjectPermission)
+                                                                InkWell(
+                                                                  onTap: () {
+                                                                    deleteDialog(
                                                                       context,
                                                                       () {
-                                                                    cubit.deleteProject(
-                                                                        state
-                                                                            .response
-                                                                            .data
-                                                                            .projectList[
-                                                                                index]
-                                                                            .id,
-                                                                        status,
-                                                                        search
-                                                                            .text);
-                                                                    Navigator.pop(
-                                                                        context);
-                                                                  });
-                                                                },
-                                                                child:
-                                                                    Container(
-                                                                  height: 25,
-                                                                  width: 25,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    borderRadius:
-                                                                        BorderRadius
-                                                                            .circular(5),
-                                                                    color: Colors
-                                                                        .red,
-                                                                    boxShadow: [
-                                                                      BoxShadow(
-                                                                        color: Colors
-                                                                            .grey
-                                                                            .withOpacity(0.8),
-                                                                        blurRadius:
-                                                                            6,
-                                                                        offset: const Offset(
-                                                                            2,
-                                                                            3),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                  child: const Icon(
+                                                                        cubit
+                                                                            .deleteProject(
+                                                                          state
+                                                                              .response
+                                                                              .data
+                                                                              .projectList[index]
+                                                                              .id,
+                                                                          status,
+                                                                          search
+                                                                              .text,
+                                                                        );
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                      },
+                                                                    );
+                                                                  },
+                                                                  child:
+                                                                      Container(
+                                                                    height: 25,
+                                                                    width: 25,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              5),
+                                                                      color: Colors
+                                                                          .red,
+                                                                      boxShadow: [
+                                                                        BoxShadow(
+                                                                          color: Colors
+                                                                              .grey
+                                                                              .withOpacity(0.8),
+                                                                          blurRadius:
+                                                                              6,
+                                                                          offset: const Offset(
+                                                                              2,
+                                                                              3),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    child:
+                                                                        const Icon(
                                                                       Icons
                                                                           .delete,
                                                                       size: 18,
                                                                       color: Colors
-                                                                          .white),
+                                                                          .white,
+                                                                    ),
+                                                                  ),
                                                                 ),
-                                                              ),
                                                             ],
                                                           ),
                                                         ],
@@ -755,19 +765,20 @@ class ProjectList extends StatelessWidget {
                             ],
                           ),
                         ),
-                        Positioned(
-                          top: MediaQuery.of(context).size.height * 0.2,
-                          left: MediaQuery.of(context).size.width * 0.05,
-                          child: FloatingCard(
-                            title: "Total Projects",
-                            value: state is ProjectListSuccess
-                                ? "${state.response.data.projectList.length.toString()}/${state.response.data.totalProjectCount.toString()}"
-                                : "0",
-                            status: status,
-                            search: search.text,
-                            addPermission: addProjectPermission,
+                        if (addProjectPermission)
+                          Positioned(
+                            top: MediaQuery.of(context).size.height * 0.2,
+                            left: MediaQuery.of(context).size.width * 0.05,
+                            child: FloatingCard(
+                              title: "Total Projects",
+                              value: state is ProjectListSuccess
+                                  ? "${state.response.data.projectList.length}/${state.response.data.totalProjectCount}"
+                                  : "0",
+                              status: status,
+                              search: search.text,
+                              addPermission: addProjectPermission,
+                            ),
                           ),
-                        ),
                       ],
                     ),
                   ),

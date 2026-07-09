@@ -333,160 +333,180 @@ class Stages extends StatelessWidget {
                                                   child: Padding(
                                                     padding: const EdgeInsets
                                                         .symmetric(
-                                                        horizontal: 10,
-                                                        vertical: 8),
+                                                      horizontal: 10,
+                                                      vertical: 8,
+                                                    ),
                                                     child: Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
                                                               .start,
                                                       children: [
+                                                        /// Stage Name + Status
                                                         Row(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
                                                           children: [
-                                                            Text(
-                                                              stageItem
-                                                                  .stageName,
-                                                              style:
-                                                                  const TextStyle(
-                                                                fontSize: 16,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: AppColors
-                                                                    .coffie,
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                                width: 145),
-                                                            Container(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .symmetric(
-                                                                      horizontal:
-                                                                          12,
-                                                                      vertical:
-                                                                          6),
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                color: stageItem
-                                                                            .stageStatus
-                                                                            .toLowerCase() ==
-                                                                        "running"
-                                                                    ? Colors
-                                                                        .blue
-                                                                        .withOpacity(
-                                                                            0.15)
-                                                                    : stageItem.stageStatus.toLowerCase() ==
-                                                                            "pending"
-                                                                        ? Colors
-                                                                            .amber
-                                                                            .withOpacity(
-                                                                                0.2)
-                                                                        : Colors
-                                                                            .green
-                                                                            .withOpacity(0.2),
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            20), // 👈 oval shape
-                                                              ),
+                                                            Expanded(
                                                               child: Text(
                                                                 stageItem
-                                                                    .stageStatus,
+                                                                    .stageName,
+                                                                maxLines: 2,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
                                                                 style:
-                                                                    TextStyle(
-                                                                  fontSize: 14,
+                                                                    const TextStyle(
+                                                                  fontSize: 16,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold,
+                                                                  color: AppColors
+                                                                      .coffie,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                                width: 8),
+                                                            Flexible(
+                                                              child: Container(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .symmetric(
+                                                                  horizontal:
+                                                                      12,
+                                                                  vertical: 6,
+                                                                ),
+                                                                decoration:
+                                                                    BoxDecoration(
                                                                   color: stageItem
                                                                               .stageStatus
                                                                               .toLowerCase() ==
                                                                           "running"
                                                                       ? Colors
                                                                           .blue
+                                                                          .withOpacity(
+                                                                              .15)
                                                                       : stageItem.stageStatus.toLowerCase() ==
                                                                               "pending"
-                                                                          ? Colors.amber[
-                                                                              800]
+                                                                          ? Colors.amber.withOpacity(
+                                                                              .20)
                                                                           : Colors
-                                                                              .green[700],
+                                                                              .green
+                                                                              .withOpacity(.20),
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              20),
+                                                                ),
+                                                                child: Text(
+                                                                  stageItem
+                                                                      .stageStatus,
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .center,
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        13,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    color: stageItem.stageStatus.toLowerCase() ==
+                                                                            "running"
+                                                                        ? Colors
+                                                                            .blue
+                                                                        : stageItem.stageStatus.toLowerCase() ==
+                                                                                "pending"
+                                                                            ? Colors.amber[800]
+                                                                            : Colors.green[700],
+                                                                  ),
                                                                 ),
                                                               ),
-                                                            )
+                                                            ),
                                                           ],
                                                         ),
 
                                                         const SizedBox(
-                                                            height: 4),
+                                                            height: 8),
 
-                                                        // Start - End date row with icons
+                                                        /// Date
                                                         Row(
                                                           children: [
                                                             const Icon(
-                                                                Icons
-                                                                    .date_range,
-                                                                size: 16,
-                                                                color: AppColors
-                                                                    .primaryColor),
+                                                              Icons.date_range,
+                                                              size: 16,
+                                                              color: AppColors
+                                                                  .primaryColor,
+                                                            ),
                                                             const SizedBox(
-                                                                width: 4),
-                                                            Text(
-                                                              "$startDate → $endDate",
-                                                              style:
-                                                                  const TextStyle(
-                                                                fontSize: 13,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: AppColors
-                                                                    .coffie,
+                                                                width: 5),
+                                                            Expanded(
+                                                              child: Text(
+                                                                "$startDate → $endDate",
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                style:
+                                                                    const TextStyle(
+                                                                  fontSize: 13,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: AppColors
+                                                                      .coffie,
+                                                                ),
                                                               ),
                                                             ),
                                                           ],
                                                         ),
 
                                                         const SizedBox(
-                                                            height: 6),
+                                                            height: 8),
+
+                                                        /// Curing Days + Lock Status
                                                         Row(
                                                           children: [
-                                                            Text(
-                                                              "Curing Days: ${stageItem.curingDays}",
-                                                              style:
-                                                                  const TextStyle(
-                                                                fontSize: 13,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                color: Colors
-                                                                    .black54,
+                                                            Expanded(
+                                                              child: Text(
+                                                                "Curing Days : ${stageItem.curingDays}",
+                                                                style:
+                                                                    const TextStyle(
+                                                                  fontSize: 13,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  color: Colors
+                                                                      .black54,
+                                                                ),
                                                               ),
                                                             ),
-                                                            SizedBox(width: 60),
                                                             Container(
                                                               padding:
                                                                   const EdgeInsets
                                                                       .symmetric(
-                                                                      horizontal:
-                                                                          12,
-                                                                      vertical:
-                                                                          5),
+                                                                horizontal: 10,
+                                                                vertical: 5,
+                                                              ),
                                                               decoration:
                                                                   BoxDecoration(
-                                                                color: stageItem
-                                                                            .isLocked
+                                                                color: stageItem.isLocked
                                                                             .toUpperCase() ==
                                                                         "Y"
                                                                     ? Colors.red
                                                                         .withOpacity(
-                                                                            0.15) // 🔒 Locked bg
+                                                                            .15)
                                                                     : Colors
                                                                         .green
                                                                         .withOpacity(
-                                                                            0.15), // 🔓 Unlocked bg
+                                                                            .15),
                                                                 borderRadius:
                                                                     BorderRadius
                                                                         .circular(
-                                                                            30), // 👈 pill shape
+                                                                            30),
                                                               ),
                                                               child: Row(
                                                                 mainAxisSize:
@@ -500,6 +520,7 @@ class Stages extends StatelessWidget {
                                                                             .lock
                                                                         : Icons
                                                                             .lock_open,
+                                                                    size: 15,
                                                                     color: stageItem.isLocked
                                                                                 .toUpperCase() ==
                                                                             "Y"
@@ -507,10 +528,9 @@ class Stages extends StatelessWidget {
                                                                             .red
                                                                         : Colors
                                                                             .green,
-                                                                    size: 15,
                                                                   ),
                                                                   const SizedBox(
-                                                                      width: 6),
+                                                                      width: 5),
                                                                   Text(
                                                                     stageItem.isLocked.toUpperCase() ==
                                                                             "Y"
@@ -533,63 +553,114 @@ class Stages extends StatelessWidget {
                                                                   ),
                                                                 ],
                                                               ),
-                                                            )
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 8),
+                                                        Row(
+                                                          children: [
+                                                            Expanded(
+                                                              child: Text(
+                                                                "Scheduled Date : ${stageItem.scheduleDate}",
+                                                                style:
+                                                                    const TextStyle(
+                                                                  fontSize: 13,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  color: Colors
+                                                                      .black54,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Container(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                horizontal: 10,
+                                                                vertical: 5,
+                                                              ),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: stageItem.isLocked
+                                                                            .toUpperCase() ==
+                                                                        "Y"
+                                                                    ? Colors.red
+                                                                        .withOpacity(
+                                                                            .15)
+                                                                    : Colors
+                                                                        .green
+                                                                        .withOpacity(
+                                                                            .15),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            30),
+                                                              ),
+                                                            ),
                                                           ],
                                                         ),
 
                                                         const SizedBox(
-                                                            height: 6),
+                                                            height: 8),
 
-                                                        // Created by row
-                                                        Row(
-                                                          children: [
-                                                            const Text(
-                                                              "Created by: ",
-                                                              style: TextStyle(
-                                                                fontSize: 11,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: Colors
-                                                                    .black54,
-                                                              ),
-                                                            ),
-                                                            Container(
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                color: AppColors
-                                                                    .coffie,
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            12),
-                                                              ),
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .symmetric(
-                                                                      horizontal:
-                                                                          8,
-                                                                      vertical:
-                                                                          2),
-                                                              child: Text(
-                                                                stageItem
-                                                                    .createdBy,
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontSize: 11,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  color: Colors
-                                                                      .white,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
+                                                        /// Created By
+                                                        Wrap(
+                                                          crossAxisAlignment:
+                                                              WrapCrossAlignment
+                                                                  .center,
+                                                          spacing: 6,
+                                                          // children: [
+                                                          //   const Text(
+                                                          //     "Created by:",
+                                                          //     style: TextStyle(
+                                                          //       fontSize: 11,
+                                                          //       fontWeight:
+                                                          //           FontWeight
+                                                          //               .bold,
+                                                          //       color: Colors
+                                                          //           .black54,
+                                                          //     ),
+                                                          //   ),
+                                                          //   Container(
+                                                          //     padding:
+                                                          //         const EdgeInsets
+                                                          //             .symmetric(
+                                                          //       horizontal: 8,
+                                                          //       vertical: 3,
+                                                          //     ),
+                                                          //     decoration:
+                                                          //         BoxDecoration(
+                                                          //       color: AppColors
+                                                          //           .coffie,
+                                                          //       borderRadius:
+                                                          //           BorderRadius
+                                                          //               .circular(
+                                                          //                   12),
+                                                          //     ),
+                                                          //     child: Text(
+                                                          //       stageItem
+                                                          //           .createdBy,
+                                                          //       style:
+                                                          //           const TextStyle(
+                                                          //         color: Colors
+                                                          //             .white,
+                                                          //         fontWeight:
+                                                          //             FontWeight
+                                                          //                 .bold,
+                                                          //         fontSize: 11,
+                                                          //       ),
+                                                          //     ),
+                                                          //   ),
+                                                          // ],
                                                         ),
+
                                                         if (stageItem.isLocked
                                                                 .toUpperCase() !=
-                                                            "Y")
+                                                            "Y") ...[
+                                                          const SizedBox(
+                                                              height: 10),
                                                           Align(
                                                             alignment: Alignment
                                                                 .bottomRight,
@@ -738,10 +809,11 @@ class Stages extends StatelessWidget {
                                                               ],
                                                             ),
                                                           ),
+                                                        ],
                                                       ],
                                                     ),
                                                   ),
-                                                ),
+                                                )
                                               ],
                                             ),
                                           ),

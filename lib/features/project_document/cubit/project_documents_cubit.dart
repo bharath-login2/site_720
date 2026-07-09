@@ -5,8 +5,7 @@ import '../../../data/services/http_services.dart';
 import 'project_documents_state.dart';
 
 class ProjectDocumentsCubit extends Cubit<ProjectDocumentsState> {
-  ProjectDocumentsCubit(String projectId)
-      : super(ProjectDocumentsInitial()) {
+  ProjectDocumentsCubit(String projectId) : super(ProjectDocumentsInitial()) {
     getProjectDocuments(projectId);
   }
 
@@ -14,8 +13,7 @@ class ProjectDocumentsCubit extends Cubit<ProjectDocumentsState> {
     emit(ProjectDocumentsLoading());
 
     try {
-      List<ProjectDocument> response =
-          await HttpServices.getProjectDocs(
+      List<ProjectDocument> response = await HttpServices.getProjectDocs(
         projectId: projectId,
       );
 

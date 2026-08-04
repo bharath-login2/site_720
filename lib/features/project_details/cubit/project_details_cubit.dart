@@ -10,14 +10,22 @@ class ProjectDetailsCubit extends Cubit<ProjectDetailsState> {
 
   Future<void> getProjectDetails(String projectId) async {
     emit(ProjectDetailsLoading());
+
     try {
       ProjectDetailsModel response =
           await HttpServices.getProjectDetails(projectId);
+
       if (response.status == true) {
+        response.progress = await HttpServices.getProjectProgress(
+          projectId: projectId,
+        );
+
         emit(ProjectDetailsSuccess(response));
       }
     } catch (e) {
-      emit(ProjectDetailsFailure('Failed to fetch data: ${e.toString()}'));
+      emit(ProjectDetailsFailure(
+        'Failed to fetch data: ${e.toString()}',
+      ));
     }
   }
 }

@@ -19,6 +19,8 @@ import '../widgets/date_container.dart';
 import 'package:site_720/features/travel_expense/views/travel_expense_dashboard_screen.dart';
 import 'package:site_720/features/dashboard/views/change_password.dart';
 import 'package:site_720/features/dashboard/views/profile_screen.dart';
+import 'package:site_720/features/livemap/views/livemap_screen.dart';
+import 'package:site_720/features/livemap/cubit/livemap_cubit.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -1451,8 +1453,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                         ),
                         const SizedBox(height: 4),
-                        const Text(
-                          "Site 720",
+                        Text(
+                          (cubit.state as DashboardSuccess)
+                              .response
+                              .data
+                              .username,
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
@@ -1461,23 +1466,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Text(
-                            "@2026",
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
+                        // Container(
+                        //   padding: const EdgeInsets.symmetric(
+                        //     horizontal: 12,
+                        //     vertical: 4,
+                        //   ),
+                        //   decoration: BoxDecoration(
+                        //     color: Colors.white.withOpacity(0.2),
+                        //     borderRadius: BorderRadius.circular(20),
+                        //   ),
+                        //   // child: const Text(
+                        //   //   "@2026",
+                        //   //   style: TextStyle(
+                        //   //     fontSize: 12,
+                        //   //     color: Colors.white,
+                        //   //   ),
+                        //   // ),
+                        // ),
                       ],
                     ),
                   ),
@@ -1532,6 +1537,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               Navigator.pushNamed(
                                 context,
                                 "/expense",
+                              );
+                            },
+                          ),
+                          _buildDivider(),
+                          _buildModernMenuTile(
+                            icon: Icons.location_on_outlined,
+                            title: "Live Map",
+                            subtitle: "View your locations",
+                            onTap: () {
+                              Navigator.pop(context);
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => BlocProvider(
+                                    create: (_) => LiveMapCubit(),
+                                    child: const LivemapScreen(),
+                                  ),
+                                ),
                               );
                             },
                           ),

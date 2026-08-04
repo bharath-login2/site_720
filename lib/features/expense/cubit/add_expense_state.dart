@@ -1,4 +1,4 @@
-part of 'add_expense_cubit.dart';
+  part of 'add_expense_cubit.dart';
 
 abstract class AddExpenseState {}
 

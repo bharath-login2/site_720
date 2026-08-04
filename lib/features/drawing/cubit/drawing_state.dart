@@ -1,6 +1,7 @@
 import 'package:image_picker/image_picker.dart';
 
 import '../../../data/models/site_drawings/drawing_list.dart';
+import 'package:file_picker/file_picker.dart';
 
 class DrawingState {
   DrawingState();
@@ -33,3 +34,15 @@ class ImageFailure extends DrawingState {
 class UploadSuccess extends DrawingState {}
 
 class UploadLoading extends DrawingState {}
+
+class PdfSuccess extends DrawingState {
+  final PlatformFile file;
+
+  PdfSuccess(this.file);
+}
+
+class PdfFailure extends DrawingState {
+  final String message;
+
+  PdfFailure(this.message);
+}

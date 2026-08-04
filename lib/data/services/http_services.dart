@@ -77,6 +77,8 @@ import '../models/stockconsume/project_dropdown_model.dart';
 import '../models/stockconsume/stage_dropdown_model.dart';
 import '../models/projectdocument/project_document_model.dart';
 import '../models/project_info/project_info_model.dart';
+import '../models/livemap/livemap_model.dart';
+import 'package:http_parser/http_parser.dart';
 
 class HttpServices {
   static Future apiAuth() async {
@@ -210,7 +212,7 @@ class HttpServices {
         }),
       );
       if (response.statusCode == 200) {
-        // print("responses : ${response.body}");
+        print("responses : ${response.body}");
         return dashboardModelFromJson(response.body);
       }
     } catch (e) {
@@ -693,7 +695,7 @@ class HttpServices {
         },
       );
       if (response.statusCode == 200) {
-        // print("response : ${response.body}");
+        print("response : ${response.body}");
         return getExpenseListFromJson(response.body);
       }
     } catch (e) {
@@ -1268,30 +1270,65 @@ class HttpServices {
     return [];
   }
 
+  // static Future uploadDrawings(
+  //   String projectId,
+  //   String clientId,
+  //   XFile image,
+  //   String remark,
+  // ) async {
+  //   try {
+  //     var uri = Uri.parse("${await Config.getUrl()}add_site_drawings");
+  //     var request = http.MultipartRequest('POST', uri);
+  //     request.fields['token'] = await getSharedPreference('token');
+  //     request.fields['project_id'] = projectId;
+  //     request.fields['client_id'] = clientId;
+  //     request.fields['remarks'] = remark;
+
+  //     if (image.path.isNotEmpty) {
+  //       request.files.add(
+  //         await http.MultipartFile.fromPath('site_drawing', image.path),
+  //       );
+  //     }
+
+  //     var response = await request.send();
+
+  //     if (response.statusCode == 200) {
+  //       return successResponseFromJson(await response.stream.bytesToString());
+  //     }
+  //   } catch (e) {
+  //     log("Error: ${e.toString()}");
+  //   }
+  // }
   static Future uploadDrawings(
     String projectId,
     String clientId,
-    XFile image,
+    File file,
     String remark,
   ) async {
     try {
       var uri = Uri.parse("${await Config.getUrl()}add_site_drawings");
       var request = http.MultipartRequest('POST', uri);
+
       request.fields['token'] = await getSharedPreference('token');
       request.fields['project_id'] = projectId;
       request.fields['client_id'] = clientId;
       request.fields['remarks'] = remark;
 
-      if (image.path.isNotEmpty) {
+      if (file.path.isNotEmpty) {
         request.files.add(
-          await http.MultipartFile.fromPath('site_drawing', image.path),
+          await http.MultipartFile.fromPath(
+            'site_drawing',
+            file.path,
+          ),
         );
       }
 
       var response = await request.send();
 
       if (response.statusCode == 200) {
-        return successResponseFromJson(await response.stream.bytesToString());
+        return successResponseFromJson(
+          await response.stream.bytesToString(),
+        );
       }
     } catch (e) {
       log("Error: ${e.toString()}");
@@ -2766,7 +2803,7 @@ class HttpServices {
       );
 
       if (response.statusCode == 200) {
-        // print("GET EXPENSE RESPONSE : ${response.body}");
+        print("GET EXPENSE RESPONSE : ${response.body}");
 
         return jsonDecode(response.body);
       }
@@ -2785,7 +2822,7 @@ class HttpServices {
 
       if (response.statusCode == 200) {
         // );
-        // print("GET work RESPONSE : ${response.body}");
+        //print("GET work RESPONSE : ${response.body}");
         return jsonDecode(response.body);
       }
     } catch (e) {
@@ -3397,5 +3434,54 @@ class HttpServices {
     }
 
     return null;
+  }
+
+  static Future<ProjectProgressData?> getProjectProgress({
+    required String projectId,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse("${await Config.getUrl()}getProjectProgress"),
+        body: {
+          "token": await getSharedPreference("token"),
+          "project_id": projectId,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+
+        if (result["status"] == true) {
+          return ProjectProgressData.fromJson(result["data"]);
+        }
+      }
+    } catch (e) {
+      print("Exception: $e");
+    }
+
+    return null;
+  }
+
+  static Future<LiveMapModel> getLiveMap() async {
+    try {
+      final response = await http.post(
+        Uri.parse("${await Config.getUrl()}getSiteMonitorProjects"),
+        body: {
+          "token": await getSharedPreference("token"),
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+
+        if (result["status"] == true) {
+          return LiveMapModel.fromJson(result);
+        }
+      }
+    } catch (e) {
+      print("Exception: $e");
+    }
+
+    throw Exception("Failed to load LiveMap data");
   }
 }

@@ -49,7 +49,8 @@ class _WorkScreenState extends State<WorkScreen> {
 
           /// SUCCESS
           if (state is WorkSuccess) {
-            final workList = state.workList;
+            // final workList = state.workList;
+            final workList = state.filteredWorkList;
 
             return SingleChildScrollView(
               child: Column(
@@ -106,6 +107,31 @@ class _WorkScreenState extends State<WorkScreen> {
                     height: 20,
                   ),
 
+                  //Search
+                  Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 22,
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                        color: AppColors.search,
+                        borderRadius: BorderRadius.circular(12)),
+                    child: TextField(
+                      decoration: const InputDecoration(
+                        hintText: "Search...",
+                        border: InputBorder.none,
+                        prefixIcon: Icon(Icons.search),
+                      ),
+                      onChanged: (value) {
+                        context.read<WorkCubit>().searchProjects(value);
+                      },
+                    ),
+                  ),
+
+                  const SizedBox(
+                    height: 20,
+                  ),
+
                   ListView.builder(
                     itemCount: workList.length,
                     shrinkWrap: true,
@@ -113,7 +139,6 @@ class _WorkScreenState extends State<WorkScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     itemBuilder: (context, index) {
                       final item = workList[index];
-
                       bool isPending =
                           item.updateStatus.toLowerCase().trim() == "pending";
 
@@ -131,7 +156,7 @@ class _WorkScreenState extends State<WorkScreen> {
                       } catch (_) {}
 
                       return InkWell(
-                        borderRadius: BorderRadius.circular(18),
+                        borderRadius: BorderRadius.circular(20),
                         onTap: () {
                           if (isPending) {
                             addWorkPopup(item);
@@ -139,136 +164,135 @@ class _WorkScreenState extends State<WorkScreen> {
                         },
                         child: Container(
                           margin: const EdgeInsets.only(bottom: 16),
+                          padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(18),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: Colors.grey.shade200,
+                            ),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.grey.shade300,
-                                blurRadius: 8,
-                                offset: const Offset(0, 3),
+                                color: Colors.black.withValues(alpha: 0.08),
+                                blurRadius: 12,
+                                offset: const Offset(0, 4),
                               ),
                             ],
                           ),
-                          child: Row(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              /// DATE BOX
-                              Container(
-                                width: 100,
-                                height: 140,
-                                decoration: BoxDecoration(
-                                  color: AppColors.primaryColor,
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(18),
-                                    bottomLeft: Radius.circular(18),
+                              /// WORK BADGE
+
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 6,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primaryColor,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: const Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.construction_rounded,
+                                          color: Colors.white,
+                                          size: 18,
+                                        ),
+                                        SizedBox(width: 6),
+                                        Text(
+                                          "WORK",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            letterSpacing: 1,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    CircleAvatar(
-                                      radius: 26,
-                                      backgroundColor: Colors.white24,
-                                      child: Icon(
-                                        Icons.construction_rounded,
-                                        color: Colors.white,
-                                        size: 32,
-                                      ),
+                                  const Spacer(),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 5,
                                     ),
-                                    SizedBox(height: 12),
-                                    Text(
-                                      "WORK",
+                                    decoration: BoxDecoration(
+                                      color: isPending
+                                          ? Colors.orange.shade50
+                                          : Colors.green.shade50,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Text(
+                                      item.updateStatus,
                                       style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 14,
+                                        color: isPending
+                                            ? Colors.orange
+                                            : Colors.green,
                                         fontWeight: FontWeight.bold,
-                                        letterSpacing: 1,
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
 
-                              /// DETAILS
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(14),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              item.projectName,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 14,
-                                              vertical: 6,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: isPending
-                                                  ? Colors.orange.shade50
-                                                  : Colors.green.shade50,
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                            child: Text(
-                                              item.updateStatus,
-                                              style: TextStyle(
-                                                color: isPending
-                                                    ? Colors.orange
-                                                    : Colors.green,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                              const SizedBox(height: 12),
+
+                              /// PROJECT NAME
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      item.projectName,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      const SizedBox(height: 10),
-                                      Text(
-                                        "Working : ${item.isWorking}",
-                                        style: const TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 5),
-                                      Text(
-                                        "Labours : ${item.laboursNo}",
-                                        style: const TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 5),
-                                      Text(
-                                        "Date : ${item.workDate}",
-                                        style: TextStyle(
-                                          color: Colors.grey.shade700,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 5),
-                                      Text(
-                                        "Description : ${item.description}",
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          color: Colors.grey.shade700,
-                                        ),
-                                      ),
-                                    ],
+                                    ),
                                   ),
-                                ),
+                                ],
+                              ),
+
+                              const SizedBox(height: 14),
+
+                              _buildInfoRow(
+                                Icons.engineering_outlined,
+                                "Working",
+                                item.isWorking,
+                              ),
+
+                              const SizedBox(height: 8),
+
+                              _buildInfoRow(
+                                Icons.groups_2_outlined,
+                                "Labours",
+                                item.laboursNo.toString(),
+                              ),
+
+                              const SizedBox(height: 8),
+
+                              _buildInfoRow(
+                                Icons.calendar_month_outlined,
+                                "Date",
+                                item.workDate,
+                              ),
+
+                              const SizedBox(height: 8),
+
+                              _buildInfoRow(
+                                Icons.description_outlined,
+                                "Description",
+                                item.description,
+                                maxLines: 2,
                               ),
                             ],
                           ),
@@ -694,6 +718,42 @@ class _WorkScreenState extends State<WorkScreen> {
           },
         );
       },
+    );
+  }
+
+  Widget _buildInfoRow(
+    IconData icon,
+    String title,
+    String value, {
+    int maxLines = 1,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(
+          icon,
+          size: 18,
+          color: AppColors.primaryColor,
+        ),
+        const SizedBox(width: 8),
+        Text(
+          "$title: ",
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            maxLines: maxLines,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: Colors.grey.shade700,
+              height: 1.4,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

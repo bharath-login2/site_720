@@ -14,11 +14,13 @@ class ProjectDetailsModel {
   Data data;
   String message;
   bool status;
+  ProjectProgressData? progress;
 
   ProjectDetailsModel({
     required this.data,
     required this.message,
     required this.status,
+    this.progress,
   });
 
   factory ProjectDetailsModel.fromJson(Map<String, dynamic> json) =>
@@ -144,5 +146,65 @@ class Data {
         "general_issue_count": generalIssueCount,
         "elevation_image": elevationImage,
         "plan_image": planImage,
+      };
+}
+
+class ProjectProgressData {
+  int totalDays;
+  int completedDays;
+  double overallPercent;
+  List<ProjectStage> stages;
+
+  ProjectProgressData({
+    required this.totalDays,
+    required this.completedDays,
+    required this.overallPercent,
+    required this.stages,
+  });
+
+  factory ProjectProgressData.fromJson(Map<String, dynamic> json) =>
+      ProjectProgressData(
+        totalDays: json["total_days"] ?? 0,
+        completedDays: json["completed_days"] ?? 0,
+        overallPercent: (json["overall_percent"] as num?)?.toDouble() ?? 0.0,
+        stages: json["stages"] == null
+            ? []
+            : List<ProjectStage>.from(
+                json["stages"].map((x) => ProjectStage.fromJson(x))),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "total_days": totalDays,
+        "completed_days": completedDays,
+        "overall_percent": overallPercent,
+        "stages": List<dynamic>.from(stages.map((x) => x.toJson())),
+      };
+}
+
+class ProjectStage {
+  String stageId;
+  String stageName;
+  int days;
+  String color;
+
+  ProjectStage({
+    required this.stageId,
+    required this.stageName,
+    required this.days,
+    required this.color,
+  });
+
+  factory ProjectStage.fromJson(Map<String, dynamic> json) => ProjectStage(
+        stageId: json["stage_id"]?.toString() ?? "",
+        stageName: json["stage_name"] ?? "",
+        days: json["days"] ?? 0,
+        color: json["color"] ?? "",
+      );
+
+  Map<String, dynamic> toJson() => {
+        "stage_id": stageId,
+        "stage_name": stageName,
+        "days": days,
+        "color": color,
       };
 }

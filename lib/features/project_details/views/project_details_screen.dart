@@ -72,6 +72,77 @@ class ProjectDetails extends StatelessWidget {
                             SizedBox(
                               height: MediaQuery.of(context).size.height * .050,
                             ),
+                            if (state is ProjectDetailsSuccess &&
+                                state.response.progress != null)
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                child: Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * .95,
+                                  padding: const EdgeInsets.all(15),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(8),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.3),
+                                        blurRadius: 5,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(height: 15),
+                                      Text(
+                                        "Overall Progress : "
+                                        "${state.response.progress!.completedDays} days completed "
+                                        "out of ${state.response.progress!.totalDays} days "
+                                        "(${state.response.progress!.overallPercent.toStringAsFixed(1)}%)",
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 12),
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(20),
+                                        child: LinearProgressIndicator(
+                                          minHeight: 24,
+                                          value: state.response.progress!
+                                                      .totalDays ==
+                                                  0
+                                              ? 0
+                                              : state.response.progress!
+                                                      .completedDays /
+                                                  state.response.progress!
+                                                      .totalDays,
+                                          backgroundColor: Colors.grey.shade300,
+                                          valueColor:
+                                              const AlwaysStoppedAnimation<
+                                                  Color>(
+                                            Color(0xff19b59f),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Center(
+                                        child: Text(
+                                          "${state.response.progress!.overallPercent.toStringAsFixed(1)}%",
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.primaryColor,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            const SizedBox(height: 15),
                             Container(
                               width: MediaQuery.of(context).size.width * .95,
                               decoration: BoxDecoration(

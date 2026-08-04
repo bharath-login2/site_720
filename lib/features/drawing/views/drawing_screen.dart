@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/buttons.dart';
@@ -26,7 +27,7 @@ class DrawingScreen extends StatelessWidget {
   TextEditingController remark = TextEditingController();
   List<Drawings> drawingList = [];
   XFile? image;
-
+  PlatformFile? selectedPdf;
   @override
   Widget build(BuildContext context) {
     final args =
@@ -54,8 +55,13 @@ class DrawingScreen extends StatelessWidget {
                 drawingList = state.response.data;
               } else if (state is ImageSuccess) {
                 image = state.image;
+                selectedPdf = null;
+              } else if (state is PdfSuccess) {
+                selectedPdf = state.file;
+                image = null;
               } else if (state is UploadSuccess) {
                 image = null;
+                selectedPdf = null;
                 snackBar(context, "Drawing Uploaded", Colors.green);
               }
             },
@@ -72,9 +78,9 @@ class DrawingScreen extends StatelessWidget {
                             title: "Drawing",
                           ),
                           SizedBox(
-                            height: image == null
-                                ? MediaQuery.of(context).size.height * .28
-                                : MediaQuery.of(context).size.height * .42,
+                            height: (image != null || selectedPdf != null)
+                                ? MediaQuery.of(context).size.height * .42
+                                : MediaQuery.of(context).size.height * .28,
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(
@@ -130,110 +136,211 @@ class DrawingScreen extends StatelessWidget {
                                               //   ),
                                               //   margin: const EdgeInsets.all(8),
                                               // ),
-                                        Container(
-  decoration: BoxDecoration(
-    borderRadius: BorderRadius.circular(12),
-    color: Colors.white,
-    boxShadow: [
-      BoxShadow(
-        color: Colors.grey.withOpacity(0.8),
-        blurRadius: 3,
-        offset: const Offset(0, 3),
-      ),
-    ],
-  ),
-  child: Column(
-    children: [
-      InkWell(
-        onTap: () {
-          final fileUrl = drawingList[index].fileName;
-          if (fileUrl.toLowerCase().endsWith(".pdf")) {
-            // Open PDF Viewer directly
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => Scaffold(
-                  appBar: AppBar(title: const Text("PDF Viewer")),
-                  body: SfPdfViewer.network(fileUrl),
-                ),
-              ),
-            );
-          } else {
-            // Open zoomable image
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => Scaffold(
-                  appBar: AppBar(title: const Text("Image Viewer")),
-                  body: PhotoView(
-                    imageProvider: NetworkImage(fileUrl),
-                    backgroundDecoration:
-                        const BoxDecoration(color: Colors.black),
-                  ),
-                ),
-              ),
-            );
-          }
-        },
-        child: Container(
-          height: MediaQuery.of(context).size.height * .35,
-          margin: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            border: Border.all(color: AppColors.lightA),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: drawingList[index].fileName.toLowerCase().endsWith(".pdf")
-              ? const Center(
-                  child: Icon(
-                    Icons.picture_as_pdf,
-                    color: Colors.red,
-                    size: 60,
-                  ),
-                )
-              : ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Image.network(
-                    drawingList[index].fileName,
-                    fit: BoxFit.fitWidth,
-                  ),
-                ),
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.only(
-            left: 16.0, right: 16.0, top: 4.0, bottom: 8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            if (drawingList[index].remarks.isNotEmpty)
-              Text(
-                drawingList[index].remarks,
-                style: const TextStyle(
-                  color: AppColors.primaryColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            InkWell(
-              onTap: () {
-                deleteDialog(context, () {
-                  cubit.deleteDrawing(projectId, drawingList[index].id);
-                  Navigator.pop(context);
-                });
-              },
-              child: const Icon(
-                Icons.delete,
-                color: Colors.red,
-                size: 22,
-              ),
-            )
-          ],
-        ),
-      ),
-    ],
-  ),
-)
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                  color: Colors.white,
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.8),
+                                                      blurRadius: 3,
+                                                      offset:
+                                                          const Offset(0, 3),
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: Column(
+                                                  children: [
+                                                    InkWell(
+                                                      onTap: () {
+                                                        final fileUrl =
+                                                            drawingList[index]
+                                                                .fileName;
 
+                                                        if (fileUrl
+                                                            .toLowerCase()
+                                                            .endsWith(".pdf")) {
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                              builder: (_) =>
+                                                                  Scaffold(
+                                                                appBar: AppBar(
+                                                                  title: const Text(
+                                                                      "PDF Viewer"),
+                                                                ),
+                                                                body: SfPdfViewer
+                                                                    .network(
+                                                                        fileUrl),
+                                                              ),
+                                                            ),
+                                                          );
+                                                        } else {
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                              builder: (_) =>
+                                                                  Scaffold(
+                                                                appBar: AppBar(
+                                                                  title: const Text(
+                                                                      "Image Viewer"),
+                                                                ),
+                                                                body: PhotoView(
+                                                                  imageProvider:
+                                                                      NetworkImage(
+                                                                          fileUrl),
+                                                                  backgroundDecoration:
+                                                                      const BoxDecoration(
+                                                                          color:
+                                                                              Colors.black),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          );
+                                                        }
+                                                      },
+                                                      child: Container(
+                                                        height: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .height *
+                                                            .35,
+                                                        margin: const EdgeInsets
+                                                            .all(8),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          border: Border.all(
+                                                              color: AppColors
+                                                                  .lightA),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(12),
+                                                        ),
+                                                        child: drawingList[
+                                                                    index]
+                                                                .fileName
+                                                                .toLowerCase()
+                                                                .endsWith(
+                                                                    ".pdf")
+                                                            ? ClipRRect(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            12),
+                                                                child:
+                                                                    IgnorePointer(
+                                                                  child: SfPdfViewer
+                                                                      .network(
+                                                                    drawingList[
+                                                                            index]
+                                                                        .fileName,
+                                                                    canShowScrollHead:
+                                                                        false,
+                                                                    canShowScrollStatus:
+                                                                        false,
+                                                                    enableDoubleTapZooming:
+                                                                        false,
+                                                                    pageLayoutMode:
+                                                                        PdfPageLayoutMode
+                                                                            .single,
+                                                                  ),
+                                                                ),
+                                                              )
+                                                            : ClipRRect(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            12),
+                                                                child: Image
+                                                                    .network(
+                                                                  drawingList[
+                                                                          index]
+                                                                      .fileName,
+                                                                  fit: BoxFit
+                                                                      .cover,
+                                                                  loadingBuilder:
+                                                                      (context,
+                                                                          child,
+                                                                          loadingProgress) {
+                                                                    if (loadingProgress ==
+                                                                        null)
+                                                                      return child;
+                                                                    return const Center(
+                                                                      child:
+                                                                          CircularProgressIndicator(),
+                                                                    );
+                                                                  },
+                                                                  errorBuilder: (_,
+                                                                          __,
+                                                                          ___) =>
+                                                                      const Center(
+                                                                    child: Icon(
+                                                                      Icons
+                                                                          .broken_image,
+                                                                      size: 60,
+                                                                      color: Colors
+                                                                          .grey,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 16.0,
+                                                              right: 16.0,
+                                                              top: 4.0,
+                                                              bottom: 8.0),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          if (drawingList[index]
+                                                              .remarks
+                                                              .isNotEmpty)
+                                                            Text(
+                                                              drawingList[index]
+                                                                  .remarks,
+                                                              style:
+                                                                  const TextStyle(
+                                                                color: AppColors
+                                                                    .primaryColor,
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          InkWell(
+                                                            onTap: () {
+                                                              deleteDialog(
+                                                                  context, () {
+                                                                cubit.deleteDrawing(
+                                                                    projectId,
+                                                                    drawingList[
+                                                                            index]
+                                                                        .id);
+                                                                Navigator.pop(
+                                                                    context);
+                                                              });
+                                                            },
+                                                            child: const Icon(
+                                                              Icons.delete,
+                                                              color: Colors.red,
+                                                              size: 22,
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
 
                                               // Padding(
                                               //   padding: const EdgeInsets.only(
@@ -352,26 +459,50 @@ class DrawingScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(width: 10),
-                    const Icon(Icons.image, color: Colors.grey),
+                    Icon(
+                      selectedPdf != null ? Icons.picture_as_pdf : Icons.image,
+                      color: selectedPdf != null ? Colors.red : Colors.grey,
+                    ),
                     const SizedBox(width: 10),
                     Expanded(
-                        child: image != null
-                            ? Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Image.file(
-                                  File(image!.path),
-                                  height:
-                                      MediaQuery.of(context).size.height * .2,
-                                  fit: BoxFit.cover,
+                      child: image != null
+                          ? Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.file(
+                                File(image!.path),
+                                height: MediaQuery.of(context).size.height * .2,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : selectedPdf != null
+                              ? Padding(
+                                  padding: const EdgeInsets.all(12),
+                                  child: Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.picture_as_pdf,
+                                        color: Colors.red,
+                                        size: 40,
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Expanded(
+                                        child: Text(
+                                          selectedPdf!.name,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(fontSize: 15),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 20.0),
+                                  child: Text(
+                                    'Choose Image / PDF',
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
                                 ),
-                              )
-                            : const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 20.0),
-                                child: Text(
-                                  'Choose Image',
-                                  style: TextStyle(color: Colors.grey),
-                                ),
-                              )),
+                    ),
                   ],
                 ),
               ),
@@ -404,8 +535,27 @@ class DrawingScreen extends StatelessWidget {
                 ? const CircularProgressIndicator()
                 : InkWell(
                     onTap: () async {
-                      await context.read<DrawingCubit>().uploadDrawings(
-                          projectId, clientId, image!, remark.text);
+                      if (image != null) {
+                        await context.read<DrawingCubit>().uploadDrawings(
+                              projectId,
+                              clientId,
+                              File(image!.path),
+                              remark.text,
+                            );
+                      } else if (selectedPdf != null) {
+                        await context.read<DrawingCubit>().uploadDrawings(
+                              projectId,
+                              clientId,
+                              File(selectedPdf!.path!),
+                              remark.text,
+                            );
+                      } else {
+                        snackBar(
+                          context,
+                          "Please choose an Image or PDF",
+                          Colors.red,
+                        );
+                      }
                     },
                     child: MediumButton(title: "Submit")),
             const SizedBox(height: 4),
@@ -434,7 +584,7 @@ class DrawingScreen extends StatelessWidget {
                   borderRadius: const BorderRadius.all(Radius.circular(10)),
                   border: Border.all(),
                 ),
-                height: 200,
+                height: 320,
                 width: MediaQuery.of(context).size.width * 0.9,
                 child: Column(
                   children: [
@@ -462,74 +612,41 @@ class DrawingScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Column(
                       children: [
-                        InkWell(
-                          onTap: () async {
-                            await context
-                                .read<DrawingCubit>()
-                                .selectImage(ImageSource.camera);
-                            Navigator.pop(context);
-                          },
-                          child: Container(
-                            height: 100,
-                            width: 100,
-                            decoration: BoxDecoration(
-                              color: AppColors.primaryColor,
-                              borderRadius: BorderRadius.circular(5),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            InkWell(
+                              onTap: () async {
+                                await context
+                                    .read<DrawingCubit>()
+                                    .selectImage(ImageSource.camera);
+                                Navigator.pop(context);
+                              },
+                              child: _pickItem(Icons.camera, "Camera"),
                             ),
-                            child: const Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.camera,
-                                  color: Colors.white,
-                                ),
-                                SizedBox(height: 10),
-                                Text(
-                                  "Camera",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ],
+                            InkWell(
+                              onTap: () async {
+                                await context
+                                    .read<DrawingCubit>()
+                                    .selectImage(ImageSource.gallery);
+                                Navigator.pop(context);
+                              },
+                              child: _pickItem(Icons.image, "Gallery"),
                             ),
-                          ),
+                          ],
                         ),
-                        const SizedBox(width: 20),
+                        const SizedBox(height: 20),
                         InkWell(
                           onTap: () async {
-                            await context
-                                .read<DrawingCubit>()
-                                .selectImage(ImageSource.gallery);
+                            await context.read<DrawingCubit>().selectPdf();
                             Navigator.pop(context);
                           },
-                          child: Container(
-                            height: 100,
-                            width: 100,
-                            decoration: BoxDecoration(
-                              color: AppColors.primaryColor,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: const Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.image,
-                                  color: Colors.white,
-                                ),
-                                SizedBox(height: 10),
-                                Text(
-                                  "Gallery",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ],
-                            ),
-                          ),
+                          child: _pickItem(Icons.picture_as_pdf, "PDF"),
                         ),
                       ],
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -537,6 +654,28 @@ class DrawingScreen extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  Widget _pickItem(IconData icon, String title) {
+    return Container(
+      height: 100,
+      width: 100,
+      decoration: BoxDecoration(
+        color: AppColors.primaryColor,
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: Colors.white),
+          const SizedBox(height: 10),
+          Text(
+            title,
+            style: const TextStyle(color: Colors.white),
+          ),
+        ],
+      ),
     );
   }
 }

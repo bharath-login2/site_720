@@ -69,20 +69,203 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
                           title: "Project Details",
                           children: [
                             _buildTile("Project Name", project.projectName),
-                            _buildTile("Client Name", project.clientName),
-                            _buildTile("Phone", project.phoneNumber),
-                            _buildTile("Whatsapp", project.whatsappNumber),
-                            _buildTile("Email", project.emailId),
-                            _buildTile("Address", project.address),
-                            _buildTile("Status", project.workStatus),
                             _buildTile("Project Type", project.projectType),
-                            _buildTile("Package", project.packageName),
-                            _buildTile("Category", project.categoryName),
-                            _buildTile("BHK", project.bhkNo),
                             _buildTile(
-                              "Estimate Amount",
-                              project.totalEstimateAmount,
+                                "Project Category", project.categoryName),
+                            _buildTile(
+                              "Location Area",
+                              project.location.isNotEmpty
+                                  ? project.location
+                                  : "-",
                             ),
+
+// Clickable location that opens Google Maps using latitude & longitude
+                            _buildLocationTile(
+                              "Location",
+                              project.locationArea.isNotEmpty
+                                  ? project.locationArea
+                                  : "-",
+                              project.latitude,
+                              project.longtitude,
+                            ),
+                            _buildTile("Starting Date", project.startingDate),
+                            _buildTile(
+                                "Completion Date", project.completionDate),
+                            _buildTile("Packages", project.packageName),
+                            _buildTile("BHK", project.bhkNo),
+                            _buildTile("LPO No", project.lpoNo),
+                            _buildTile(
+                                "Quotation/Work Order No", project.orderNo),
+                            _buildTile("CCTV Address", project.cctvId),
+                            _buildTile("Project Details", project.packageId),
+                            _buildTile(
+                              "Priority",
+                              project.priorityId == "1"
+                                  ? "High"
+                                  : project.priorityId == "2"
+                                      ? "Medium"
+                                      : project.priorityId == "3"
+                                          ? "Low"
+                                          : "-",
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 15),
+                        _buildCard(
+                          title: "Square Feet Details",
+                          children: [
+                            Builder(
+                              builder: (context) {
+                                final sqftList = state.response.data.squareFeet;
+
+                                double totalSqft = 0;
+                                double totalAmount = 0;
+
+                                for (var item in sqftList) {
+                                  totalSqft +=
+                                      double.tryParse(item.sqftVal) ?? 0;
+                                  totalAmount +=
+                                      double.tryParse(item.sqftTotal) ?? 0;
+                                }
+
+                                final average =
+                                    totalSqft > 0 ? totalAmount / totalSqft : 0;
+
+                                return Padding(
+                                  padding: const EdgeInsets.all(12),
+                                  child: Column(
+                                    children: [
+                                      Table(
+                                        border: TableBorder.all(
+                                            color: Colors.grey.shade300),
+                                        columnWidths: const {
+                                          0: FlexColumnWidth(2.5),
+                                          1: FlexColumnWidth(1.2),
+                                          2: FlexColumnWidth(1.2),
+                                          3: FlexColumnWidth(1.5),
+                                        },
+                                        children: [
+                                          const TableRow(
+                                            decoration: BoxDecoration(
+                                              color: Color(0xfff3f3f3),
+                                            ),
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.all(8),
+                                                child: Text(
+                                                  "Work",
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.all(8),
+                                                child: Text(
+                                                  "Sq.ft",
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.all(8),
+                                                child: Text(
+                                                  "Rate",
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: EdgeInsets.all(8),
+                                                child: Text(
+                                                  "Total",
+                                                  textAlign: TextAlign.end,
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          ...sqftList.map(
+                                            (e) => TableRow(
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8),
+                                                  child: Text(e.sqftName),
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8),
+                                                  child: Text(
+                                                    e.sqftVal,
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8),
+                                                  child: Text(
+                                                    e.sqftRate,
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8),
+                                                  child: Text(
+                                                    e.sqftTotal,
+                                                    textAlign: TextAlign.end,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 20),
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: _summaryCard(
+                                              "Total Sq.ft",
+                                              totalSqft.toStringAsFixed(2),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Expanded(
+                                            child: _summaryCard(
+                                              "Total Amount",
+                                              totalAmount.toStringAsFixed(2),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Expanded(
+                                            child: _summaryCard(
+                                              "Average",
+                                              average.toStringAsFixed(2),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 15),
+                        _buildCard(
+                          title: "Description",
+                          children: [
+                            _buildTile("Project Description",
+                                project.projectDescription),
                           ],
                         ),
                         const SizedBox(height: 15),
@@ -219,18 +402,16 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
                         ),
                         const SizedBox(height: 15),
                         _buildCard(
-                          title: "Square Feet Details",
-                          children: state.response.data.squareFeet.map((e) {
-                            return Column(
-                              children: [
-                                _buildTile("Work", e.sqftName),
-                                _buildTile("Sq.ft", e.sqftVal),
-                                _buildTile("Rate", e.sqftRate),
-                                _buildTile("Total", e.sqftTotal),
-                                const Divider(),
-                              ],
-                            );
-                          }).toList(),
+                          title: "Client Details",
+                          children: [
+                            _buildTile("Client Name", project.clientName),
+                            _buildTile("Contact Number", project.phoneNumber),
+                            _buildTile(
+                                "Whatsapp Number", project.whatsappNumber),
+                            _buildTile("Email", project.emailId),
+                            _buildTile("civil Id", project.civilId),
+                            _buildTile("Address", project.address),
+                          ],
                         ),
                       ],
                     ),
@@ -243,6 +424,76 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
           return const SizedBox();
         },
       ),
+    );
+  }
+
+  Widget _summaryCard(String title, String value) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Column(
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 6),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.blue,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLocationTile(
+    String title,
+    String value,
+    String latitude,
+    String longitude,
+  ) {
+    return ListTile(
+      dense: true,
+      title: Text(title),
+      subtitle: Text(
+        value,
+        style: const TextStyle(
+          color: Colors.blue,
+          decoration: TextDecoration.underline,
+        ),
+      ),
+      trailing: const Icon(
+        Icons.location_on,
+        color: Colors.red,
+      ),
+      onTap: () async {
+        if (latitude.isEmpty || longitude.isEmpty) return;
+
+        final uri = Uri.parse(
+          "https://www.google.com/maps/search/?api=1&query=$latitude,$longitude",
+        );
+
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(
+            uri,
+            mode: LaunchMode.externalApplication,
+          );
+        }
+      },
     );
   }
 
@@ -267,7 +518,6 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   InkWell(
                     onTap: () => Navigator.pop(context),
@@ -296,59 +546,70 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
               ),
               const SizedBox(height: 8),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Icon(
-                    Icons.person_outline,
-                    color: Colors.white70,
-                    size: 18,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 28),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.person_outline,
+                              color: Colors.white70,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 5),
+                            Text(
+                              project.clientName,
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.phone_outlined,
+                              color: Colors.white70,
+                              size: 18,
+                            ),
+                            const SizedBox(width: 5),
+                            Text(
+                              project.phoneNumber,
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(width: 5),
-                  Expanded(
+                  //STATUS
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white24,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
                     child: Text(
-                      project.clientName,
+                      project.workStatus.toUpperCase(),
                       style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 15,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 ],
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  const Icon(
-                    Icons.phone_outlined,
-                    color: Colors.white70,
-                    size: 18,
-                  ),
-                  const SizedBox(width: 5),
-                  Text(
-                    project.phoneNumber,
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 15,
-                    ),
-                  ),
-                ],
-              ),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white24,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  project.workStatus.toUpperCase(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
               )
             ],
           ),

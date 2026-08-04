@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:site_720/core/widgets/appbar.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'package:site_720/core/constants/colors.dart';
 
 class ImageViewer extends StatelessWidget {
   const ImageViewer({super.key});
@@ -16,7 +17,7 @@ class ImageViewer extends StatelessWidget {
     final bool isPdf = file.toLowerCase().endsWith(".pdf");
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.backgroundColor,
       appBar: simpleAppbar(context, args["title"]!, true),
       body: isPdf
           ? SfPdfViewer.network(
@@ -37,15 +38,15 @@ class ImageViewer extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.error,
-                      color: Colors.red,
-                      size: 40,
-                    ),
+                    // Icon(
+                    //   Icons.error,
+                    //   color: Colors.red,
+                    //   size: 40,
+                    // ),
                     SizedBox(height: 10),
                     Text(
-                      "Failed to load file",
-                      style: TextStyle(color: Colors.white),
+                      "No Image or PDF Available!",
+                      style: TextStyle(color: Colors.black),
                     ),
                   ],
                 ),

@@ -34,6 +34,7 @@ class DashboardCubit extends Cubit<DashboardState> {
       );
 
       if (response != null && response['status'] == true) {
+        print('Expense Response: $response');
         emit(GetExpenseSuccess(response));
       } else {
         emit(

@@ -17,6 +17,7 @@ class ProjectListCubit extends Cubit<ProjectListState> {
     try {
       ProjectListModel response =
           await HttpServices.getProjectList(status, searchKey);
+      // print('Project List Response: ${response.toJson()}');
       if (response.status == true) {
         emit(ProjectListSuccess(response));
       }
@@ -50,14 +51,13 @@ class ProjectListCubit extends Cubit<ProjectListState> {
   }
 
   Future<void> getPrintPdf(String projectId, BuildContext context) async {
-  final result = await HttpServices.getPrintPdf(projectId);
-  if (result != null && result.status) {
-    launchPdfUrl(result.pdfUrl, context);
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(result?.message ?? 'Failed to load PDF')),
-    );
+    final result = await HttpServices.getPrintPdf(projectId);
+    if (result != null && result.status) {
+      launchPdfUrl(result.pdfUrl, context);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result?.message ?? 'Failed to load PDF')),
+      );
+    }
   }
-}
-
 }

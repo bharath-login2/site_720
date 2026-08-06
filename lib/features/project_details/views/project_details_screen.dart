@@ -711,6 +711,20 @@ class ProjectDetails extends StatelessWidget {
                                           .43,
                                     ),
                                   ),
+                                  InkWell(
+                                    onTap: () {
+                                      connStatus = true;
+                                      Navigator.pushNamed(
+                                          context, AppRoutes.estimateRequest,
+                                          arguments: {"id": id});
+                                    },
+                                    child: DetailsButtonContainer(
+                                      title: "Estimate Request",
+                                      color: AppColors.primaryColor,
+                                      width: MediaQuery.of(context).size.width *
+                                          .43,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),

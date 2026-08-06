@@ -50,8 +50,10 @@ import 'features/work_details/views/work_details_screen.dart';
 import 'features/payment_details/views/payment_details_screen.dart';
 import 'features/payment_schedule/views/payment_schedule_screen.dart';
 import 'features/installment/views/installment_screen.dart';
+import 'features/estimate_request/views/estimate_request_screen.dart';
 import 'package:site_720/features/payment_schedule/cubit/payment_schedule_cubit.dart';
 import 'package:site_720/features/installment/cubit/installment_cubit.dart';
+import 'package:site_720/features/estimate_request/cubit/estimate_request_cubit.dart';
 import 'package:site_720/features/sub_contactors/views/sub_contractor_details_screen.dart';
 import 'features/project_document/views/project_documents_page.dart';
 import 'features/project_info/views/project_info_page.dart';
@@ -157,6 +159,12 @@ class MyApp extends StatelessWidget {
                 projectId: "",
               ),
             ),
+        //AppRoutes.estimateRequest: (context) => const EstimateRequestScreen(),
+        '/estimateRequest': (context) => BlocProvider(
+              create: (context) =>
+                  EstimateRequestCubit()..getEstimateRequests(),
+              child: const EstimateRequestScreen(),
+            ),
         AppRoutes.projectDocuments: (context) {
           final args = ModalRoute.of(context)!.settings.arguments
               as Map<String, dynamic>;
@@ -183,10 +191,10 @@ class MyApp extends StatelessWidget {
         '/petty': (context) => const PettyScreen(),
         '/subContractorDetails': (context) =>
             const SubContractorDetailsScreen(),
-       '/projectInfo': (context) => BlocProvider(
-      create: (_) => ProjectInfoCubit(),
-      child: const ProjectInfoPage(),
-    ),
+        '/projectInfo': (context) => BlocProvider(
+              create: (_) => ProjectInfoCubit(),
+              child: const ProjectInfoPage(),
+            ),
       },
     );
   }

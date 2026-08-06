@@ -78,6 +78,7 @@ import '../models/stockconsume/stage_dropdown_model.dart';
 import '../models/projectdocument/project_document_model.dart';
 import '../models/project_info/project_info_model.dart';
 import '../models/livemap/livemap_model.dart';
+import '../models/estimate_request/estimate_request_model.dart';
 import 'package:http_parser/http_parser.dart';
 
 class HttpServices {
@@ -3483,5 +3484,67 @@ class HttpServices {
     }
 
     throw Exception("Failed to load LiveMap data");
+  }
+
+  //estimate request
+  static Future<EstimateRequestResponse> getEstimateRequests() async {
+    try {
+      final response = await http.post(
+        Uri.parse("${await Config.getUrl()}getEstimateRequestList"),
+        body: {
+          "token": await getSharedPreference("token"),
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+
+        if (result["status"] == true) {
+          return EstimateRequestResponse.fromJson(result);
+        }
+      }
+    } catch (e) {
+      print("Exception: $e");
+    }
+
+    throw Exception("Failed to load estimate requests");
+  }
+
+  //Estimate Request Action
+  static Future<EstimateRequestResponse> estimateRequestAction({
+    required String requestAction,
+    String? projectId,
+    String? stageId,
+    String? remark,
+    String? requestId,
+  }) async {
+    print("Response: ${requestId}");
+    try {
+      final response = await http.post(
+        Uri.parse("${await Config.getUrl()}estimateRequestAction"),
+        body: {
+          "token": await getSharedPreference("token"),
+          "action": requestAction,
+          if (requestId != null) "request_id": requestId,
+          if (projectId != null) "project_id": projectId,
+          if (stageId != null) "stage_id": stageId,
+          if (remark != null) "remark": remark,
+        },
+      );
+      print("Status Code: ${response.statusCode}");
+      print("Response: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+
+        if (result["status"] == true) {
+          return EstimateRequestResponse.fromJson(result);
+        }
+      }
+    } catch (e) {
+      print("Exception: $e");
+    }
+
+    throw Exception("Failed to add estimate request");
   }
 }

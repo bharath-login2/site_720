@@ -4,6 +4,7 @@ import '../cubit/estimate_request_cubit.dart';
 import '../../../core/constants/colors.dart';
 import '../../../data/models/estimate_request/estimate_request_model.dart';
 import 'estimate_request_form_dialog.dart';
+
 /// Approve Currently commented out, but can be enabled if needed
 //import 'estimate_request_approve_form_dialog.dart';
 
@@ -457,15 +458,15 @@ class EstimateRequestCard extends StatelessWidget {
               onPressed: () => Navigator.pop(context),
               child: const Text("Close"),
             ),
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.pop(context);
+            // ElevatedButton.icon(
+            //   onPressed: () {
+            //     Navigator.pop(context);
 
-                // Submit action
-              },
-              icon: const Icon(Icons.check),
-              label: const Text("Submit"),
-            ),
+            //     // Submit action
+            //   },
+            //   icon: const Icon(Icons.check),
+            //   label: const Text("Submit"),
+            // ),
           ],
         );
       },

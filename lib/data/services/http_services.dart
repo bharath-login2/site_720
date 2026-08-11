@@ -12,6 +12,7 @@ import 'package:site_720/data/models/extraworklist/successResponseModelMain.dart
 import 'package:site_720/data/models/extraworklist/successresponseModel.dart';
 import 'package:site_720/data/models/galery/galery_list_model.dart';
 import 'package:site_720/data/models/project_list/project_list_model.dart';
+import 'package:site_720/data/models/site_drawing_request/site_drawing_request_model.dart';
 import 'package:site_720/data/models/task/getComplaintCategoryModel.dart';
 import 'package:site_720/data/models/task/runningDashboard.dart';
 import 'package:site_720/data/models/task/taskActivityModel.dart';
@@ -3486,14 +3487,27 @@ class HttpServices {
     throw Exception("Failed to load LiveMap data");
   }
 
-  //estimate request
-  static Future<EstimateRequestResponse> getEstimateRequests() async {
+  static Future<EstimateRequestResponse> getEstimateRequests({
+    String? projectId,
+  }) async {
     try {
+      final token = await getSharedPreference("token");
+
+      final Map<String, String> body = {
+        "token": token ?? "",
+      };
+
+      // Only send project_id when a project was selected/opened.
+      if (projectId != null && projectId.isNotEmpty) {
+        body["project_id"] = projectId;
+      }
+
+      //print("REQUEST URL: ${await Config.getUrl()}test");
+      print("REQUEST BODY: $body");
+
       final response = await http.post(
         Uri.parse("${await Config.getUrl()}getEstimateRequestList"),
-        body: {
-          "token": await getSharedPreference("token"),
-        },
+        body: body,
       );
 
       if (response.statusCode == 200) {
@@ -3502,12 +3516,19 @@ class HttpServices {
         if (result["status"] == true) {
           return EstimateRequestResponse.fromJson(result);
         }
-      }
-    } catch (e) {
-      print("Exception: $e");
-    }
 
-    throw Exception("Failed to load estimate requests");
+        throw Exception(
+          result["message"] ?? "Failed to load estimate requests",
+        );
+      }
+
+      throw Exception(
+        "Status Code ${response.statusCode}",
+      );
+    } catch (e) {
+      print("GET ESTIMATE ERROR: $e");
+      rethrow;
+    }
   }
 
   //Estimate Request Action
@@ -3518,7 +3539,6 @@ class HttpServices {
     String? remark,
     String? requestId,
   }) async {
-    print("Response: ${requestId}");
     try {
       final response = await http.post(
         Uri.parse("${await Config.getUrl()}estimateRequestAction"),
@@ -3531,7 +3551,7 @@ class HttpServices {
           if (remark != null) "remark": remark,
         },
       );
-      print("Status Code: ${response.statusCode}");
+
       print("Response: ${response.body}");
 
       if (response.statusCode == 200) {
@@ -3546,5 +3566,135 @@ class HttpServices {
     }
 
     throw Exception("Failed to add estimate request");
+  }
+
+  // static Future<SiteDrawingRequestListResponse> getSiteDrawingRequests({
+  static Future<SiteDrawingRequestListResponse> getSiteDrawingRequests() async {
+    try {
+      final response = await http.post(
+        Uri.parse("${await Config.getUrl()}getDrawingRequestList"),
+        body: {
+          "token": await getSharedPreference("token"),
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+
+        return SiteDrawingRequestListResponse.fromJson(result);
+      }
+
+      throw Exception(
+        "Request failed with status code ${response.statusCode}",
+      );
+    } catch (e) {
+      print("Exception: $e");
+      rethrow;
+    }
+  }
+
+  static Future<SiteDrawingRequestListResponse?> saveDrawingRequests({
+    String? projectId,
+    List<String>? stageId,
+    String? remark,
+  }) async {
+    try {
+      final token = await getSharedPreference("token");
+
+      final List<String> body = [];
+
+      body.add(
+        "token=${Uri.encodeQueryComponent(token ?? "")}",
+      );
+
+      if (projectId != null) {
+        body.add(
+          "project_id=${Uri.encodeQueryComponent(projectId)}",
+        );
+      }
+
+      for (final id in stageId ?? []) {
+        body.add(
+          "stages%5B%5D=${Uri.encodeQueryComponent(id)}",
+        );
+      }
+
+      if (remark != null) {
+        body.add(
+          "remark=${Uri.encodeQueryComponent(remark)}",
+        );
+      }
+
+      final response = await http.post(
+        Uri.parse("${await Config.getUrl()}saveDrawingRequest"),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: body.join("&"),
+      );
+
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+
+        return SiteDrawingRequestListResponse.fromJson(result);
+      }
+    } catch (e) {
+      print("Exception: $e");
+    }
+
+    return null;
+  }
+
+  static Future<SiteDrawingRequestListResponse?> deleteDrawingRequests({
+    String? recordId,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse("${await Config.getUrl()}deleteDrawingRequest"),
+        body: {
+          "token": await getSharedPreference("token"),
+          "row_id": recordId,
+        },
+      );
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+
+        if (result["status"] == true) {
+          return SiteDrawingRequestListResponse.fromJson(result);
+        }
+      }
+    } catch (e) {
+      print("Exception :$e");
+    }
+    return null;
+  }
+
+  static Future<SiteDrawingRequestListResponse?> siteDrawingUpdate({
+    required String recordId,
+    required String projectId,
+    required List<String> stages,
+    required String remark,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse("${await Config.getUrl()}updateDrawingRequest"),
+        body: {
+          "token": await getSharedPreference("token"),
+          "record_id": recordId,
+          "project_id": projectId,
+          "stages": stages,
+          "remark": remark
+        },
+      );
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+
+        if (result["status"] == true) {
+          return SiteDrawingRequestListResponse.fromJson(result);
+        }
+      }
+    } catch (e) {
+      print("Excepyion :$e");
+    }
   }
 }

@@ -54,7 +54,7 @@ class EstimateRequestModel {
   factory EstimateRequestModel.fromJson(Map<String, dynamic> json) {
     return EstimateRequestModel(
       id: json['id'] ?? '',
-      projectId: json['project_id'] ?? '',
+      projectId: json['project_id']?.toString() ?? '',
       stageId: json['stage_id'] ?? '',
       status: json['status'] ?? '',
       remark: json['remark'] ?? '',

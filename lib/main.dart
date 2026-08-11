@@ -23,6 +23,8 @@ import 'package:site_720/features/project_details/views/project_details_screen.d
 import 'package:site_720/features/project_list/views/edit_project.dart';
 import 'package:site_720/features/project_list/views/project_list_screen.dart';
 import 'package:site_720/features/purchase/views/purchase_list_screen.dart';
+import 'package:site_720/features/site_drawing_request/cubit/site_drawing_request_cubit.dart';
+import 'package:site_720/features/site_drawing_request/views/site_drawing_request_screen.dart';
 import 'package:site_720/features/stock/views/stock.dart';
 import 'package:site_720/features/sub_contactors/views/sub_contrctor_screen.dart';
 import 'package:site_720/features/work_issues/views/work_issues_screen.dart';
@@ -160,10 +162,32 @@ class MyApp extends StatelessWidget {
               ),
             ),
         //AppRoutes.estimateRequest: (context) => const EstimateRequestScreen(),
-        '/estimateRequest': (context) => BlocProvider(
-              create: (context) =>
-                  EstimateRequestCubit()..getEstimateRequests(),
-              child: const EstimateRequestScreen(),
+        '/estimateRequest': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments
+              as Map<String, dynamic>?;
+
+          final String? projectId = args?["id"]?.toString();
+
+          return BlocProvider(
+            create: (_) {
+              final cubit = EstimateRequestCubit();
+
+              if (projectId != null && projectId.isNotEmpty) {
+                cubit.getEstimateRequests(
+                  projectId: projectId,
+                );
+              } else {
+                cubit.getEstimateRequests();
+              }
+
+              return cubit;
+            },
+            child: const EstimateRequestScreen(),
+          );
+        },
+        '/siteDrawingRequest': (context) => BlocProvider(
+              create: (_) => SiteDrawingRequestCubit(),
+              child: SiteDrawingRequestScreen(),
             ),
         AppRoutes.projectDocuments: (context) {
           final args = ModalRoute.of(context)!.settings.arguments

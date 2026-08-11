@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../cubit/estimate_request_cubit.dart';
-import '../../../core/constants/colors.dart';
-import '../../../data/models/estimate_request/estimate_request_model.dart';
-import 'estimate_request_form_dialog.dart';
 
-/// Approve Currently commented out, but can be enabled if needed
-//import 'estimate_request_approve_form_dialog.dart';
+import '../../../../core/constants/colors.dart';
+import '../../../../data/models/site_drawing_request/site_drawing_request_model.dart';
+import '../cubit/site_drawing_request_cubit.dart';
 
-class EstimateRequestCard extends StatelessWidget {
-  final EstimateRequestModel item;
+import 'site_drawing_request_form_dialog.dart';
+
+class SiteDrawingRequestCard extends StatelessWidget {
+  final SiteDrawingRequest item;
   final String? projectId;
   final VoidCallback? onTap;
 
-  const EstimateRequestCard({
+  const SiteDrawingRequestCard({
     super.key,
     required this.item,
     this.projectId,
@@ -35,12 +34,12 @@ class EstimateRequestCard extends StatelessWidget {
         statusColor = Colors.orange;
         break;
 
-      case "completed":
+      case "approved":
         statusBg = Colors.green.shade50;
         statusColor = Colors.green;
         break;
 
-      case "in progress":
+      case "completed":
         statusBg = Colors.blue.shade50;
         statusColor = Colors.blue;
         break;
@@ -53,14 +52,16 @@ class EstimateRequestCard extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(20),
       onTap: () {
-        _showEstimateDialog(context);
+        _showSiteDrawingDialog(context);
       },
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: Colors.grey.shade200),
+          border: Border.all(
+            color: Colors.grey.shade200,
+          ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.08),
@@ -88,13 +89,13 @@ class EstimateRequestCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        Icons.request_quote,
+                        Icons.architecture,
                         color: Colors.white,
                         size: 18,
                       ),
                       SizedBox(width: 6),
                       Text(
-                        "ESTIMATE",
+                        "SITE DRAWING",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 12,
@@ -105,8 +106,11 @@ class EstimateRequestCard extends StatelessWidget {
                     ],
                   ),
                 ),
+
                 const Spacer(),
-                if (item.status == "Pending") ...[
+
+                /// Edit + Delete only when Pending
+                if (item.status.toLowerCase().trim() == "pending") ...[
                   /// Edit
                   CircleAvatar(
                     radius: 18,
@@ -119,15 +123,14 @@ class EstimateRequestCard extends StatelessWidget {
                         size: 18,
                       ),
                       onPressed: () {
-                        final cubit = context.read<EstimateRequestCubit>();
+                        final cubit = context.read<SiteDrawingRequestCubit>();
 
                         showDialog(
                           context: context,
                           builder: (_) => BlocProvider.value(
                             value: cubit,
-                            child: EstimateRequestFormDialog(
-                              projectId: projectId,
-                              estimate: item,
+                            child: SiteDrawingRequestForm(
+                              request: item,
                             ),
                           ),
                         );
@@ -153,34 +156,7 @@ class EstimateRequestCard extends StatelessWidget {
                       },
                     ),
                   ),
-
-                  const SizedBox(width: 8),
-
-                  /// Approve Currently commented out, but can be enabled if needed
-                  // CircleAvatar(
-                  //   radius: 18,
-                  //   backgroundColor: Colors.green,
-                  //   child: IconButton(
-                  //     padding: EdgeInsets.zero,
-                  //     icon: const Icon(
-                  //       Icons.check,
-                  //       color: Colors.white,
-                  //       size: 18,
-                  //     ),
-                  //     onPressed: () {
-                  //       showDialog(
-                  //         context: context,
-                  //         builder: (_) => BlocProvider.value(
-                  //           value: context.read<EstimateRequestCubit>(),
-                  //           child: EstimateRequestApproveFormDialog(
-                  //             estimate: item,
-                  //           ),
-                  //         ),
-                  //       );
-                  //     },
-                  //   ),
-                  // ),
-                ]
+                ],
               ],
             ),
 
@@ -220,74 +196,51 @@ class EstimateRequestCard extends StatelessWidget {
 
             const SizedBox(height: 15),
 
+            /// Stage
             _buildInfoRow(
               Icons.layers_outlined,
               "Stage",
-              item.stageName,
+              item.stageNames.isEmpty ? "-" : item.stageNames,
+              maxLines: 2,
             ),
 
             const SizedBox(height: 8),
 
+            /// Created By
             _buildInfoRow(
               Icons.person_outline,
               "Created By",
-              item.createdBy,
+              item.creatorName.isEmpty ? "-" : item.creatorName,
             ),
 
             const SizedBox(height: 8),
 
+            /// Created At
             _buildInfoRow(
               Icons.calendar_month_outlined,
               "Created At",
-              item.createdAt,
+              item.createdAt.isEmpty ? "-" : item.createdAt,
             ),
 
             const SizedBox(height: 8),
 
-            // _buildInfoRow(
-            //   Icons.description_outlined,
-            //   "Remark",
-            //   item.remark,
-            //   maxLines: 2,
-            // ),
+            /// Remark
+            _buildInfoRow(
+              Icons.description_outlined,
+              "Remark",
+              item.remark.isEmpty ? "-" : item.remark,
+              maxLines: 2,
+            ),
 
             const SizedBox(height: 12),
-
-            const Divider(),
-
-            const SizedBox(height: 8),
-
-            const Text(
-              "Assigned Staff",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            const SizedBox(height: 8),
-
-            item.assignedStaff.isEmpty
-                ? const Text(
-                    "No Assigned Staff",
-                    style: TextStyle(color: Colors.grey),
-                  )
-                : Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: item.assignedStaff.map((staff) {
-                      return Chip(
-                        label: Text(staff.staffName),
-                        backgroundColor: Colors.grey.shade100,
-                      );
-                    }).toList(),
-                  ),
           ],
         ),
       ),
     );
   }
 
-  void _showEstimateDialog(BuildContext context) {
+  /// Details Dialog
+  void _showSiteDrawingDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) {
@@ -299,12 +252,15 @@ class EstimateRequestCard extends StatelessWidget {
           case "pending":
             statusColor = Colors.orange;
             break;
-          case "completed":
+
+          case "approved":
             statusColor = Colors.green;
             break;
-          case "in progress":
+
+          case "completed":
             statusColor = Colors.blue;
             break;
+
           default:
             statusColor = Colors.grey;
         }
@@ -316,15 +272,15 @@ class EstimateRequestCard extends StatelessWidget {
           titlePadding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
           contentPadding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
           actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          title: Row(
+          title: const Row(
             children: [
-              const Icon(
-                Icons.request_quote_rounded,
+              Icon(
+                Icons.architecture,
                 color: AppColors.primaryColor,
               ),
-              const SizedBox(width: 8),
-              const Text(
-                "Estimate Request",
+              SizedBox(width: 8),
+              Text(
+                " Request",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
@@ -340,13 +296,19 @@ class EstimateRequestCard extends StatelessWidget {
                   "Project",
                   item.projectName,
                 ),
+
                 const SizedBox(height: 12),
+
                 _buildInfoRow(
                   Icons.layers_outlined,
                   "Stage",
-                  item.stageName,
+                  item.stageNames.isEmpty ? "-" : item.stageNames,
+                  maxLines: 3,
                 ),
+
                 const SizedBox(height: 12),
+
+                /// Status
                 Row(
                   children: [
                     const Icon(
@@ -370,7 +332,9 @@ class EstimateRequestCard extends StatelessWidget {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: statusColor.withValues(alpha: 0.12),
+                        color: statusColor.withValues(
+                          alpha: 0.12,
+                        ),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -383,58 +347,41 @@ class EstimateRequestCard extends StatelessWidget {
                     ),
                   ],
                 ),
+
                 const SizedBox(height: 12),
+
                 _buildInfoRow(
                   Icons.person_outline,
                   "Created By",
-                  item.createdBy,
+                  item.creatorName.isEmpty ? "-" : item.creatorName,
                 ),
+
                 const SizedBox(height: 12),
+
                 _buildInfoRow(
                   Icons.calendar_today_outlined,
                   "Created Date",
-                  item.createdAt,
+                  item.createdAt.isEmpty ? "-" : item.createdAt,
                 ),
+
                 const SizedBox(height: 12),
+
                 _buildInfoRow(
                   Icons.person_outline,
                   "Updated By",
                   item.updatedBy.isEmpty ? "-" : item.updatedBy,
                 ),
+
                 const SizedBox(height: 12),
+
                 _buildInfoRow(
                   Icons.update_outlined,
                   "Updated Date",
                   item.updatedAt.isEmpty ? "-" : item.updatedAt,
                 ),
+
                 const SizedBox(height: 16),
-                const Text(
-                  "Assigned Staff",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                item.assignedStaff.isEmpty
-                    ? const Text(
-                        "No staff assigned",
-                        style: TextStyle(color: Colors.grey),
-                      )
-                    : Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: item.assignedStaff.map((staff) {
-                          return Chip(
-                            avatar: const Icon(
-                              Icons.person,
-                              size: 16,
-                            ),
-                            label: Text(staff.staffName),
-                          );
-                        }).toList(),
-                      ),
-                const SizedBox(height: 16),
+
                 const Text(
                   "Remark",
                   style: TextStyle(
@@ -442,7 +389,9 @@ class EstimateRequestCard extends StatelessWidget {
                     fontSize: 15,
                   ),
                 ),
+
                 const SizedBox(height: 6),
+
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(12),
@@ -450,7 +399,9 @@ class EstimateRequestCard extends StatelessWidget {
                     color: Colors.grey.shade100,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Text(item.remark),
+                  child: Text(
+                    item.remark.isEmpty ? "-" : item.remark,
+                  ),
                 ),
               ],
             ),
@@ -460,24 +411,16 @@ class EstimateRequestCard extends StatelessWidget {
               onPressed: () => Navigator.pop(context),
               child: const Text("Close"),
             ),
-            // ElevatedButton.icon(
-            //   onPressed: () {
-            //     Navigator.pop(context);
-
-            //     // Submit action
-            //   },
-            //   icon: const Icon(Icons.check),
-            //   label: const Text("Submit"),
-            // ),
           ],
         );
       },
     );
   }
 
+  /// Delete Dialog
   void _showDeleteDialog(
     BuildContext context,
-    EstimateRequestModel item,
+    SiteDrawingRequest item,
   ) {
     showDialog(
       context: context,
@@ -496,7 +439,9 @@ class EstimateRequestCard extends StatelessWidget {
           ],
         ),
         content: Text(
-          "Are you sure you want to delete the estimate request for '${item.projectName}'?",
+          "Are you sure you want to delete the "
+          "site drawing request for "
+          "'${item.projectName}'?",
         ),
         actions: [
           TextButton(
@@ -512,17 +457,22 @@ class EstimateRequestCard extends StatelessWidget {
 
               if (!context.mounted) return;
 
+              await context
+                  .read<SiteDrawingRequestCubit>()
+                  .deleteSiteDrawingRequest(
+                    requestId: item.id,
+                  );
+
+              if (!context.mounted) return;
+
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text(
-                    "Estimate Request Deleted Successfully",
+                    "Site Drawing Request "
+                    "Deleted Successfully",
                   ),
                 ),
               );
-
-              await context.read<EstimateRequestCubit>().deleteEstimateRequest(
-                    requestId: item.id,
-                  );
             },
             child: const Text(
               "Delete",

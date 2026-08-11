@@ -16,6 +16,7 @@ import '../../connectivity/cubit/connectivity_cubit.dart';
 import '../../connectivity/cubit/connectivity_state.dart';
 import '../widgets/dash_container.dart';
 import '../widgets/date_container.dart';
+import '../widgets/request_dropdown_card.dart';
 import 'package:site_720/features/travel_expense/views/travel_expense_dashboard_screen.dart';
 import 'package:site_720/features/dashboard/views/change_password.dart';
 import 'package:site_720/features/dashboard/views/profile_screen.dart';
@@ -411,6 +412,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     85, MediaQuery.of(context).size.width * .4),
                               ],
                             ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 16.0,
+                        right: 16.0,
+                        top: 25,
+                      ),
+                      child: state is DashboardSuccess
+                          ? const RequestDropdownCard()
+                          : shimmerContainer(
+                              MediaQuery.of(context).size.height * .4,
+                              MediaQuery.of(context).size.height * .9),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(

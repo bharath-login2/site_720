@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../data/models/estimate_request/estimate_request_model.dart';
 import '../cubit/estimate_request_cubit.dart';
 import '../cubit/estimate_request_state.dart';
@@ -7,11 +8,11 @@ import '../../../core/constants/colors.dart';
 
 class EstimateRequestFormDialog extends StatefulWidget {
   final EstimateRequestModel? estimate;
-  final String projectId;
+  final String? projectId;
 
   const EstimateRequestFormDialog({
     super.key,
-    required this.projectId,
+    this.projectId,
     this.estimate,
   });
 
@@ -37,9 +38,34 @@ class _EstimateRequestFormDialogState extends State<EstimateRequestFormDialog> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final cubit = context.read<EstimateRequestCubit>();
 
-      await cubit.getStageList(widget.projectId);
+      // If projectId is NOT provided,
+      // load projects for the Project dropdown.
+      if (widget.projectId == null) {
+        await cubit.getProjectList();
+      }
 
-      selectedStageId = widget.estimate?.stageId;
+      // If projectId IS provided,
+      // directly load stages for that project.
+      if (widget.projectId != null) {
+        selectedProjectId = widget.projectId;
+
+        await cubit.getStageList(widget.projectId!);
+      }
+
+      // For edit
+      if (widget.estimate != null) {
+        selectedStageId = widget.estimate!.stageId;
+
+        // When editing without projectId,
+        // use the project's ID from the existing estimate.
+        if (widget.projectId == null) {
+          selectedProjectId = widget.estimate!.projectId;
+
+          if (selectedProjectId != null && selectedProjectId!.isNotEmpty) {
+            await cubit.getStageList(selectedProjectId!);
+          }
+        }
+      }
 
       if (mounted) {
         setState(() {});
@@ -57,6 +83,9 @@ class _EstimateRequestFormDialogState extends State<EstimateRequestFormDialog> {
   Widget build(BuildContext context) {
     final cubit = context.read<EstimateRequestCubit>();
 
+    // Project is fixed when projectId came from navigation.
+    final bool isProjectFixed = widget.projectId != null;
+
     return AlertDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(18),
@@ -72,36 +101,77 @@ class _EstimateRequestFormDialogState extends State<EstimateRequestFormDialog> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              /// Project
-              // DropdownButtonFormField<String>(
-              //   value: selectedProjectId,
-              //   decoration: const InputDecoration(
-              //     labelText: "Project",
-              //     border: OutlineInputBorder(),
-              //   ),
-              //   items: cubit.projectList.map((project) {
-              //     return DropdownMenuItem<String>(
-              //       value: project.projectId,
-              //       child: Text(project.projectName),
-              //     );
-              //   }).toList(),
-              //   onChanged: (value) async {
-              //     setState(() {
-              //       selectedProjectId = value;
-              //       selectedStageId = null;
-              //     });
+              /// PROJECT DROPDOWN
+              /// Show only when no projectId was passed through navigation.
+              if (!isProjectFixed) ...[
+                if (widget.projectId == null) ...[
+                  DropdownButtonFormField<String>(
+                    value: selectedProjectId,
+                    isExpanded: true,
+                    borderRadius: BorderRadius.circular(12),
+                    icon: const Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: Colors.grey,
+                    ),
+                    decoration: InputDecoration(
+                      labelText: "Project",
+                      hintText: "Select Project",
+                      filled: true,
+                      fillColor: Colors.grey.shade50,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 14,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: Colors.grey.shade300,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: Colors.grey.shade300,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: AppColors.primaryColor,
+                          width: 2,
+                        ),
+                      ),
+                    ),
+                    items: cubit.projectList.map((project) {
+                      return DropdownMenuItem<String>(
+                        value: project.projectId.toString(),
+                        child: Text(
+                          project.projectName,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (value) async {
+                      if (value == null) return;
 
-              //     await cubit.getStageList(value!);
+                      setState(() {
+                        selectedProjectId = value;
+                        selectedStageId = null;
+                      });
 
-              //     if (mounted) {
-              //       setState(() {});
-              //     }
-              //   },
-              // ),
+                      await cubit.getStageList(value);
 
-              const SizedBox(height: 15),
+                      if (mounted) {
+                        setState(() {});
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 15),
+                ],
+                const SizedBox(height: 15),
+              ],
 
-              /// Stage
+              /// STAGE
               BlocBuilder<EstimateRequestCubit, EstimateRequestState>(
                 builder: (context, state) {
                   final cubit = context.read<EstimateRequestCubit>();
@@ -116,8 +186,9 @@ class _EstimateRequestFormDialogState extends State<EstimateRequestFormDialog> {
                     ),
                     decoration: InputDecoration(
                       labelText: "Stage",
-                      hintText: "Select Stage",
-                      // prefixIcon: const Icon(Icons.account_tree_outlined),
+                      hintText: selectedProjectId == null
+                          ? "Select project first"
+                          : "Select Stage",
                       filled: true,
                       fillColor: Colors.grey.shade50,
                       contentPadding: const EdgeInsets.symmetric(
@@ -150,36 +221,68 @@ class _EstimateRequestFormDialogState extends State<EstimateRequestFormDialog> {
                         ),
                       ),
                     ),
-                    items: cubit.stageList.map((stage) {
-                      return DropdownMenuItem<String>(
-                        value: stage.stageId,
-                        child: Text(
-                          stage.stageName,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 15,
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedStageId = value;
-                      });
-                    },
+
+                    // Disable stage dropdown until project is available.
+                    items: selectedProjectId == null
+                        ? []
+                        : cubit.stageList.map((stage) {
+                            return DropdownMenuItem<String>(
+                              value: stage.stageId,
+                              child: Text(
+                                stage.stageName,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+
+                    onChanged: selectedProjectId == null
+                        ? null
+                        : (value) {
+                            setState(() {
+                              selectedStageId = value;
+                            });
+                          },
                   );
                 },
               ),
 
               const SizedBox(height: 15),
 
-              /// Remark
+              /// REMARK
               TextField(
                 controller: remarkController,
                 maxLines: 3,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: "Remark",
-                  border: OutlineInputBorder(),
+                  hintText: "Enter Remark",
+                  filled: true,
+                  fillColor: Colors.grey.shade50,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade300,
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade300,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: AppColors.primaryColor,
+                      width: 2,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -195,7 +298,24 @@ class _EstimateRequestFormDialogState extends State<EstimateRequestFormDialog> {
         ),
         ElevatedButton(
           onPressed: () async {
-            if (selectedStageId == null) {
+            // Get project ID from either:
+            // 1. Parent screen projectId
+            // 2. Selected project from dropdown
+            final String? finalProjectId =
+                widget.projectId ?? selectedProjectId;
+
+            // Validate project
+            if (finalProjectId == null || finalProjectId.isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("Please select a project"),
+                ),
+              );
+              return;
+            }
+
+            // Validate stage
+            if (selectedStageId == null || selectedStageId!.isEmpty) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text("Please select a stage"),
@@ -204,46 +324,48 @@ class _EstimateRequestFormDialogState extends State<EstimateRequestFormDialog> {
               return;
             }
 
-            // if (remarkController.text.trim().isEmpty) {
-            //   ScaffoldMessenger.of(context).showSnackBar(
-            //     const SnackBar(
-            //       content: Text("Please enter a remark"),
-            //     ),
-            //   );
-            //   return;
-            // }
             final cubit = context.read<EstimateRequestCubit>();
 
-            if (widget.estimate == null) {
-              await cubit.addEstimateRequest(
-                projectId: widget.projectId,
-                stageId: selectedStageId!,
-                remark: remarkController.text.trim(),
+            try {
+              if (widget.estimate == null) {
+                // ADD
+                await cubit.addEstimateRequest(
+                  projectId: finalProjectId,
+                  stageId: selectedStageId!,
+                  remark: remarkController.text.trim(),
+                );
+              } else {
+                // EDIT
+                await cubit.updateEstimateRequest(
+                  requestId: widget.estimate!.id,
+                  projectId: finalProjectId,
+                  stageId: selectedStageId!,
+                  remark: remarkController.text.trim(),
+                );
+              }
+
+              if (!mounted) return;
+
+              Navigator.pop(context);
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    widget.estimate == null
+                        ? "Estimate Request Added Successfully"
+                        : "Estimate Request Updated Successfully",
+                  ),
+                ),
               );
-            } else {
-              await cubit.updateEstimateRequest(
-                requestId: widget.estimate!.id,
-                projectId: widget.projectId,
-                stageId: selectedStageId!,
-                remark: remarkController.text.trim(),
+            } catch (e) {
+              if (!mounted) return;
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(e.toString()),
+                ),
               );
             }
-
-            if (!mounted) return;
-
-            Navigator.pop(context);
-
-            widget.estimate == null
-                ? ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Estimate Request Added Successfully"),
-                    ),
-                  )
-                : ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text("Estimate Request Updated Successfully"),
-                    ),
-                  );
           },
           child: Text(
             widget.estimate == null ? "Submit" : "Update",

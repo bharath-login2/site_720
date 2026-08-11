@@ -8,6 +8,9 @@ import 'estimate_request_state.dart';
 
 class EstimateRequestCubit extends Cubit<EstimateRequestState> {
   EstimateRequestCubit() : super(EstimateRequestInitial());
+
+  String? currentProjectId;
+
   @override
   void onChange(Change<EstimateRequestState> change) {
     super.onChange(change);
@@ -33,17 +36,22 @@ class EstimateRequestCubit extends Cubit<EstimateRequestState> {
 
   StaffListModel? staffResponse;
   List<StaffList> staffList = [];
-  Future<void> getEstimateRequests() async {
+
+  Future getEstimateRequests({String? projectId}) async {
     emit(EstimateRequestLoading());
 
     try {
-      response = await HttpServices.getEstimateRequests();
+      // Remember the current filter
+      currentProjectId = projectId;
+
+      response = await HttpServices.getEstimateRequests(
+        projectId: projectId,
+      );
 
       emit(EstimateRequestLoaded(response));
     } catch (e) {
-      emit(
-        EstimateRequestError(e.toString()),
-      );
+      print("ERROR = $e");
+      emit(EstimateRequestError(e.toString()));
     }
   }
 
@@ -85,7 +93,9 @@ class EstimateRequestCubit extends Cubit<EstimateRequestState> {
         remark: remark,
       );
 
-      await getEstimateRequests();
+      await getEstimateRequests(
+        projectId: currentProjectId,
+      );
     } catch (e) {
       emit(
         EstimateRequestError(e.toString()),
@@ -109,7 +119,9 @@ class EstimateRequestCubit extends Cubit<EstimateRequestState> {
         remark: remark,
       );
 
-      await getEstimateRequests();
+      await getEstimateRequests(
+        projectId: currentProjectId,
+      );
     } catch (e) {
       emit(
         EstimateRequestError(e.toString()),
@@ -127,7 +139,9 @@ class EstimateRequestCubit extends Cubit<EstimateRequestState> {
         requestId: requestId,
       );
 
-      await getEstimateRequests();
+      await getEstimateRequests(
+        projectId: currentProjectId,
+      );
     } catch (e) {
       emit(
         EstimateRequestError(e.toString()),

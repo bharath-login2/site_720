@@ -19,7 +19,7 @@ class TravelExpenseCubit extends Cubit<TravelExpenseState> {
     try {
       final TravelExpenseModel? response =
           await HttpServices.getTravelExpenseList();
-
+      print(response);
       if (response != null && response.status == true) {
         travelExpenseModel = response;
 

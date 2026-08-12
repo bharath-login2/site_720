@@ -476,43 +476,43 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                               ),
 
                                               /// Calendar Icon
-                                              InkWell(
-                                                onTap: () {
-                                                  final dashboardCubit =
-                                                      BlocProvider.of<
-                                                              DashboardCubit>(
-                                                          context);
+                                              // InkWell(
+                                              //   onTap: () {
+                                              //     final dashboardCubit =
+                                              //         BlocProvider.of<
+                                              //                 DashboardCubit>(
+                                              //             context);
 
-                                                  showDateRangeExpenseDialog(
-                                                      context, dashboardCubit);
-                                                },
-                                                child: Container(
-                                                  width: 30,
-                                                  height: 30,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5),
-                                                    color:
-                                                        AppColors.primaryColor,
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.grey
-                                                            .withOpacity(0.8),
-                                                        blurRadius: 6,
-                                                        offset:
-                                                            const Offset(3, 3),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  alignment: Alignment.center,
-                                                  child: const Icon(
-                                                    Icons.calendar_month,
-                                                    color: AppColors.lightA,
-                                                    size: 16,
-                                                  ),
-                                                ),
-                                              ),
+                                              //     showDateRangeExpenseDialog(
+                                              //         context, dashboardCubit);
+                                              //   },
+                                              //   child: Container(
+                                              //     width: 30,
+                                              //     height: 30,
+                                              //     decoration: BoxDecoration(
+                                              //       borderRadius:
+                                              //           BorderRadius.circular(
+                                              //               5),
+                                              //       color:
+                                              //           AppColors.primaryColor,
+                                              //       boxShadow: [
+                                              //         BoxShadow(
+                                              //           color: Colors.grey
+                                              //               .withOpacity(0.8),
+                                              //           blurRadius: 6,
+                                              //           offset:
+                                              //               const Offset(3, 3),
+                                              //         ),
+                                              //       ],
+                                              //     ),
+                                              //     alignment: Alignment.center,
+                                              //     child: const Icon(
+                                              //       Icons.calendar_month,
+                                              //       color: AppColors.lightA,
+                                              //       size: 16,
+                                              //     ),
+                                              //   ),
+                                              // ),
                                             ],
                                           ),
                                         ],

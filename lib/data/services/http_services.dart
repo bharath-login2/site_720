@@ -3669,6 +3669,35 @@ class HttpServices {
     return null;
   }
 
+  // static Future<SiteDrawingRequestListResponse?> siteDrawingUpdate({
+  //   required String recordId,
+  //   required String projectId,
+  //   required List<String> stages,
+  //   required String remark,
+  // }) async {
+  //   try {
+  //     final response = await http.post(
+  //       Uri.parse("${await Config.getUrl()}updateDrawingRequest"),
+  //       body: {
+  //         "token": await getSharedPreference("token"),
+  //         "record_id": recordId,
+  //         "project_id": projectId,
+  //         "stages": stages,
+  //         "remark": remark
+  //       },
+  //     );
+  //     if (response.statusCode == 200) {
+  //       final result = jsonDecode(response.body);
+
+  //       if (result["status"] == true) {
+  //         return SiteDrawingRequestListResponse.fromJson(result);
+  //       }
+  //     }
+  //   } catch (e) {
+  //     print("Excepyion :$e");
+  //   }
+  // }
+
   static Future<SiteDrawingRequestListResponse?> siteDrawingUpdate({
     required String recordId,
     required String projectId,
@@ -3676,16 +3705,30 @@ class HttpServices {
     required String remark,
   }) async {
     try {
-      final response = await http.post(
+      final request = http.MultipartRequest(
+        "POST",
         Uri.parse("${await Config.getUrl()}updateDrawingRequest"),
-        body: {
-          "token": await getSharedPreference("token"),
-          "record_id": recordId,
-          "project_id": projectId,
-          "stages": stages,
-          "remark": remark
-        },
       );
+
+      request.fields["token"] = await getSharedPreference("token") ?? "";
+
+      request.fields["record_id"] = recordId;
+      request.fields["project_id"] = projectId;
+      request.fields["remark"] = remark;
+
+      for (final stageId in stages) {
+        request.files.add(
+          http.MultipartFile.fromString(
+            "stages[]",
+            stageId,
+          ),
+        );
+      }
+
+      final streamedResponse = await request.send();
+
+      final response = await http.Response.fromStream(streamedResponse);
+
       if (response.statusCode == 200) {
         final result = jsonDecode(response.body);
 
@@ -3694,7 +3737,9 @@ class HttpServices {
         }
       }
     } catch (e) {
-      print("Excepyion :$e");
+      print("UPDATE EXCEPTION: $e");
     }
+
+    return null;
   }
 }

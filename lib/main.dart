@@ -8,6 +8,8 @@ import 'package:site_720/core/constants/routes.dart';
 import 'package:site_720/features/clients/views/edit_client.dart';
 import 'package:site_720/features/consumption/views/consumption.dart';
 import 'package:site_720/features/dashboard/views/dashboard_screen.dart';
+import 'package:site_720/features/deduction_work_request/cubit/deduction_work_request_cubit.dart';
+import 'package:site_720/features/deduction_work_request/views/deduction_work_request_screen.dart';
 import 'package:site_720/features/drawing/views/drawing_screen.dart';
 import 'package:site_720/features/estimation/views/estimation_screen.dart';
 import 'package:site_720/features/expense/views/expense_screen.dart';
@@ -188,6 +190,10 @@ class MyApp extends StatelessWidget {
         '/siteDrawingRequest': (context) => BlocProvider(
               create: (_) => SiteDrawingRequestCubit(),
               child: SiteDrawingRequestScreen(),
+            ),
+        '/deductionWorkRequest': (context) => BlocProvider(
+              create: (_) => DeductionWorkRequestCubit(),
+              child: DeductionWorkRequestScreen(),
             ),
         AppRoutes.projectDocuments: (context) {
           final args = ModalRoute.of(context)!.settings.arguments

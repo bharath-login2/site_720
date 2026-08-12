@@ -229,30 +229,35 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
                                         ],
                                       ),
                                       const SizedBox(height: 20),
-                                      Row(
+                                      Column(
                                         children: [
-                                          Expanded(
-                                            child: _summaryCard(
-                                              "Total Sq.ft",
-                                              totalSqft.toStringAsFixed(2),
-                                            ),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: _summaryCard(
+                                                  "Total Sq.ft",
+                                                  totalSqft.toStringAsFixed(2),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 10),
+                                              Expanded(
+                                                child: _summaryCard(
+                                                  "Average",
+                                                  average.toStringAsFixed(2),
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                          const SizedBox(width: 10),
-                                          Expanded(
+                                          const SizedBox(height: 10),
+                                          SizedBox(
+                                            width: double.infinity,
                                             child: _summaryCard(
                                               "Total Amount",
                                               totalAmount.toStringAsFixed(2),
                                             ),
                                           ),
-                                          const SizedBox(width: 10),
-                                          Expanded(
-                                            child: _summaryCard(
-                                              "Average",
-                                              average.toStringAsFixed(2),
-                                            ),
-                                          ),
                                         ],
-                                      ),
+                                      )
                                     ],
                                   ),
                                 );
@@ -429,31 +434,40 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
 
   Widget _summaryCard(String title, String value) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+      padding: const EdgeInsets.symmetric(
+        vertical: 12,
+        horizontal: 10,
+      ),
       decoration: BoxDecoration(
-        color: Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade300),
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: Colors.grey.shade200,
+        ),
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             title,
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey.shade600,
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 5),
           Text(
-            value,
-            style: const TextStyle(
+            value.isEmpty ? "-" : value,
+            style: TextStyle(
               fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.blue,
+              fontWeight: FontWeight.w700,
+              color: AppColors.primaryColor,
             ),
             textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
@@ -466,20 +480,8 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
     String latitude,
     String longitude,
   ) {
-    return ListTile(
-      dense: true,
-      title: Text(title),
-      subtitle: Text(
-        value,
-        style: const TextStyle(
-          color: Colors.blue,
-          decoration: TextDecoration.underline,
-        ),
-      ),
-      trailing: const Icon(
-        Icons.location_on,
-        color: Colors.red,
-      ),
+    return InkWell(
+      borderRadius: BorderRadius.circular(10),
       onTap: () async {
         if (latitude.isEmpty || longitude.isEmpty) return;
 
@@ -494,12 +496,77 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
           );
         }
       },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 11,
+        ),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade50,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: Colors.grey.shade200,
+          ),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(7),
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.08),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(
+                Icons.location_on_outlined,
+                size: 19,
+                color: Colors.red,
+              ),
+            ),
+            const SizedBox(width: 11),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    value.isEmpty ? "-" : value,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.blue.shade700,
+                      decoration: TextDecoration.underline,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Icon(
+              Icons.open_in_new_rounded,
+              size: 18,
+              color: Colors.grey.shade500,
+            ),
+          ],
+        ),
+      ),
     );
   }
 
   Widget _header(ProjectDetails project) {
     return Container(
-      height: 220,
+      height: 190,
       width: double.infinity,
       decoration: const BoxDecoration(
         color: AppColors.primaryColor,
@@ -623,23 +690,39 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
     required List<Widget> children,
   }) {
     return Card(
-      elevation: 3,
+      elevation: 2,
+      margin: const EdgeInsets.only(bottom: 16),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(
+          color: Colors.grey.shade200,
+        ),
+      ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
+        padding: const EdgeInsets.fromLTRB(14, 14, 14, 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 4,
+                vertical: 2,
+              ),
               child: Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 17,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.primaryColor,
                 ),
               ),
             ),
-            const Divider(),
+            const SizedBox(height: 10),
+            Divider(
+              height: 1,
+              color: Colors.grey.shade200,
+            ),
+            const SizedBox(height: 10),
             ...children,
           ],
         ),
@@ -647,12 +730,65 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
     );
   }
 
-  Widget _buildTile(String title, String value) {
-    return ListTile(
-      dense: true,
-      title: Text(title),
-      subtitle: Text(
-        value.isEmpty ? "-" : value,
+  Widget _buildTile(
+    String title,
+    String value, {
+    IconData icon = Icons.info_outline_rounded,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 11,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: Colors.grey.shade200,
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(7),
+            decoration: BoxDecoration(
+              color: AppColors.primaryColor.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              icon,
+              size: 18,
+              color: AppColors.primaryColor,
+            ),
+          ),
+          const SizedBox(width: 11),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  value.isEmpty ? "-" : value,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

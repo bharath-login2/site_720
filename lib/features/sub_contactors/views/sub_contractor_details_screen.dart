@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import '../../../core/constants/colors.dart';
 import '../../../core/widgets/appbar.dart';
 import '../cubit/sub_contractor_details_cubit.dart';
 import '../cubit/sub_contractor_details_state.dart';
@@ -66,24 +66,7 @@ class SubContractorDetailsScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(14),
-                          decoration: const BoxDecoration(
-                            color: Color(0xffF4F2FB),
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(12),
-                              topRight: Radius.circular(12),
-                            ),
-                          ),
-                          child: const Text(
-                            "Contractor Details",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
+                        _sectionHeader("Contractor Details"),
                         Padding(
                           padding: const EdgeInsets.all(16),
                           child: Column(
@@ -159,19 +142,7 @@ class SubContractorDetailsScreen extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(14),
-                          decoration: const BoxDecoration(
-                            color: Color(0xffF4F2FB),
-                          ),
-                          child: const Text(
-                            "Contract Details",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
+                        _sectionHeader("Contract Details"),
                         Padding(
                           padding: const EdgeInsets.all(16),
                           child: Column(
@@ -216,19 +187,7 @@ class SubContractorDetailsScreen extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(14),
-                          decoration: const BoxDecoration(
-                            color: Color(0xffF4F2FB),
-                          ),
-                          child: const Text(
-                            "Work Details",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
+                        _sectionHeader("Work Details"),
                         Padding(
                           padding: const EdgeInsets.all(16),
                           child: Column(
@@ -263,19 +222,7 @@ class SubContractorDetailsScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(14),
-                          decoration: const BoxDecoration(
-                            color: Color(0xffF4F2FB),
-                          ),
-                          child: const Text(
-                            "Work Description",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
+                        _sectionHeader("Work Description"),
                         Padding(
                           padding: const EdgeInsets.all(16),
                           child: Text(
@@ -305,19 +252,7 @@ class SubContractorDetailsScreen extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(14),
-                          decoration: const BoxDecoration(
-                            color: Color(0xffF4F2FB),
-                          ),
-                          child: const Text(
-                            "Work Estimation",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
+                        _sectionHeader("Work Estimation"),
                         Padding(
                           padding: const EdgeInsets.all(16),
                           child: Column(
@@ -363,19 +298,7 @@ class SubContractorDetailsScreen extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(14),
-                          decoration: const BoxDecoration(
-                            color: Color(0xffF4F2FB),
-                          ),
-                          child: const Text(
-                            "Payment Schedule",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
+                        _sectionHeader("Payment Schedule"),
                         if (state.response.data.stageSchedules.isEmpty)
                           const Padding(
                             padding: EdgeInsets.all(20),
@@ -430,19 +353,7 @@ class SubContractorDetailsScreen extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(14),
-                          decoration: const BoxDecoration(
-                            color: Color(0xffF4F2FB),
-                          ),
-                          child: const Text(
-                            "Payment History",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
+                        _sectionHeader("Payment History"),
                         if (state.response.data.paymentList.isEmpty)
                           const Padding(
                             padding: EdgeInsets.all(20),
@@ -504,32 +415,72 @@ class SubContractorDetailsScreen extends StatelessWidget {
     String title,
     String value,
   ) {
-    return Padding(
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.symmetric(
-        vertical: 8,
+        horizontal: 12,
+        vertical: 11,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: Colors.grey.shade200,
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 130,
+          Expanded(
+            flex: 2,
             child: Text(
-              "$title :",
-              style: const TextStyle(
+              title,
+              style: TextStyle(
+                fontSize: 12,
                 fontWeight: FontWeight.w600,
-                fontSize: 13,
+                color: Colors.grey.shade600,
               ),
             ),
           ),
+          const SizedBox(width: 12),
           Expanded(
+            flex: 3,
             child: Text(
               value.isEmpty ? "--" : value,
+              textAlign: TextAlign.right,
               style: const TextStyle(
-                fontSize: 13,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _sectionHeader(String title) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 14,
+        vertical: 12,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.primaryColor.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: AppColors.primaryColor.withOpacity(0.15),
+        ),
+      ),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
+          color: AppColors.primaryColor,
+        ),
       ),
     );
   }

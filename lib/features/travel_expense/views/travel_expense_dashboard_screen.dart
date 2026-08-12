@@ -98,25 +98,69 @@ class _TravelExpenseDashboardScreenState
                   children: [
                     const ExpenseHeader(),
                     Expanded(
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.assignment_outlined,
-                              size: 90,
-                              color: Colors.grey.shade400,
-                            ),
-                            const SizedBox(height: 15),
-                            const Text(
-                              "No Travel Expenses Found",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
+                      child: Column(
+                        children: [
+                          // Header
+                          Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: SizedBox(
+                              height: 135,
+                              child: ListView(
+                                scrollDirection: Axis.horizontal,
+                                children: [
+                                  buildTopCard(
+                                    title: "All",
+                                    count: data.totalRequest.toString(),
+                                    icon: Icons.apps,
+                                    color: Colors.blue,
+                                  ),
+                                  buildTopCard(
+                                    title: "Pending",
+                                    count: data.pendingRequest.toString(),
+                                    icon: Icons.pending_actions,
+                                    color: Colors.orange,
+                                  ),
+                                  buildTopCard(
+                                    title: "Approved",
+                                    count: data.approvedRequest.toString(),
+                                    icon: Icons.check_circle,
+                                    color: Colors.green,
+                                  ),
+                                  buildTopCard(
+                                    title: "Rejected",
+                                    count: data.rejectedRequest.toString(),
+                                    icon: Icons.cancel,
+                                    color: Colors.red,
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+
+                          // Empty content
+                          Expanded(
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.assignment_outlined,
+                                    size: 90,
+                                    color: Colors.grey.shade400,
+                                  ),
+                                  const SizedBox(height: 15),
+                                  const Text(
+                                    "No Travel Expenses Found",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -567,12 +611,13 @@ class _TravelExpenseDashboardScreenState
                                                 Align(
                                                   alignment:
                                                       Alignment.centerLeft,
-                                                  child: Row(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
                                                       Text(
-                                                        "Payment Status : ",
+                                                        "Payment Status ",
                                                         style: TextStyle(
                                                           fontSize: 13,
                                                           fontWeight:
@@ -581,6 +626,7 @@ class _TravelExpenseDashboardScreenState
                                                               .grey.shade700,
                                                         ),
                                                       ),
+                                                      const SizedBox(height: 6),
                                                       Container(
                                                         padding:
                                                             const EdgeInsets

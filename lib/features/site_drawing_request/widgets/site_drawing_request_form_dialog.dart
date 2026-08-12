@@ -42,10 +42,6 @@ class _SiteDrawingRequestFormState extends State<SiteDrawingRequestForm> {
       if (widget.request != null) {
         selectedProjectId = widget.request!.projectId;
 
-        // Example API value:
-        // [245]
-        // [245,246]
-
         String stages =
             widget.request!.stages.replaceAll('[', '').replaceAll(']', '');
 
@@ -363,9 +359,7 @@ class _SiteDrawingRequestFormState extends State<SiteDrawingRequestForm> {
         ),
       ),
 
-      // =========================
       // BUTTONS
-      // =========================
       actions: [
         TextButton(
           onPressed: () {
@@ -411,11 +405,6 @@ class _SiteDrawingRequestFormState extends State<SiteDrawingRequestForm> {
 
               // EDIT
               else {
-                print("EDIT FUNCTION CALLED");
-                print("requestId: ${widget.request!.id}");
-                print("projectId: $selectedProjectId");
-                print("stages: $selectedStageIds");
-                print("remark: ${remarkController.text}");
                 await cubit.updateSiteDrawingRequest(
                   requestId: widget.request!.id,
                   projectId: selectedProjectId!,

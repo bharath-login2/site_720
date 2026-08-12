@@ -119,7 +119,10 @@ class _RequestDropdownCardState extends State<RequestDropdownCard> {
                             context,
                             "Deduction Work",
                             () {
-                              Navigator.pushNamed(context, "/deductionWork");
+                              Navigator.pushNamed(
+                                context,
+                                AppRoutes.DeductionWorkRequest,
+                              );
                             },
                           ),
                           const Divider(height: 1),

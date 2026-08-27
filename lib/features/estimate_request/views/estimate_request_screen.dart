@@ -5,6 +5,7 @@ import '../cubit/estimate_request_state.dart';
 import 'package:site_720/core/constants/colors.dart';
 import '../widgets/estimate_request_card.dart';
 import '../widgets/estimate_request_form_dialog.dart';
+import '../../../core/utilities/permission_manager.dart';
 
 class EstimateRequestScreen extends StatelessWidget {
   const EstimateRequestScreen({super.key});
@@ -67,30 +68,31 @@ class EstimateRequestScreen extends StatelessWidget {
                 Row(
                   children: [
                     const SizedBox(width: 10),
-                    InkWell(
-                      onTap: () {
-                        final cubit = context.read<EstimateRequestCubit>();
+                    if (PermissionManager.hasPermission('add estimate request'))
+                      InkWell(
+                        onTap: () {
+                          final cubit = context.read<EstimateRequestCubit>();
 
-                        showDialog(
-                          context: context,
-                          builder: (_) => BlocProvider.value(
-                            value: cubit,
-                            child: EstimateRequestFormDialog(
-                              projectId: projectId,
+                          showDialog(
+                            context: context,
+                            builder: (_) => BlocProvider.value(
+                              value: cubit,
+                              child: EstimateRequestFormDialog(
+                                projectId: projectId,
+                              ),
                             ),
+                          );
+                        },
+                        borderRadius: BorderRadius.circular(20),
+                        child: const CircleAvatar(
+                          radius: 20,
+                          backgroundColor: AppColors.lightPrimary,
+                          child: Icon(
+                            Icons.add,
+                            color: Colors.white,
                           ),
-                        );
-                      },
-                      borderRadius: BorderRadius.circular(20),
-                      child: const CircleAvatar(
-                        radius: 20,
-                        backgroundColor: AppColors.lightPrimary,
-                        child: Icon(
-                          Icons.add,
-                          color: Colors.white,
                         ),
                       ),
-                    ),
                   ],
                 ),
               ],
@@ -113,19 +115,34 @@ class EstimateRequestScreen extends StatelessWidget {
           }
 
           if (state is EstimateRequestLoaded) {
-            return ListView.separated(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-              itemCount: state.response.data.length,
-              separatorBuilder: (context, index) {
-                return const SizedBox(height: 12);
+            final requests = state.response.data;
+
+            if (requests.isEmpty) {
+              return const Center(
+                child: Text("No Estimate requests found"),
+              );
+            }
+            return RefreshIndicator(
+              onRefresh: () async {
+                await context
+                    .read<EstimateRequestCubit>()
+                    .getEstimateRequests();
               },
-              itemBuilder: (context, index) {
-                return EstimateRequestCard(
-                  item: state.response.data[index],
-                  projectId: projectId,
-                  onTap: () {},
-                );
-              },
+              child: ListView.separated(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                itemCount: state.response.data.length,
+                separatorBuilder: (context, index) {
+                  return const SizedBox(height: 12);
+                },
+                itemBuilder: (context, index) {
+                  return EstimateRequestCard(
+                    item: state.response.data[index],
+                    projectId: projectId,
+                    onTap: () {},
+                  );
+                },
+              ),
             );
           }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubit/estimate_request_cubit.dart';
 import '../../../core/constants/colors.dart';
+import '../../../core/utilities/permission_manager.dart';
 import '../../../data/models/estimate_request/estimate_request_model.dart';
 import 'estimate_request_form_dialog.dart';
 
@@ -108,51 +109,54 @@ class EstimateRequestCard extends StatelessWidget {
                 const Spacer(),
                 if (item.status == "Pending") ...[
                   /// Edit
-                  CircleAvatar(
-                    radius: 18,
-                    backgroundColor: Colors.amber.shade700,
-                    child: IconButton(
-                      padding: EdgeInsets.zero,
-                      icon: const Icon(
-                        Icons.edit,
-                        color: Colors.white,
-                        size: 18,
-                      ),
-                      onPressed: () {
-                        final cubit = context.read<EstimateRequestCubit>();
+                  if (PermissionManager.hasPermission('edit estimate request'))
+                    CircleAvatar(
+                      radius: 18,
+                      backgroundColor: Colors.amber.shade700,
+                      child: IconButton(
+                        padding: EdgeInsets.zero,
+                        icon: const Icon(
+                          Icons.edit,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                        onPressed: () {
+                          final cubit = context.read<EstimateRequestCubit>();
 
-                        showDialog(
-                          context: context,
-                          builder: (_) => BlocProvider.value(
-                            value: cubit,
-                            child: EstimateRequestFormDialog(
-                              projectId: projectId,
-                              estimate: item,
+                          showDialog(
+                            context: context,
+                            builder: (_) => BlocProvider.value(
+                              value: cubit,
+                              child: EstimateRequestFormDialog(
+                                projectId: projectId,
+                                estimate: item,
+                              ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
-                  ),
 
                   const SizedBox(width: 8),
 
                   /// Delete
-                  CircleAvatar(
-                    radius: 18,
-                    backgroundColor: Colors.red,
-                    child: IconButton(
-                      padding: EdgeInsets.zero,
-                      icon: const Icon(
-                        Icons.delete,
-                        color: Colors.white,
-                        size: 18,
+                  if (PermissionManager.hasPermission(
+                      'delete estimate request'))
+                    CircleAvatar(
+                      radius: 18,
+                      backgroundColor: Colors.red,
+                      child: IconButton(
+                        padding: EdgeInsets.zero,
+                        icon: const Icon(
+                          Icons.delete,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                        onPressed: () {
+                          _showDeleteDialog(context, item);
+                        },
                       ),
-                      onPressed: () {
-                        _showDeleteDialog(context, item);
-                      },
                     ),
-                  ),
 
                   const SizedBox(width: 8),
 

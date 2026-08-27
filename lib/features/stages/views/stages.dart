@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/snack_bar.dart';
 import '../../../core/widgets/buttons.dart';
+import '../../../core/utilities/permission_manager.dart';
 import '../../../core/widgets/connectivity_dialog.dart';
 import '../../../core/widgets/shimmer.dart';
 import '../../../data/models/stages/stage_model.dart';
@@ -148,29 +149,30 @@ class Stages extends StatelessWidget {
                               const SizedBox(
                                 width: 10,
                               ),
-                              InkWell(
-                                onTap: () {
-                                  addStageDialog(
-                                      context,
-                                      cubit,
-                                      "",
-                                      "",
-                                      // phaseList,
-                                      projectId,
-                                      clientId,
-                                      "",
-                                      "Add Stage",
-                                      "Add");
-                                },
-                                child: const CircleAvatar(
-                                  radius: 20,
-                                  backgroundColor: AppColors.lightPrimary,
-                                  child: Icon(
-                                    Icons.add,
-                                    color: Colors.white,
+                              if (PermissionManager.hasPermission('add stages'))
+                                InkWell(
+                                  onTap: () {
+                                    addStageDialog(
+                                        context,
+                                        cubit,
+                                        "",
+                                        "",
+                                        // phaseList,
+                                        projectId,
+                                        clientId,
+                                        "",
+                                        "Add Stage",
+                                        "Add");
+                                  },
+                                  child: const CircleAvatar(
+                                    radius: 20,
+                                    backgroundColor: AppColors.lightPrimary,
+                                    child: Icon(
+                                      Icons.add,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
-                              ),
                             ],
                           )
                         ],
@@ -674,63 +676,65 @@ class Stages extends StatelessWidget {
                                                                         .stageStatus
                                                                         .toLowerCase() ==
                                                                     "pending") ...[
-                                                                  _actionButton(
-                                                                    Icons.edit,
-                                                                    Colors.blue,
-                                                                    () {
-                                                                      curingdays
-                                                                              .text =
-                                                                          stageItem
-                                                                              .curingDays;
-                                                                      stage.text =
-                                                                          stageItem
-                                                                              .stageName;
-                                                                      est_days.text =
-                                                                          stageItem
-                                                                              .estDays;
+                                                                  if (PermissionManager
+                                                                      .hasPermission(
+                                                                          'edit stages'))
+                                                                    _actionButton(
+                                                                      Icons
+                                                                          .edit,
+                                                                      Colors
+                                                                          .blue,
+                                                                      () {
+                                                                        curingdays.text =
+                                                                            stageItem.curingDays;
+                                                                        stage.text =
+                                                                            stageItem.stageName;
+                                                                        est_days.text =
+                                                                            stageItem.estDays;
 
-                                                                      startDateController
-                                                                          .text = DateFormat(
-                                                                              'dd/MM/yyyy')
-                                                                          .format(
-                                                                              stageItem.startDate);
+                                                                        startDateController
+                                                                            .text = DateFormat(
+                                                                                'dd/MM/yyyy')
+                                                                            .format(stageItem.startDate);
 
-                                                                      endDateController
-                                                                          .text = DateFormat(
-                                                                              'dd/MM/yyyy')
-                                                                          .format(
-                                                                              stageItem.endDate);
+                                                                        endDateController
+                                                                            .text = DateFormat(
+                                                                                'dd/MM/yyyy')
+                                                                            .format(stageItem.endDate);
 
-                                                                      addStageDialog(
-                                                                        context,
-                                                                        cubit,
-                                                                        curingdays
-                                                                            .text,
-                                                                        est_days
-                                                                            .text,
-                                                                        projectId,
-                                                                        clientId,
-                                                                        stageItem
-                                                                            .stageId,
-                                                                        "Edit Stage",
-                                                                        "Update",
-                                                                      );
-                                                                    },
-                                                                  ),
+                                                                        addStageDialog(
+                                                                          context,
+                                                                          cubit,
+                                                                          curingdays
+                                                                              .text,
+                                                                          est_days
+                                                                              .text,
+                                                                          projectId,
+                                                                          clientId,
+                                                                          stageItem
+                                                                              .stageId,
+                                                                          "Edit Stage",
+                                                                          "Update",
+                                                                        );
+                                                                      },
+                                                                    ),
                                                                   const SizedBox(
                                                                       width: 8),
-                                                                  _actionButton(
-                                                                    Icons.add,
-                                                                    Colors
-                                                                        .green,
-                                                                    () {
-                                                                      showAddStageDaysPopup(
-                                                                        context,
-                                                                        stageItem,
-                                                                        cubit,
-                                                                      );
-                                                                    },
-                                                                  ),
+                                                                  if (PermissionManager
+                                                                      .hasPermission(
+                                                                          'add stages enddate'))
+                                                                    _actionButton(
+                                                                      Icons.add,
+                                                                      Colors
+                                                                          .green,
+                                                                      () {
+                                                                        showAddStageDaysPopup(
+                                                                          context,
+                                                                          stageItem,
+                                                                          cubit,
+                                                                        );
+                                                                      },
+                                                                    ),
                                                                 ],
 
                                                                 // Running => Edit + Update Status
@@ -738,53 +742,57 @@ class Stages extends StatelessWidget {
                                                                         .stageStatus
                                                                         .toLowerCase() ==
                                                                     "running") ...[
-                                                                  _actionButton(
-                                                                    Icons.edit,
-                                                                    Colors.blue,
-                                                                    () {
-                                                                      curingdays
-                                                                              .text =
-                                                                          stageItem
-                                                                              .curingDays;
-                                                                      stage.text =
-                                                                          stageItem
-                                                                              .stageName;
-                                                                      est_days.text =
-                                                                          stageItem
-                                                                              .estDays;
+                                                                  if (PermissionManager
+                                                                      .hasPermission(
+                                                                          'edit stages'))
+                                                                    _actionButton(
+                                                                      Icons
+                                                                          .edit,
+                                                                      Colors
+                                                                          .blue,
+                                                                      () {
+                                                                        curingdays.text =
+                                                                            stageItem.curingDays;
+                                                                        stage.text =
+                                                                            stageItem.stageName;
+                                                                        est_days.text =
+                                                                            stageItem.estDays;
 
-                                                                      addStageDialog(
-                                                                        context,
-                                                                        cubit,
-                                                                        curingdays
-                                                                            .text,
-                                                                        est_days
-                                                                            .text,
-                                                                        projectId,
-                                                                        clientId,
-                                                                        stageItem
-                                                                            .stageId,
-                                                                        "Edit Stage",
-                                                                        "Update",
-                                                                      );
-                                                                    },
-                                                                  ),
+                                                                        addStageDialog(
+                                                                          context,
+                                                                          cubit,
+                                                                          curingdays
+                                                                              .text,
+                                                                          est_days
+                                                                              .text,
+                                                                          projectId,
+                                                                          clientId,
+                                                                          stageItem
+                                                                              .stageId,
+                                                                          "Edit Stage",
+                                                                          "Update",
+                                                                        );
+                                                                      },
+                                                                    ),
                                                                   const SizedBox(
                                                                       width: 8),
-                                                                  _actionButton(
-                                                                    Icons
-                                                                        .update,
-                                                                    Colors
-                                                                        .orange,
-                                                                    () {
-                                                                      showUpdateStatusPopup(
-                                                                        context,
-                                                                        stageItem,
-                                                                        context.read<
-                                                                            StagesCubit>(),
-                                                                      );
-                                                                    },
-                                                                  ),
+                                                                  if (PermissionManager
+                                                                      .hasPermission(
+                                                                          'change stages status'))
+                                                                    _actionButton(
+                                                                      Icons
+                                                                          .update,
+                                                                      Colors
+                                                                          .orange,
+                                                                      () {
+                                                                        showUpdateStatusPopup(
+                                                                          context,
+                                                                          stageItem,
+                                                                          context
+                                                                              .read<StagesCubit>(),
+                                                                        );
+                                                                      },
+                                                                    ),
                                                                 ],
 
                                                                 // Completed => Update Status only
@@ -792,20 +800,23 @@ class Stages extends StatelessWidget {
                                                                         .stageStatus
                                                                         .toLowerCase() ==
                                                                     "completed")
-                                                                  _actionButton(
-                                                                    Icons
-                                                                        .update,
-                                                                    Colors
-                                                                        .orange,
-                                                                    () {
-                                                                      showUpdateStatusPopup(
-                                                                        context,
-                                                                        stageItem,
-                                                                        context.read<
-                                                                            StagesCubit>(),
-                                                                      );
-                                                                    },
-                                                                  ),
+                                                                  if (PermissionManager
+                                                                      .hasPermission(
+                                                                          'change stages status'))
+                                                                    _actionButton(
+                                                                      Icons
+                                                                          .update,
+                                                                      Colors
+                                                                          .orange,
+                                                                      () {
+                                                                        showUpdateStatusPopup(
+                                                                          context,
+                                                                          stageItem,
+                                                                          context
+                                                                              .read<StagesCubit>(),
+                                                                        );
+                                                                      },
+                                                                    ),
                                                               ],
                                                             ),
                                                           ),

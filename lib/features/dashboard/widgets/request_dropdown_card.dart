@@ -54,7 +54,7 @@ class _RequestDropdownCardState extends State<RequestDropdownCard> {
                 children: [
                   Expanded(
                     child: Text(
-                      "Request",
+                      "Staff Request",
                       style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
@@ -114,25 +114,25 @@ class _RequestDropdownCardState extends State<RequestDropdownCard> {
                               );
                             },
                           ),
-                          const Divider(height: 1),
-                          _buildItem(
-                            context,
-                            "Deduction Work",
-                            () {
-                              Navigator.pushNamed(
-                                context,
-                                AppRoutes.DeductionWorkRequest,
-                              );
-                            },
-                          ),
-                          const Divider(height: 1),
-                          _buildItem(
-                            context,
-                            "Extra Work",
-                            () {
-                              Navigator.pushNamed(context, "/extraWork");
-                            },
-                          ),
+                          // const Divider(height: 1),
+                          // _buildItem(
+                          //   context,
+                          //   "Deduction Work",
+                          //   () {
+                          //     Navigator.pushNamed(
+                          //       context,
+                          //       AppRoutes.DeductionWorkRequest,
+                          //     );
+                          //   },
+                          // ),
+                          // const Divider(height: 1),
+                          // _buildItem(
+                          //   context,
+                          //   "Extra Work",
+                          //   () {
+                          //     Navigator.pushNamed(context, "/extraWork");
+                          //   },
+                          // ),
                         ],
                       ),
                     )

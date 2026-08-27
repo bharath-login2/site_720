@@ -32,6 +32,22 @@ getSharedPreference(String key) async {
   return prefs.getString(key);
 }
 
+//Permissions
+savePermissions(List<String> permissions) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  await prefs.setStringList(
+    'permissions',
+    permissions,
+  );
+}
+
+getSavedPermissions() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  return prefs.getStringList('permissions') ?? [];
+}
+
 /// LOGOUT CLEAR
 clearSharedPreference() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();

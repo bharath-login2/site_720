@@ -12,6 +12,7 @@ import '../../../core/constants/routes.dart';
 import '../../../core/widgets/buttons.dart';
 import '../../../core/widgets/connectivity_dialog.dart';
 import '../../../core/widgets/shimmer.dart';
+import '../../../core/utilities/permission_manager.dart';
 import '../../../data/models/task/tasklist_model.dart';
 import '../../connectivity/cubit/connectivity_cubit.dart';
 import '../../connectivity/cubit/connectivity_state.dart';
@@ -61,7 +62,8 @@ class _TaskListState extends State<TaskList> {
     final parts = dateStr.split('-');
     if (parts.length == 3) {
       try {
-        return DateTime(int.parse(parts[2]), int.parse(parts[1]), int.parse(parts[0]));
+        return DateTime(
+            int.parse(parts[2]), int.parse(parts[1]), int.parse(parts[0]));
       } catch (e) {
         return null;
       }
@@ -111,7 +113,9 @@ class _TaskListState extends State<TaskList> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text("Filter Tasks", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        const Text("Filter Tasks",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold)),
                         IconButton(
                           icon: const Icon(Icons.close),
                           onPressed: () => Navigator.pop(context),
@@ -135,8 +139,14 @@ class _TaskListState extends State<TaskList> {
                               }
                             },
                             child: InputDecorator(
-                              decoration: const InputDecoration(labelText: 'From Date', border: OutlineInputBorder(), contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 5)),
-                              child: Text(tempFromDate != null ? "${tempFromDate!.day}-${tempFromDate!.month}-${tempFromDate!.year}" : "Select Date"),
+                              decoration: const InputDecoration(
+                                  labelText: 'From Date',
+                                  border: OutlineInputBorder(),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 5)),
+                              child: Text(tempFromDate != null
+                                  ? "${tempFromDate!.day}-${tempFromDate!.month}-${tempFromDate!.year}"
+                                  : "Select Date"),
                             ),
                           ),
                         ),
@@ -155,15 +165,22 @@ class _TaskListState extends State<TaskList> {
                               }
                             },
                             child: InputDecorator(
-                              decoration: const InputDecoration(labelText: 'To Date', border: OutlineInputBorder(), contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 5)),
-                              child: Text(tempToDate != null ? "${tempToDate!.day}-${tempToDate!.month}-${tempToDate!.year}" : "Select Date"),
+                              decoration: const InputDecoration(
+                                  labelText: 'To Date',
+                                  border: OutlineInputBorder(),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 5)),
+                              child: Text(tempToDate != null
+                                  ? "${tempToDate!.day}-${tempToDate!.month}-${tempToDate!.year}"
+                                  : "Select Date"),
                             ),
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 15),
-                    const Text("Work Type", style: TextStyle(fontWeight: FontWeight.bold)),
+                    const Text("Work Type",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 8),
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
@@ -193,7 +210,8 @@ class _TaskListState extends State<TaskList> {
                       ),
                     ),
                     const SizedBox(height: 15),
-                    const Text("Category", style: TextStyle(fontWeight: FontWeight.bold)),
+                    const Text("Category",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 8),
                     Wrap(
                       spacing: 8,
@@ -203,13 +221,21 @@ class _TaskListState extends State<TaskList> {
                           setModalState(() => tempCategoryId = null);
                         }),
                         ...((tempWorkType == "office"
-                                ? _officeCategories.map((e) => MapEntry(e.id, e.categoryName))
+                                ? _officeCategories
+                                    .map((e) => MapEntry(e.id, e.categoryName))
                                 : tempWorkType == "site"
-                                    ? _siteCategories.map((e) => MapEntry(e.id, e.categoryName))
+                                    ? _siteCategories.map(
+                                        (e) => MapEntry(e.id, e.categoryName))
                                     : tempWorkType == "complaint"
-                                        ? _complaintCategories.where((e) => e != null && e is Map).map((e) => MapEntry((e['id'] ?? '').toString(), (e['category_name'] ?? '').toString()))
+                                        ? _complaintCategories
+                                            .where((e) => e != null && e is Map)
+                                            .map((e) => MapEntry(
+                                                (e['id'] ?? '').toString(),
+                                                (e['category_name'] ?? '')
+                                                    .toString()))
                                         : <MapEntry<String, String>>[])
-                            .map((e) => _tab(e.value, tempCategoryId == e.key, () {
+                            .map((e) =>
+                                _tab(e.value, tempCategoryId == e.key, () {
                                   setModalState(() => tempCategoryId = e.key);
                                 }))),
                       ],
@@ -217,11 +243,17 @@ class _TaskListState extends State<TaskList> {
                     const SizedBox(height: 15),
                     if (filterType == "my" || filterType == "all") ...[
                       DropdownButtonFormField<String>(
-                        decoration: const InputDecoration(labelText: 'Assigned By', border: OutlineInputBorder(), contentPadding: EdgeInsets.symmetric(horizontal: 10)),
+                        decoration: const InputDecoration(
+                            labelText: 'Assigned By',
+                            border: OutlineInputBorder(),
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 10)),
                         value: tempAssignedById,
                         items: [
-                          const DropdownMenuItem(value: null, child: Text("All")),
-                          ..._staffs.map((e) => DropdownMenuItem(value: e.userId, child: Text(e.staffName))),
+                          const DropdownMenuItem(
+                              value: null, child: Text("All")),
+                          ..._staffs.map((e) => DropdownMenuItem(
+                              value: e.userId, child: Text(e.staffName))),
                         ],
                         onChanged: (val) {
                           setModalState(() => tempAssignedById = val);
@@ -231,11 +263,17 @@ class _TaskListState extends State<TaskList> {
                     ],
                     if (filterType == "assigned" || filterType == "all") ...[
                       DropdownButtonFormField<String>(
-                        decoration: const InputDecoration(labelText: 'Assigned To', border: OutlineInputBorder(), contentPadding: EdgeInsets.symmetric(horizontal: 10)),
+                        decoration: const InputDecoration(
+                            labelText: 'Assigned To',
+                            border: OutlineInputBorder(),
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 10)),
                         value: tempAssignedToId,
                         items: [
-                          const DropdownMenuItem(value: null, child: Text("All")),
-                          ..._staffs.map((e) => DropdownMenuItem(value: e.userId, child: Text(e.staffName))),
+                          const DropdownMenuItem(
+                              value: null, child: Text("All")),
+                          ..._staffs.map((e) => DropdownMenuItem(
+                              value: e.userId, child: Text(e.staffName))),
                         ],
                         onChanged: (val) {
                           setModalState(() => tempAssignedToId = val);
@@ -243,7 +281,8 @@ class _TaskListState extends State<TaskList> {
                       ),
                       const SizedBox(height: 15),
                     ],
-                    const Text("Status", style: TextStyle(fontWeight: FontWeight.bold)),
+                    const Text("Status",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
                     const SizedBox(height: 8),
                     Wrap(
                       spacing: 8,
@@ -252,7 +291,8 @@ class _TaskListState extends State<TaskList> {
                         _tab("All", tempSelectedStatuses.isEmpty, () {
                           setModalState(() => tempSelectedStatuses.clear());
                         }),
-                        ...statuses.map((e) => _tab(e, tempSelectedStatuses.contains(e), () {
+                        ...statuses.map((e) =>
+                            _tab(e, tempSelectedStatuses.contains(e), () {
                               setModalState(() {
                                 if (tempSelectedStatuses.contains(e)) {
                                   tempSelectedStatuses.remove(e);
@@ -285,7 +325,9 @@ class _TaskListState extends State<TaskList> {
                         const SizedBox(width: 10),
                         Expanded(
                           child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primaryColor, foregroundColor: Colors.white),
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primaryColor,
+                                foregroundColor: Colors.white),
                             onPressed: () {
                               setState(() {
                                 _filterFromDate = tempFromDate;
@@ -294,17 +336,20 @@ class _TaskListState extends State<TaskList> {
                                 _filterCategoryId = tempCategoryId;
                                 _filterAssignedById = tempAssignedById;
                                 _filterAssignedToId = tempAssignedToId;
-                                _selectedStatuses = List.from(tempSelectedStatuses);
+                                _selectedStatuses =
+                                    List.from(tempSelectedStatuses);
                               });
 
-                               _cubitReference?.getTaskList(
+                              _cubitReference?.getTaskList(
                                 fromDate: _formatDate(_filterFromDate),
                                 toDate: _formatDate(_filterToDate),
                                 workType: _filterWorkType,
                                 category: _filterCategoryId,
                                 assignedBy: _filterAssignedById,
                                 assignedTo: _filterAssignedToId,
-                                status: _selectedStatuses.isEmpty ? null : _selectedStatuses.join(','),
+                                status: _selectedStatuses.isEmpty
+                                    ? null
+                                    : _selectedStatuses.join(','),
                                 viewType: filterType,
                               );
                               Navigator.pop(context);
@@ -432,27 +477,29 @@ class _TaskListState extends State<TaskList> {
             icon: const Icon(Icons.filter_list, color: Colors.white),
             onPressed: _showFilterBottomSheet,
           ),
-          IconButton(
-            icon: const Icon(Icons.add, color: Colors.white),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => AddTaskDialog(
-                  onTaskUpdated: _refreshTaskList,
-                ),
-              );
-            },
-          ),
-
-           IconButton(
-            icon: const Icon(Icons.note_alt_sharp, color: Colors.white),
-             onPressed: () {
-               Navigator.push(
-                 context,
-                 MaterialPageRoute(builder: (context) => const TaskActivityPage()),
-               );
-             },
-          )
+          if (PermissionManager.hasPermission('add new task'))
+            IconButton(
+              icon: const Icon(Icons.add, color: Colors.white),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AddTaskDialog(
+                    onTaskUpdated: _refreshTaskList,
+                  ),
+                );
+              },
+            ),
+          if (PermissionManager.hasPermission('view task activity'))
+            IconButton(
+              icon: const Icon(Icons.note_alt_sharp, color: Colors.white),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const TaskActivityPage()),
+                );
+              },
+            )
         ],
       ),
       body: userId == null
@@ -527,7 +574,9 @@ class _TaskListState extends State<TaskList> {
                           category: _filterCategoryId,
                           assignedBy: _filterAssignedById,
                           assignedTo: _filterAssignedToId,
-                          status: _selectedStatuses.isEmpty ? null : _selectedStatuses.join(','),
+                          status: _selectedStatuses.isEmpty
+                              ? null
+                              : _selectedStatuses.join(','),
                           viewType: filterType,
                         );
                         print("🔃 Manual refresh triggered with filters");
@@ -551,7 +600,9 @@ class _TaskListState extends State<TaskList> {
                                   category: _filterCategoryId,
                                   assignedBy: _filterAssignedById,
                                   assignedTo: _filterAssignedToId,
-                                  status: _selectedStatuses.isEmpty ? null : _selectedStatuses.join(','),
+                                  status: _selectedStatuses.isEmpty
+                                      ? null
+                                      : _selectedStatuses.join(','),
                                   viewType: "my",
                                 );
                               }),
@@ -567,7 +618,9 @@ class _TaskListState extends State<TaskList> {
                                   category: _filterCategoryId,
                                   assignedBy: _filterAssignedById,
                                   assignedTo: _filterAssignedToId,
-                                  status: _selectedStatuses.isEmpty ? null : _selectedStatuses.join(','),
+                                  status: _selectedStatuses.isEmpty
+                                      ? null
+                                      : _selectedStatuses.join(','),
                                   viewType: "assigned",
                                 );
                               }),
@@ -582,7 +635,9 @@ class _TaskListState extends State<TaskList> {
                                   category: _filterCategoryId,
                                   assignedBy: _filterAssignedById,
                                   assignedTo: _filterAssignedToId,
-                                  status: _selectedStatuses.isEmpty ? null : _selectedStatuses.join(','),
+                                  status: _selectedStatuses.isEmpty
+                                      ? null
+                                      : _selectedStatuses.join(','),
                                   viewType: "all",
                                 );
                               }),
@@ -784,34 +839,35 @@ class _TaskListState extends State<TaskList> {
                         const SizedBox(width: 7),
 
                         // Edit button - WITH CALLBACK
-                        InkWell(
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) => AddTaskDialog(
-                                taskId: task.id,
-                                onTaskUpdated: _refreshTaskList,
-                              ),
-                            );
-                          },
-                          child: Container(
-                            height: 25,
-                            width: 25,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: AppColors.primaryColor,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.8),
-                                  blurRadius: 6,
-                                  offset: const Offset(1, 1),
+                        if (PermissionManager.hasPermission('edit task '))
+                          InkWell(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AddTaskDialog(
+                                  taskId: task.id,
+                                  onTaskUpdated: _refreshTaskList,
                                 ),
-                              ],
+                              );
+                            },
+                            child: Container(
+                              height: 25,
+                              width: 25,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: AppColors.primaryColor,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.8),
+                                    blurRadius: 6,
+                                    offset: const Offset(1, 1),
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(Icons.edit,
+                                  size: 18, color: Colors.white),
                             ),
-                            child: const Icon(Icons.edit,
-                                size: 18, color: Colors.white),
                           ),
-                        ),
                       ],
                     ),
                   ],

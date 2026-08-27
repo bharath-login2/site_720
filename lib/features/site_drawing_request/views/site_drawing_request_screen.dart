@@ -5,6 +5,7 @@ import '../widgets/site_drawing_request_card.dart';
 import '../cubit/site_drawing_request_cubit.dart';
 import '../cubit/site_drawing_request_state.dart';
 import '../widgets/site_drawing_request_form_dialog.dart';
+import '../../../core/utilities/permission_manager.dart';
 
 class SiteDrawingRequestScreen extends StatefulWidget {
   const SiteDrawingRequestScreen({super.key});
@@ -77,28 +78,52 @@ class _SiteDrawingRequestScreenState extends State<SiteDrawingRequestScreen> {
                 Row(
                   children: [
                     const SizedBox(width: 10),
-                    InkWell(
-                      onTap: () {
-                        final cubit = context.read<SiteDrawingRequestCubit>();
+                    // InkWell(
+                    //   onTap: () {
+                    //     final cubit = context.read<SiteDrawingRequestCubit>();
 
-                        showDialog(
-                          context: context,
-                          builder: (_) => BlocProvider.value(
-                            value: cubit,
-                            child: const SiteDrawingRequestForm(),
+                    //     showDialog(
+                    //       context: context,
+                    //       builder: (_) => BlocProvider.value(
+                    //         value: cubit,
+                    //         child: const SiteDrawingRequestForm(),
+                    //       ),
+                    //     );
+                    //   },
+                    //   borderRadius: BorderRadius.circular(20),
+                    //   child: const CircleAvatar(
+                    //     radius: 20,
+                    //     backgroundColor: AppColors.lightPrimary,
+                    //     child: Icon(
+                    //       Icons.add,
+                    //       color: Colors.white,
+                    //     ),
+                    //   ),
+                    // ),
+                    if (PermissionManager.hasPermission(
+                        'add site drawing request"'))
+                      InkWell(
+                        onTap: () {
+                          final cubit = context.read<SiteDrawingRequestCubit>();
+
+                          showDialog(
+                            context: context,
+                            builder: (_) => BlocProvider.value(
+                              value: cubit,
+                              child: const SiteDrawingRequestForm(),
+                            ),
+                          );
+                        },
+                        borderRadius: BorderRadius.circular(20),
+                        child: const CircleAvatar(
+                          radius: 20,
+                          backgroundColor: AppColors.lightPrimary,
+                          child: Icon(
+                            Icons.add,
+                            color: Colors.white,
                           ),
-                        );
-                      },
-                      borderRadius: BorderRadius.circular(20),
-                      child: const CircleAvatar(
-                        radius: 20,
-                        backgroundColor: AppColors.lightPrimary,
-                        child: Icon(
-                          Icons.add,
-                          color: Colors.white,
                         ),
                       ),
-                    ),
                   ],
                 ),
               ],
@@ -125,22 +150,29 @@ class _SiteDrawingRequestScreenState extends State<SiteDrawingRequestScreen> {
 
             if (requests.isEmpty) {
               return const Center(
-                child: Text("No drawing requests found"),
+                child: Text("No Site drawing requests found"),
               );
             }
 
-            return ListView.separated(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-              // itemCount: state.response.data.length,
-              itemCount: requests.length,
-              separatorBuilder: (context, index) {
-                return const SizedBox(height: 12);
+            return RefreshIndicator(
+              onRefresh: () async {
+                await context
+                    .read<SiteDrawingRequestCubit>()
+                    .getSiteDrawingRequests();
               },
-              itemBuilder: (context, index) {
-                return SiteDrawingRequestCard(
-                  item: requests[index],
-                );
-              },
+              child: ListView.separated(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                itemCount: requests.length,
+                separatorBuilder: (context, index) {
+                  return const SizedBox(height: 12);
+                },
+                itemBuilder: (context, index) {
+                  return SiteDrawingRequestCard(
+                    item: requests[index],
+                  );
+                },
+              ),
             );
           }
 

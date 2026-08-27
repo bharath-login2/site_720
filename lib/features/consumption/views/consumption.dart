@@ -7,6 +7,7 @@ import 'package:site_720/core/widgets/appbar.dart';
 import 'package:site_720/core/widgets/shimmer.dart';
 import 'package:site_720/features/consumption/cubit/consumption_state.dart';
 import '../../../core/widgets/connectivity_dialog.dart';
+import '../../../core/utilities/permission_manager.dart';
 import '../../connectivity/cubit/connectivity_cubit.dart';
 import '../../connectivity/cubit/connectivity_state.dart';
 import '../../payment_details/widgets/amount_container.dart';
@@ -34,39 +35,40 @@ class Consumption extends StatelessWidget {
               "Consumption",
               true,
               actions: [
-                InkWell(
-                  onTap: () async {
-                    final result = await showDialog(
-                      context: context,
-                      builder: (_) => AddConsumptionDialog(
-                        projectId: projectId,
-                      ),
-                    );
-
-                    if (result == true && context.mounted) {
-                      await context.read<ConsumptionCubit>().getConsumeList();
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            "Stock Consumption Added Successfully",
-                          ),
+                if (PermissionManager.hasPermission('add stock consumptions'))
+                  InkWell(
+                    onTap: () async {
+                      final result = await showDialog(
+                        context: context,
+                        builder: (_) => AddConsumptionDialog(
+                          projectId: projectId,
                         ),
                       );
-                    }
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(.2),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(
-                      Icons.add,
-                      color: Colors.white,
+
+                      if (result == true && context.mounted) {
+                        await context.read<ConsumptionCubit>().getConsumeList();
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              "Stock Consumption Added Successfully",
+                            ),
+                          ),
+                        );
+                      }
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(.2),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
             body: MultiBlocListener(

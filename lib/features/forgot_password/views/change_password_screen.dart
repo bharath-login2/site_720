@@ -9,6 +9,7 @@ import '../../../core/widgets/snack_bar.dart';
 import '../../connectivity/cubit/connectivity_cubit.dart';
 import '../../connectivity/cubit/connectivity_state.dart';
 import '../cubit/forgot_password_cubit.dart';
+import '../../../core/widgets/appbar.dart';
 
 class ChangePasswordScreen extends StatelessWidget {
   ChangePasswordScreen({super.key});
@@ -61,9 +62,8 @@ class ChangePasswordScreen extends StatelessWidget {
                       bottomRight: Radius.circular(15),
                     ),
                     image: DecorationImage(
-                      image: AssetImage("assets/images/login.jpg"),
-                      fit: BoxFit.fill,
-                    ),
+                        image: AssetImage("assets/images/appbar.png"),
+                        fit: BoxFit.fill),
                   ),
                 ),
                 const SizedBox(height: 40),

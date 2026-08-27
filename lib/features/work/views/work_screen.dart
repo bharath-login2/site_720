@@ -109,10 +109,6 @@ class _WorkScreenState extends State<WorkScreen> {
 
                   //Search
                   Container(
-
-
-
-                    
                     margin: const EdgeInsets.symmetric(
                       horizontal: 22,
                     ),

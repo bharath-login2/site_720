@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/utilities/shared_preferences.dart';
 import '../../../data/models/login/api_auth.dart';
 import '../../../data/services/http_services.dart';
+import '../../../core/utilities/permission_manager.dart';
 
 part 'login_state.dart';
 
@@ -122,7 +123,24 @@ class LoginCubit extends Cubit<LoginState> {
             "true",
           );
         }
+        final permissionResponse = await HttpServices.getPermissions();
+        if (permissionResponse != null && permissionResponse.status) {
+          await savePermissions(
+            permissionResponse.data.permissions
+                .map((permission) => permission.trim().toLowerCase())
+                .toList(),
+          );
+          final savedPermissions = await getSavedPermissions();
 
+          print("SAVED PERMISSIONS: $savedPermissions");
+
+          await PermissionManager.loadPermissions();
+
+          print(
+            "Permission check: "
+            "${PermissionManager.hasPermission('add new task')}",
+          );
+        }
         emit(
           LoginSuccess(
             response.message,

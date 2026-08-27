@@ -14,6 +14,7 @@ import '../../../core/widgets/appbar.dart';
 import '../../../core/widgets/connectivity_dialog.dart';
 import '../../../core/widgets/dialogs.dart';
 import '../../../core/widgets/snack_bar.dart';
+import '../../../core/utilities/permission_manager.dart';
 import '../../../data/models/site_drawings/drawing_list.dart';
 import '../../connectivity/cubit/connectivity_cubit.dart';
 import '../../connectivity/cubit/connectivity_state.dart';
@@ -77,11 +78,13 @@ class DrawingScreen extends StatelessWidget {
                           FloatingAppBar(
                             title: "Drawing",
                           ),
-                          SizedBox(
-                            height: (image != null || selectedPdf != null)
-                                ? MediaQuery.of(context).size.height * .42
-                                : MediaQuery.of(context).size.height * .28,
-                          ),
+                          if (PermissionManager.hasPermission(
+                              'add site drawings'))
+                            SizedBox(
+                              height: (image != null || selectedPdf != null)
+                                  ? MediaQuery.of(context).size.height * .42
+                                  : MediaQuery.of(context).size.height * .28,
+                            ),
                           Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 16.0),
@@ -316,25 +319,33 @@ class DrawingScreen extends StatelessWidget {
                                                                         .bold,
                                                               ),
                                                             ),
-                                                          InkWell(
-                                                            onTap: () {
-                                                              deleteDialog(
-                                                                  context, () {
-                                                                cubit.deleteDrawing(
+                                                          //permission for delete
+                                                          if (PermissionManager
+                                                              .hasPermission(
+                                                                  'delete site drawing'))
+                                                            InkWell(
+                                                              onTap: () {
+                                                                deleteDialog(
+                                                                    context,
+                                                                    () {
+                                                                  cubit
+                                                                      .deleteDrawing(
                                                                     projectId,
                                                                     drawingList[
                                                                             index]
-                                                                        .id);
-                                                                Navigator.pop(
-                                                                    context);
-                                                              });
-                                                            },
-                                                            child: const Icon(
-                                                              Icons.delete,
-                                                              color: Colors.red,
-                                                              size: 22,
+                                                                        .id,
+                                                                  );
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                });
+                                                              },
+                                                              child: const Icon(
+                                                                Icons.delete,
+                                                                color:
+                                                                    Colors.red,
+                                                                size: 22,
+                                                              ),
                                                             ),
-                                                          )
                                                         ],
                                                       ),
                                                     ),
@@ -400,11 +411,12 @@ class DrawingScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Positioned(
-                      top: MediaQuery.of(context).size.height * 0.16,
-                      left: MediaQuery.of(context).size.width * 0.05,
-                      child: floatingCard(context, state),
-                    ),
+                    if (PermissionManager.hasPermission('add site drawings'))
+                      Positioned(
+                        top: MediaQuery.of(context).size.height * 0.16,
+                        left: MediaQuery.of(context).size.width * 0.05,
+                        child: floatingCard(context, state),
+                      ),
                   ],
                 ),
               );

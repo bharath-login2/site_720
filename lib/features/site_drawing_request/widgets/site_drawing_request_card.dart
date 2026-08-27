@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/colors.dart';
+import '../../../core/utilities/permission_manager.dart';
 import '../../../../data/models/site_drawing_request/site_drawing_request_model.dart';
 import '../cubit/site_drawing_request_cubit.dart';
 
@@ -112,50 +113,54 @@ class SiteDrawingRequestCard extends StatelessWidget {
                 /// Edit + Delete only when Pending
                 if (item.status.toLowerCase().trim() == "pending") ...[
                   /// Edit
-                  CircleAvatar(
-                    radius: 18,
-                    backgroundColor: Colors.amber.shade700,
-                    child: IconButton(
-                      padding: EdgeInsets.zero,
-                      icon: const Icon(
-                        Icons.edit,
-                        color: Colors.white,
-                        size: 18,
-                      ),
-                      onPressed: () {
-                        final cubit = context.read<SiteDrawingRequestCubit>();
+                  if (PermissionManager.hasPermission(
+                      'edit site drawing request'))
+                    CircleAvatar(
+                      radius: 18,
+                      backgroundColor: Colors.amber.shade700,
+                      child: IconButton(
+                        padding: EdgeInsets.zero,
+                        icon: const Icon(
+                          Icons.edit,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                        onPressed: () {
+                          final cubit = context.read<SiteDrawingRequestCubit>();
 
-                        showDialog(
-                          context: context,
-                          builder: (_) => BlocProvider.value(
-                            value: cubit,
-                            child: SiteDrawingRequestForm(
-                              request: item,
+                          showDialog(
+                            context: context,
+                            builder: (_) => BlocProvider.value(
+                              value: cubit,
+                              child: SiteDrawingRequestForm(
+                                request: item,
+                              ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
-                  ),
 
                   const SizedBox(width: 8),
+                  if (PermissionManager.hasPermission(
+                      'delete site drawing request'))
 
-                  /// Delete
-                  CircleAvatar(
-                    radius: 18,
-                    backgroundColor: Colors.red,
-                    child: IconButton(
-                      padding: EdgeInsets.zero,
-                      icon: const Icon(
-                        Icons.delete,
-                        color: Colors.white,
-                        size: 18,
+                    /// Delete
+                    CircleAvatar(
+                      radius: 18,
+                      backgroundColor: Colors.red,
+                      child: IconButton(
+                        padding: EdgeInsets.zero,
+                        icon: const Icon(
+                          Icons.delete,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                        onPressed: () {
+                          _showDeleteDialog(context, item);
+                        },
                       ),
-                      onPressed: () {
-                        _showDeleteDialog(context, item);
-                      },
                     ),
-                  ),
                 ],
               ],
             ),

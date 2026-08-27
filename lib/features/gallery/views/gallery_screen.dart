@@ -8,6 +8,7 @@ import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/buttons.dart';
 import 'package:site_720/core/widgets/snack_bar.dart';
 import '../../../core/widgets/appbar.dart';
+import '../../../core/utilities/permission_manager.dart';
 import '../../../core/widgets/connectivity_dialog.dart';
 import '../../../data/models/galery/galery_list_model.dart';
 import '../../../data/models/galery/stage_pro_model.dart';
@@ -78,9 +79,10 @@ class GalleryScreen extends StatelessWidget {
                           FloatingAppBar(
                             title: "Gallery",
                           ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height * .38,
-                          ),
+                          if (PermissionManager.hasPermission('update gallery'))
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * .38,
+                            ),
                           if (galleryList.isNotEmpty)
                             Container(
                               width: MediaQuery.of(context).size.width * .92,
@@ -133,11 +135,12 @@ class GalleryScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Positioned(
-                      top: MediaQuery.of(context).size.height * 0.16,
-                      left: MediaQuery.of(context).size.width * 0.05,
-                      child: floatingCard(context, cubit, state),
-                    ),
+                    if (PermissionManager.hasPermission('update gallery'))
+                      Positioned(
+                        top: MediaQuery.of(context).size.height * 0.16,
+                        left: MediaQuery.of(context).size.width * 0.05,
+                        child: floatingCard(context, cubit, state),
+                      ),
                   ],
                 ),
               );

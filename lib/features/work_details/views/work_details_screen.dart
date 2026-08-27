@@ -9,6 +9,7 @@ import 'package:site_720/data/models/workdetails/work_detail_model.dart';
 import 'package:site_720/features/work_details/cubit/work_details_state.dart';
 import '../../../core/widgets/buttons.dart';
 import '../../../core/widgets/connectivity_dialog.dart';
+import '../../../core/utilities/permission_manager.dart';
 import '../../../core/widgets/dialogs.dart';
 import '../../../core/widgets/snack_bar.dart';
 import '../../../data/models/workdetails/add_work_details_model.dart';
@@ -131,29 +132,45 @@ class WorkDetailsScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  date.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
-                  if (issuesList.isNotEmpty) {
-                    workDialog(context, cubit, issuesList, stageList, id,
-                            clientId, "add", "")
-                        .then((_) {
-                      date.clear();
-                      noOfLabours.clear();
-                      description.clear();
-                      selectedStatus = null;
-                      isWorking = 'Yes';
-                    });
-                  } else {
-                    snackBar(context, "Something went wrong", Colors.red);
-                  }
-                },
-                backgroundColor: AppColors.lightPrimary,
-                child: const Icon(
-                  Icons.add,
-                  color: Colors.white,
-                ),
-              ),
+              floatingActionButton:
+                  PermissionManager.hasPermission('add work details')
+                      ? FloatingActionButton(
+                          onPressed: () {
+                            date.text =
+                                DateFormat('dd-MM-yyyy').format(DateTime.now());
+
+                            if (issuesList.isNotEmpty) {
+                              workDialog(
+                                context,
+                                cubit,
+                                issuesList,
+                                stageList,
+                                id,
+                                clientId,
+                                "add",
+                                "",
+                              ).then((_) {
+                                date.clear();
+                                noOfLabours.clear();
+                                description.clear();
+                                selectedStatus = null;
+                                isWorking = 'Yes';
+                              });
+                            } else {
+                              snackBar(
+                                context,
+                                "Something went wrong",
+                                Colors.red,
+                              );
+                            }
+                          },
+                          backgroundColor: AppColors.lightPrimary,
+                          child: const Icon(
+                            Icons.add,
+                            color: Colors.white,
+                          ),
+                        )
+                      : null,
               body: RefreshIndicator(
                 onRefresh: () async {
                   cubit.getWorkDetails(id);

@@ -80,6 +80,7 @@ import '../models/projectdocument/project_document_model.dart';
 import '../models/project_info/project_info_model.dart';
 import '../models/livemap/livemap_model.dart';
 import '../models/estimate_request/estimate_request_model.dart';
+import '../models/permissions/permissions.dart';
 import 'package:http_parser/http_parser.dart';
 
 class HttpServices {
@@ -3740,6 +3741,27 @@ class HttpServices {
       print("UPDATE EXCEPTION: $e");
     }
 
+    return null;
+  }
+
+  static Future<PermissionResponse?> getPermissions() async {
+    try {
+      final response = await http.post(
+        Uri.parse("${await Config.getUrl()}user_permissions"),
+        body: {
+          "token": await getSharedPreference("token"),
+        },
+      );
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+
+        if (result["status"] == true) {
+          return PermissionResponse.fromJson(result);
+        }
+      }
+    } catch (e) {
+      print("Exception :$e");
+    }
     return null;
   }
 }

@@ -11,6 +11,7 @@ import 'package:site_720/features/complaints/cubit/complaint_cubit.dart';
 import 'package:site_720/features/complaints/cubit/complaint_state.dart';
 import 'package:site_720/features/complaints/views/add_complaint.dart';
 import '../../../core/constants/routes.dart';
+import '../../../core/utilities/permission_manager.dart';
 import '../../../core/widgets/buttons.dart';
 import '../../../core/widgets/connectivity_dialog.dart';
 import '../../../core/widgets/snack_bar.dart';
@@ -150,29 +151,31 @@ class _ComplaintListPageState extends State<ComplaintList> {
                               color: Colors.white,
                             ),
                           ),
-                          InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => AddComplaint(),
+                          if (PermissionManager.hasPermission(
+                              'create complaint'))
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => AddComplaint(),
+                                  ),
+                                );
+                              },
+                              borderRadius: BorderRadius.circular(30),
+                              child: Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.2),
+                                  borderRadius: BorderRadius.circular(30),
                                 ),
-                              );
-                            },
-                            borderRadius: BorderRadius.circular(30),
-                            child: Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.2),
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              child: const Icon(
-                                Icons.add,
-                                color: Colors.white,
-                                size: 22,
+                                child: const Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                  size: 22,
+                                ),
                               ),
                             ),
-                          ),
                         ],
                       ),
                     ),

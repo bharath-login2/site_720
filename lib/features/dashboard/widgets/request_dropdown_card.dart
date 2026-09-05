@@ -114,25 +114,25 @@ class _RequestDropdownCardState extends State<RequestDropdownCard> {
                               );
                             },
                           ),
-                          // const Divider(height: 1),
-                          // _buildItem(
-                          //   context,
-                          //   "Deduction Work",
-                          //   () {
-                          //     Navigator.pushNamed(
-                          //       context,
-                          //       AppRoutes.DeductionWorkRequest,
-                          //     );
-                          //   },
-                          // ),
-                          // const Divider(height: 1),
-                          // _buildItem(
-                          //   context,
-                          //   "Extra Work",
-                          //   () {
-                          //     Navigator.pushNamed(context, "/extraWork");
-                          //   },
-                          // ),
+                          const Divider(height: 1),
+                          _buildItem(
+                            context,
+                            "Deduction Work",
+                            () {
+                              Navigator.pushNamed(
+                                context,
+                                AppRoutes.DeductionWorkRequest,
+                              );
+                            },
+                          ),
+                          const Divider(height: 1),
+                          _buildItem(
+                            context,
+                            "Extra Work",
+                            () {
+                              Navigator.pushNamed(context, "/extraWork");
+                            },
+                          ),
                         ],
                       ),
                     )

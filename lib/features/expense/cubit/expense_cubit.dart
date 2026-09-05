@@ -5,16 +5,19 @@ import '../../../data/services/http_services.dart';
 import 'expense_state.dart';
 
 class ExpenseCubit extends Cubit<ExpenseState> {
-  ExpenseCubit(String projectId)
-      : super(
+  final String projectId;
+  final String expenseTypeId;
+
+  ExpenseCubit({
+    required this.projectId,
+    required this.expenseTypeId,
+  }) : super(
           const ExpenseInitial(),
         ) {
-    getExpenseList(projectId);
+    getExpenseList();
   }
 
-  Future<void> getExpenseList(
-    String projectId,
-  ) async {
+  Future<void> getExpenseList() async {
     emit(
       const ExpenseLoading(),
     );
@@ -22,6 +25,7 @@ class ExpenseCubit extends Cubit<ExpenseState> {
     try {
       GetExpenseList response = await HttpServices.getExpenseList(
         projectId,
+        expenseTypeId,
       );
 
       if (response.status == true) {

@@ -101,7 +101,7 @@ class _SiteDrawingRequestScreenState extends State<SiteDrawingRequestScreen> {
                     //   ),
                     // ),
                     if (PermissionManager.hasPermission(
-                        'add site drawing request"'))
+                        'add site drawing request'))
                       InkWell(
                         onTap: () {
                           final cubit = context.read<SiteDrawingRequestCubit>();

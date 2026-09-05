@@ -62,6 +62,8 @@ import 'package:site_720/features/sub_contactors/views/sub_contractor_details_sc
 import 'features/project_document/views/project_documents_page.dart';
 import 'features/project_info/views/project_info_page.dart';
 import 'package:site_720/features/project_info/cubit/project_info_cubit.dart';
+import 'features/extra_work_request/cubit/extra_work_request_cubit.dart';
+import 'features/extra_work_request/views/extra_work_request_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -147,7 +149,17 @@ class MyApp extends StatelessWidget {
         '/deductionWork': (context) => DeductionWork(),
         '/purchase': (context) => const PurchaseList(),
         '/stock': (context) => Stock(),
-        '/expense': (context) => const Expense(),
+        // '/expense': (context) => const Expense(),
+        '/expense': (context) {
+          final args = ModalRoute.of(context)!.settings.arguments
+              as Map<String, dynamic>;
+          print("Expense projectId: ${args['id']}");
+          print("Expense project_type_id: ${args['project_type_id']}");
+          return Expense(
+            projectId: args['id'].toString(),
+            expenseTypeId: args['project_type_id'].toString(),
+          );
+        },
         '/paymentDetails': (context) => PaymentDetails(),
         '/estimation': (context) => Estimation(),
         '/consumption': (context) => Consumption(),
@@ -191,10 +203,23 @@ class MyApp extends StatelessWidget {
               create: (_) => SiteDrawingRequestCubit(),
               child: SiteDrawingRequestScreen(),
             ),
+
         '/deductionWorkRequest': (context) => BlocProvider(
               create: (_) => DeductionWorkRequestCubit(),
               child: DeductionWorkRequestScreen(),
             ),
+        '/extraWorkRequest': (context) {
+          final projectId =
+              ModalRoute.of(context)!.settings.arguments as String;
+
+          return BlocProvider(
+            create: (_) => ExtraWorkRequestCubit(),
+            child: ExtraWorkRequestScreen(
+              projectId: projectId,
+            ),
+          );
+        },
+
         AppRoutes.projectDocuments: (context) {
           final args = ModalRoute.of(context)!.settings.arguments
               as Map<String, dynamic>;

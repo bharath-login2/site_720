@@ -25,6 +25,7 @@ class ProjectDetails extends StatelessWidget {
   String clientId = "";
   String id = "";
   String projectId = "";
+  String projectType = "";
 
   @override
   Widget build(BuildContext context) {
@@ -547,9 +548,15 @@ class ProjectDetails extends StatelessWidget {
                                   InkWell(
                                     onTap: () {
                                       connStatus = true;
+
                                       Navigator.pushNamed(
-                                          context, AppRoutes.expense,
-                                          arguments: {"id": projectId});
+                                        context,
+                                        AppRoutes.expense,
+                                        arguments: {
+                                          "id": id,
+                                          "project_type_id": "14",
+                                        },
+                                      );
                                     },
                                     child: DetailsButtonContainer(
                                       title: "Expense",

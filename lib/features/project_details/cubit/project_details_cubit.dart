@@ -19,6 +19,7 @@ class ProjectDetailsCubit extends Cubit<ProjectDetailsState> {
         response.progress = await HttpServices.getProjectProgress(
           projectId: projectId,
         );
+        
 
         emit(ProjectDetailsSuccess(response));
       }

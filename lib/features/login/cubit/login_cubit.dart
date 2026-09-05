@@ -138,7 +138,7 @@ class LoginCubit extends Cubit<LoginState> {
 
           print(
             "Permission check: "
-            "${PermissionManager.hasPermission('add new task')}",
+            "${PermissionManager.hasPermission('add site drawing request')}",
           );
         }
         emit(

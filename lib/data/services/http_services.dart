@@ -277,7 +277,6 @@ class HttpServices {
         }),
       );
       if (response.statusCode == 200) {
-        print("Project Details Response: ${response.body}");
         return projectDetailsModelFromJson(response.body);
       }
     } catch (e) {
@@ -688,15 +687,23 @@ class HttpServices {
     }
   }
 
-  static Future getExpenseList(projectId) async {
+  static Future getExpenseList(
+    String projectId,
+    String expenseTypeId,
+  ) async {
     try {
       http.Response response = await http.post(
         Uri.parse("${await Config.getUrl()}expense_list"),
         body: {
           'token': await getSharedPreference('token'),
-          "project_id": projectId,
+          'project_id': projectId,
+          'expense_type_id': expenseTypeId,
         },
       );
+
+      print('project_id: $projectId');
+      print('expense_type_idss: $expenseTypeId');
+
       if (response.statusCode == 200) {
         print("response : ${response.body}");
         return getExpenseListFromJson(response.body);
@@ -3759,6 +3766,7 @@ class HttpServices {
           return PermissionResponse.fromJson(result);
         }
       }
+      print("Get Permissions Response: ${response.body}");
     } catch (e) {
       print("Exception :$e");
     }

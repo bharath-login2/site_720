@@ -50,4 +50,5 @@ class AppRoutes {
   static const estimateRequest = '/estimateRequest';
   static const SiteDrawingRequest ='/siteDrawingRequest';
   static const DeductionWorkRequest ='/deductionWorkRequest';
+  static const ExtraWorkRequest ='/extraworkRequest';
 }

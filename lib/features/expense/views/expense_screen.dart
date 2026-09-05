@@ -17,12 +17,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubit/project_cubit.dart';
 
 class Expense extends StatelessWidget {
-  const Expense({super.key});
+  final String projectId;
+  final String expenseTypeId;
 
+  const Expense({
+    super.key,
+    required this.projectId,
+    required this.expenseTypeId,
+  });
   @override
   Widget build(BuildContext context) {
-    String projectId = "";
-
+    print("Expense projectId: $projectId");
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       appBar: PreferredSize(
@@ -116,7 +121,10 @@ class Expense extends StatelessWidget {
         ),
       ),
       body: BlocProvider(
-        create: (context) => ExpenseCubit(projectId),
+        create: (context) => ExpenseCubit(
+          projectId: projectId,
+          expenseTypeId: expenseTypeId,
+        ),
         child: MultiBlocListener(
           listeners: [
             BlocListener<ConnectivityCubit, ConnectivityState>(

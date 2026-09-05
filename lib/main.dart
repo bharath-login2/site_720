@@ -208,17 +208,17 @@ class MyApp extends StatelessWidget {
               create: (_) => DeductionWorkRequestCubit(),
               child: DeductionWorkRequestScreen(),
             ),
-        '/extraWorkRequest': (context) {
-          final projectId =
-              ModalRoute.of(context)!.settings.arguments as String;
+        // '/extraWorkRequest': (context) {
+        //   final projectId =
+        //       ModalRoute.of(context)!.settings.arguments as String;
 
-          return BlocProvider(
-            create: (_) => ExtraWorkRequestCubit(),
-            child: ExtraWorkRequestScreen(
-              projectId: projectId,
-            ),
-          );
-        },
+        //   return BlocProvider(
+        //     create: (_) => ExtraWorkRequestCubit(),
+        //     child: ExtraWorkRequestScreen(
+        //       projectId: projectId,
+        //     ),
+        //   );
+        // },
 
         AppRoutes.projectDocuments: (context) {
           final args = ModalRoute.of(context)!.settings.arguments

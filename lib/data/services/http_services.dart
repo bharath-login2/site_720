@@ -81,6 +81,9 @@ import '../models/project_info/project_info_model.dart';
 import '../models/livemap/livemap_model.dart';
 import '../models/estimate_request/estimate_request_model.dart';
 import '../models/permissions/permissions.dart';
+import '../models/projectListRequest/projectListRequestModel.dart';
+import '../models/extrawork_Request/extra_work_request_model.dart';
+import '../models/deductionwork_request/deduction_work_request_model.dart';
 import 'package:http_parser/http_parser.dart';
 
 class HttpServices {
@@ -3772,4 +3775,348 @@ class HttpServices {
     }
     return null;
   }
+
+  //project list for work request
+  static Future<WorkRequestProjectResponse> getWorkRequestProjects() async {
+    try {
+      http.Response response = await http.post(
+        Uri.parse(
+          "${await Config.getUrl()}get_running_project_list",
+        ),
+        body: {
+          'token': await getSharedPreference('token'),
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // print("WORK REQUEST PROJECT LIST RESPONSE : ${response.body}");
+
+        return WorkRequestProjectResponse.fromJson(
+          jsonDecode(response.body),
+        );
+      } else {
+        throw Exception(
+          "Failed to load work request project list",
+        );
+      }
+    } catch (e) {
+      log(e.toString());
+      throw Exception(e.toString());
+    }
+  }
+
+  static Future<ExtraWorkRequestListResponse> getExtraWorkRequests({
+    String? projectId,
+  }) async {
+    try {
+      final token = await getSharedPreference("token");
+
+      final Map<String, String> body = {
+        "token": token ?? "",
+      };
+
+      if (projectId != null && projectId.isNotEmpty) {
+        body["project_id"] = projectId;
+      }
+
+      print("GET EXTRA WORK REQUEST BODY: $body");
+
+      final response = await http.post(
+        Uri.parse("${await Config.getUrl()}get_extra_work_request"),
+        body: body,
+      );
+
+      print("GET EXTRA WORK REQUEST RESPONSE: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+
+        if (result is Map<String, dynamic>) {
+          return ExtraWorkRequestListResponse.fromJson(result);
+        }
+      }
+
+      throw Exception(
+        "Status Code ${response.statusCode}",
+      );
+    } catch (e) {
+      print("GET EXTRA WORK REQUEST ERROR: $e");
+      rethrow;
+    }
+  }
+
+  static Future<SaveExtraWorkRequestResponse?> saveExtraWorkRequest({
+    required String projectId,
+    String? clientId,
+    required String requestData,
+  }) async {
+    try {
+      final token = await getSharedPreference("token");
+      final effectiveClientId = (clientId != null && clientId.isNotEmpty)
+          ? clientId
+          : (await getSharedPreference("client_id") ??
+              await getSharedPreference("clientId") ??
+              "");
+
+      final Map<String, String> body = {
+        "token": token ?? "",
+        // 'client_id': clientId,
+        // 'client_id': effectiveClientId,
+        "project_id": projectId,
+        "request_data": requestData,
+      };
+      print("REQUEST DATA: $requestData");
+
+      print("SAVE EXTRA WORK REQUEST BODY: $body");
+
+      final response = await http.post(
+        Uri.parse("${await Config.getUrl()}post_extra_work_request"),
+        body: body,
+      );
+
+      print("SAVE EXTRA WORK REQUEST RESPONSE: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+
+        if (result is Map<String, dynamic>) {
+          final saveResponse = SaveExtraWorkRequestResponse.fromJson(result);
+          if (saveResponse.status == true) {
+            return saveResponse;
+          }
+          throw Exception(
+            saveResponse.message.isNotEmpty
+                ? saveResponse.message
+                : "Failed to save extra work request",
+          );
+        }
+      }
+
+      throw Exception("Server returned status ${response.statusCode}");
+    } catch (e) {
+      print("SAVE EXTRA WORK REQUEST ERROR: $e");
+      rethrow;
+    }
+  }
+
+  static Future<SaveExtraWorkRequestResponse?> updateExtraWorkRequest({
+    required String requestId,
+    required String itemName,
+    required String qty,
+    required String remarks,
+  }) async {
+    try {
+      final token = await getSharedPreference("token");
+
+      final Map<String, String> body = {
+        'token': token ?? "",
+        'request_id': requestId,
+        'item_name': itemName,
+        'qty': qty,
+        'remarks': remarks,
+      };
+
+      print("UPDATE EXTRA WORK REQUEST BODY: $body");
+
+      final response = await http.post(
+        Uri.parse("${await Config.getUrl()}update_extra_work_request"),
+        body: body,
+      );
+
+      print("UPDATE EXTRA WORK REQUEST RESPONSE: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+
+        if (result is Map<String, dynamic>) {
+          final updateResponse = SaveExtraWorkRequestResponse.fromJson(result);
+
+          if (updateResponse.status == true) {
+            return updateResponse;
+          }
+
+          throw Exception(
+            updateResponse.message.isNotEmpty
+                ? updateResponse.message
+                : "Failed to update extra work request",
+          );
+        }
+      }
+
+      throw Exception("Server returned status ${response.statusCode}");
+    } catch (e) {
+      print("UPDATE EXTRA WORK REQUEST ERROR: $e");
+      rethrow;
+    }
+  }
+
+  static Future<bool> deleteExtraWorkRequest({
+    required String requestId,
+  }) async {
+    try {
+      final token = await getSharedPreference("token");
+
+      final response = await http.post(
+        Uri.parse("${await Config.getUrl()}deleteExtraWorkRequest"),
+        body: {
+          "token": token ?? "",
+          "row_id": requestId,
+          "request_id": requestId,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+        if (result is Map<String, dynamic>) {
+          return result["status"] == true ||
+              result["status"] == "true" ||
+              result["status"] == 1;
+        }
+      }
+    } catch (e) {
+      print("DELETE EXTRA WORK REQUEST ERROR: $e");
+    }
+    return false;
+  }
+
+  // ============================================================
+  // DEDUCTION WORK REQUEST APIS
+  // ============================================================
+
+  static Future<DeductionWorkRequestListResponse> getDeductionWorkRequests({
+    required String projectId,
+  }) async {
+    try {
+      final token = await getSharedPreference("token");
+
+      final Map<String, String> body = {
+        "token": token ?? "",
+        "project_id": projectId,
+      };
+
+      print("GET DEDUCTION WORK REQUEST BODY: $body");
+
+      final response = await http.post(
+        Uri.parse("${await Config.getUrl()}get_deduction_work_request"),
+        body: body,
+      );
+
+      print("GET DEDUCTION WORK REQUEST RESPONSE: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+
+        if (result is Map<String, dynamic>) {
+          return DeductionWorkRequestListResponse.fromJson(result);
+        }
+      }
+
+      throw Exception(
+        "Status Code ${response.statusCode}",
+      );
+    } catch (e) {
+      print("GET DEDUCTION WORK REQUEST ERROR: $e");
+      rethrow;
+    }
+  }
+
+  static Future<SaveDeductionWorkRequestResponse?> saveDeductionWorkRequest({
+    required String projectId,
+    required String requestData,
+  }) async {
+    try {
+      final token = await getSharedPreference("token");
+
+      final Map<String, String> body = {
+        "token": token ?? "",
+        "project_id": projectId,
+        "request_data": requestData,
+      };
+
+      print("REQUEST DATA: $requestData");
+      print("SAVE DEDUCTION WORK REQUEST BODY: $body");
+
+      final response = await http.post(
+        Uri.parse("${await Config.getUrl()}post_deduction_work_request"),
+        body: body,
+      );
+
+      print("SAVE DEDUCTION WORK REQUEST RESPONSE: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+
+        if (result is Map<String, dynamic>) {
+          final saveResponse =
+              SaveDeductionWorkRequestResponse.fromJson(result);
+          if (saveResponse.status == true) {
+            return saveResponse;
+          }
+          throw Exception(
+            saveResponse.message.isNotEmpty
+                ? saveResponse.message
+                : "Failed to save deduction work request",
+          );
+        }
+      }
+
+      throw Exception("Server returned status ${response.statusCode}");
+    } catch (e) {
+      print("SAVE DEDUCTION WORK REQUEST ERROR: $e");
+      rethrow;
+    }
+  }
+
+  static Future<SaveDeductionWorkRequestResponse?> updateDeductionWorkRequest({
+    required String requestId,
+    required String itemName,
+    required String qty,
+    required String remarks,
+  }) async {
+    try {
+      final token = await getSharedPreference("token");
+
+      final Map<String, String> body = {
+        'token': token ?? "",
+        'request_id': requestId,
+        'item_name': itemName,
+        'qty': qty,
+        'remarks': remarks,
+      };
+
+      print("UPDATE DEDUCTION WORK REQUEST BODY: $body");
+
+      final response = await http.post(
+        Uri.parse("${await Config.getUrl()}update_deduction_work_request"),
+        body: body,
+      );
+
+      print("UPDATE DEDUCTION WORK REQUEST RESPONSE: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+
+        if (result is Map<String, dynamic>) {
+          final updateResponse =
+              SaveDeductionWorkRequestResponse.fromJson(result);
+
+          if (updateResponse.status == true) {
+            return updateResponse;
+          }
+
+          throw Exception(
+            updateResponse.message.isNotEmpty
+                ? updateResponse.message
+                : "Failed to update deduction work request",
+          );
+        }
+      }
+
+      throw Exception("Server returned status ${response.statusCode}");
+    } catch (e) {
+      print("UPDATE DEDUCTION WORK REQUEST ERROR: $e");
+      rethrow;
+    }
+  }
 }
+

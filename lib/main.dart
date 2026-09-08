@@ -9,7 +9,8 @@ import 'package:site_720/features/clients/views/edit_client.dart';
 import 'package:site_720/features/consumption/views/consumption.dart';
 import 'package:site_720/features/dashboard/views/dashboard_screen.dart';
 import 'package:site_720/features/deduction_work_request/cubit/deduction_work_request_cubit.dart';
-import 'package:site_720/features/deduction_work_request/views/deduction_work_request_screen.dart';
+import 'package:site_720/features/deduction_work_request/screens/deduction_work_request_screen.dart';
+import 'package:site_720/features/deduction_work_request/screens/deduction_work_request_project_select_screen.dart';
 import 'package:site_720/features/drawing/views/drawing_screen.dart';
 import 'package:site_720/features/estimation/views/estimation_screen.dart';
 import 'package:site_720/features/expense/views/expense_screen.dart';
@@ -64,6 +65,7 @@ import 'features/project_info/views/project_info_page.dart';
 import 'package:site_720/features/project_info/cubit/project_info_cubit.dart';
 import 'features/extra_work_request/cubit/extra_work_request_cubit.dart';
 import 'features/extra_work_request/views/extra_work_request_screen.dart';
+import 'features/extra_work_request/views/extra_work_request_project_select_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -204,22 +206,99 @@ class MyApp extends StatelessWidget {
               child: SiteDrawingRequestScreen(),
             ),
 
-        '/deductionWorkRequest': (context) => BlocProvider(
+        AppRoutes.deductionWorkRequestProjectSelect: (context) => BlocProvider(
               create: (_) => DeductionWorkRequestCubit(),
-              child: DeductionWorkRequestScreen(),
+              child: const DeductionWorkRequestProjectSelectScreen(),
             ),
-        // '/extraWorkRequest': (context) {
-        //   final projectId =
-        //       ModalRoute.of(context)!.settings.arguments as String;
+        AppRoutes.deductionWorkRequest: (context) {
+          final args = ModalRoute.of(context)?.settings.arguments;
+          String projectId = '';
+          if (args is Map<String, dynamic>) {
+            projectId = args["id"]?.toString() ?? args["project_id"]?.toString() ?? '';
+          } else if (args is Map<String, String>) {
+            projectId = args["id"] ?? args["project_id"] ?? '';
+          } else if (args is String) {
+            projectId = args;
+          }
+
+          if (projectId.isEmpty) {
+            return BlocProvider(
+              create: (_) => DeductionWorkRequestCubit(),
+              child: const DeductionWorkRequestProjectSelectScreen(),
+            );
+          }
+
+          return BlocProvider(
+            create: (_) => DeductionWorkRequestCubit(),
+            child: DeductionWorkRequestScreen(projectId: projectId),
+          );
+        },
+        '/extraWorkRequest': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments;
+
+          String projectId = '';
+          String? clientId;
+
+          if (args is Map<String, dynamic>) {
+            projectId =
+                args["id"]?.toString() ?? args["project_id"]?.toString() ?? '';
+            clientId = args["client_id"]?.toString();
+          } else if (args is Map<String, String>) {
+            projectId = args["id"] ?? args["project_id"] ?? '';
+            clientId = args["client_id"];
+          } else if (args is String) {
+            projectId = args;
+          }
+
+          return BlocProvider(
+            create: (_) {
+              final cubit = ExtraWorkRequestCubit();
+              cubit.getExtraWorkRequests(
+                projectId: projectId,
+              );
+              return cubit;
+            },
+            child: ExtraWorkRequestScreen(
+              projectId: projectId,
+              // clientId: clientId,
+            ),
+          );
+        },
+        // '/extraworkRequest': (context) {
+        //   final args = ModalRoute.of(context)?.settings.arguments;
+
+        //   String projectId = '';
+        //   String? clientId;
+
+        //   if (args is Map<String, dynamic>) {
+        //     projectId = args["id"]?.toString() ?? args["project_id"]?.toString() ?? '';
+        //     clientId = args["client_id"]?.toString();
+        //   } else if (args is Map<String, String>) {
+        //     projectId = args["id"] ?? args["project_id"] ?? '';
+        //     clientId = args["client_id"];
+        //   } else if (args is String) {
+        //     projectId = args;
+        //   }
 
         //   return BlocProvider(
-        //     create: (_) => ExtraWorkRequestCubit(),
+        //     create: (_) {
+        //       final cubit = ExtraWorkRequestCubit();
+        //       cubit.getExtraWorkRequests(
+        //         projectId: projectId,
+        //       );
+        //       return cubit;
+        //     },
         //     child: ExtraWorkRequestScreen(
         //       projectId: projectId,
+        //       clientId: clientId,
         //     ),
         //   );
         // },
 
+        AppRoutes.extraWorkProjectSelect: (context) => BlocProvider(
+              create: (_) => ExtraWorkRequestCubit(),
+              child: const ExtraWorkRequestProjectSelectScreen(),
+            ),
         AppRoutes.projectDocuments: (context) {
           final args = ModalRoute.of(context)!.settings.arguments
               as Map<String, dynamic>;

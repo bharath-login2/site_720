@@ -117,22 +117,33 @@ class _RequestDropdownCardState extends State<RequestDropdownCard> {
                           const Divider(height: 1),
                           _buildItem(
                             context,
-                            "Deduction Work",
+                            "Deduction Work Request",
                             () {
                               Navigator.pushNamed(
                                 context,
-                                AppRoutes.DeductionWorkRequest,
+                                AppRoutes.deductionWorkRequestProjectSelect,
                               );
                             },
                           ),
+
                           const Divider(height: 1),
                           _buildItem(
                             context,
-                            "Extra Work",
+                            "Extra Work Request",
                             () {
-                              Navigator.pushNamed(context, "/extraWork");
+                              Navigator.pushNamed(
+                                context,
+                                AppRoutes.extraWorkProjectSelect,
+                              );
                             },
                           ),
+                          // _buildItem(
+                          //   context,
+                          //   "Extra Work Request",
+                          //   () {
+                          //     Navigator.pushNamed(context, "/extraWork");
+                          //   },
+                          // ),
                         ],
                       ),
                     )

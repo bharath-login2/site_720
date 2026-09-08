@@ -2,28 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:site_720/core/constants/colors.dart';
-import '../../../core/utilities/permission_manager.dart';
+import '../cubit/deduction_work_request_cubit.dart';
+import '../cubit/deduction_work_request_state.dart';
+import '../widgets/deduction_work_request_card.dart';
+import '../widgets/deduction_work_request_form_dialog.dart';
 
-import '../cubit/extra_work_request_cubit.dart';
-import '../cubit/extra_work_request_state.dart';
-import '../widgets/extra_work_request_card.dart';
-import '../widgets/extra_work_request_form_dialog.dart';
+typedef DeductionWorkRequestListPage = DeductionWorkRequestScreen;
 
-typedef ExtraWorkRequestListPage = ExtraWorkRequestScreen;
-
-class ExtraWorkRequestScreen extends StatefulWidget {
+class DeductionWorkRequestScreen extends StatefulWidget {
   final String projectId;
 
-  const ExtraWorkRequestScreen({
+  const DeductionWorkRequestScreen({
     super.key,
     required this.projectId,
   });
 
   @override
-  State<ExtraWorkRequestScreen> createState() => _ExtraWorkRequestScreenState();
+  State<DeductionWorkRequestScreen> createState() =>
+      _DeductionWorkRequestScreenState();
 }
 
-class _ExtraWorkRequestScreenState extends State<ExtraWorkRequestScreen> {
+class _DeductionWorkRequestScreenState
+    extends State<DeductionWorkRequestScreen> {
   late String effectiveProjectId;
 
   bool isInitialized = false;
@@ -31,7 +31,6 @@ class _ExtraWorkRequestScreenState extends State<ExtraWorkRequestScreen> {
   @override
   void initState() {
     super.initState();
-
     effectiveProjectId = widget.projectId;
   }
 
@@ -44,19 +43,14 @@ class _ExtraWorkRequestScreenState extends State<ExtraWorkRequestScreen> {
 
       final args = ModalRoute.of(context)?.settings.arguments;
 
-      // ----------------------------------------------------------
-      // Route arguments
-      // ----------------------------------------------------------
-
+      // Handle route arguments if passed via named route
       if (args is Map<String, dynamic>) {
         final argProjectId = args["project_id"]?.toString();
-
         if (argProjectId != null && argProjectId.isNotEmpty) {
           effectiveProjectId = argProjectId;
         }
       } else if (args is Map<String, String>) {
         final argProjectId = args["project_id"];
-
         if (argProjectId != null && argProjectId.isNotEmpty) {
           effectiveProjectId = argProjectId;
         }
@@ -65,17 +59,14 @@ class _ExtraWorkRequestScreenState extends State<ExtraWorkRequestScreen> {
       }
 
       print(
-        "EXTRA WORK EFFECTIVE PROJECT ID: $effectiveProjectId",
+        "DEDUCTION WORK EFFECTIVE PROJECT ID: $effectiveProjectId",
       );
 
-      // ----------------------------------------------------------
-      // Load Extra Work Requests
-      // ----------------------------------------------------------
-
+      // Load Deduction Work Requests
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
 
-        context.read<ExtraWorkRequestCubit>().getExtraWorkRequests(
+        context.read<DeductionWorkRequestCubit>().getDeductionWorkRequests(
               projectId: effectiveProjectId,
             );
       });
@@ -88,30 +79,30 @@ class _ExtraWorkRequestScreenState extends State<ExtraWorkRequestScreen> {
 
   void _openAddRequestDialog() {
     print(
-      "========== OPEN ADD DIALOG ==========",
+      "========== OPEN DEDUCTION ADD DIALOG ==========",
     );
     print(
       "PROJECT ID -> DIALOG : $effectiveProjectId",
     );
     print(
-      "=====================================",
+      "===============================================",
     );
 
-    final cubit = context.read<ExtraWorkRequestCubit>();
+    final cubit = context.read<DeductionWorkRequestCubit>();
 
     showDialog(
       context: context,
       builder: (_) {
         return BlocProvider.value(
           value: cubit,
-          child: ExtraWorkRequestFormDialog(
+          child: DeductionWorkRequestFormDialog(
             projectId: effectiveProjectId,
           ),
         );
       },
     ).then((result) {
       if (result == true) {
-        cubit.getExtraWorkRequests(
+        cubit.getDeductionWorkRequests(
           projectId: effectiveProjectId,
         );
       }
@@ -130,7 +121,6 @@ class _ExtraWorkRequestScreenState extends State<ExtraWorkRequestScreen> {
       // ========================================================
       // APP BAR
       // ========================================================
-
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(
           MediaQuery.of(context).size.height * 0.2,
@@ -160,10 +150,7 @@ class _ExtraWorkRequestScreenState extends State<ExtraWorkRequestScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // ------------------------------------------------
-                // TITLE
-                // ------------------------------------------------
-
+                // Title
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -178,7 +165,7 @@ class _ExtraWorkRequestScreenState extends State<ExtraWorkRequestScreen> {
                     ),
                     const SizedBox(width: 10),
                     const Text(
-                      "Extra Work Request",
+                      "Deduction Work Request",
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -190,10 +177,7 @@ class _ExtraWorkRequestScreenState extends State<ExtraWorkRequestScreen> {
                   ],
                 ),
 
-                // ------------------------------------------------
-                // ADD BUTTON
-                // ------------------------------------------------
-
+                // Add Button
                 InkWell(
                   onTap: _openAddRequestDialog,
                   borderRadius: BorderRadius.circular(20),
@@ -215,24 +199,17 @@ class _ExtraWorkRequestScreenState extends State<ExtraWorkRequestScreen> {
       // ========================================================
       // BODY
       // ========================================================
-
-      body: BlocBuilder<ExtraWorkRequestCubit, ExtraWorkRequestState>(
+      body: BlocBuilder<DeductionWorkRequestCubit, DeductionWorkRequestState>(
         builder: (context, state) {
-          // ----------------------------------------------------
-          // LOADING
-          // ----------------------------------------------------
-
-          if (state is ExtraWorkRequestLoading) {
+          // Loading
+          if (state is DeductionWorkRequestLoading) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           }
 
-          // ----------------------------------------------------
-          // ERROR
-          // ----------------------------------------------------
-
-          if (state is ExtraWorkRequestError) {
+          // Error
+          if (state is DeductionWorkRequestError) {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(24.0),
@@ -246,10 +223,7 @@ class _ExtraWorkRequestScreenState extends State<ExtraWorkRequestScreen> {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      state.message.replaceAll(
-                        "Exception: ",
-                        "",
-                      ),
+                      state.message.replaceAll("Exception: ", ""),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.grey.shade700,
@@ -264,8 +238,8 @@ class _ExtraWorkRequestScreenState extends State<ExtraWorkRequestScreen> {
                       ),
                       onPressed: () {
                         context
-                            .read<ExtraWorkRequestCubit>()
-                            .getExtraWorkRequests(
+                            .read<DeductionWorkRequestCubit>()
+                            .getDeductionWorkRequests(
                               projectId: effectiveProjectId,
                             );
                       },
@@ -281,17 +255,11 @@ class _ExtraWorkRequestScreenState extends State<ExtraWorkRequestScreen> {
             );
           }
 
-          // ----------------------------------------------------
-          // LOADED
-          // ----------------------------------------------------
-
-          if (state is ExtraWorkRequestLoaded) {
+          // Loaded
+          if (state is DeductionWorkRequestLoaded) {
             final requests = state.response.data;
 
-            // --------------------------------------------------
-            // EMPTY
-            // --------------------------------------------------
-
+            // Empty
             if (requests.isEmpty) {
               return Center(
                 child: Column(
@@ -304,7 +272,7 @@ class _ExtraWorkRequestScreenState extends State<ExtraWorkRequestScreen> {
                     ),
                     const SizedBox(height: 12),
                     const Text(
-                      "No Extra work requests found",
+                      "No Deduction work requests found",
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey,
@@ -317,9 +285,7 @@ class _ExtraWorkRequestScreenState extends State<ExtraWorkRequestScreen> {
                         backgroundColor: AppColors.primaryColor,
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            10,
-                          ),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
                       onPressed: _openAddRequestDialog,
@@ -328,7 +294,7 @@ class _ExtraWorkRequestScreenState extends State<ExtraWorkRequestScreen> {
                         size: 18,
                       ),
                       label: const Text(
-                        "Create Extra Work Request",
+                        "Create Deduction Work Request",
                       ),
                     ),
                   ],
@@ -336,34 +302,24 @@ class _ExtraWorkRequestScreenState extends State<ExtraWorkRequestScreen> {
               );
             }
 
-            // --------------------------------------------------
-            // REQUEST LIST
-            // --------------------------------------------------
-
+            // Request List
             return RefreshIndicator(
               onRefresh: () async {
                 await context
-                    .read<ExtraWorkRequestCubit>()
-                    .getExtraWorkRequests(
+                    .read<DeductionWorkRequestCubit>()
+                    .getDeductionWorkRequests(
                       projectId: effectiveProjectId,
                     );
               },
               child: ListView.separated(
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(
-                  16,
-                  16,
-                  16,
-                  16,
-                ),
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
                 itemCount: requests.length,
                 separatorBuilder: (context, index) {
-                  return const SizedBox(
-                    height: 12,
-                  );
+                  return const SizedBox(height: 12);
                 },
                 itemBuilder: (context, index) {
-                  return ExtraWorkRequestCard(
+                  return DeductionWorkRequestCard(
                     item: requests[index],
                     projectId: effectiveProjectId,
                   );

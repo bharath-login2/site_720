@@ -1,20 +1,20 @@
 import 'dart:convert';
 
-class SaveDeductionWorkRequestResponse {
+class SaveExtraWorkRequestResponse {
   final dynamic data;
   final bool status;
   final String message;
 
-  SaveDeductionWorkRequestResponse({
+  SaveExtraWorkRequestResponse({
     this.data,
     required this.status,
     required this.message,
   });
 
-  factory SaveDeductionWorkRequestResponse.fromJson(
+  factory SaveExtraWorkRequestResponse.fromJson(
     Map<String, dynamic> json,
   ) {
-    return SaveDeductionWorkRequestResponse(
+    return SaveExtraWorkRequestResponse(
       data: json['data'],
       status: json['status'] == true ||
           json['status'] == 'true' ||
@@ -32,32 +32,32 @@ class SaveDeductionWorkRequestResponse {
   }
 }
 
-class DeductionWorkRequestListResponse {
+class ExtraWorkRequestListResponse {
   final bool status;
   final String message;
-  final List<DeductionWorkRequestModel> data;
+  final List<ExtraWorkRequestModel> data;
 
-  DeductionWorkRequestListResponse({
+  ExtraWorkRequestListResponse({
     required this.status,
     required this.message,
     required this.data,
   });
 
-  factory DeductionWorkRequestListResponse.fromJson(
+  factory ExtraWorkRequestListResponse.fromJson(
     Map<String, dynamic> json,
   ) {
-    List<DeductionWorkRequestModel> itemsList = [];
+    List<ExtraWorkRequestModel> itemsList = [];
 
     if (json['data'] is List) {
       itemsList = (json['data'] as List)
           .whereType<Map<String, dynamic>>()
           .map(
-            (item) => DeductionWorkRequestModel.fromJson(item),
+            (item) => ExtraWorkRequestModel.fromJson(item),
           )
           .toList();
     }
 
-    return DeductionWorkRequestListResponse(
+    return ExtraWorkRequestListResponse(
       status: json['status'] == true ||
           json['status'] == 'true' ||
           json['status'] == 1,
@@ -75,14 +75,14 @@ class DeductionWorkRequestListResponse {
   }
 }
 
-class DeductionWorkItem {
+class ExtraWorkItem {
   String id;
   String itemName;
   String qty;
   String remarks;
   String isApproved;
 
-  DeductionWorkItem({
+  ExtraWorkItem({
     this.id = '',
     required this.itemName,
     required this.qty,
@@ -90,21 +90,12 @@ class DeductionWorkItem {
     this.isApproved = 'N',
   });
 
-  factory DeductionWorkItem.fromJson(Map<String, dynamic> json) {
-    return DeductionWorkItem(
+  factory ExtraWorkItem.fromJson(Map<String, dynamic> json) {
+    return ExtraWorkItem(
       id: json['id']?.toString() ?? '',
-      itemName: json['item_name']?.toString() ??
-          json['itemName']?.toString() ??
-          json['work']?.toString() ??
-          '',
-      qty: json['qty']?.toString() ??
-          json['quantity']?.toString() ??
-          json['amount']?.toString() ??
-          '',
-      remarks: json['remarks']?.toString() ??
-          json['remark']?.toString() ??
-          json['description']?.toString() ??
-          '',
+      itemName: json['item_name']?.toString() ?? '',
+      qty: json['qty']?.toString() ?? '',
+      remarks: json['remarks']?.toString() ?? '',
       isApproved: json['is_approved']?.toString() ?? 'N',
     );
   }
@@ -120,7 +111,7 @@ class DeductionWorkItem {
   }
 }
 
-class DeductionWorkRequestModel {
+class ExtraWorkRequestModel {
   final String id;
   final String projectId;
   final String projectName;
@@ -134,9 +125,9 @@ class DeductionWorkRequestModel {
   final String qty;
   final String remarks;
   final String isApproved;
-  final List<DeductionWorkItem> items;
+  final List<ExtraWorkItem> items;
 
-  DeductionWorkRequestModel({
+  ExtraWorkRequestModel({
     required this.id,
     required this.projectId,
     required this.projectName,
@@ -153,10 +144,10 @@ class DeductionWorkRequestModel {
     required this.items,
   });
 
-  factory DeductionWorkRequestModel.fromJson(
+  factory ExtraWorkRequestModel.fromJson(
     Map<String, dynamic> json,
   ) {
-    List<DeductionWorkItem> parsedItems = [];
+    List<ExtraWorkItem> parsedItems = [];
 
     final modelId = json['id']?.toString() ??
         json['request_id']?.toString() ??
@@ -165,7 +156,7 @@ class DeductionWorkRequestModel {
 
     final approvalStatus = json['is_approved']?.toString() ?? 'N';
 
-    // Handle request_data safely (String, List, null, Map)
+    // request_data
     if (json['request_data'] != null) {
       if (json['request_data'] is String) {
         try {
@@ -173,17 +164,21 @@ class DeductionWorkRequestModel {
 
           if (decoded is List) {
             parsedItems = decoded.whereType<Map<String, dynamic>>().map((e) {
-              final item = DeductionWorkItem.fromJson(e);
+              final item = ExtraWorkItem.fromJson(e);
+
               if (item.id.isEmpty) {
                 item.id = modelId;
               }
+
               return item;
             }).toList();
           } else if (decoded is Map<String, dynamic>) {
-            final item = DeductionWorkItem.fromJson(decoded);
+            final item = ExtraWorkItem.fromJson(decoded);
+
             if (item.id.isEmpty) {
               item.id = modelId;
             }
+
             parsedItems = [item];
           }
         } catch (_) {}
@@ -191,20 +186,27 @@ class DeductionWorkRequestModel {
         parsedItems = (json['request_data'] as List)
             .whereType<Map<String, dynamic>>()
             .map((e) {
-          final item = DeductionWorkItem.fromJson(e);
+          final item = ExtraWorkItem.fromJson(e);
+
           if (item.id.isEmpty) {
             item.id = modelId;
           }
+
           return item;
         }).toList();
       }
-    } else if (json['items'] is List) {
+    }
+
+    // items
+    else if (json['items'] is List) {
       parsedItems =
           (json['items'] as List).whereType<Map<String, dynamic>>().map((e) {
-        final item = DeductionWorkItem.fromJson(e);
+        final item = ExtraWorkItem.fromJson(e);
+
         if (item.id.isEmpty) {
           item.id = modelId;
         }
+
         return item;
       }).toList();
     }
@@ -224,12 +226,24 @@ class DeductionWorkRequestModel {
         json['description']?.toString() ??
         '';
 
+    // Your current LIST API returns one item directly.
+    //
+    // Example:
+    // {
+    //   "id": "2569",
+    //   "item_name": "hi",
+    //   "qty": "2",
+    //   "remarks": "qq",
+    //   "is_approved": "N"
+    // }
+    //
+    // Therefore create an ExtraWorkItem from that object.
     if (parsedItems.isEmpty &&
         (singleItemName.isNotEmpty ||
             singleQty.isNotEmpty ||
             singleRemarks.isNotEmpty)) {
       parsedItems.add(
-        DeductionWorkItem(
+        ExtraWorkItem(
           id: modelId,
           itemName: singleItemName,
           qty: singleQty,
@@ -239,28 +253,42 @@ class DeductionWorkRequestModel {
       );
     }
 
-    return DeductionWorkRequestModel(
+    return ExtraWorkRequestModel(
       id: modelId,
+
       projectId: json['project_id']?.toString() ?? '',
+
       projectName: json['project_name']?.toString() ??
           json['projectName']?.toString() ??
           '',
+
       clientId: json['client_id']?.toString() ?? '',
-      status: json['status']?.toString() ?? '',
+
+      status: json['status']?.toString() ?? 'Pending',
+
       createdAt:
           json['created_at']?.toString() ?? json['date']?.toString() ?? '',
+
       createdBy: json['created_by_name']?.toString() ??
           json['created_by']?.toString() ??
           json['creator_name']?.toString() ??
           '',
+
       updatedAt: json['updated_at']?.toString() ?? '',
+
       updatedBy: json['updated_by_name']?.toString() ??
           json['updated_by']?.toString() ??
           '',
+
       itemName: singleItemName,
+
       qty: singleQty,
+
       remarks: singleRemarks,
+
+      // IMPORTANT
       isApproved: approvalStatus,
+
       items: parsedItems,
     );
   }

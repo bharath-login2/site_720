@@ -22,9 +22,9 @@
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-saveSharedPreference(String key, String value) async {
+Future<void> saveSharedPreference(String key, String value) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setString(key, value);
+  await prefs.setString(key, value);
 }
 
 getSharedPreference(String key) async {

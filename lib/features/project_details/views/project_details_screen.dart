@@ -736,8 +736,8 @@ class ProjectDetails extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(
-                              height: 20,
-                            ),
+                              height: 40,
+                            ),  
                           ],
                         ),
                       ),

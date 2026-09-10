@@ -8,6 +8,7 @@ import '../../../core/constants/routes.dart';
 import '../../../core/utilities/shared_preferences.dart';
 import '../../../core/widgets/connectivity_dialog.dart';
 import '../cubit/splash_cubit.dart';
+import '../../../core/utilities/permission_manager.dart';
 
 class Splash extends StatelessWidget {
   const Splash({super.key});
@@ -22,6 +23,7 @@ class Splash extends StatelessWidget {
         if (token == null) {
           Navigator.pushReplacementNamed(context, AppRoutes.login);
         } else {
+          await PermissionManager.loadPermissions();
           Navigator.pushReplacementNamed(context, AppRoutes.home);
         }
       } else {

@@ -425,274 +425,274 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               MediaQuery.of(context).size.height * .4,
                               MediaQuery.of(context).size.height * .9),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 16.0,
-                        right: 16.0,
-                        top: 25,
-                      ),
-                      child: state is DashboardSuccess
-                          ? Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: AppColors.backgroundColor,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.8),
-                                    blurRadius: 3,
-                                    offset: const Offset(0, 3),
-                                  ),
-                                ],
-                              ),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    decoration: const BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(5),
-                                        topRight: Radius.circular(5),
-                                      ),
-                                      color: AppColors.dashContainer,
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0,
-                                        vertical: 12,
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              const Text(
-                                                "Expense",
-                                                style: TextStyle(
-                                                  fontSize: 13,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(
+                    //     left: 16.0,
+                    //     right: 16.0,
+                    //     top: 25,
+                    //   ),
+                    //   child: state is DashboardSuccess
+                    //       ? Container(
+                    //           decoration: BoxDecoration(
+                    //             borderRadius: BorderRadius.circular(5),
+                    //             color: AppColors.backgroundColor,
+                    //             boxShadow: [
+                    //               BoxShadow(
+                    //                 color: Colors.grey.withOpacity(0.8),
+                    //                 blurRadius: 3,
+                    //                 offset: const Offset(0, 3),
+                    //               ),
+                    //             ],
+                    //           ),
+                    //           child: Column(
+                    //             children: [
+                    //               Container(
+                    //                 decoration: const BoxDecoration(
+                    //                   borderRadius: BorderRadius.only(
+                    //                     topLeft: Radius.circular(5),
+                    //                     topRight: Radius.circular(5),
+                    //                   ),
+                    //                   color: AppColors.dashContainer,
+                    //                 ),
+                    //                 child: Padding(
+                    //                   padding: const EdgeInsets.symmetric(
+                    //                     horizontal: 8.0,
+                    //                     vertical: 12,
+                    //                   ),
+                    //                   child: Column(
+                    //                     crossAxisAlignment:
+                    //                         CrossAxisAlignment.start,
+                    //                     children: [
+                    //                       Row(
+                    //                         mainAxisAlignment:
+                    //                             MainAxisAlignment.spaceBetween,
+                    //                         children: [
+                    //                           const Text(
+                    //                             "Expense",
+                    //                             style: TextStyle(
+                    //                               fontSize: 13,
+                    //                               fontWeight: FontWeight.bold,
+                    //                             ),
+                    //                           ),
 
-                                              /// Calendar Icon
-                                              // InkWell(
-                                              //   onTap: () {
-                                              //     final dashboardCubit =
-                                              //         BlocProvider.of<
-                                              //                 DashboardCubit>(
-                                              //             context);
+                    //                           /// Calendar Icon
+                    //                           // InkWell(
+                    //                           //   onTap: () {
+                    //                           //     final dashboardCubit =
+                    //                           //         BlocProvider.of<
+                    //                           //                 DashboardCubit>(
+                    //                           //             context);
 
-                                              //     showDateRangeExpenseDialog(
-                                              //         context, dashboardCubit);
-                                              //   },
-                                              //   child: Container(
-                                              //     width: 30,
-                                              //     height: 30,
-                                              //     decoration: BoxDecoration(
-                                              //       borderRadius:
-                                              //           BorderRadius.circular(
-                                              //               5),
-                                              //       color:
-                                              //           AppColors.primaryColor,
-                                              //       boxShadow: [
-                                              //         BoxShadow(
-                                              //           color: Colors.grey
-                                              //               .withOpacity(0.8),
-                                              //           blurRadius: 6,
-                                              //           offset:
-                                              //               const Offset(3, 3),
-                                              //         ),
-                                              //       ],
-                                              //     ),
-                                              //     alignment: Alignment.center,
-                                              //     child: const Icon(
-                                              //       Icons.calendar_month,
-                                              //       color: AppColors.lightA,
-                                              //       size: 16,
-                                              //     ),
-                                              //   ),
-                                              // ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  state.response.data.expenseData.isNotEmpty
-                                      ? Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 8.0, vertical: 16),
-                                          child: SizedBox(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                .23,
-                                            child: ListView.builder(
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                padding: EdgeInsets.zero,
-                                                shrinkWrap: true,
-                                                itemCount: state.response.data
-                                                    .expenseData.length,
-                                                itemBuilder: (context, i) {
-                                                  return Padding(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        vertical: 6.0,
-                                                        horizontal: 5.0),
-                                                    child: InkWell(
-                                                      onTap: () {
-                                                        // connStatus = true;
-                                                        Navigator.pushNamed(
-                                                            context,
-                                                            AppRoutes.expense,
-                                                            arguments: {
-                                                              "id": state
-                                                                  .response
-                                                                  .data
-                                                                  .expenseData[
-                                                                      i]
-                                                                  .projectId,
-                                                              "expenseid": state
-                                                                  .response
-                                                                  .data
-                                                                  .expenseData[
-                                                                      i]
-                                                                  .expenseHeadId,
-                                                              "type": state
-                                                                  .response
-                                                                  .data
-                                                                  .expenseData[
-                                                                      i]
-                                                                  .expenseName
-                                                            });
-                                                      },
-                                                      child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .end,
-                                                        children: [
-                                                          Text(
-                                                            "${state.response.data.expenseData[i].percentage}%",
-                                                            style: const TextStyle(
-                                                                color: Colors
-                                                                    .black,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontSize: 14),
-                                                          ),
-                                                          Container(
-                                                            width: 60,
-                                                            height: (double
-                                                                        .tryParse(
-                                                                      state
-                                                                          .response
-                                                                          .data
-                                                                          .expenseData[
-                                                                              i]
-                                                                          .percentage
-                                                                          .toString(),
-                                                                    ) ??
-                                                                    0)
-                                                                .clamp(20, 120),
-                                                            decoration: BoxDecoration(
-                                                                boxShadow: [
-                                                                  BoxShadow(
-                                                                    color: Colors
-                                                                        .grey
-                                                                        .withOpacity(
-                                                                            0.8),
-                                                                    blurRadius:
-                                                                        3,
-                                                                    offset:
-                                                                        const Offset(
-                                                                            3,
-                                                                            3),
-                                                                  ),
-                                                                ],
-                                                                color: AppColors
-                                                                    .primaryColor,
-                                                                borderRadius:
-                                                                    const BorderRadius
-                                                                        .all(
-                                                                        Radius.circular(
-                                                                            8))),
-                                                            child: Align(
-                                                              alignment:
-                                                                  Alignment
-                                                                      .center,
-                                                              child: Text(
-                                                                state
-                                                                    .response
-                                                                    .data
-                                                                    .expenseData[
-                                                                        i]
-                                                                    .count,
-                                                                style: const TextStyle(
-                                                                    color: Colors
-                                                                        .white,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    fontSize:
-                                                                        14),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          const SizedBox(
-                                                            height: 5,
-                                                          ),
-                                                          SizedBox(
-                                                            width: 80,
-                                                            child: Text(
-                                                              state
-                                                                  .response
-                                                                  .data
-                                                                  .expenseData[
-                                                                      i]
-                                                                  .expenseName,
-                                                              style: const TextStyle(
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
-                                                                  fontSize: 10),
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  );
-                                                }),
-                                          ),
-                                        )
-                                      : const Padding(
-                                          padding: EdgeInsets.all(25.0),
-                                          child: Text(
-                                            "No Expenses !",
-                                            style: TextStyle(
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.bold,
-                                              color: AppColors.primaryColor,
-                                            ),
-                                          ),
-                                        )
-                                ],
-                              ),
-                            )
-                          : shimmerContainer(
-                              MediaQuery.of(context).size.height * .4,
-                              MediaQuery.of(context).size.height * .9),
-                    ),
+                    //                           //     showDateRangeExpenseDialog(
+                    //                           //         context, dashboardCubit);
+                    //                           //   },
+                    //                           //   child: Container(
+                    //                           //     width: 30,
+                    //                           //     height: 30,
+                    //                           //     decoration: BoxDecoration(
+                    //                           //       borderRadius:
+                    //                           //           BorderRadius.circular(
+                    //                           //               5),
+                    //                           //       color:
+                    //                           //           AppColors.primaryColor,
+                    //                           //       boxShadow: [
+                    //                           //         BoxShadow(
+                    //                           //           color: Colors.grey
+                    //                           //               .withOpacity(0.8),
+                    //                           //           blurRadius: 6,
+                    //                           //           offset:
+                    //                           //               const Offset(3, 3),
+                    //                           //         ),
+                    //                           //       ],
+                    //                           //     ),
+                    //                           //     alignment: Alignment.center,
+                    //                           //     child: const Icon(
+                    //                           //       Icons.calendar_month,
+                    //                           //       color: AppColors.lightA,
+                    //                           //       size: 16,
+                    //                           //     ),
+                    //                           //   ),
+                    //                           // ),
+                    //                         ],
+                    //                       ),
+                    //                     ],
+                    //                   ),
+                    //                 ),
+                    //               ),
+                    //               state.response.data.expenseData.isNotEmpty
+                    //                   ? Padding(
+                    //                       padding: const EdgeInsets.symmetric(
+                    //                           horizontal: 8.0, vertical: 16),
+                    //                       child: SizedBox(
+                    //                         height: MediaQuery.of(context)
+                    //                                 .size
+                    //                                 .height *
+                    //                             .23,
+                    //                         child: ListView.builder(
+                    //                             scrollDirection:
+                    //                                 Axis.horizontal,
+                    //                             padding: EdgeInsets.zero,
+                    //                             shrinkWrap: true,
+                    //                             itemCount: state.response.data
+                    //                                 .expenseData.length,
+                    //                             itemBuilder: (context, i) {
+                    //                               return Padding(
+                    //                                 padding: const EdgeInsets
+                    //                                     .symmetric(
+                    //                                     vertical: 6.0,
+                    //                                     horizontal: 5.0),
+                    //                                 child: InkWell(
+                    //                                   onTap: () {
+                    //                                     // connStatus = true;
+                    //                                     Navigator.pushNamed(
+                    //                                         context,
+                    //                                         AppRoutes.expense,
+                    //                                         arguments: {
+                    //                                           "id": state
+                    //                                               .response
+                    //                                               .data
+                    //                                               .expenseData[
+                    //                                                   i]
+                    //                                               .projectId,
+                    //                                           "expenseid": state
+                    //                                               .response
+                    //                                               .data
+                    //                                               .expenseData[
+                    //                                                   i]
+                    //                                               .expenseHeadId,
+                    //                                           "type": state
+                    //                                               .response
+                    //                                               .data
+                    //                                               .expenseData[
+                    //                                                   i]
+                    //                                               .expenseName
+                    //                                         });
+                    //                                   },
+                    //                                   child: Column(
+                    //                                     mainAxisAlignment:
+                    //                                         MainAxisAlignment
+                    //                                             .end,
+                    //                                     children: [
+                    //                                       Text(
+                    //                                         "${state.response.data.expenseData[i].percentage}%",
+                    //                                         style: const TextStyle(
+                    //                                             color: Colors
+                    //                                                 .black,
+                    //                                             fontWeight:
+                    //                                                 FontWeight
+                    //                                                     .bold,
+                    //                                             fontSize: 14),
+                    //                                       ),
+                    //                                       Container(
+                    //                                         width: 60,
+                    //                                         height: (double
+                    //                                                     .tryParse(
+                    //                                                   state
+                    //                                                       .response
+                    //                                                       .data
+                    //                                                       .expenseData[
+                    //                                                           i]
+                    //                                                       .percentage
+                    //                                                       .toString(),
+                    //                                                 ) ??
+                    //                                                 0)
+                    //                                             .clamp(20, 120),
+                    //                                         decoration: BoxDecoration(
+                    //                                             boxShadow: [
+                    //                                               BoxShadow(
+                    //                                                 color: Colors
+                    //                                                     .grey
+                    //                                                     .withOpacity(
+                    //                                                         0.8),
+                    //                                                 blurRadius:
+                    //                                                     3,
+                    //                                                 offset:
+                    //                                                     const Offset(
+                    //                                                         3,
+                    //                                                         3),
+                    //                                               ),
+                    //                                             ],
+                    //                                             color: AppColors
+                    //                                                 .primaryColor,
+                    //                                             borderRadius:
+                    //                                                 const BorderRadius
+                    //                                                     .all(
+                    //                                                     Radius.circular(
+                    //                                                         8))),
+                    //                                         child: Align(
+                    //                                           alignment:
+                    //                                               Alignment
+                    //                                                   .center,
+                    //                                           child: Text(
+                    //                                             state
+                    //                                                 .response
+                    //                                                 .data
+                    //                                                 .expenseData[
+                    //                                                     i]
+                    //                                                 .count,
+                    //                                             style: const TextStyle(
+                    //                                                 color: Colors
+                    //                                                     .white,
+                    //                                                 fontWeight:
+                    //                                                     FontWeight
+                    //                                                         .bold,
+                    //                                                 fontSize:
+                    //                                                     14),
+                    //                                           ),
+                    //                                         ),
+                    //                                       ),
+                    //                                       const SizedBox(
+                    //                                         height: 5,
+                    //                                       ),
+                    //                                       SizedBox(
+                    //                                         width: 80,
+                    //                                         child: Text(
+                    //                                           state
+                    //                                               .response
+                    //                                               .data
+                    //                                               .expenseData[
+                    //                                                   i]
+                    //                                               .expenseName,
+                    //                                           style: const TextStyle(
+                    //                                               color: Colors
+                    //                                                   .black,
+                    //                                               fontWeight:
+                    //                                                   FontWeight
+                    //                                                       .bold,
+                    //                                               fontSize: 10),
+                    //                                           overflow:
+                    //                                               TextOverflow
+                    //                                                   .ellipsis,
+                    //                                           textAlign:
+                    //                                               TextAlign
+                    //                                                   .center,
+                    //                                         ),
+                    //                                       ),
+                    //                                     ],
+                    //                                   ),
+                    //                                 ),
+                    //                               );
+                    //                             }),
+                    //                       ),
+                    //                     )
+                    //                   : const Padding(
+                    //                       padding: EdgeInsets.all(25.0),
+                    //                       child: Text(
+                    //                         "No Expenses !",
+                    //                         style: TextStyle(
+                    //                           fontSize: 13,
+                    //                           fontWeight: FontWeight.bold,
+                    //                           color: AppColors.primaryColor,
+                    //                         ),
+                    //                       ),
+                    //                     )
+                    //             ],
+                    //           ),
+                    //         )
+                    //       : shimmerContainer(
+                    //           MediaQuery.of(context).size.height * .4,
+                    //           MediaQuery.of(context).size.height * .9),
+                    // ),
                     Padding(
                       padding: const EdgeInsets.only(
                           left: 16.0, right: 16.0, top: 25),

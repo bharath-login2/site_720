@@ -68,21 +68,21 @@ class WorkDetails {
     });
 
     factory WorkDetails.fromJson(Map<String, dynamic> json) => WorkDetails(
-        id: json["id"]??"",
-        clientId: json["client_id"]??"",
-        isWorking: json["is_working"]??"",
-        workDate: json["work_date"]??"",
-        description: json["description"]??"",
-        workDay: json["work_day"]??"",
-        workMonth: json["work_month"]??"",
-        workYear: json["work_year"]??"",
-        laboursNo: json["labours_no"]??"",
-        workStatusId: json["work_status_id"]??"",
-        workStatus: json["work_status"]??"",
-         createdBy: json["created_by"]??"",
-         stageName: json["stage_name"]??"",
-          stageId: json["stage_id"]??"",
-        workMonthName: json["work_month_name"]??"",
+        id: json["id"]?.toString() ?? "",
+        clientId: json["client_id"]?.toString() ?? "",
+        isWorking: json["is_working"]?.toString() ?? "",
+        workDate: json["work_date"]?.toString() ?? "",
+        description: json["description"]?.toString() ?? "",
+        workDay: json["work_day"]?.toString() ?? "",
+        workMonth: json["work_month"]?.toString() ?? "",
+        workYear: json["work_year"]?.toString() ?? "",
+        laboursNo: json["labours_no"]?.toString() ?? "",
+        workStatusId: json["work_status_id"]?.toString() ?? "",
+        workStatus: json["work_status"]?.toString() ?? "",
+        createdBy: json["created_by"]?.toString() ?? "",
+        stageName: json["stage_name"]?.toString() ?? "",
+        stageId: json["stage_id"]?.toString() ?? "",
+        workMonthName: json["work_month_name"]?.toString() ?? "",
     );
 
     Map<String, dynamic> toJson() => {

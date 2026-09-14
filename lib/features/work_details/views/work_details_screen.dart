@@ -34,10 +34,11 @@ class WorkDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final args =
-        ModalRoute.of(context)!.settings.arguments as Map<String, String>;
-    String id = args["id"]!;
-    String clientId = args["client_id"]!;
+    final rawArgs = ModalRoute.of(context)?.settings.arguments;
+    final Map<String, dynamic> args =
+        rawArgs is Map ? Map<String, dynamic>.from(rawArgs) : {};
+    String id = args["id"]?.toString() ?? args["project_id"]?.toString() ?? "";
+    String clientId = args["client_id"]?.toString() ?? "";
     return BlocProvider(
       create: (context) => WorkDetailsCubit(id),
       child: MultiBlocListener(
@@ -138,6 +139,11 @@ class WorkDetailsScreen extends StatelessWidget {
                           onPressed: () {
                             date.text =
                                 DateFormat('dd-MM-yyyy').format(DateTime.now());
+                            selectedStatus = null;
+                            selectedStage = null;
+                            noOfLabours.clear();
+                            description.clear();
+                            isWorking = 'Yes';
 
                             if (issuesList.isNotEmpty) {
                               workDialog(
@@ -154,6 +160,7 @@ class WorkDetailsScreen extends StatelessWidget {
                                 noOfLabours.clear();
                                 description.clear();
                                 selectedStatus = null;
+                                selectedStage = null;
                                 isWorking = 'Yes';
                               });
                             } else {
@@ -489,29 +496,115 @@ class WorkDetailsScreen extends StatelessWidget {
                                                           children: [
                                                             InkWell(
                                                               onTap: () {
-                                                                isWorking = workList[
-                                                                        index]
-                                                                    .isWorking;
+                                                                isWorking = workList[index]
+                                                                        .isWorking
+                                                                        .isNotEmpty
+                                                                    ? workList[index]
+                                                                        .isWorking
+                                                                    : 'Yes';
                                                                 date.text =
-                                                                    workList[
-                                                                            index]
+                                                                    workList[index]
                                                                         .workDate;
-                                                                noOfLabours
-                                                                    .text = workList[
-                                                                        index]
-                                                                    .laboursNo;
-                                                                selectedStatus =
-                                                                    workList[
-                                                                            index]
-                                                                        .workStatusId;
-                                                                selectedStage =
-                                                                    workList[
-                                                                            index]
-                                                                        .stageId;
-                                                                description
-                                                                    .text = workList[
-                                                                        index]
-                                                                    .description;
+                                                                noOfLabours.text =
+                                                                    workList[index]
+                                                                        .laboursNo;
+                                                                description.text =
+                                                                    workList[index]
+                                                                        .description;
+
+                                                                String targetStatusId =
+                                                                    workList[index]
+                                                                        .workStatusId
+                                                                        .toString()
+                                                                        .trim();
+                                                                if (targetStatusId.isNotEmpty &&
+                                                                    targetStatusId != "0" &&
+                                                                    issuesList.any((e) =>
+                                                                        e.id.toString().trim() ==
+                                                                        targetStatusId)) {
+                                                                  selectedStatus =
+                                                                      targetStatusId;
+                                                                } else {
+                                                                  String targetStatusName =
+                                                                      workList[index]
+                                                                          .workStatus
+                                                                          .toString()
+                                                                          .trim();
+                                                                  var matchByName =
+                                                                      issuesList.firstWhere(
+                                                                    (e) =>
+                                                                        e.workStatus
+                                                                            .toString()
+                                                                            .trim()
+                                                                            .toLowerCase() ==
+                                                                        targetStatusName
+                                                                            .toLowerCase(),
+                                                                    orElse: () =>
+                                                                        WorkIssues(
+                                                                            id: "",
+                                                                            workStatus: ""),
+                                                                  );
+                                                                  if (matchByName.id
+                                                                          .toString()
+                                                                          .trim()
+                                                                          .isNotEmpty &&
+                                                                      matchByName.id
+                                                                              .toString()
+                                                                              .trim() !=
+                                                                          "0") {
+                                                                    selectedStatus =
+                                                                        matchByName.id
+                                                                            .toString()
+                                                                            .trim();
+                                                                  } else {
+                                                                    selectedStatus = null;
+                                                                  }
+                                                                }
+
+                                                                String targetStageId =
+                                                                    workList[index]
+                                                                        .stageId
+                                                                        .toString()
+                                                                        .trim();
+                                                                if (targetStageId.isNotEmpty &&
+                                                                    stageList.any((e) =>
+                                                                        e.stageId.toString().trim() ==
+                                                                        targetStageId)) {
+                                                                  selectedStage =
+                                                                      targetStageId;
+                                                                } else {
+                                                                  String targetStageName =
+                                                                      workList[index]
+                                                                          .stageName
+                                                                          .toString()
+                                                                          .trim();
+                                                                  var matchByName =
+                                                                      stageList.firstWhere(
+                                                                    (e) =>
+                                                                        e.stageName
+                                                                            .toString()
+                                                                            .trim()
+                                                                            .toLowerCase() ==
+                                                                        targetStageName
+                                                                            .toLowerCase(),
+                                                                    orElse: () =>
+                                                                        Workstage(
+                                                                            stageId: "",
+                                                                            stageName: ""),
+                                                                  );
+                                                                  if (matchByName.stageId
+                                                                      .toString()
+                                                                      .trim()
+                                                                      .isNotEmpty) {
+                                                                    selectedStage =
+                                                                        matchByName.stageId
+                                                                            .toString()
+                                                                            .trim();
+                                                                  } else {
+                                                                    selectedStage = null;
+                                                                  }
+                                                                }
+
                                                                 workDialog(
                                                                         context,
                                                                         cubit,
@@ -529,6 +622,8 @@ class WorkDetailsScreen extends StatelessWidget {
                                                                   description
                                                                       .clear();
                                                                   selectedStatus =
+                                                                      null;
+                                                                  selectedStage =
                                                                       null;
                                                                   isWorking =
                                                                       'Yes';
@@ -577,11 +672,17 @@ class WorkDetailsScreen extends StatelessWidget {
                                                                 deleteDialog(
                                                                     context,
                                                                     () {
+                                                                  String targetId =
+                                                                      workList[index]
+                                                                          .id
+                                                                          .toString();
+                                                                  workList.removeWhere(
+                                                                      (item) =>
+                                                                          item.id.toString() ==
+                                                                          targetId);
                                                                   cubit.deleteWorkDetails(
                                                                       id,
-                                                                      workList[
-                                                                              index]
-                                                                          .id);
+                                                                      targetId);
                                                                   Navigator.pop(
                                                                       context);
                                                                 });
@@ -653,265 +754,297 @@ class WorkDetailsScreen extends StatelessWidget {
     String type,
     String workId,
   ) async {
+    if (selectedStage != null) {
+      String stg = selectedStage!.toString().trim();
+      if (stg.isEmpty ||
+          !stagelist.any((data) => data.stageId.toString().trim() == stg)) {
+        selectedStage = null;
+      } else {
+        selectedStage = stg;
+      }
+    }
+    if (selectedStatus != null) {
+      String st = selectedStatus!.toString().trim();
+      if (st.isEmpty ||
+          st == "0" ||
+          !list.any((data) => data.id.toString().trim() == st)) {
+        selectedStatus = null;
+      } else {
+        selectedStatus = st;
+      }
+    }
+
     return showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          content: SizedBox(
-              height: 550,
-              child: SingleChildScrollView(
-                child: Form(
-                  key: formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 16.0, bottom: 25),
-                        child: Text(
-                          type == "add" ? "Add Work Details" : "Edit",
-                          style: const TextStyle(
-                            color: AppColors.primaryColor,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      const Text(
-                        "Are You Sure Today is Working?",
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.errorColor),
-                      ),
-                      Row(
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              content: SizedBox(
+                  height: 550,
+                  child: SingleChildScrollView(
+                    child: Form(
+                      key: formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Radio<String>(
-                            value: 'Yes',
-                            groupValue: isWorking,
-                            onChanged: (value) {
-                              isWorking = value!;
-                              (context as Element).markNeedsBuild();
-                            },
+                          Padding(
+                            padding: const EdgeInsets.only(top: 16.0, bottom: 25),
+                            child: Text(
+                              type == "add" ? "Add Work Details" : "Edit",
+                              style: const TextStyle(
+                                color: AppColors.primaryColor,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
-                          const Text("Yes"),
-                          Radio<String>(
-                            value: 'No',
-                            groupValue: isWorking,
-                            onChanged: (value) {
-                              isWorking = value!;
-                              (context as Element).markNeedsBuild();
-                            },
+                          const Text(
+                            "Are You Sure Today is Working?",
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.errorColor),
                           ),
-                          const Text("No"),
+                          Row(
+                            children: [
+                              Radio<String>(
+                                value: 'Yes',
+                                groupValue: isWorking,
+                                onChanged: (value) {
+                                  setDialogState(() {
+                                    isWorking = value!;
+                                  });
+                                },
+                              ),
+                              const Text("Yes"),
+                              Radio<String>(
+                                value: 'No',
+                                groupValue: isWorking,
+                                onChanged: (value) {
+                                  setDialogState(() {
+                                    isWorking = value!;
+                                  });
+                                },
+                              ),
+                              const Text("No"),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.95,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: DropdownButtonFormField<String>(
+                              value: selectedStage,
+                              items: stagelist.map((data) {
+                                return DropdownMenuItem<String>(
+                                  value: data.stageId.toString(),
+                                  child: Text(
+                                    data.stageName.toString(),
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                setDialogState(() {
+                                  selectedStage = value;
+                                });
+                              },
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return "Select a Stage";
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.all(10),
+                                labelText: 'Stages*',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                prefixIcon: const Icon(Icons.info),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.95,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: TextFormField(
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return "Enter Date";
+                                }
+                                return null;
+                              },
+                              onTap: () async {
+                                String? selectedDate = await selectDate(context);
+                                if (selectedDate != null) {
+                                  setDialogState(() {
+                                    date.text = selectedDate;
+                                  });
+                                }
+                              },
+                              readOnly: true,
+                              controller: date,
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.all(10),
+                                labelText: 'Date',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                prefixIcon: const Icon(Icons.calendar_today),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          if (isWorking == "Yes")
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.95,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: TextFormField(
+                                validator: (value) {
+                                  if (isWorking == "Yes") {
+                                    if (value == null || value.trim().isEmpty) {
+                                      return "Enter Number of Labours";
+                                    }
+                                    final parsed = int.tryParse(value.trim());
+                                    if (parsed == null || parsed <= 0) {
+                                      return "No of Labours must be greater than 0";
+                                    }
+                                  }
+                                  return null;
+                                },
+                                controller: noOfLabours,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.all(10),
+                                  labelText: 'No of Labours*',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  prefixIcon: const Icon(Icons.group),
+                                ),
+                              ),
+                            )
+                          else
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.95,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: DropdownButtonFormField<String>(
+                                value: selectedStatus,
+                                items: list.map((data) {
+                                  return DropdownMenuItem<String>(
+                                    value: data.id.toString(),
+                                    child: Text(
+                                      data.workStatus.toString(),
+                                    ),
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  setDialogState(() {
+                                    selectedStatus = value;
+                                  });
+                                },
+                                validator: (value) {
+                                  if (isWorking == "No") {
+                                    if (value == null || value.trim().isEmpty) {
+                                      return "Select a Status";
+                                    }
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.all(10),
+                                  labelText: 'Status*',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  prefixIcon: const Icon(Icons.info),
+                                ),
+                              ),
+                            ),
+                          const SizedBox(height: 12),
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.95,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: TextFormField(
+                              controller: description,
+                              keyboardType: TextInputType.text,
+                              maxLines: 3,
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.all(10),
+                                labelText: 'Description',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                prefixIcon: const Icon(Icons.text_fields),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          GestureDetector(
+                            onTap: () async {
+                              if (formKey.currentState!.validate()) {
+                                if (type == "add") {
+                                  cubit.addWorkDetails(
+                                      projectId,
+                                      clientId,
+                                      isWorking,
+                                      date.text,
+                                      noOfLabours.text,
+                                      selectedStatus ?? "",
+                                      selectedStage ?? "",
+                                      description.text);
+                                } else {
+                                  cubit.editWorkDetails(
+                                      projectId,
+                                      clientId,
+                                      isWorking,
+                                      date.text,
+                                      noOfLabours.text,
+                                      selectedStatus ?? "",
+                                      selectedStage ?? "",
+                                      description.text,
+                                      workId);
+                                }
+                                Navigator.pop(context);
+                                date.clear();
+                                noOfLabours.clear();
+                                description.clear();
+                                selectedStatus = null;
+                                selectedStage = null;
+                                isWorking = 'Yes';
+                              }
+                            },
+                            child: LargeButton(
+                                title: type == "add" ? "Add" : "Update"),
+                          ),
+                          Center(
+                            child: TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Close'),
+                            ),
+                          ),
                         ],
                       ),
-                      const SizedBox(height: 12),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.95,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: DropdownButtonFormField<String>(
-                          value: selectedStage,
-                          items: stagelist.map((data) {
-                            return DropdownMenuItem<String>(
-                              value: data.stageId.toString(),
-                              child: Text(
-                                data.stageName.toString(),
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            selectedStage = value;
-                          },
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.all(10),
-                            labelText: 'Stages*',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            prefixIcon: const Icon(Icons.info),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.95,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: TextFormField(
-                          validator: (value) {
-                            if (value == "") {
-                              return "Enter Date";
-                            }
-                            return null;
-                          },
-                          onTap: () async {
-                            String? selectedDate = await selectDate(context);
-                            if (selectedDate != null) {
-                              date.text = selectedDate;
-                              if (context.mounted) {}
-                            }
-                          },
-                          readOnly: true,
-                          controller: date,
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.all(10),
-                            labelText: 'Date',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            prefixIcon: const Icon(Icons.calendar_today),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      if (isWorking == "Yes")
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.95,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: TextFormField(
-                            validator: (value) {
-                              if (isWorking == "Yes") {
-                                if (value == null || value.trim().isEmpty) {
-                                  return "Enter Number of Labours";
-                                }
-                                final parsed = int.tryParse(value.trim());
-                                if (parsed == null || parsed <= 0) {
-                                  return "No of Labours must be greater than 0";
-                                }
-                              }
-                              return null;
-                            },
-                            controller: noOfLabours,
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.all(10),
-                              labelText: 'No of Labours*',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              prefixIcon: const Icon(Icons.group),
-                            ),
-                          ),
-                        )
-                      else
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.95,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: DropdownButtonFormField<String>(
-                            value: selectedStatus,
-                            items: list.map((data) {
-                              return DropdownMenuItem<String>(
-                                value: data.id.toString(),
-                                child: Text(
-                                  data.workStatus.toString(),
-                                ),
-                              );
-                            }).toList(),
-                            onChanged: (value) {
-                              selectedStatus = value;
-                            },
-                            validator: (value) {
-                              if (value == null ||
-                                  value.isEmpty && isWorking == "Yes") {
-                                return "Select a Status";
-                              }
-                              return null;
-                            },
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.all(10),
-                              labelText: 'Status*',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              prefixIcon: const Icon(Icons.info),
-                            ),
-                          ),
-                        ),
-                      const SizedBox(height: 12),
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.95,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: TextFormField(
-                          // validator: (value) {
-                          //   if (value == "") {
-                          //     return "Enter Description";
-                          //   }
-                          //   return null;
-                          // },
-                          controller: description,
-                          keyboardType: TextInputType.text,
-                          maxLines: 3,
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.all(10),
-                            labelText: 'Description',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            prefixIcon: const Icon(Icons.text_fields),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      GestureDetector(
-                        onTap: () async {
-                          if (formKey.currentState!.validate()) {
-                            if (type == "add") {
-                              cubit.addWorkDetails(
-                                  projectId,
-                                  clientId,
-                                  isWorking,
-                                  date.text,
-                                  noOfLabours.text,
-                                  selectedStatus ?? "",
-                                  selectedStage ?? "",
-                                  description.text);
-                            } else {
-                              cubit.editWorkDetails(
-                                  projectId,
-                                  clientId,
-                                  isWorking,
-                                  date.text,
-                                  noOfLabours.text,
-                                  selectedStatus ?? "",
-                                  selectedStage ?? "",
-                                  description.text,
-                                  workId);
-                            }
-                            Navigator.pop(context);
-                            date.clear();
-                            noOfLabours.clear();
-                            description.clear();
-                            selectedStatus = null;
-                            selectedStage = null;
-                            isWorking = 'Yes';
-                          }
-                        },
-                        child: LargeButton(
-                            title: type == "add" ? "Add" : "Update"),
-                      ),
-                      Center(
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Text('Close'),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              )),
+                    ),
+                  )),
+            );
+          },
         );
       },
     );

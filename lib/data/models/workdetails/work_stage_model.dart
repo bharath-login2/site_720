@@ -38,8 +38,8 @@ class Workstage {
     });
 
     factory Workstage.fromJson(Map<String, dynamic> json) => Workstage(
-        stageId: json["stage_id"],
-        stageName: json["stage_name"],
+        stageId: json["stage_id"]?.toString() ?? json["id"]?.toString() ?? "",
+        stageName: json["stage_name"]?.toString() ?? json["name"]?.toString() ?? "",
     );
 
     Map<String, dynamic> toJson() => {

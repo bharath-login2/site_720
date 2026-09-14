@@ -3,10 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:site_720/core/constants/colors.dart';
+import 'package:site_720/core/constants/routes.dart';
 import 'package:site_720/data/models/work/work_model.dart';
 import 'package:site_720/features/work/cubit/work_cubit.dart';
 import 'package:site_720/features/work/cubit/work_state.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../data/services/http_services.dart';
 
 class WorkScreen extends StatefulWidget {
@@ -158,9 +158,20 @@ class _WorkScreenState extends State<WorkScreen> {
                       return InkWell(
                         borderRadius: BorderRadius.circular(20),
                         onTap: () {
-                          if (isPending) {
-                            addWorkPopup(item);
-                          }
+                          Navigator.pushNamed(
+                            context,
+                            AppRoutes.workDetails,
+                            arguments: {
+                              "id": item.projectId,
+                              "client_id": item.clientId,
+                            },
+                          ).then((_) {
+                            if (context.mounted) {
+                              context
+                                  .read<WorkCubit>()
+                                  .getExternalWorkDetailsList();
+                            }
+                          });
                         },
                         child: Container(
                           margin: const EdgeInsets.only(bottom: 16),

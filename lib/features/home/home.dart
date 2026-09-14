@@ -4,7 +4,9 @@ import 'package:site_720/core/constants/colors.dart';
 import 'package:site_720/core/widgets/dialogs.dart';
 import 'package:site_720/features/dashboard/views/dashboard_screen.dart';
 import 'package:site_720/features/work/views/work_screen.dart';
+import 'package:site_720/features/work_details/views/work_details_screen.dart';
 import 'package:site_720/features/work/cubit/work_cubit.dart';
+import 'package:site_720/features/work_details/cubit/work_details_cubit.dart';
 
 import '../task_management/views/task_list.dart';
 import '../visit/views/visit_details.dart';

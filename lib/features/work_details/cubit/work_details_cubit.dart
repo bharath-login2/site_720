@@ -60,7 +60,6 @@ class WorkDetailsCubit extends Cubit<WorkDetailsState> {
   }
 
     Future<void> getWorkStages(String projectId) async {
-    emit(WorkDetailsLoading());
     try {
       WorkStagesModel response = await HttpServices.getWorkStages(projectId);
       if (response.status == true) {
@@ -80,16 +79,20 @@ class WorkDetailsCubit extends Cubit<WorkDetailsState> {
       String date,
       String noOfLabours,
       String status,
-       String stage,
+      String stage,
       String description) async {
     try {
       SuccessResponse response = await HttpServices.addWorkDetails(projectId,
-          clintId, isWorking, date, noOfLabours, status,stage, description);
+          clintId, isWorking, date, noOfLabours, status, stage, description);
       if (response.status == true) {
-        getWorkDetails(projectId);
-        emit(AddingSuccess(response.message));
+        await getWorkDetails(projectId);
+        emit(AddingSuccess(response.message.isNotEmpty
+            ? response.message
+            : "Work detail added successfully"));
       } else {
-        emit(AddingFailure(response.message));
+        emit(AddingFailure(response.message.isNotEmpty
+            ? response.message
+            : "Failed to add work detail"));
       }
     } catch (e) {
       emit(AddingFailure('Failed to fetch data: ${e.toString()}'));
@@ -103,16 +106,21 @@ class WorkDetailsCubit extends Cubit<WorkDetailsState> {
       String date,
       String noOfLabours,
       String status,
-        String stage,
+      String stage,
       String description,
       String workId) async {
     try {
       SuccessResponse response = await HttpServices.editWorkDetails(projectId,
-          clintId, isWorking, date, noOfLabours, status,stage, description, workId);
+          clintId, isWorking, date, noOfLabours, status, stage, description, workId);
       if (response.status == true) {
-        getWorkDetails(projectId);
+        await getWorkDetails(projectId);
+        emit(AddingSuccess(response.message.isNotEmpty
+            ? response.message
+            : "Work detail updated successfully"));
       } else {
-        emit(AddingFailure(response.message));
+        emit(AddingFailure(response.message.isNotEmpty
+            ? response.message
+            : "Failed to update work detail"));
       }
     } catch (e) {
       emit(AddingFailure('Failed to fetch data: ${e.toString()}'));
@@ -120,12 +128,33 @@ class WorkDetailsCubit extends Cubit<WorkDetailsState> {
   }
 
   Future<void> deleteWorkDetails(String projectId, String workId) async {
+    if (state is WorkDetailsSuccess) {
+      final currentResponse = (state as WorkDetailsSuccess).response;
+      final updatedList = currentResponse.data
+          .where((item) => item.id.toString() != workId.toString())
+          .toList();
+      emit(WorkDetailsSuccess(WorkDetailModel(
+        data: updatedList,
+        message: currentResponse.message,
+        status: currentResponse.status,
+      )));
+    }
+
     try {
       SuccessResponse response = await HttpServices.deleteWorkDetails(workId);
       if (response.status == true) {
-        getWorkDetails(projectId);
+        await getWorkDetails(projectId);
+        emit(AddingSuccess(response.message.isNotEmpty
+            ? response.message
+            : "Work detail deleted successfully"));
+      } else {
+        await getWorkDetails(projectId);
+        emit(AddingFailure(response.message.isNotEmpty
+            ? response.message
+            : "Failed to delete work detail"));
       }
     } catch (e) {
+      await getWorkDetails(projectId);
       emit(AddingFailure('Failed to fetch data: ${e.toString()}'));
     }
   }

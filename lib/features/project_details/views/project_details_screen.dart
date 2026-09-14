@@ -174,22 +174,26 @@ class ProjectDetails extends StatelessWidget {
                                       ),
                                     ),
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       children: [
                                         DetailsItem(
                                           title: "Start Date",
-                                          value: state is ProjectDetailsSuccess
+                                          value: state is ProjectDetailsSuccess &&
+                                                  state.response.data.startingDate != null &&
+                                                  state.response.data.startingDate!.isNotEmpty &&
+                                                  !state.response.data.startingDate!.startsWith('1970')
                                               ? state.response.data.startingDate
-                                              : null,
+                                              : '--',
                                           icon: Icons.calendar_month,
                                         ),
                                         DetailsItem(
                                           title: "End Date",
-                                          value: state is ProjectDetailsSuccess
-                                              ? state
-                                                  .response.data.completionDate
-                                              : null,
+                                          value: state is ProjectDetailsSuccess &&
+                                                  state.response.data.completionDate != null &&
+                                                  state.response.data.completionDate!.isNotEmpty &&
+                                                  !state.response.data.completionDate!.startsWith('1970')
+                                              ? state.response.data.completionDate
+                                              : '--',
                                           icon: Icons.calendar_month,
                                         ),
                                       ],

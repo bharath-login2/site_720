@@ -112,6 +112,22 @@ class DeductionWorkRequestCard extends StatelessWidget {
                       },
                     ),
                   ),
+                const SizedBox(width: 8),
+                CircleAvatar(
+                  radius: 18,
+                  backgroundColor: Colors.red.shade600,
+                  child: IconButton(
+                    padding: EdgeInsets.zero,
+                    icon: const Icon(
+                      Icons.delete,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                    onPressed: () {
+                      _showDeleteDialog(context, item);
+                    },
+                  ),
+                ),
               ],
             ),
 
@@ -349,6 +365,48 @@ class DeductionWorkRequestCard extends StatelessWidget {
         );
       }
     });
+  }
+
+  void _showDeleteDialog(BuildContext context, DeductionWorkRequestModel item) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: const Row(
+            children: [
+              Icon(Icons.warning_amber_rounded, color: Colors.red),
+              SizedBox(width: 8),
+              Text("Delete Request"),
+            ],
+          ),
+          content: const Text(
+            "Are you sure you want to delete this deduction work request?",
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogContext),
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                foregroundColor: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.pop(dialogContext);
+                context
+                    .read<DeductionWorkRequestCubit>()
+                    .deleteDeductionWorkRequest(requestId: item.id);
+              },
+              child: const Text("Delete"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _showDetailsDialog(BuildContext context) {

@@ -11,11 +11,13 @@ import 'task_state.dart';
 
 class TaskCubit extends Cubit<TaskState> {
   TaskCubit() : super(TaskInitial()) {
-    getTaskList();
-      getTaskListRunning();
+    // getTaskList();
+    getTaskListRunning();
   }
 
   Future<void> getTaskList({
+    int page = 1,
+    int pageSize = 15,
     String? fromDate,
     String? toDate,
     String? workType,
@@ -24,10 +26,15 @@ class TaskCubit extends Cubit<TaskState> {
     String? assignedTo,
     String? status,
     String? viewType,
+    bool isLoadMore = false,
   }) async {
-    emit(TaskLoading());
+    if (!isLoadMore) {
+      emit(TaskLoading());
+    }
     try {
       GetTaskList response = await HttpServices.getTaskList(
+        page: page,
+        pageSize: pageSize,
         fromDate: fromDate,
         toDate: toDate,
         workType: workType,
@@ -41,16 +48,18 @@ class TaskCubit extends Cubit<TaskState> {
       if (response.status == true) {
         emit(TaskSuccess(response));
       } else {
-        emit(TaskFailure('Failed to fetch data}'));
+        emit(TaskFailure('Failed to fetch data'));
       }
     } catch (e) {
       emit(TaskFailure('Failed to fetch data: ${e.toString()}'));
     }
   }
-    Future<void> getTaskListRunning() async {
+
+  Future<void> getTaskListRunning() async {
     emit(TaskLoading());
     try {
-      final ProjectWorkModel? response = await HttpServices.getTaskListRunning();
+      final ProjectWorkModel? response =
+          await HttpServices.getTaskListRunning();
       if (response != null && response.status == true) {
         emit(RunningTaskListSuccess(response));
       } else {
@@ -60,6 +69,7 @@ class TaskCubit extends Cubit<TaskState> {
       emit(TaskFailure('Failed to fetch data: ${e.toString()}'));
     }
   }
+
   XFile? image;
 
   selectImage(
@@ -107,7 +117,7 @@ class TaskCubit extends Cubit<TaskState> {
     String taskId,
     String imagePath,
   ) async {
-     emit(TaskLoading());
+    emit(TaskLoading());
     try {
       await getLocation();
       SuccessResponse response = await HttpServices.addAttendance(

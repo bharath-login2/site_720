@@ -25,7 +25,7 @@ class _DeductionWorkRequestFormDialogState
   final _itemFormKey = GlobalKey<FormState>();
 
   final TextEditingController _itemNameController = TextEditingController();
-  final TextEditingController _qtyController = TextEditingController();
+  final TextEditingController _qtyController = TextEditingController(text: '1');
   final TextEditingController _remarksController = TextEditingController();
 
   List<DeductionWorkItem> items = [];
@@ -59,7 +59,7 @@ class _DeductionWorkRequestFormDialogState
       items.add(newItem);
 
       _itemNameController.clear();
-      _qtyController.clear();
+      _qtyController.text = '1';
       _remarksController.clear();
     });
 
@@ -295,6 +295,7 @@ class _DeductionWorkRequestFormDialogState
                             const SizedBox(height: 12),
                             TextFormField(
                               controller: _qtyController,
+                              keyboardType: TextInputType.number,
                               decoration: _fieldDecoration(
                                 label: "Quantity *",
                                 hint: "Enter quantity",
@@ -302,6 +303,11 @@ class _DeductionWorkRequestFormDialogState
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
                                   return "Quantity is required";
+                                }
+                                final qty = int.tryParse(value.trim());
+
+                                if (qty == null || qty < 1) {
+                                  return "Quantity must be at least 1";
                                 }
                                 return null;
                               },

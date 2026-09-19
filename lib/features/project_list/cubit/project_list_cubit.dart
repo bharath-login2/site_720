@@ -11,18 +11,68 @@ class ProjectListCubit extends Cubit<ProjectListState> {
       : super(ProjectListInitial()) {
     getProjectList(status, searchKey);
   }
+  int currentPage = 1;
+  static const int pageSize = 20;
 
-  Future<void> getProjectList(String status, String searchKey) async {
-    emit(ProjectListLoading());
+  bool isLoadingMore = false;
+  bool hasMoreProjects = true;
+
+  Future<void> getProjectList(
+    String status,
+    String searchKey, {
+    int page = 1,
+    int pageSize = 20,
+    bool isLoadMore = false,
+  }) async {
+    if (isLoadMore) {
+      if (isLoadingMore || !hasMoreProjects) return;
+
+      isLoadingMore = true;
+    } else {
+      currentPage = 1;
+      hasMoreProjects = true;
+
+      emit(ProjectListLoading());
+    }
+
     try {
-      ProjectListModel response =
-          await HttpServices.getProjectList(status, searchKey);
-      // print('Project List Response: ${response.toJson()}');
+      final response = await HttpServices.getProjectList(
+        status,
+        searchKey,
+        page: page,
+        pageSize: pageSize,
+      );
+
       if (response.status == true) {
-        emit(ProjectListSuccess(response));
+        final newProjects = response.data.projectList;
+
+        if (isLoadMore && state is ProjectListSuccess) {
+          final oldResponse = (state as ProjectListSuccess).response;
+
+          oldResponse.data.projectList.addAll(newProjects);
+          print(
+              "TOTAL PROJECTS IN LIST: ${oldResponse.data.projectList.length}");
+
+          emit(ProjectListSuccess(oldResponse));
+        } else {
+          emit(ProjectListSuccess(response));
+        }
+
+        currentPage = page;
+
+        // Check only the newly received page
+        if (newProjects.length < pageSize) {
+          hasMoreProjects = false;
+        }
       }
     } catch (e) {
-      emit(ProjectListFailure('Failed to fetch data: ${e.toString()}'));
+      emit(
+        ProjectListFailure(
+          'Failed to fetch data: ${e.toString()}',
+        ),
+      );
+    } finally {
+      isLoadingMore = false;
     }
   }
 
@@ -32,7 +82,12 @@ class ProjectListCubit extends Cubit<ProjectListState> {
       SuccessResponse response = await HttpServices.deleteProject(projectId);
       if (response.status == true) {
         emit(ProjectDeleted(response.message));
-        getProjectList(status, searchKey);
+        getProjectList(
+          status,
+          searchKey,
+          page: 1,
+          pageSize: pageSize,
+        );
       }
     } catch (e) {
       emit(ProjectListFailure('Failed to fetch data: ${e.toString()}'));

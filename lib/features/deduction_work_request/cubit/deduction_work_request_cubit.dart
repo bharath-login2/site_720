@@ -12,8 +12,7 @@ class DeductionWorkRequestCubit extends Cubit<DeductionWorkRequestState> {
 
   String? currentProjectId;
 
-  DeductionWorkRequestListResponse response =
-      DeductionWorkRequestListResponse(
+  DeductionWorkRequestListResponse response = DeductionWorkRequestListResponse(
     status: false,
     message: '',
     data: [],
@@ -57,8 +56,7 @@ class DeductionWorkRequestCubit extends Cubit<DeductionWorkRequestState> {
 
   Future<void> getProjectList() async {
     try {
-      projectResponse =
-          await HttpServices.getWorkRequestProjects();
+      projectResponse = await HttpServices.getWorkRequestProjects();
 
       projectList = projectResponse?.data ?? [];
 
@@ -80,8 +78,7 @@ class DeductionWorkRequestCubit extends Cubit<DeductionWorkRequestState> {
   // ADD DEDUCTION WORK REQUEST
   // ============================================================
 
-  Future<SaveDeductionWorkRequestResponse?>
-      addDeductionWorkRequest({
+  Future<SaveDeductionWorkRequestResponse?> addDeductionWorkRequest({
     required String projectId,
     required List<DeductionWorkItem> items,
   }) async {
@@ -107,14 +104,12 @@ class DeductionWorkRequestCubit extends Cubit<DeductionWorkRequestState> {
         "================================================",
       );
 
-      final saveResponse =
-          await HttpServices.saveDeductionWorkRequest(
+      final saveResponse = await HttpServices.saveDeductionWorkRequest(
         projectId: projectId,
         requestData: encodedRequestData,
       );
 
-      if (saveResponse != null &&
-          saveResponse.status == true) {
+      if (saveResponse != null && saveResponse.status == true) {
         emit(
           DeductionWorkRequestActionSuccess(
             saveResponse.message.isNotEmpty
@@ -147,8 +142,7 @@ class DeductionWorkRequestCubit extends Cubit<DeductionWorkRequestState> {
   // UPDATE DEDUCTION WORK REQUEST
   // ============================================================
 
-  Future<SaveDeductionWorkRequestResponse?>
-      updateDeductionWorkRequest({
+  Future<SaveDeductionWorkRequestResponse?> updateDeductionWorkRequest({
     required String requestId,
     required String itemName,
     required String qty,
@@ -157,16 +151,14 @@ class DeductionWorkRequestCubit extends Cubit<DeductionWorkRequestState> {
     emit(DeductionWorkRequestSubmitting());
 
     try {
-      final updateResponse =
-          await HttpServices.updateDeductionWorkRequest(
+      final updateResponse = await HttpServices.updateDeductionWorkRequest(
         requestId: requestId,
         itemName: itemName,
         qty: qty,
         remarks: remarks,
       );
 
-      if (updateResponse != null &&
-          updateResponse.status == true) {
+      if (updateResponse != null && updateResponse.status == true) {
         emit(
           DeductionWorkRequestActionSuccess(
             updateResponse.message.isNotEmpty
@@ -192,6 +184,30 @@ class DeductionWorkRequestCubit extends Cubit<DeductionWorkRequestState> {
       );
 
       rethrow;
+    }
+  }
+
+//delete
+  Future<void> deleteDeductionWorkRequest({
+    required String requestId,
+  }) async {
+    try {
+      await HttpServices.deleteDeductionWorkRequest(
+        requestId: requestId,
+      );
+
+      // Refresh current project list
+      await getDeductionWorkRequests(
+        projectId: currentProjectId ?? '',
+      );
+    } catch (e) {
+      print(
+        "DELETE DEDUCTION WORK REQUEST ERROR: $e",
+      );
+
+      emit(
+        DeductionWorkRequestError(e.toString()),
+      );
     }
   }
 }

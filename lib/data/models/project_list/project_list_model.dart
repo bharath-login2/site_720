@@ -38,14 +38,14 @@ class ProjectListModel {
 class Data {
   String username;
   String designation;
-  String totalProjectCount;
+  int totalCount;
   List<ProjectList> projectList;
   Permissions permissions;
 
   Data({
     required this.username,
     required this.designation,
-    required this.totalProjectCount,
+    required this.totalCount,
     required this.projectList,
     required this.permissions,
   });
@@ -53,7 +53,7 @@ class Data {
   factory Data.fromJson(Map<String, dynamic> json) => Data(
         username: json["username"] ?? "",
         designation: json["designation"] ?? "",
-        totalProjectCount: json["total_project_count"] ?? "",
+        totalCount: json["total_count"] ?? 0,
         projectList: List<ProjectList>.from(
           (json["project_list"] ?? []).map((x) => ProjectList.fromJson(x)),
         ),
@@ -69,7 +69,7 @@ class Data {
   Map<String, dynamic> toJson() => {
         "username": username,
         "designation": designation,
-        "total_project_count": totalProjectCount,
+        "total_count": totalCount,
         "project_list": List<dynamic>.from(projectList.map((x) => x.toJson())),
       };
 }
@@ -106,7 +106,7 @@ class ProjectList {
         startingDate: json["starting_date"] ?? "",
         completionDate: json["completion_date"] ?? "",
         totalAmount: json["total_amount"] ?? "",
-        paymentStatus: json["payment_status"] ?? "",
+        paymentStatus: json["payment_status"] ?? false,
       );
 
   Map<String, dynamic> toJson() => {

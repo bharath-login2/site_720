@@ -41,7 +41,11 @@ class Data {
   String name;
   String role;
   String roleId;
+  String accountId;
+  String accountName;
   String isMultiBranch;
+  String staffName;
+  String designation;
 
   Data({
     required this.token,
@@ -51,7 +55,11 @@ class Data {
     required this.name,
     required this.role,
     required this.roleId,
+    required this.accountId,
+    required this.accountName,
     required this.isMultiBranch,
+    required this.staffName,
+    required this.designation,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -62,7 +70,11 @@ class Data {
         name: json["name"],
         role: json["role"],
         roleId: json["role_id"],
+        accountId: json["account_id"],
+        accountName: json["account_name"],
         isMultiBranch: json["is_multi_branch"],
+        staffName: json["staff_name"],
+        designation: json["designation"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -73,6 +85,10 @@ class Data {
         "name": name,
         "role": role,
         "role_id": roleId,
+        "account_id": accountId,
+        "account_name": accountName,
         "is_multi_branch": isMultiBranch,
+        "staff_name": staffName,
+        "designation": designation,
       };
 }

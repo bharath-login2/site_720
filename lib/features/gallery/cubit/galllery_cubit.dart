@@ -14,7 +14,6 @@ class GalleryCubit extends Cubit<GalleryState> {
 
   List<XFile> imageList = [];
 
-
   selectMultiImage(
     ImageSource? source,
   ) async {
@@ -51,7 +50,7 @@ class GalleryCubit extends Cubit<GalleryState> {
 
   deleteImage(int i) {
     imageList.removeAt(i);
-    emit(ImageSuccess(imageList));                   
+    emit(ImageSuccess(imageList));
   }
 
   Future<void> postGalery(
@@ -80,6 +79,7 @@ class GalleryCubit extends Cubit<GalleryState> {
   ) async {
     try {
       GalleryListModel response = await HttpServices.galleryList(projectId);
+      emit(GallerySuccess(response));
       if (response.status == true) {
         emit(GallerySuccess(response));
       }
@@ -95,7 +95,7 @@ class GalleryCubit extends Cubit<GalleryState> {
     try {
       SuccessResponse response = await HttpServices.deleteGalery(id);
       if (response.status == true) {
-        galleryList(projectId);
+        await galleryList(projectId);
       }
     } catch (e) {
       emit(GalleryFailure(e.toString()));

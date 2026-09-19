@@ -10,7 +10,7 @@ GetTaskList getTaskListFromJson(String str) =>
 String getTaskListToJson(GetTaskList data) => json.encode(data.toJson());
 
 class GetTaskList {
-  List<Tasks> data;
+  TaskData data;
   String message;
   bool status;
 
@@ -21,15 +21,53 @@ class GetTaskList {
   });
 
   factory GetTaskList.fromJson(Map<String, dynamic> json) => GetTaskList(
-        data: List<Tasks>.from(json["data"].map((x) => Tasks.fromJson(x))),
-        message: json["message"],
-        status: json["status"],
+        data: TaskData.fromJson(json["data"]),
+        message: json["message"] ?? "",
+        status: json["status"] ?? false,
       );
 
   Map<String, dynamic> toJson() => {
-        "data": List<dynamic>.from(data.map((x) => x.toJson())),
+        "data": data.toJson(),
         "message": message,
         "status": status,
+      };
+}
+
+class TaskData {
+  List<Tasks> resultData;
+  int pendingCount;
+  int ongoingCount;
+  int completedCount;
+  int cancelledCount;
+
+  TaskData({
+    required this.resultData,
+    required this.pendingCount,
+    required this.ongoingCount,
+    required this.completedCount,
+    required this.cancelledCount,
+  });
+
+  factory TaskData.fromJson(Map<String, dynamic> json) => TaskData(
+        resultData: json["result_data"] == null
+            ? []
+            : List<Tasks>.from(
+                json["result_data"].map((x) => Tasks.fromJson(x)),
+              ),
+        pendingCount: json["pending_count"] ?? 0,
+        ongoingCount: json["ongoing_count"] ?? 0,
+        completedCount: json["completed_count"] ?? 0,
+        cancelledCount: json["cancelled_count"] ?? 0,
+      );
+
+  Map<String, dynamic> toJson() => {
+        "result_data": List<dynamic>.from(
+          resultData.map((x) => x.toJson()),
+        ),
+        "pending_count": pendingCount,
+        "ongoing_count": ongoingCount,
+        "completed_count": completedCount,
+        "cancelled_count": cancelledCount,
       };
 }
 
@@ -65,25 +103,25 @@ class Tasks {
   });
 
   factory Tasks.fromJson(Map<String, dynamic> json) => Tasks(
-        id: json["id"] ?? "",
-        assignedStaffId: json["to_staff_id"] ?? "",
-        assignedStaffUserId: json["to_user_id"] ?? "",
-        taskTitle: json["task_title"] ?? "",
-        fromDate: json["from_date"] ?? "",
-        toDate: json["to_date"] ?? "",
-        description: json["description"] ?? "",
-        location: json["location"] ?? "",
-        priority: json["priority"] ?? "",
-        status: json["status"] ?? "",
-        workType: json["work_type"] ?? "",
-        staffName: json["staff_name"] ?? "",
-        stageName: json["stage_name"] ?? "",
+        id: json["id"]?.toString() ?? "",
+        assignedStaffId: json["to_staff_id"]?.toString() ?? "",
+        assignedStaffUserId: json["to_user_id"]?.toString() ?? "",
+        taskTitle: json["task_title"]?.toString() ?? "",
+        fromDate: json["from_date"]?.toString() ?? "",
+        toDate: json["to_date"]?.toString() ?? "",
+        description: json["description"]?.toString() ?? "",
+        location: json["location"]?.toString() ?? "",
+        priority: json["priority"]?.toString() ?? "",
+        status: json["status"]?.toString() ?? "",
+        workType: json["work_type"]?.toString() ?? "",
+        staffName: json["staff_name"]?.toString() ?? "",
+        stageName: json["stage_name"]?.toString() ?? "",
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "to_staff_id": assignedStaffId,
-           "to_user_id": assignedStaffUserId,
+        "to_user_id": assignedStaffUserId,
         "task_title": taskTitle,
         "from_date": fromDate,
         "to_date": toDate,

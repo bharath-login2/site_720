@@ -26,7 +26,6 @@ class _EstimateRequestFormDialogState extends State<EstimateRequestFormDialog> {
 
   String? selectedProjectId;
   String? selectedStageId;
-
   @override
   void initState() {
     super.initState();
@@ -52,6 +51,7 @@ class _EstimateRequestFormDialogState extends State<EstimateRequestFormDialog> {
         await cubit.getStageList(widget.projectId!);
       }
 
+      // For edit
       // For edit
       if (widget.estimate != null) {
         selectedStageId = widget.estimate!.stageId;
@@ -221,8 +221,6 @@ class _EstimateRequestFormDialogState extends State<EstimateRequestFormDialog> {
                         ),
                       ),
                     ),
-
-                    // Disable stage dropdown until project is available.
                     items: selectedProjectId == null
                         ? []
                         : cubit.stageList.map((stage) {
@@ -237,7 +235,6 @@ class _EstimateRequestFormDialogState extends State<EstimateRequestFormDialog> {
                               ),
                             );
                           }).toList(),
-
                     onChanged: selectedProjectId == null
                         ? null
                         : (value) {

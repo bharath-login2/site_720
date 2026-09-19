@@ -115,6 +115,7 @@ class EstimateRequestScreen extends StatelessWidget {
           }
 
           if (state is EstimateRequestLoaded) {
+            final cubit = context.read<EstimateRequestCubit>();
             final requests = state.response.data;
 
             if (requests.isEmpty) {
@@ -122,26 +123,52 @@ class EstimateRequestScreen extends StatelessWidget {
                 child: Text("No Estimate requests found"),
               );
             }
+
             return RefreshIndicator(
               onRefresh: () async {
-                await context
-                    .read<EstimateRequestCubit>()
-                    .getEstimateRequests();
+                await cubit.getEstimateRequests(
+                  page: 1,
+                );
               },
-              child: ListView.separated(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-                itemCount: state.response.data.length,
-                separatorBuilder: (context, index) {
-                  return const SizedBox(height: 12);
+              child: NotificationListener<ScrollNotification>(
+                onNotification: (notification) {
+                  if (notification.metrics.pixels >=
+                      notification.metrics.maxScrollExtent) {
+                    if (!cubit.isLoadingMore && cubit.hasMoreRequests) {
+                      cubit.getEstimateRequests(
+                        page: cubit.currentPage + 1,
+                        isLoadMore: true,
+                      );
+                    }
+                  }
+
+                  return false;
                 },
-                itemBuilder: (context, index) {
-                  return EstimateRequestCard(
-                    item: state.response.data[index],
-                    projectId: projectId,
-                    onTap: () {},
-                  );
-                },
+                child: ListView.separated(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                  itemCount: state.response.data.length +
+                      (cubit.isLoadingMore ? 1 : 0),
+                  separatorBuilder: (context, index) {
+                    return const SizedBox(height: 12);
+                  },
+                  itemBuilder: (context, index) {
+                    if (index >= state.response.data.length) {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
+
+                    return EstimateRequestCard(
+                      item: state.response.data[index],
+                      projectId: projectId,
+                      onTap: () {},
+                    );
+                  },
+                ),
               ),
             );
           }

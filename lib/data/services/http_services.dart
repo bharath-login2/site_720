@@ -84,6 +84,7 @@ import '../models/permissions/permissions.dart';
 import '../models/projectListRequest/projectListRequestModel.dart';
 import '../models/extrawork_Request/extra_work_request_model.dart';
 import '../models/deductionwork_request/deduction_work_request_model.dart';
+import '../models/stage_list/project_statge_list.dart';
 import 'package:http_parser/http_parser.dart';
 
 class HttpServices {
@@ -199,6 +200,11 @@ class HttpServices {
 
         await saveSharedPreference("roleId", loginResponse.data.roleId);
 
+        await saveSharedPreference("staffName", loginResponse.data.staffName);
+
+        await saveSharedPreference(
+            "designation", loginResponse.data.designation);
+
         return loginResponse;
       }
     } catch (e) {
@@ -226,7 +232,12 @@ class HttpServices {
     }
   }
 
-  static Future getProjectList(status, searchKey) async {
+  static Future getProjectList(
+    status,
+    searchKey, {
+    int page = 1,
+    int pageSize = 25,
+  }) async {
     try {
       http.Response response = await http.post(
         Uri.parse("${await Config.getUrl()}get_project_list"),
@@ -234,6 +245,8 @@ class HttpServices {
           'token': await getSharedPreference('token'),
           'status': status == "null" || status == "all" ? "" : status,
           'searchkey': searchKey,
+          'page': page.toString(),
+          'page_size': pageSize.toString(),
         }),
       );
       if (response.statusCode == 200) {
@@ -382,12 +395,20 @@ class HttpServices {
     }
   }
 
-  static Future getComplaintList() async {
+  static Future getComplaintList({
+    int page = 1,
+    int pageSize = 15,
+  }) async {
     try {
       http.Response response = await http.post(
         Uri.parse("${await Config.getUrl()}get_complaint_list"),
-        body: ({'token': await getSharedPreference('token')}),
+        body: {
+          'token': await getSharedPreference('token'),
+          'page': page.toString(),
+          'page_size': pageSize.toString(),
+        },
       );
+
       if (response.statusCode == 200) {
         print("Complaint List Response: ${response.body}");
         return complaintListModelFromJson(response.body);
@@ -601,6 +622,38 @@ class HttpServices {
       }
     } catch (e) {
       log(e.toString());
+    }
+  }
+
+  //check the stage  name is exist or not
+  static Future<bool> checkStageName({
+    required String projectId,
+    required String clientId,
+    required String stageName,
+  }) async {
+    try {
+      http.Response response = await http.post(
+        Uri.parse("${await Config.getUrl()}is_stage_exists"),
+        body: {
+          'token': await getSharedPreference('token'),
+          'project_id': projectId,
+          'client_id': clientId,
+          'stage_name': stageName,
+        },
+      );
+      print("CHECK STAGE STATUS: ${response.statusCode}");
+      print("CHECK STAGE RESPONSE: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        return data['data'] == true;
+      }
+
+      return false;
+    } catch (e) {
+      log(e.toString());
+      return false;
     }
   }
 
@@ -1625,6 +1678,8 @@ class HttpServices {
   }
 
   static Future getTaskList({
+    int page = 1,
+    int pageSize = 15,
     String? fromDate,
     String? toDate,
     String? workType,
@@ -1635,10 +1690,14 @@ class HttpServices {
     String? viewType,
   }) async {
     try {
+      print("page: $page, pageSize: $pageSize");
+
       http.Response response = await http.post(
         Uri.parse("${await Config.getUrl()}get_task_list"),
         body: {
           'token': await getSharedPreference('token'),
+          'page': page.toString(),
+          'page_size': pageSize.toString(),
           if (fromDate != null) 'from_date': fromDate,
           if (toDate != null) 'to_date': toDate,
           if (workType != null) 'work_type': workType,
@@ -1649,6 +1708,7 @@ class HttpServices {
           if (viewType != null) 'view_type': viewType,
         },
       );
+
       if (response.statusCode == 200) {
         print("Task List Response: ${response.body}");
         return getTaskListFromJson(response.body);
@@ -2826,11 +2886,18 @@ class HttpServices {
   }
 
   /// EXTERNAL WORK LIST
-  static Future getExternalWorkDetailsList() async {
+  static Future getExternalWorkDetailsList({
+    int page = 1,
+    int pageSize = 20,
+  }) async {
     try {
       http.Response response = await http.post(
         Uri.parse("${await Config.getUrl()}getExternalWorkDetailsList"),
-        body: {"token": await getSharedPreference('token')},
+        body: {
+          "token": await getSharedPreference('token'),
+          "page": page.toString(),
+          "page_size": pageSize.toString(),
+        },
       );
 
       if (response.statusCode == 200) {
@@ -3500,12 +3567,16 @@ class HttpServices {
 
   static Future<EstimateRequestResponse> getEstimateRequests({
     String? projectId,
+    int page = 1,
+    int pageSize = 20,
   }) async {
     try {
       final token = await getSharedPreference("token");
 
       final Map<String, String> body = {
         "token": token ?? "",
+        'page': page.toString(),
+        'page_size': pageSize.toString(),
       };
 
       // Only send project_id when a project was selected/opened.
@@ -3580,12 +3651,17 @@ class HttpServices {
   }
 
   // static Future<SiteDrawingRequestListResponse> getSiteDrawingRequests({
-  static Future<SiteDrawingRequestListResponse> getSiteDrawingRequests() async {
+  static Future<SiteDrawingRequestListResponse> getSiteDrawingRequests({
+    int page = 1,
+    int pageSize = 20,
+  }) async {
     try {
       final response = await http.post(
         Uri.parse("${await Config.getUrl()}getDrawingRequestList"),
         body: {
           "token": await getSharedPreference("token"),
+          "page": page.toString(),
+          "page_size": pageSize.toString(),
         },
       );
 
@@ -3957,10 +4033,9 @@ class HttpServices {
       final token = await getSharedPreference("token");
 
       final response = await http.post(
-        Uri.parse("${await Config.getUrl()}deleteExtraWorkRequest"),
+        Uri.parse("${await Config.getUrl()}delete_extra_work_request"),
         body: {
           "token": token ?? "",
-          "row_id": requestId,
           "request_id": requestId,
         },
       );
@@ -4118,5 +4193,90 @@ class HttpServices {
       rethrow;
     }
   }
-}
 
+  static Future<bool> deleteDeductionWorkRequest({
+    required String requestId,
+  }) async {
+    try {
+      final token = await getSharedPreference("token");
+
+      final response = await http.post(
+        Uri.parse("${await Config.getUrl()}delete_deduction_work_request"),
+        body: {
+          "token": token,
+          "request_id": requestId,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+        if (result is Map<String, dynamic>) {
+          return result["status"] == true ||
+              result["status"] == "true" ||
+              result["status"] == 1;
+        }
+      }
+    } catch (e) {
+      print("DELETE EXTRA WORK REQUEST ERROR: $e");
+    }
+    return false;
+  }
+
+  //stage list asper project_id
+  static Future<StageListModel?> getStageList({
+    required String projectId,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse("${await Config.getUrl()}get_project_stage_list"),
+        body: {
+          "token": await getSharedPreference("token"),
+          "project_id": projectId,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+
+        if (result["status"] == true) {
+          return StageListModel.fromJson(result);
+        }
+      }
+    } catch (e) {
+      print("Exception: $e");
+    }
+
+    return null;
+  }
+
+  //Add First Schedule date
+  static Future<Map<String, dynamic>?> addFirstScheduleDate({
+    required String stageId,
+    required String projectId,
+    required String scheduleDate,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse("${await Config.getUrl()}post_stage_schedule_date"),
+        body: {
+          "token": await getSharedPreference("token"),
+          "stage_id": stageId,
+          "project_id": projectId,
+          "schedule_date": scheduleDate,
+        },
+      );
+      print("Success stage: ${response.body}");
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+
+        if (result["status"] == true) {
+          return result;
+        }
+      }
+    } catch (e) {
+      print("Exception: $e");
+    }
+
+    return null;
+  }
+}

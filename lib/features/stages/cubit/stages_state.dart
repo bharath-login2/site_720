@@ -1,4 +1,3 @@
-
 import 'package:site_720/data/models/succes_response/success_response.dart';
 
 import '../../../data/models/stages/stage_model.dart';
@@ -18,19 +17,19 @@ class StagesState {
   }
 }
 
-class StagesInitial extends StagesState {
-  
-}
+class StagesInitial extends StagesState {}
 
 class StagesLoading extends StagesState {}
 
+class StageNameExists extends StagesState {}
+
 class StagesSuccess extends StagesState {
-   GetStagesModel response;
+  GetStagesModel response;
   StagesSuccess(this.response);
 }
 
 class AddedSuccess extends StagesState {
-  SuccessResponse  response;
+  SuccessResponse response;
   AddedSuccess(this.response);
 }
 
@@ -40,7 +39,7 @@ class PhaselistSuccess extends StagesState {
 }
 
 class AddedFailure extends StagesState {
-  SuccessResponse  response;
+  SuccessResponse response;
   AddedFailure(this.response);
 }
 
@@ -50,6 +49,6 @@ class StagesFailure extends StagesState {
 }
 
 class SearchResult extends StagesState {
-     List<GetStages> filteredList;
+  List<GetStages> filteredList;
   SearchResult(this.filteredList);
 }

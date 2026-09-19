@@ -125,8 +125,31 @@ class SiteDrawingRequestCard extends StatelessWidget {
                           color: Colors.white,
                           size: 18,
                         ),
-                        onPressed: () {
+                        onPressed: () async {
                           final cubit = context.read<SiteDrawingRequestCubit>();
+
+                          await cubit.getProjectList();
+
+                          final projectExists = cubit.projectList.any(
+                            (project) =>
+                                project.id.toString() ==
+                                item.projectId.toString(),
+                          );
+
+                          if (!projectExists) {
+                            if (!context.mounted) return;
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  "This project is no longer available for editing",
+                                ),
+                              ),
+                            );
+                            return;
+                          }
+
+                          if (!context.mounted) return;
 
                           showDialog(
                             context: context,

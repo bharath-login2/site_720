@@ -39,6 +39,7 @@ class _WorkScreenState extends State<WorkScreen> {
             );
           }
 
+          /// FAILURE
           if (state is WorkFailure) {
             return Center(
               child: Text(
@@ -49,272 +50,324 @@ class _WorkScreenState extends State<WorkScreen> {
 
           /// SUCCESS
           if (state is WorkSuccess) {
-            // final workList = state.workList;
+            final cubit = context.read<WorkCubit>();
             final workList = state.filteredWorkList;
 
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  /// HEADER
-                  Container(
-                    height: MediaQuery.of(context).size.height * .20,
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                      color: AppColors.primaryColor,
-                      image: DecorationImage(
-                        image: AssetImage(
-                          "assets/images/appbar.png",
-                        ),
-                        fit: BoxFit.fill,
-                      ),
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(
-                          30,
-                        ),
-                        bottomRight: Radius.circular(
-                          30,
-                        ),
-                      ),
-                    ),
-                    child: const SafeArea(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 18,
-                          vertical: 20,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Work Dashboard",
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
+            return RefreshIndicator(
+              onRefresh: () async {
+                print('Refreshing work list...');
+
+                await cubit.getExternalWorkDetailsList(
+                  page: 1,
+                  isLoadMore: false,
+                );
+
+                print(
+                  'Refresh completed → currentPage: ${cubit.currentPage}, '
+                  'total: ${cubit.workList.length}',
+                );
+              },
+              child: NotificationListener<ScrollNotification>(
+                onNotification: (notification) {
+                  if (notification is ScrollUpdateNotification &&
+                      notification.metrics.pixels >=
+                          notification.metrics.maxScrollExtent) {
+                    print(
+                      'Reached bottom → currentPage: ${cubit.currentPage}, '
+                      'hasMoreWork: ${cubit.hasMoreWork}, '
+                      'isLoadingMore: ${cubit.isLoadingMore}',
+                    );
+
+                    if (!cubit.isLoadingMore && cubit.hasMoreWork) {
+                      final nextPage = cubit.currentPage + 1;
+
+                      print('Loading work page: $nextPage');
+
+                      cubit.getExternalWorkDetailsList(
+                        page: nextPage,
+                        isLoadMore: true,
+                      );
+                    }
+                  }
+
+                  return false;
+                },
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Column(
+                    children: [
+                      /// HEADER
+                      Container(
+                        height: MediaQuery.of(context).size.height * .20,
+                        width: double.infinity,
+                        decoration: const BoxDecoration(
+                          color: AppColors.primaryColor,
+                          image: DecorationImage(
+                            image: AssetImage(
+                              "assets/images/appbar.png",
                             ),
-                            Icon(
-                              Icons.work,
-                              color: Colors.white,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(
-                    height: 20,
-                  ),
-
-                  //Search
-                  Container(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 22,
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                        color: AppColors.search,
-                        borderRadius: BorderRadius.circular(12)),
-                    child: TextField(
-                      decoration: const InputDecoration(
-                        hintText: "Search...",
-                        border: InputBorder.none,
-                        prefixIcon: Icon(Icons.search),
-                      ),
-                      onChanged: (value) {
-                        context.read<WorkCubit>().searchProjects(value);
-                      },
-                    ),
-                  ),
-
-                  const SizedBox(
-                    height: 20,
-                  ),
-
-                  ListView.builder(
-                    itemCount: workList.length,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemBuilder: (context, index) {
-                      final item = workList[index];
-                      bool isPending =
-                          item.updateStatus.toLowerCase().trim() == "pending";
-
-                      /// SAFE DATE
-                      String day = "--";
-                      String month = "--";
-                      String year = "--";
-
-                      try {
-                        final date = DateTime.parse(item.workDate);
-
-                        day = date.day.toString();
-                        month = _getMonth(date.month);
-                        year = date.year.toString();
-                      } catch (_) {}
-
-                      return InkWell(
-                        borderRadius: BorderRadius.circular(20),
-                        onTap: () {
-                          Navigator.pushNamed(
-                            context,
-                            AppRoutes.workDetails,
-                            arguments: {
-                              "id": item.projectId,
-                              "client_id": item.clientId,
-                            },
-                          ).then((_) {
-                            if (context.mounted) {
-                              context
-                                  .read<WorkCubit>()
-                                  .getExternalWorkDetailsList();
-                            }
-                          });
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.only(bottom: 16),
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: Colors.grey.shade200,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.08),
-                                blurRadius: 12,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
+                            fit: BoxFit.fill,
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              /// WORK BADGE
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(30),
+                            bottomRight: Radius.circular(30),
+                          ),
+                        ),
+                        child: const SafeArea(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 18,
+                              vertical: 20,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Work Dashboard",
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.work,
+                                  color: Colors.white,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
 
-                              Row(
+                      const SizedBox(
+                        height: 20,
+                      ),
+
+                      /// SEARCH
+                      Container(
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 22,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.search,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: TextField(
+                          decoration: const InputDecoration(
+                            hintText: "Search...",
+                            border: InputBorder.none,
+                            prefixIcon: Icon(Icons.search),
+                          ),
+                          onChanged: (value) {
+                            context.read<WorkCubit>().searchProjects(value);
+                          },
+                        ),
+                      ),
+
+                      const SizedBox(
+                        height: 20,
+                      ),
+
+                      /// WORK LIST
+                      ListView.builder(
+                        itemCount: workList.length,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                        ),
+                        itemBuilder: (context, index) {
+                          final item = workList[index];
+
+                          bool isPending =
+                              item.updateStatus.toLowerCase().trim() ==
+                                  "pending";
+
+                          /// SAFE DATE
+                          String day = "--";
+                          String month = "--";
+                          String year = "--";
+
+                          try {
+                            final date = DateTime.parse(item.workDate);
+
+                            day = date.day.toString();
+                            month = _getMonth(date.month);
+                            year = date.year.toString();
+                          } catch (_) {}
+
+                          return InkWell(
+                            borderRadius: BorderRadius.circular(20),
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                AppRoutes.workDetails,
+                                arguments: {
+                                  "id": item.projectId,
+                                  "client_id": item.clientId,
+                                },
+                              ).then((_) {
+                                if (context.mounted) {
+                                  context
+                                      .read<WorkCubit>()
+                                      .getExternalWorkDetailsList();
+                                }
+                              });
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.only(
+                                bottom: 16,
+                              ),
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: Colors.grey.shade200,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(
+                                      alpha: 0.08,
+                                    ),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 6,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.primaryColor,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: const Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(
-                                          Icons.construction_rounded,
-                                          color: Colors.white,
-                                          size: 18,
+                                  /// WORK BADGE
+                                  Row(
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 6,
                                         ),
-                                        SizedBox(width: 6),
-                                        Text(
-                                          "WORK",
+                                        decoration: BoxDecoration(
+                                          color: AppColors.primaryColor,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: const Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(
+                                              Icons.construction_rounded,
+                                              color: Colors.white,
+                                              size: 18,
+                                            ),
+                                            SizedBox(width: 6),
+                                            Text(
+                                              "WORK",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                letterSpacing: 1,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 5,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: isPending
+                                              ? Colors.orange.shade50
+                                              : Colors.green.shade50,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Text(
+                                          item.updateStatus,
                                           style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 12,
+                                            color: isPending
+                                                ? Colors.orange
+                                                : Colors.green,
                                             fontWeight: FontWeight.bold,
-                                            letterSpacing: 1,
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                  const Spacer(),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 5,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: isPending
-                                          ? Colors.orange.shade50
-                                          : Colors.green.shade50,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Text(
-                                      item.updateStatus,
-                                      style: TextStyle(
-                                        color: isPending
-                                            ? Colors.orange
-                                            : Colors.green,
-                                        fontWeight: FontWeight.bold,
                                       ),
-                                    ),
+                                    ],
+                                  ),
+
+                                  const SizedBox(height: 12),
+
+                                  /// PROJECT NAME
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          item.projectName,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  const SizedBox(height: 14),
+
+                                  _buildInfoRow(
+                                    Icons.engineering_outlined,
+                                    "Working",
+                                    item.isWorking,
+                                  ),
+
+                                  const SizedBox(height: 8),
+
+                                  _buildInfoRow(
+                                    Icons.groups_2_outlined,
+                                    "Labours",
+                                    item.laboursNo.toString(),
+                                  ),
+
+                                  const SizedBox(height: 8),
+
+                                  _buildInfoRow(
+                                    Icons.calendar_month_outlined,
+                                    "Date",
+                                    item.workDate,
+                                  ),
+
+                                  const SizedBox(height: 8),
+
+                                  _buildInfoRow(
+                                    Icons.description_outlined,
+                                    "Description",
+                                    item.description,
+                                    maxLines: 2,
                                   ),
                                 ],
                               ),
+                            ),
+                          );
+                        },
+                      ),
 
-                              const SizedBox(height: 12),
-
-                              /// PROJECT NAME
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      item.projectName,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                              const SizedBox(height: 14),
-
-                              _buildInfoRow(
-                                Icons.engineering_outlined,
-                                "Working",
-                                item.isWorking,
-                              ),
-
-                              const SizedBox(height: 8),
-
-                              _buildInfoRow(
-                                Icons.groups_2_outlined,
-                                "Labours",
-                                item.laboursNo.toString(),
-                              ),
-
-                              const SizedBox(height: 8),
-
-                              _buildInfoRow(
-                                Icons.calendar_month_outlined,
-                                "Date",
-                                item.workDate,
-                              ),
-
-                              const SizedBox(height: 8),
-
-                              _buildInfoRow(
-                                Icons.description_outlined,
-                                "Description",
-                                item.description,
-                                maxLines: 2,
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
+                      const SizedBox(
+                        height: 20,
+                      ),
+                    ],
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                ],
+                ),
               ),
             );
           }
@@ -706,7 +759,7 @@ class _WorkScreenState extends State<WorkScreen> {
                         },
                       );
                     } else {
-                      ScaffoldMessenger.of(this.context).showSnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           backgroundColor: Colors.red,
                           content: Text(

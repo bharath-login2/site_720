@@ -16,17 +16,82 @@ class ComplaintCubit extends Cubit<ComplaintState> {
   List<ComplaintList> complaints = [];
   List<StatusList> statusList = [];
 
-  Future<void> getComplaintList() async {
-    emit(ComplaintLoading());
+  int currentPage = 1;
+  static const int pageSize = 15;
+
+  bool isLoadingMore = false;
+  bool hasMoreComplaints = true;
+
+  Future<void> getComplaintList({
+    int page = 1,
+    int pageSize = 15,
+    bool isLoadMore = false,
+  }) async {
+    if (isLoadMore) {
+      if (isLoadingMore || !hasMoreComplaints) return;
+
+      isLoadingMore = true;
+    } else {
+      currentPage = 1;
+      hasMoreComplaints = true;
+      emit(ComplaintLoading());
+    }
+
     try {
-      ComplaintListModel response = await HttpServices.getComplaintList();
+      ComplaintListModel response = await HttpServices.getComplaintList(
+        page: page,
+        pageSize: pageSize,
+      );
 
       if (response.status == true) {
-        complaints = response.data;
-        emit(ComplaintSuccess(response));
+        final newComplaints = response.data;
+
+        if (isLoadMore) {
+          final existingIds =
+              complaints.map((complaint) => complaint.id).toSet();
+
+          final uniqueComplaints = newComplaints.where((complaint) {
+            return existingIds.add(complaint.id);
+          }).toList();
+
+          complaints.addAll(uniqueComplaints);
+
+          if (uniqueComplaints.isEmpty || newComplaints.length < pageSize) {
+            hasMoreComplaints = false;
+          }
+
+          currentPage = page;
+
+          print("PAGE: $page");
+          print("RECEIVED: ${newComplaints.length}");
+          print("ADDED: ${uniqueComplaints.length}");
+          print("TOTAL: ${complaints.length}");
+
+          emit(ComplaintSuccess(response));
+        } else {
+          complaints = newComplaints;
+
+          if (newComplaints.length < pageSize) {
+            hasMoreComplaints = false;
+          }
+
+          currentPage = page;
+
+          print("PAGE: $page");
+          print("RECEIVED: ${newComplaints.length}");
+          print("TOTAL: ${complaints.length}");
+
+          emit(ComplaintSuccess(response));
+        }
       }
     } catch (e) {
-      emit(ComplaintFailure('Failed to fetch data: ${e.toString()}'));
+      emit(
+        ComplaintFailure(
+          'Failed to fetch data: ${e.toString()}',
+        ),
+      );
+    } finally {
+      isLoadingMore = false;
     }
   }
 
@@ -73,7 +138,7 @@ class ComplaintCubit extends Cubit<ComplaintState> {
         emit(ComplaintStatusUpdated(response));
         getComplaintList();
       } else {
-        emit(ComplaintStatusupdateFailed(response.message)); 
+        emit(ComplaintStatusupdateFailed(response.message));
       }
     } catch (e) {
       emit(

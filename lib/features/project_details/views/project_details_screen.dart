@@ -174,26 +174,47 @@ class ProjectDetails extends StatelessWidget {
                                       ),
                                     ),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
                                       children: [
                                         DetailsItem(
                                           title: "Start Date",
-                                          value: state is ProjectDetailsSuccess &&
-                                                  state.response.data.startingDate != null &&
-                                                  state.response.data.startingDate!.isNotEmpty &&
-                                                  !state.response.data.startingDate!.startsWith('1970')
-                                              ? state.response.data.startingDate
-                                              : '--',
+                                          value:
+                                              state is ProjectDetailsSuccess &&
+                                                      state.response.data
+                                                              .startingDate !=
+                                                          null &&
+                                                      state
+                                                          .response
+                                                          .data
+                                                          .startingDate!
+                                                          .isNotEmpty &&
+                                                      !state.response.data
+                                                          .startingDate!
+                                                          .startsWith('1970')
+                                                  ? state.response.data
+                                                      .startingDate
+                                                  : '--',
                                           icon: Icons.calendar_month,
                                         ),
                                         DetailsItem(
                                           title: "End Date",
-                                          value: state is ProjectDetailsSuccess &&
-                                                  state.response.data.completionDate != null &&
-                                                  state.response.data.completionDate!.isNotEmpty &&
-                                                  !state.response.data.completionDate!.startsWith('1970')
-                                              ? state.response.data.completionDate
-                                              : '--',
+                                          value:
+                                              state is ProjectDetailsSuccess &&
+                                                      state.response.data
+                                                              .completionDate !=
+                                                          null &&
+                                                      state
+                                                          .response
+                                                          .data
+                                                          .completionDate!
+                                                          .isNotEmpty &&
+                                                      !state.response.data
+                                                          .completionDate!
+                                                          .startsWith('1970')
+                                                  ? state.response.data
+                                                      .completionDate
+                                                  : '--',
                                           icon: Icons.calendar_month,
                                         ),
                                       ],
@@ -428,13 +449,22 @@ class ProjectDetails extends StatelessWidget {
                                 children: [
                                   InkWell(
                                     onTap: () {
-                                      connStatus = true;
-                                      Navigator.pushNamed(
-                                          context, AppRoutes.stages,
+                                      if (state is ProjectDetailsSuccess) {
+                                        final successState =
+                                            state as ProjectDetailsSuccess;
+
+                                        connStatus = true;
+
+                                        Navigator.pushNamed(
+                                          context,
+                                          AppRoutes.stages,
                                           arguments: {
                                             "id": id,
-                                            "client_id": clientId
-                                          });
+                                            "client_id": successState
+                                                .response.data.clientId,
+                                          },
+                                        );
+                                      }
                                     },
                                     child: DetailsButtonContainer(
                                       title: "Stages",
@@ -722,26 +752,26 @@ class ProjectDetails extends StatelessWidget {
                                           .43,
                                     ),
                                   ),
-                                  InkWell(
-                                    onTap: () {
-                                      connStatus = true;
-                                      Navigator.pushNamed(
-                                          context, AppRoutes.estimateRequest,
-                                          arguments: {"id": id});
-                                    },
-                                    child: DetailsButtonContainer(
-                                      title: "Estimate Request",
-                                      color: AppColors.primaryColor,
-                                      width: MediaQuery.of(context).size.width *
-                                          .43,
-                                    ),
-                                  ),
+                                  // InkWell(
+                                  //   onTap: () {
+                                  //     connStatus = true;
+                                  //     Navigator.pushNamed(
+                                  //         context, AppRoutes.estimateRequest,
+                                  //         arguments: {"id": id});
+                                  //   },
+                                  //   child: DetailsButtonContainer(
+                                  //     title: "Estimate Request",
+                                  //     color: AppColors.primaryColor,
+                                  //     width: MediaQuery.of(context).size.width *
+                                  //         .43,
+                                  //   ),
+                                  // ),
                                 ],
                               ),
                             ),
                             const SizedBox(
                               height: 40,
-                            ),  
+                            ),
                           ],
                         ),
                       ),

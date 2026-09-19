@@ -175,6 +175,11 @@ class _DeductionWorkRequestEditDialogState
                     if (value == null || value.trim().isEmpty) {
                       return "Quantity is required";
                     }
+                    final qty = int.tryParse(value.trim());
+
+                    if (qty == null || qty < 1) {
+                      return "Quantity must be at least 1";
+                    }
                     return null;
                   },
                 ),

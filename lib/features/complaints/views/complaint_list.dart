@@ -213,29 +213,64 @@ class _ComplaintListPageState extends State<ComplaintList> {
                   ),
                   Expanded(
                     child: RefreshIndicator(
-                      onRefresh: () async {
-                        await cubit.getComplaintList();
+                        onRefresh: () async {
+                          await cubit.getComplaintList();
 
-                        setState(() {
-                          filteredComplaints = List.from(cubit.complaints);
-                        });
-                      },
-                      child: filteredComplaints.isEmpty
-                          ? _buildEmptyState()
-                          : ListView.builder(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
-                              itemCount: filteredComplaints.length,
-                              itemBuilder: (context, index) {
-                                return state is ComplaintLoading && index == 0
-                                    ? shimmerContainer(120, double.infinity)
-                                    : _buildComplaintCard(
-                                        context,
-                                        filteredComplaints[index],
+                          setState(() {
+                            filteredComplaints = List.from(cubit.complaints);
+                          });
+                        },
+                        child: filteredComplaints.isEmpty
+                            ? _buildEmptyState()
+                            : NotificationListener<ScrollNotification>(
+                                onNotification: (notification) {
+                                  if (notification.metrics.pixels >=
+                                      notification.metrics.maxScrollExtent -
+                                          200) {
+                                    if (!cubit.isLoadingMore &&
+                                        cubit.hasMoreComplaints) {
+                                      cubit
+                                          .getComplaintList(
+                                        page: cubit.currentPage + 1,
+                                        pageSize: ComplaintCubit.pageSize,
+                                        isLoadMore: true,
+                                      )
+                                          .then((_) {
+                                        if (mounted) {
+                                          filterComplaints(
+                                            searchController.text,
+                                            cubit,
+                                          );
+                                        }
+                                      });
+                                    }
+                                  }
+
+                                  return false;
+                                },
+                                child: ListView.builder(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16),
+                                  itemCount: filteredComplaints.length +
+                                      (cubit.isLoadingMore ? 1 : 0),
+                                  itemBuilder: (context, index) {
+                                    if (index >= filteredComplaints.length) {
+                                      return const Padding(
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 20),
+                                        child: Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
                                       );
-                              },
-                            ),
-                    ),
+                                    }
+
+                                    return _buildComplaintCard(
+                                      context,
+                                      filteredComplaints[index],
+                                    );
+                                  },
+                                ),
+                              )),
                   ),
                 ],
               ),

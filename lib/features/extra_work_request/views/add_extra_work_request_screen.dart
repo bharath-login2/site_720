@@ -24,7 +24,7 @@ class _AddExtraWorkRequestScreenState extends State<AddExtraWorkRequestScreen> {
   final _itemFormKey = GlobalKey<FormState>();
 
   final TextEditingController _itemNameController = TextEditingController();
-  final TextEditingController _qtyController = TextEditingController();
+  final TextEditingController _qtyController = TextEditingController(text: '1');
   final TextEditingController _remarksController = TextEditingController();
 
   String? selectedProjectId;
@@ -64,7 +64,7 @@ class _AddExtraWorkRequestScreenState extends State<AddExtraWorkRequestScreen> {
       setState(() {
         items.add(newItem);
         _itemNameController.clear();
-        _qtyController.clear();
+        _qtyController.text = '1';
         _remarksController.clear();
       });
 
@@ -390,6 +390,11 @@ class _AddExtraWorkRequestScreenState extends State<AddExtraWorkRequestScreen> {
                       validator: (value) {
                         if (value == null || value.trim().isEmpty) {
                           return "Quantity is required";
+                        }
+                        final qty = int.tryParse(value.trim());
+
+                        if (qty == null || qty < 1) {
+                          return "Quantity must be at least 1";
                         }
                         return null;
                       },

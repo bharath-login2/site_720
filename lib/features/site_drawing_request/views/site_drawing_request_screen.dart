@@ -154,24 +154,42 @@ class _SiteDrawingRequestScreenState extends State<SiteDrawingRequestScreen> {
               );
             }
 
+            final cubit = context.read<SiteDrawingRequestCubit>();
+
             return RefreshIndicator(
               onRefresh: () async {
-                await context
-                    .read<SiteDrawingRequestCubit>()
-                    .getSiteDrawingRequests();
+                await cubit.getSiteDrawingRequests(
+                  page: 1,
+                );
               },
-              child: ListView.separated(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-                itemCount: requests.length,
-                separatorBuilder: (context, index) {
-                  return const SizedBox(height: 12);
+              child: NotificationListener<ScrollNotification>(
+                onNotification: (notification) {
+                  if (notification is ScrollUpdateNotification &&
+                      notification.metrics.pixels >=
+                          notification.metrics.maxScrollExtent) {
+                    if (!cubit.isLoadingMore && cubit.hasMoreRequests) {
+                      cubit.getSiteDrawingRequests(
+                        page: cubit.currentPage + 1,
+                        isLoadMore: true,
+                      );
+                    }
+                  }
+
+                  return false;
                 },
-                itemBuilder: (context, index) {
-                  return SiteDrawingRequestCard(
-                    item: requests[index],
-                  );
-                },
+                child: ListView.separated(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+                  itemCount: requests.length,
+                  separatorBuilder: (context, index) {
+                    return const SizedBox(height: 12);
+                  },
+                  itemBuilder: (context, index) {
+                    return SiteDrawingRequestCard(
+                      item: requests[index],
+                    );
+                  },
+                ),
               ),
             );
           }

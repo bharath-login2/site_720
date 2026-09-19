@@ -131,7 +131,7 @@ class _SiteDrawingRequestFormState extends State<SiteDrawingRequestForm> {
                     ),
                     items: cubit.projectList.map((project) {
                       return DropdownMenuItem<String>(
-                        value: project.projectId.toString(),
+                        value: project.id,
                         child: Text(
                           project.projectName,
                           overflow: TextOverflow.ellipsis,
@@ -207,7 +207,7 @@ class _SiteDrawingRequestFormState extends State<SiteDrawingRequestForm> {
                                                 children: cubit.stageList
                                                     .map((stage) {
                                                   final String stageId =
-                                                      stage.stageId.toString();
+                                                      stage.stageId;
 
                                                   final bool isSelected =
                                                       selectedStageIds

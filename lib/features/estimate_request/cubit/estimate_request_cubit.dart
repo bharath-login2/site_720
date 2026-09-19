@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../data/services/http_services.dart';
 import '../../../data/models/estimate_request/estimate_request_model.dart';
 import '../../../data/models/expenselist/project_id_list_model.dart';
-import '../../../data/models/stages/stage_model.dart';
+import '../../../data/models/stage_list/project_statge_list.dart';
 import '../../../data/models/extraworklist/staffListModel.dart';
 import 'estimate_request_state.dart';
 
@@ -31,27 +31,70 @@ class EstimateRequestCubit extends Cubit<EstimateRequestState> {
   List<ProjectIdList> projectList = [];
 
   /// Stage List
-  GetStagesModel? stageResponse;
-  List<GetStages> stageList = [];
+  List<StageData> stageList = [];
+  // GetStagesModel? stageResponse;
+  // List<GetStages> stageList = [];
 
   StaffListModel? staffResponse;
   List<StaffList> staffList = [];
 
-  Future getEstimateRequests({String? projectId}) async {
-    emit(EstimateRequestLoading());
+  int currentPage = 1;
+  static const int pageSize = 20;
+
+  bool isLoadingMore = false;
+  bool hasMoreRequests = true;
+
+  Future<void> getEstimateRequests({
+    String? projectId,
+    int page = 1,
+    bool isLoadMore = false,
+  }) async {
+    if (isLoadMore) {
+      if (isLoadingMore || !hasMoreRequests) return;
+
+      isLoadingMore = true;
+    } else {
+      currentPage = 1;
+      hasMoreRequests = true;
+      emit(EstimateRequestLoading());
+    }
 
     try {
-      // Remember the current filter
-      currentProjectId = projectId;
+      if (!isLoadMore) {
+        currentProjectId = projectId;
+      }
 
-      response = await HttpServices.getEstimateRequests(
-        projectId: projectId,
+      final newResponse = await HttpServices.getEstimateRequests(
+        projectId: projectId ?? currentProjectId,
+        page: page,
+        pageSize: pageSize,
       );
 
-      emit(EstimateRequestLoaded(response));
+      if (isLoadMore) {
+        response.data.addAll(newResponse.data);
+
+        if (newResponse.data.length < pageSize) {
+          hasMoreRequests = false;
+        }
+
+        currentPage = page;
+
+        emit(EstimateRequestLoaded(response));
+      } else {
+        response = newResponse;
+
+        if (newResponse.data.length < pageSize) {
+          hasMoreRequests = false;
+        }
+
+        currentPage = page;
+
+        emit(EstimateRequestLoaded(response));
+      }
     } catch (e) {
-      print("ERROR = $e");
       emit(EstimateRequestError(e.toString()));
+    } finally {
+      isLoadingMore = false;
     }
   }
 
@@ -70,12 +113,17 @@ class EstimateRequestCubit extends Cubit<EstimateRequestState> {
   /// Get Stage List
   Future<void> getStageList(String projectId) async {
     try {
-      stageResponse = await HttpServices.getStagesList(projectId);
-      stageList = stageResponse?.data ?? [];
+      final response = await HttpServices.getStageList(
+        projectId: projectId,
+      );
 
-      emit(EstimateRequestLoaded(response));
+      if (response != null && response.status == true) {
+        stageList = response.data;
+      } else {
+        stageList = [];
+      }
     } catch (e) {
-      emit(EstimateRequestError(e.toString()));
+      stageList = [];
     }
   }
 

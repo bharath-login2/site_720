@@ -22,6 +22,7 @@ import 'package:site_720/features/dashboard/views/change_password.dart';
 import 'package:site_720/features/dashboard/views/profile_screen.dart';
 import 'package:site_720/features/livemap/views/livemap_screen.dart';
 import 'package:site_720/features/livemap/cubit/livemap_cubit.dart';
+import '../../../core/utilities/shared_preferences.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -49,6 +50,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Map<String, dynamic>? profileData;
 
   bool profileLoading = true;
+  String? staffName;
+  String? designation;
 
   @override
   void initState() {
@@ -58,6 +61,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
       fdate.text,
       tdate.text,
     );
+
+    _loadUserDetails();
+  }
+
+  Future<void> _loadUserDetails() async {
+    final name = await getSharedPreference("staffName");
+    final userDesignation = await getSharedPreference("designation");
+
+    if (!mounted) return;
+    setState(() {
+      staffName = name;
+      designation = userDesignation;
+    });
   }
 
   @override
@@ -152,14 +168,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            state.response.data.username,
+                                            staffName ?? "",
                                             style: const TextStyle(
                                               fontSize: 15,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
                                           Text(
-                                            state.response.data.designation,
+                                            designation ?? "",
                                             style: const TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.bold,

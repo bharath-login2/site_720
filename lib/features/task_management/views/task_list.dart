@@ -39,6 +39,15 @@ class _TaskListState extends State<TaskList> {
   String? userId;
   TaskCubit? _cubitReference;
 
+  //for pagination of task list
+  int _page = 1;
+  static const int _pageSize = 15;
+
+  bool _isLoadingMore = false;
+  bool _hasMoreTasks = true;
+  int? _loadingPage;
+  final ScrollController _taskScrollController = ScrollController();
+
   DateTime? _filterFromDate;
   DateTime? _filterToDate;
   String? _filterWorkType;
@@ -122,7 +131,7 @@ class _TaskListState extends State<TaskList> {
                         )
                       ],
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 15),
                     Row(
                       children: [
                         Expanded(
@@ -338,9 +347,15 @@ class _TaskListState extends State<TaskList> {
                                 _filterAssignedToId = tempAssignedToId;
                                 _selectedStatuses =
                                     List.from(tempSelectedStatuses);
+
+                                _page = 1;
+                                _hasMoreTasks = true;
+                                taskList = [];
                               });
 
                               _cubitReference?.getTaskList(
+                                page: 1,
+                                pageSize: _pageSize,
                                 fromDate: _formatDate(_filterFromDate),
                                 toDate: _formatDate(_filterToDate),
                                 workType: _filterWorkType,
@@ -373,7 +388,51 @@ class _TaskListState extends State<TaskList> {
   @override
   void initState() {
     super.initState();
+    _taskScrollController.addListener(_onTaskScroll);
     _loadUserId();
+  }
+
+  void dispose() {
+    _taskScrollController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadMoreTasks() async {
+    if (_isLoadingMore || !_hasMoreTasks) return;
+
+    final cubit = _cubitReference;
+    if (cubit == null) return;
+
+    final nextPage = _page + 1;
+
+    _isLoadingMore = true;
+    _loadingPage = nextPage;
+
+    try {
+      await cubit.getTaskList(
+        page: nextPage,
+        pageSize: _pageSize,
+        fromDate: _formatDate(_filterFromDate),
+        toDate: _formatDate(_filterToDate),
+        workType: _filterWorkType,
+        category: _filterCategoryId,
+        assignedBy: _filterAssignedById,
+        assignedTo: _filterAssignedToId,
+        status: _selectedStatuses.isEmpty ? null : _selectedStatuses.join(','),
+        viewType: filterType,
+        isLoadMore: true,
+      );
+    } finally {
+      _isLoadingMore = false;
+    }
+  }
+
+  void _onTaskScroll() {
+    if (!_taskScrollController.hasClients) return;
+    if (_taskScrollController.position.pixels >=
+        _taskScrollController.position.maxScrollExtent - 300) {
+      _loadMoreTasks();
+    }
   }
 
   Future<void> _loadUserId() async {
@@ -422,35 +481,42 @@ class _TaskListState extends State<TaskList> {
     }
   }
 
-  Map<String, int> getStatusCounts(List<Tasks> list) {
-    final counts = {
-      "New": 0,
-      "Completed": 0,
-      "Ongoing": 0,
-      "Cancelled": 0,
-    };
+  // Map<String, int> getStatusCounts(List<Tasks> list) {
+  //   final counts = {
+  //     "New": 0,
+  //     "Completed": 0,
+  //     "Ongoing": 0,
+  //     "Cancelled": 0,
+  //   };
 
-    for (var task in list) {
-      final status = task.status.toLowerCase();
+  //   for (var task in list) {
+  //     final status = task.status.toLowerCase();
 
-      if (status == "new" || status == "pending") {
-        counts["New"] = counts["New"]! + 1;
-      } else if (status == "completed") {
-        counts["Completed"] = counts["Completed"]! + 1;
-      } else if (status == "in-progress" || status == "in progress") {
-        counts["Ongoing"] = counts["Ongoing"]! + 1;
-      } else if (status == "cancelled" || status == "not-started") {
-        counts["Cancelled"] = counts["Cancelled"]! + 1;
-      }
-    }
-
-    return counts;
-  }
+  //     if (status == "new" || status == "pending") {
+  //       counts["New"] = counts["New"]! + 1;
+  //     } else if (status == "completed") {
+  //       counts["Completed"] = counts["Completed"]! + 1;
+  //     } else if (status == "in-progress" || status == "in progress") {
+  //       counts["Ongoing"] = counts["Ongoing"]! + 1;
+  //     } else if (status == "cancelled" || status == "not-started") {
+  //       counts["Cancelled"] = counts["Cancelled"]! + 1;
+  //     }
+  //   }
+  //   return counts;
+  // }
 
   // Callback method to refresh task list
   void _refreshTaskList() {
     if (_cubitReference != null) {
+      setState(() {
+        _page = 1;
+        _hasMoreTasks = true;
+        taskList = [];
+      });
+
       _cubitReference!.getTaskList(
+        page: 1,
+        pageSize: _pageSize,
         fromDate: _formatDate(_filterFromDate),
         toDate: _formatDate(_filterToDate),
         workType: _filterWorkType,
@@ -460,7 +526,6 @@ class _TaskListState extends State<TaskList> {
         status: _selectedStatuses.isEmpty ? null : _selectedStatuses.join(','),
         viewType: filterType,
       );
-      print("🔄 Task list refreshed from callback with filters");
     }
   }
 
@@ -506,7 +571,9 @@ class _TaskListState extends State<TaskList> {
           ? const Center(child: CircularProgressIndicator())
           : BlocProvider(
               create: (context) {
-                final cubit = TaskCubit()..getTaskList(viewType: filterType);
+                final cubit = TaskCubit()
+                  ..getTaskList(
+                      page: 1, pageSize: _pageSize, viewType: filterType);
                 _cubitReference = cubit;
                 return cubit;
               },
@@ -527,10 +594,36 @@ class _TaskListState extends State<TaskList> {
                   BlocListener<TaskCubit, TaskState>(
                     listener: (context, state) {
                       if (state is TaskSuccess) {
+                        final newTasks = state.response.data.resultData;
+
                         setState(() {
-                          taskList = state.response.data;
+                          // First page
+                          if (_loadingPage == null) {
+                            _page = 1;
+                            taskList = newTasks;
+                          }
+                          // Load-more page
+                          else {
+                            taskList = [
+                              ...taskList,
+                              ...newTasks,
+                            ];
+
+                            _page = _loadingPage!;
+                          }
+
+                          // If fewer than pageSize came back, this is the last page
+                          if (newTasks.length < _pageSize) {
+                            _hasMoreTasks = false;
+                          } else {
+                            _hasMoreTasks = true;
+                          }
                         });
-                        print("📊 Task list updated: ${taskList.length} tasks");
+
+                        _loadingPage = null;
+
+                        // print("📊 Task list updated: ${taskList.length} tasks");
+                        // print("📄 Current page: $_page");
                       } else if (state is ImageSuccess) {
                         setState(() {
                           image = state.image;
@@ -563,11 +656,29 @@ class _TaskListState extends State<TaskList> {
                     // The sub-tabs (My/Assigned/All) also trigger an API call with viewType.
                     List<Tasks> filtered = taskList;
 
-                    final statusCounts = getStatusCounts(filtered);
-
+                    final pendingCount = state is TaskSuccess
+                        ? state.response.data.pendingCount
+                        : 0;
+                    final ongoingCount = state is TaskSuccess
+                        ? state.response.data.ongoingCount
+                        : 0;
+                    final completedCount = state is TaskSuccess
+                        ? state.response.data.completedCount
+                        : 0;
+                    final cancelledCount = state is TaskSuccess
+                        ? state.response.data.cancelledCount
+                        : 0;
                     return RefreshIndicator(
                       onRefresh: () async {
-                        cubit.getTaskList(
+                        setState(() {
+                          _page = 1;
+                          _hasMoreTasks = true;
+                          taskList = [];
+                        });
+
+                        await cubit.getTaskList(
+                          page: 1,
+                          pageSize: _pageSize,
                           fromDate: _formatDate(_filterFromDate),
                           toDate: _formatDate(_filterToDate),
                           workType: _filterWorkType,
@@ -582,6 +693,7 @@ class _TaskListState extends State<TaskList> {
                         print("🔃 Manual refresh triggered with filters");
                       },
                       child: ListView(
+                        controller: _taskScrollController,
                         children: [
                           const SizedBox(height: 10),
 
@@ -592,8 +704,13 @@ class _TaskListState extends State<TaskList> {
                               _tab("My Tasks", filterType == "my", () {
                                 setState(() {
                                   filterType = "my";
+                                  _page = 1;
+                                  _hasMoreTasks = true;
+                                  taskList = [];
                                 });
                                 cubit.getTaskList(
+                                  page: 1,
+                                  pageSize: _pageSize,
                                   fromDate: _formatDate(_filterFromDate),
                                   toDate: _formatDate(_filterToDate),
                                   workType: _filterWorkType,
@@ -610,8 +727,13 @@ class _TaskListState extends State<TaskList> {
                                   () {
                                 setState(() {
                                   filterType = "assigned";
+                                  _page = 1;
+                                  _hasMoreTasks = true;
+                                  taskList = [];
                                 });
                                 cubit.getTaskList(
+                                  page: 1,
+                                  pageSize: _pageSize,
                                   fromDate: _formatDate(_filterFromDate),
                                   toDate: _formatDate(_filterToDate),
                                   workType: _filterWorkType,
@@ -627,8 +749,13 @@ class _TaskListState extends State<TaskList> {
                               _tab("All Tasks", filterType == "all", () {
                                 setState(() {
                                   filterType = "all";
+                                  _page = 1;
+                                  _hasMoreTasks = true;
+                                  taskList = [];
                                 });
                                 cubit.getTaskList(
+                                  page: 1,
+                                  pageSize: _pageSize,
                                   fromDate: _formatDate(_filterFromDate),
                                   toDate: _formatDate(_filterToDate),
                                   workType: _filterWorkType,
@@ -653,14 +780,14 @@ class _TaskListState extends State<TaskList> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                _buildStatusCountCard("Pending",
-                                    statusCounts["New"]!, Colors.blue),
-                                _buildStatusCountCard("Ongoing",
-                                    statusCounts["Ongoing"]!, Colors.orange),
-                                _buildStatusCountCard("Completed",
-                                    statusCounts["Completed"]!, Colors.green),
-                                _buildStatusCountCard("Cancelled",
-                                    statusCounts["Cancelled"]!, Colors.red),
+                                _buildStatusCountCard(
+                                    "Pending", pendingCount, Colors.blue),
+                                _buildStatusCountCard(
+                                    "Ongoing", ongoingCount, Colors.orange),
+                                _buildStatusCountCard(
+                                    "Completed", completedCount, Colors.green),
+                                _buildStatusCountCard(
+                                    "Cancelled", cancelledCount, Colors.red),
                               ],
                             ),
                           ),
@@ -978,7 +1105,24 @@ class _TaskListState extends State<TaskList> {
       if (Navigator.canPop(context)) Navigator.pop(context);
       await Future.delayed(const Duration(milliseconds: 100));
       if (response.status) {
-        cubit.getTaskList();
+        setState(() {
+          _page = 1;
+          _hasMoreTasks = true;
+          taskList = [];
+        });
+        await cubit.getTaskList(
+          page: 1,
+          pageSize: _pageSize,
+          fromDate: _formatDate(_filterFromDate),
+          toDate: _formatDate(_filterToDate),
+          workType: _filterWorkType,
+          category: _filterCategoryId,
+          assignedBy: _filterAssignedById,
+          assignedTo: _filterAssignedToId,
+          status:
+              _selectedStatuses.isEmpty ? null : _selectedStatuses.join(','),
+          viewType: filterType,
+        );
         snackBar(context, response.message, Colors.green);
       } else {
         snackBar(context, response.message, Colors.red);

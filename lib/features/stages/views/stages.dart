@@ -73,7 +73,9 @@ class Stages extends StatelessWidget {
               if (state is AddedSuccess) {
                 snackBar(context, state.response.message, Colors.green);
               } else if (state is AddedFailure) {
-                snackBar(context, "Adding Stage Failed", Colors.green);
+                snackBar(context, "Adding Stage Failed", Colors.red);
+              } else if (state is StageNameExists) {
+                snackBar(context, "Stage name already exists", Colors.red);
               }
             },
           ),
@@ -149,30 +151,84 @@ class Stages extends StatelessWidget {
                               const SizedBox(
                                 width: 10,
                               ),
-                              if (PermissionManager.hasPermission('add stages'))
-                                InkWell(
-                                  onTap: () {
-                                    addStageDialog(
+
+                              PopupMenuButton<String>(
+                                color: Colors.white,
+                                surfaceTintColor: Colors.transparent,
+                                onSelected: (value) async {
+                                  if (value == 'add_stage') {
+                                    if (PermissionManager.hasPermission(
+                                        'add stages')) {
+                                      addStageDialog(
                                         context,
                                         cubit,
                                         "",
                                         "",
-                                        // phaseList,
                                         projectId,
                                         clientId,
                                         "",
                                         "Add Stage",
-                                        "Add");
-                                  },
-                                  child: const CircleAvatar(
-                                    radius: 20,
-                                    backgroundColor: AppColors.lightPrimary,
-                                    child: Icon(
-                                      Icons.add,
-                                      color: Colors.white,
+                                        "Add",
+                                      );
+                                    }
+                                  } else if (value == 'add_schedule') {
+                                    if (PermissionManager.hasPermission(
+                                        'create stage schedule date')) {
+                                      await cubit.getStageList(projectId);
+                                      // Open Add First Schedule Date dialog/page here
+                                      addFirstScheduleDateDialog(
+                                        context,
+                                        projectId,
+                                        clientId,
+                                      );
+                                    }
+                                  }
+                                },
+                                offset: const Offset(0, 45),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                itemBuilder: (context) => [
+                                  if (PermissionManager.hasPermission(
+                                      'add stages'))
+                                    const PopupMenuItem<String>(
+                                      value: 'add_stage',
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.add_circle_outline,
+                                            size: 20,
+                                          ),
+                                          SizedBox(width: 10),
+                                          Text('Add Stage'),
+                                        ],
+                                      ),
                                     ),
+                                  if (PermissionManager.hasPermission(
+                                      'create stage schedule date'))
+                                    const PopupMenuItem<String>(
+                                      value: 'add_schedule',
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.calendar_today_outlined,
+                                            size: 20,
+                                          ),
+                                          SizedBox(width: 10),
+                                          Text('Add First Schedule Date'),
+                                        ],
+                                      ),
+                                    ),
+                                ],
+                                child: const CircleAvatar(
+                                  radius: 20,
+                                  backgroundColor: AppColors.lightPrimary,
+                                  child: Icon(
+                                    Icons.add,
+                                    color: Colors.white,
                                   ),
                                 ),
+                              ),
                             ],
                           )
                         ],
@@ -1200,6 +1256,8 @@ class Stages extends StatelessWidget {
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.transparent,
           title: const Text("Add Stage Days"),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -1681,7 +1739,7 @@ class Stages extends StatelessWidget {
                       onTap: () async {
                         if (formKey.currentState!.validate()) {
                           if (title == "Add Stage") {
-                            cubit.addStageDetails(
+                            final success = await cubit.addStageDetails(
                               projectId,
                               clientId,
                               // selectedPhase,
@@ -1691,8 +1749,12 @@ class Stages extends StatelessWidget {
                               startDateController.text,
                               endDateController.text,
                             );
+                            // If duplicate or API failure, keep dialog open
+                            if (!success) {
+                              return;
+                            }
                           } else {
-                            cubit.editStageDetails(
+                            await cubit.editStageDetails(
                               projectId,
                               clientId,
                               stageId,
@@ -1733,6 +1795,183 @@ class Stages extends StatelessWidget {
               ),
             ),
           ),
+        );
+      },
+    );
+  }
+
+  Future<void> addFirstScheduleDateDialog(
+    BuildContext context,
+    String projectId,
+    String clientId,
+  ) async {
+    final cubit = context.read<StagesCubit>();
+    String? selectedStage;
+    DateTime? selectedDate;
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              surfaceTintColor: Colors.transparent,
+              title: const Text(
+                'Add First Schedule Date',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              content: SizedBox(
+                width: 400,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Stage',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    DropdownButtonFormField<String>(
+                      value: selectedStage,
+                      decoration: InputDecoration(
+                        hintText: 'Select Stage',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      items: cubit.stageList.map((stage) {
+                        return DropdownMenuItem<String>(
+                          value: stage.stageId,
+                          child: Text(stage.stageName),
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          selectedStage = value;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Schedule Date',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    InkWell(
+                      onTap: () async {
+                        final DateTime? pickedDate = await showDatePicker(
+                          context: context,
+                          initialDate: selectedDate ?? DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2100),
+                        );
+
+                        if (pickedDate != null) {
+                          setState(() {
+                            selectedDate = pickedDate;
+                          });
+                        }
+                      },
+                      child: InputDecorator(
+                        decoration: InputDecoration(
+                          hintText: 'Select Schedule Date',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          suffixIcon: const Icon(
+                            Icons.calendar_today_outlined,
+                          ),
+                        ),
+                        child: Text(
+                          selectedDate == null
+                              ? 'Select Schedule Date'
+                              : '${selectedDate!.day.toString().padLeft(2, '0')}/'
+                                  '${selectedDate!.month.toString().padLeft(2, '0')}/'
+                                  '${selectedDate!.year}',
+                          style: TextStyle(
+                            color: selectedDate == null
+                                ? Colors.grey
+                                : Colors.black,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(dialogContext);
+                  },
+                  child: const Text('Close'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (selectedStage == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please select a stage'),
+                        ),
+                      );
+                      return;
+                    }
+
+                    if (selectedDate == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please select a schedule date'),
+                        ),
+                      );
+                      return;
+                    }
+
+                    final success = await cubit.addFirstScheduleDate(
+                      stageId: selectedStage!,
+                      projectId: projectId,
+                      scheduleDate:
+                          DateFormat('dd-MM-yyyy').format(selectedDate!),
+                    );
+
+                    if (success) {
+                      await cubit.getStagesList(projectId);
+
+                      if (dialogContext.mounted) {
+                        Navigator.pop(dialogContext);
+                      }
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Schedule date added successfully'),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Failed to add schedule date'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text('Submit'),
+                ),
+              ],
+            );
+          },
         );
       },
     );

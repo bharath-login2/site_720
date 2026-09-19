@@ -4,6 +4,7 @@ import '../../../core/constants/colors.dart';
 import '../../../data/models/extrawork_Request/extra_work_request_model.dart';
 import '../cubit/extra_work_request_cubit.dart';
 
+
 /// Dialog for editing a single Extra Work Request item.
 /// Completely separate from the Add dialog.
 class ExtraWorkRequestEditDialog extends StatefulWidget {
@@ -173,9 +174,19 @@ class _ExtraWorkRequestEditDialogState
                 decoration: _fieldDecoration(
                   label: "Quantity *",
                 ),
-                validator: (v) => (v == null || v.trim().isEmpty)
-                    ? "Quantity is required"
-                    : null,
+                validator: (v) {
+                  if (v == null || v.trim().isEmpty) {
+                    return "Quantity is required";
+                  }
+
+                  final qty = int.tryParse(v.trim());
+
+                  if (qty == null || qty < 1) {
+                    return "Quantity must be at least 1";
+                  }
+
+                  return null;
+                },
               ),
               const SizedBox(height: 12),
 

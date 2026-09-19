@@ -18,8 +18,96 @@ class Home extends StatefulWidget {
   State<Home> createState() => _HomeState();
 }
 
+// class _HomeState extends State<Home> {
+//   int _selectedIndex = 0;
+
+//   void _onItemTapped(int index) {
+//     setState(() {
+//       _selectedIndex = index;
+//     });
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final List<Widget> widgetOptions = <Widget>[
+//       /// HOME
+//       DashboardScreen(),
+
+//       /// WORK
+//       BlocProvider(
+//         create: (_) => WorkCubit()..getExternalWorkDetailsList(),
+//         child: const WorkScreen(),
+//       ),
+
+//       /// TASK
+//       TaskList(),
+
+//       /// LOCATION
+//       VisitList(),
+//     ];
+
+//     return PopScope(
+//       canPop: false,
+//       onPopInvokedWithResult: (didPop, result) {
+//         exitApp(context);
+//       },
+//       child: Scaffold(
+//         body: IndexedStack(
+//           index: _selectedIndex,
+//           children: widgetOptions,
+//         ),
+//         bottomNavigationBar: BottomNavigationBar(
+//           currentIndex: _selectedIndex,
+//           selectedItemColor: AppColors.primaryColor,
+//           backgroundColor: AppColors.secondaryColor,
+//           unselectedItemColor: Colors.grey,
+//           type: BottomNavigationBarType.fixed,
+//           showSelectedLabels: true,
+//           showUnselectedLabels: true,
+//           enableFeedback: false,
+//           onTap: _onItemTapped,
+//           items: const <BottomNavigationBarItem>[
+//             BottomNavigationBarItem(
+//               icon: Icon(Icons.home),
+//               label: 'Home',
+//             ),
+//             BottomNavigationBarItem(
+//               icon: Icon(Icons.work),
+//               label: 'Work',
+//             ),
+//             BottomNavigationBarItem(
+//               icon: Icon(Icons.task_alt),
+//               label: 'Task',
+//             ),
+//             BottomNavigationBarItem(
+//               icon: Icon(Icons.location_pin),
+//               label: 'Location',
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
 class _HomeState extends State<Home> {
   int _selectedIndex = 0;
+
+  late final List<Widget> widgetOptions;
+
+  @override
+  void initState() {
+    super.initState();
+
+    widgetOptions = [
+      DashboardScreen(),
+      BlocProvider(
+        create: (_) => WorkCubit()..getExternalWorkDetailsList(),
+        child: const WorkScreen(),
+      ),
+      TaskList(),
+      VisitList(),
+    ];
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -29,23 +117,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> widgetOptions = <Widget>[
-      /// HOME
-      DashboardScreen(),
-
-      /// WORK
-      BlocProvider(
-        create: (_) => WorkCubit()..getExternalWorkDetailsList(),
-        child: const WorkScreen(),
-      ),
-
-      /// TASK
-      TaskList(),
-
-      /// LOCATION
-      VisitList(),
-    ];
-
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
@@ -66,7 +137,7 @@ class _HomeState extends State<Home> {
           showUnselectedLabels: true,
           enableFeedback: false,
           onTap: _onItemTapped,
-          items: const <BottomNavigationBarItem>[
+          items: const [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
               label: 'Home',

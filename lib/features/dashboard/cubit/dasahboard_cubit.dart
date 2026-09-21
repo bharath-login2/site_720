@@ -11,13 +11,28 @@ class DashboardCubit extends Cubit<DashboardState> {
 
   Future<void> getDashboard(String fDate, String tDate) async {
     emit(DashboardLoading());
+
     try {
       DashboardModel response = await HttpServices.dashboard(fDate, tDate);
+
+      if (response.status == false &&
+          (response.message == "Token expired" ||
+              response.message == "Invalid Token!")) {
+        print("Dashboard status is FALSE");
+        print("TOKEN INVALID - LOGGING OUT");
+        emit(DashboardTokenExpired());
+        return;
+      }
+
       if (response.status == true) {
         emit(DashboardSuccess(response));
       }
     } catch (e) {
-      emit(DashboardFailure('Failed to fetch data: ${e.toString()}'));
+      emit(
+        DashboardFailure(
+          'Failed to fetch data: ${e.toString()}',
+        ),
+      );
     }
   }
 

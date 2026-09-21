@@ -71,66 +71,105 @@ class TaskData {
       };
 }
 
+// class Tasks {
+//   String id;
+//   String assignedStaffId;
+//   String assignedStaffUserId;
+//   String taskTitle;
+//   String fromDate;
+//   String toDate;
+//   String description;
+//   String location;
+//   String priority;
+//   String status;
+//   String workType;
+//   String staffName;
+//   String stageName;
+
+//   Tasks({
+//     required this.id,
+//     required this.assignedStaffId,
+//     required this.assignedStaffUserId,
+//     required this.taskTitle,
+//     required this.fromDate,
+//     required this.toDate,
+//     required this.description,
+//     required this.location,
+//     required this.priority,
+//     required this.status,
+//     required this.workType,
+//     required this.staffName,
+//     required this.stageName,
+//   });
+
+//   factory Tasks.fromJson(Map<String, dynamic> json) => Tasks(
+//         id: json["id"]?.toString() ?? "",
+//         assignedStaffId: json["to_staff_id"]?.toString() ?? "",
+//         assignedStaffUserId: json["to_user_id"]?.toString() ?? "",
+//         taskTitle: json["task_title"]?.toString() ?? "",
+//         fromDate: json["from_date"]?.toString() ?? "",
+//         toDate: json["to_date"]?.toString() ?? "",
+//         description: json["description"]?.toString() ?? "",
+//         location: json["location"]?.toString() ?? "",
+//         priority: json["priority"]?.toString() ?? "",
+//         status: json["status"]?.toString() ?? "",
+//         workType: json["work_type"]?.toString() ?? "",
+//         staffName: json["staff_name"]?.toString() ?? "",
+//         stageName: json["stage_name"]?.toString() ?? "",
+//       );
+
+//   Map<String, dynamic> toJson() => {
+//         "id": id,
+//         "to_staff_id": assignedStaffId,
+//         "to_user_id": assignedStaffUserId,
+//         "task_title": taskTitle,
+//         "from_date": fromDate,
+//         "to_date": toDate,
+//         "description": description,
+//         "location": location,
+//         "priority": priority,
+//         "status": status,
+//         "work_type": workType,
+//         "staff_name": staffName,
+//         "stage_name": stageName,
+//       };
+// }
 class Tasks {
   String id;
-  String assignedStaffId;
-  String assignedStaffUserId;
   String taskTitle;
   String fromDate;
   String toDate;
-  String description;
-  String location;
-  String priority;
-  String status;
   String workType;
+  String status;
   String staffName;
-  String stageName;
 
   Tasks({
     required this.id,
-    required this.assignedStaffId,
-    required this.assignedStaffUserId,
     required this.taskTitle,
     required this.fromDate,
     required this.toDate,
-    required this.description,
-    required this.location,
-    required this.priority,
-    required this.status,
     required this.workType,
+    required this.status,
     required this.staffName,
-    required this.stageName,
   });
 
   factory Tasks.fromJson(Map<String, dynamic> json) => Tasks(
         id: json["id"]?.toString() ?? "",
-        assignedStaffId: json["to_staff_id"]?.toString() ?? "",
-        assignedStaffUserId: json["to_user_id"]?.toString() ?? "",
         taskTitle: json["task_title"]?.toString() ?? "",
         fromDate: json["from_date"]?.toString() ?? "",
         toDate: json["to_date"]?.toString() ?? "",
-        description: json["description"]?.toString() ?? "",
-        location: json["location"]?.toString() ?? "",
-        priority: json["priority"]?.toString() ?? "",
-        status: json["status"]?.toString() ?? "",
         workType: json["work_type"]?.toString() ?? "",
+        status: json["status"]?.toString() ?? "",
         staffName: json["staff_name"]?.toString() ?? "",
-        stageName: json["stage_name"]?.toString() ?? "",
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
-        "to_staff_id": assignedStaffId,
-        "to_user_id": assignedStaffUserId,
         "task_title": taskTitle,
         "from_date": fromDate,
         "to_date": toDate,
-        "description": description,
-        "location": location,
-        "priority": priority,
-        "status": status,
         "work_type": workType,
+        "status": status,
         "staff_name": staffName,
-        "stage_name": stageName,
       };
 }

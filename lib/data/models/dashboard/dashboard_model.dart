@@ -20,11 +20,20 @@ class DashboardModel {
     required this.status,
   });
 
-  factory DashboardModel.fromJson(Map<String, dynamic> json) => DashboardModel(
-        data: json["data"] != null ? Data.fromJson(json["data"]) : Data.empty(),
-        message: json["message"] ?? "",
-        status: json["status"] ?? false,
-      );
+  // factory DashboardModel.fromJson(Map<String, dynamic> json) => DashboardModel(
+  //       data: json["data"] != null ? Data.fromJson(json["data"]) : Data.empty(),
+  //       message: json["message"] ?? "",
+  //       status: json["status"] ?? false,
+  //     );
+  factory DashboardModel.fromJson(Map<String, dynamic> json) {
+    return DashboardModel(
+      data: json["data"] is Map<String, dynamic>
+          ? Data.fromJson(json["data"])
+          : Data.empty(),
+      message: json["message"] ?? "",
+      status: json["status"] ?? false,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "data": data.toJson(),

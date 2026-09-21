@@ -62,6 +62,10 @@ class _TaskListState extends State<TaskList> {
   List<StaffList> _staffs = [];
   String? _userName;
 
+  int _pendingCount = 0;
+  int _ongoingCount = 0;
+  int _completedCount = 0;
+  int _cancelledCount = 0;
   DateTime _normalizeDate(DateTime date) {
     return DateTime(date.year, date.month, date.day);
   }
@@ -597,6 +601,11 @@ class _TaskListState extends State<TaskList> {
                         final newTasks = state.response.data.resultData;
 
                         setState(() {
+                          _pendingCount = state.response.data.pendingCount;
+                          _ongoingCount = state.response.data.ongoingCount;
+                          _completedCount = state.response.data.completedCount;
+                          _cancelledCount = state.response.data.cancelledCount;
+
                           // First page
                           if (_loadingPage == null) {
                             _page = 1;
@@ -656,18 +665,18 @@ class _TaskListState extends State<TaskList> {
                     // The sub-tabs (My/Assigned/All) also trigger an API call with viewType.
                     List<Tasks> filtered = taskList;
 
-                    final pendingCount = state is TaskSuccess
-                        ? state.response.data.pendingCount
-                        : 0;
-                    final ongoingCount = state is TaskSuccess
-                        ? state.response.data.ongoingCount
-                        : 0;
-                    final completedCount = state is TaskSuccess
-                        ? state.response.data.completedCount
-                        : 0;
-                    final cancelledCount = state is TaskSuccess
-                        ? state.response.data.cancelledCount
-                        : 0;
+                    // final pendingCount = state is TaskSuccess
+                    //     ? state.response.data.pendingCount
+                    //     : 0;
+                    // final ongoingCount = state is TaskSuccess
+                    //     ? state.response.data.ongoingCount
+                    //     : 0;
+                    // final completedCount = state is TaskSuccess
+                    //     ? state.response.data.completedCount
+                    //     : 0;
+                    // final cancelledCount = state is TaskSuccess
+                    //     ? state.response.data.cancelledCount
+                    //     : 0;
                     return RefreshIndicator(
                       onRefresh: () async {
                         setState(() {
@@ -781,13 +790,117 @@ class _TaskListState extends State<TaskList> {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 _buildStatusCountCard(
-                                    "Pending", pendingCount, Colors.blue),
+                                  "Pending",
+                                  _pendingCount,
+                                  Colors.blue,
+                                  onTap: () {
+                                    setState(() {
+                                      filterType = "pending";
+                                      _page = 1;
+                                      _hasMoreTasks = true;
+                                      taskList = [];
+                                    });
+
+                                    cubit.getTaskList(
+                                        page: 1,
+                                        pageSize: _pageSize,
+                                        fromDate: _formatDate(_filterFromDate),
+                                        toDate: _formatDate(_filterToDate),
+                                        workType: _filterWorkType,
+                                        category: _filterCategoryId,
+                                        assignedBy: _filterAssignedById,
+                                        assignedTo: _filterAssignedToId,
+                                        status: _selectedStatuses.isEmpty
+                                            ? null
+                                            : _selectedStatuses.join(','),
+                                        viewType: "",
+                                        taskStatus: "4");
+                                  },
+                                ),
                                 _buildStatusCountCard(
-                                    "Ongoing", ongoingCount, Colors.orange),
+                                  "Ongoing",
+                                  _ongoingCount,
+                                  Colors.orange,
+                                  onTap: () {
+                                    setState(() {
+                                      filterType = "ongoing";
+                                      _page = 1;
+                                      _hasMoreTasks = true;
+                                      taskList = [];
+                                    });
+
+                                    cubit.getTaskList(
+                                        page: 1,
+                                        pageSize: _pageSize,
+                                        fromDate: _formatDate(_filterFromDate),
+                                        toDate: _formatDate(_filterToDate),
+                                        workType: _filterWorkType,
+                                        category: _filterCategoryId,
+                                        assignedBy: _filterAssignedById,
+                                        assignedTo: _filterAssignedToId,
+                                        status: _selectedStatuses.isEmpty
+                                            ? null
+                                            : _selectedStatuses.join(','),
+                                        viewType: "",
+                                        taskStatus: "3");
+                                  },
+                                ),
                                 _buildStatusCountCard(
-                                    "Completed", completedCount, Colors.green),
+                                  "Completed",
+                                  _completedCount,
+                                  Colors.green,
+                                  onTap: () {
+                                    setState(() {
+                                      filterType = "completed";
+                                      _page = 1;
+                                      _hasMoreTasks = true;
+                                      taskList = [];
+                                    });
+
+                                    cubit.getTaskList(
+                                        page: 1,
+                                        pageSize: _pageSize,
+                                        fromDate: _formatDate(_filterFromDate),
+                                        toDate: _formatDate(_filterToDate),
+                                        workType: _filterWorkType,
+                                        category: _filterCategoryId,
+                                        assignedBy: _filterAssignedById,
+                                        assignedTo: _filterAssignedToId,
+                                        status: _selectedStatuses.isEmpty
+                                            ? null
+                                            : _selectedStatuses.join(','),
+                                        viewType: "",
+                                        taskStatus: "1");
+                                  },
+                                ),
                                 _buildStatusCountCard(
-                                    "Cancelled", cancelledCount, Colors.red),
+                                  "Cancelled",
+                                  _cancelledCount,
+                                  Colors.red,
+                                  onTap: () {
+                                    setState(() {
+                                      filterType = "cancelled";
+                                      _page = 1;
+                                      _hasMoreTasks = true;
+                                      taskList = [];
+                                    });
+
+                                    cubit.getTaskList(
+                                        page: 1,
+                                        pageSize: _pageSize,
+                                        fromDate: _formatDate(_filterFromDate),
+                                        toDate: _formatDate(_filterToDate),
+                                        workType: _filterWorkType,
+                                        category: _filterCategoryId,
+                                        assignedBy: _filterAssignedById,
+                                        assignedTo: _filterAssignedToId,
+                                        status: _selectedStatuses.isEmpty
+                                            ? null
+                                            : _selectedStatuses.join(','),
+                                        viewType: "",
+                                        taskStatus: "2");
+                                  },
+                                ),
                               ],
                             ),
                           ),
@@ -898,14 +1011,14 @@ class _TaskListState extends State<TaskList> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                        if (task.stageName != "")
-                          Text(
-                            task.stageName,
-                            style: const TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                        // if (task.stageName != "")
+                        //   Text(
+                        //     task.stageName,
+                        //     style: const TextStyle(
+                        //       fontSize: 10,
+                        //       fontWeight: FontWeight.bold,
+                        //     ),
+                        //   ),
                       ],
                     ),
                     Row(
@@ -1045,22 +1158,40 @@ class _TaskListState extends State<TaskList> {
   }
 
   /// STATUS COUNT CARD
-  Widget _buildStatusCountCard(String title, int count, Color color) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color),
-      ),
-      child: Column(
-        children: [
-          Text(title,
-              style: TextStyle(fontWeight: FontWeight.bold, color: color)),
-          Text(count.toString(),
+  Widget _buildStatusCountCard(
+    String title,
+    int count,
+    Color color, {
+    VoidCallback? onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: color),
+        ),
+        child: Column(
+          children: [
+            Text(
+              title,
               style: TextStyle(
-                  fontSize: 18, fontWeight: FontWeight.bold, color: color)),
-        ],
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
+            Text(
+              count.toString(),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

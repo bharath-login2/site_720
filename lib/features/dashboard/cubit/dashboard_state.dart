@@ -31,6 +31,8 @@ class DashboardFailure extends DashboardState {
   DashboardFailure(this.message);
 }
 
+class DashboardTokenExpired extends DashboardState {}
+
 class GetExpenseLoading extends DashboardState {}
 
 class GetExpenseSuccess extends DashboardState {

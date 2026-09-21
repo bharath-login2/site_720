@@ -26,6 +26,7 @@ class TaskCubit extends Cubit<TaskState> {
     String? assignedTo,
     String? status,
     String? viewType,
+    String? taskStatus,
     bool isLoadMore = false,
   }) async {
     if (!isLoadMore) {
@@ -33,17 +34,17 @@ class TaskCubit extends Cubit<TaskState> {
     }
     try {
       GetTaskList response = await HttpServices.getTaskList(
-        page: page,
-        pageSize: pageSize,
-        fromDate: fromDate,
-        toDate: toDate,
-        workType: workType,
-        category: category,
-        assignedBy: assignedBy,
-        assignedTo: assignedTo,
-        status: status,
-        viewType: viewType,
-      );
+          page: page,
+          pageSize: pageSize,
+          fromDate: fromDate,
+          toDate: toDate,
+          workType: workType,
+          category: category,
+          assignedBy: assignedBy,
+          assignedTo: assignedTo,
+          status: status,
+          viewType: viewType,
+          taskStatus: taskStatus);
 
       if (response.status == true) {
         emit(TaskSuccess(response));

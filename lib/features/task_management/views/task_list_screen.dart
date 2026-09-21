@@ -25,7 +25,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
   TextEditingController fromDateController = TextEditingController();
   TextEditingController toDateController = TextEditingController();
   String? selectedSupervisor;
-  
+
   List<String> supervisors = [
     'All',
     'Sarath Krishna',
@@ -39,7 +39,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
   void initState() {
     super.initState();
     context.read<TaskCubit>().getTaskListRunning();
-    fromDateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now().subtract(const Duration(days: 30)));
+    fromDateController.text = DateFormat('dd-MM-yyyy')
+        .format(DateTime.now().subtract(const Duration(days: 30)));
     toDateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
   }
 
@@ -58,10 +59,12 @@ class _TaskListScreenState extends State<TaskListScreen> {
   void _filterProjects() {
     setState(() {
       filteredProjectList = projectList.where((project) {
-        final nameMatch = project.projectName.toLowerCase().contains(searchController.text.toLowerCase());
-        final isAssignedToSupervisor = selectedSupervisor == null || 
-                                      selectedSupervisor == 'All' ||
-                                      _getRandomSupervisor(project.id) == selectedSupervisor;
+        final nameMatch = project.projectName
+            .toLowerCase()
+            .contains(searchController.text.toLowerCase());
+        final isAssignedToSupervisor = selectedSupervisor == null ||
+            selectedSupervisor == 'All' ||
+            _getRandomSupervisor(project.id) == selectedSupervisor;
         return nameMatch && isAssignedToSupervisor;
       }).toList();
     });
@@ -75,8 +78,8 @@ class _TaskListScreenState extends State<TaskListScreen> {
   Future<void> _selectDate(BuildContext context, bool isFromDate) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: isFromDate 
-          ? DateFormat('dd-MM-yyyy').parse(fromDateController.text) 
+      initialDate: isFromDate
+          ? DateFormat('dd-MM-yyyy').parse(fromDateController.text)
           : DateFormat('dd-MM-yyyy').parse(toDateController.text),
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
@@ -147,17 +150,20 @@ class _TaskListScreenState extends State<TaskListScreen> {
                   const SizedBox(height: 16),
                   const Text("No projects found",
                       style: TextStyle(color: AppColors.coffie)),
-                  if (searchController.text.isNotEmpty || 
-                      selectedSupervisor != null || 
-                      fromDateController.text.isNotEmpty || 
+                  if (searchController.text.isNotEmpty ||
+                      selectedSupervisor != null ||
+                      fromDateController.text.isNotEmpty ||
                       toDateController.text.isNotEmpty)
                     TextButton(
                       onPressed: () {
                         setState(() {
                           searchController.clear();
                           selectedSupervisor = null;
-                          fromDateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now().subtract(const Duration(days: 30)));
-                          toDateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
+                          fromDateController.text = DateFormat('dd-MM-yyyy')
+                              .format(DateTime.now()
+                                  .subtract(const Duration(days: 30)));
+                          toDateController.text =
+                              DateFormat('dd-MM-yyyy').format(DateTime.now());
                           filteredProjectList = List.from(projectList);
                         });
                       },
@@ -173,7 +179,6 @@ class _TaskListScreenState extends State<TaskListScreen> {
               child: ListView(
                 padding: const EdgeInsets.all(16),
                 children: [
-               
                   TextField(
                     controller: searchController,
                     decoration: InputDecoration(
@@ -212,95 +217,92 @@ class _TaskListScreenState extends State<TaskListScreen> {
   }
 
   Widget _buildFilterBottomSheet() {
-  return Container(
-    padding: EdgeInsets.only(
-      bottom: MediaQuery.of(context).viewInsets.bottom,
-      left: 16,
-      right: 16,
-      top: 16,
-    ),
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        DropdownButtonFormField<String>(
-          value: selectedSupervisor,
-          decoration: InputDecoration(
-            labelText: 'Filter by Supervisor',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
+    return Container(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+        left: 16,
+        right: 16,
+        top: 16,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          DropdownButtonFormField<String>(
+            value: selectedSupervisor,
+            decoration: InputDecoration(
+              labelText: 'Filter by Supervisor',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              prefixIcon: const Icon(Icons.person),
             ),
-            prefixIcon: const Icon(Icons.person),
+            items: supervisors.map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                selectedSupervisor = value;
+                _filterProjects();
+              });
+            },
           ),
-          items: supervisors.map((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
-          onChanged: (value) {
-            setState(() {
-              selectedSupervisor = value;
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: fromDateController,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    labelText: 'From Date',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    prefixIcon: const Icon(Icons.calendar_today),
+                  ),
+                  onTap: () => _selectDate(context, true),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: TextField(
+                  controller: toDateController,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    labelText: 'To Date',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    prefixIcon: const Icon(Icons.calendar_today),
+                  ),
+                  onTap: () => _selectDate(context, false),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primaryColor,
+              minimumSize: const Size(double.infinity, 50),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            onPressed: () {
               _filterProjects();
-            });
-          },
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(
-              child: TextField(
-                controller: fromDateController,
-                readOnly: true,
-                decoration: InputDecoration(
-                  labelText: 'From Date',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  prefixIcon: const Icon(Icons.calendar_today),
-                ),
-                onTap: () => _selectDate(context, true),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: TextField(
-                controller: toDateController,
-                readOnly: true,
-                decoration: InputDecoration(
-                  labelText: 'To Date',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  prefixIcon: const Icon(Icons.calendar_today),
-                ),
-                onTap: () => _selectDate(context, false),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 20),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primaryColor,
-            minimumSize: const Size(double.infinity, 50),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-          onPressed: () {
-            _filterProjects();
-            Navigator.pop(context);
-          },
-          
-          child: const Text('Apply Filters', style: TextStyle(color: Colors.white)),
-      
-        )
-        
-      ],
-      
-    ),
-  );
-}
+              Navigator.pop(context);
+            },
+            child: const Text('Apply Filters',
+                style: TextStyle(color: Colors.white)),
+          )
+        ],
+      ),
+    );
+  }
 
   Widget _buildStatusHeader() {
     return Row(
@@ -355,7 +357,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
 
   Widget _buildProjectCard(Project project) {
     final assignedSupervisor = _getRandomSupervisor(project.id);
-    
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
@@ -387,7 +389,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
           children: [
             Text(
               // "Supervisor: $assignedSupervisor",
-                "Supervisor:",
+              "Supervisor:",
               style: const TextStyle(
                 fontSize: 13,
                 color: AppColors.lightPrimary,
@@ -407,11 +409,9 @@ class _TaskListScreenState extends State<TaskListScreen> {
         onTap: () {
           connStatus = true;
           Navigator.pushNamed(
-            context, AppRoutes.workDetails,
-            arguments: {
-              "id": project.id,
-              "client_id": project.clientId
-            },
+            context,
+            AppRoutes.workDetails,
+            arguments: {"id": project.id, "client_id": project.clientId},
           );
         },
       ),

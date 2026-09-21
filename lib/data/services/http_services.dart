@@ -231,6 +231,33 @@ class HttpServices {
       log(e.toString());
     }
   }
+  // static Future<DashboardModel?> dashboard(
+  //   String fromDate,
+  //   String toDate,
+  // ) async {
+  //   log(await getSharedPreference('token'));
+
+  //   try {
+  //     http.Response response = await http.post(
+  //       Uri.parse("${await Config.getUrl()}get_dashboard"),
+  //       body: {
+  //         'token': await getSharedPreference('token'),
+  //         'from_date': fromDate,
+  //         'to_date': toDate,
+  //       },
+  //     );
+
+  //     if (response.statusCode == 200) {
+  //       print("responses : ${response.body}");
+
+  //       return dashboardModelFromJson(response.body);
+  //     }
+  //   } catch (e) {
+  //     log(e.toString());
+  //   }
+
+  //   return null;
+  // }
 
   static Future getProjectList(
     status,
@@ -1688,12 +1715,13 @@ class HttpServices {
     String? assignedTo,
     String? status,
     String? viewType,
+    String? taskStatus,
   }) async {
     try {
       print("page: $page, pageSize: $pageSize");
 
       http.Response response = await http.post(
-        Uri.parse("${await Config.getUrl()}get_task_list"),
+        Uri.parse("${await Config.getUrl()}get_staff_task_list"),
         body: {
           'token': await getSharedPreference('token'),
           'page': page.toString(),
@@ -1706,6 +1734,7 @@ class HttpServices {
           if (assignedTo != null) 'assigned_to': assignedTo,
           if (status != null) 'status': status,
           if (viewType != null) 'view_type': viewType,
+          if (taskStatus != null) 'task_status': taskStatus,
         },
       );
 

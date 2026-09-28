@@ -3,22 +3,24 @@ import 'package:image_picker/image_picker.dart';
 import '../../../data/models/complaint/complaintStatus_model.dart';
 import '../../../data/models/complaint/complaint_history_model.dart';
 import '../../../data/services/http_services.dart';
+import '../../../data/models/complaint/complaint_status_history_model.dart';
 import 'complaint_history_state.dart';
-
 
 class ComplaintHistoryCubit extends Cubit<ComplaintHistoryState> {
   ComplaintHistoryCubit(String complaintId) : super(ComplaintHistoryInitial()) {
     getComplaintHistory(complaintId);
+    getComplaintStatusHistory(complaintId);
   }
 
   Future<void> getComplaintHistory(String complaintId) async {
     emit(ComplaintHistoryLoading());
     try {
-      ComplaintHistoryModel response = await HttpServices.getComplaintHistory(complaintId);
+      ComplaintHistoryModel response =
+          await HttpServices.getComplaintHistory(complaintId);
 
       if (response.status == true) {
         emit(ComplaintHistorySuccess(response));
-      //  await getTaskStatus();
+        //  await getTaskStatus();
       } else {
         emit(ComplaintHistoryFailure(response.message));
       }
@@ -27,18 +29,44 @@ class ComplaintHistoryCubit extends Cubit<ComplaintHistoryState> {
     }
   }
 
+  Future<void> getComplaintStatusHistory(String complaintId) async {
+    emit(ComplaintStatusHistoryLoading());
 
-  
+    try {
+      ComplaintStatusHistoryModel? response =
+          await HttpServices.getComplaintStatusHistory(complaintId);
+
+      if (response != null) {
+        if (response.status == true) {
+          emit(ComplaintStatusHistorySuccess(response));
+        } else {
+          emit(ComplaintStatusHistoryFailure(response.message));
+        }
+      } else {
+        emit(
+          ComplaintStatusHistoryFailure('Failed to fetch data'),
+        );
+      }
+    } catch (e) {
+      emit(
+        ComplaintStatusHistoryFailure(
+          'Failed to fetch data: ${e.toString()}',
+        ),
+      );
+    }
+  }
+
   Future<void> getComplaintStatuses() async {
     emit(ComplaintStatusLoading());
     try {
-      ComplaintStatusModel response = await HttpServices.getComplaintHistoryStatus();
+      ComplaintStatusModel response =
+          await HttpServices.getComplaintHistoryStatus();
 
       if (response.status == true) {
         emit(ComplaintStatusSuccess(response.data));
-      } 
+      }
     } catch (e) {
-       emit(ComplaintStatusFailure(e.toString()));
+      emit(ComplaintStatusFailure(e.toString()));
     }
   }
 
@@ -60,11 +88,11 @@ class ComplaintHistoryCubit extends Cubit<ComplaintHistoryState> {
 // Future<void> addTaskDetails(
 //   String taskId,
 //   String visitId,
-//   List<String> textQuestionNumbers,  
-//   List<String> textAnswers, 
-//   List<String> checkboxQuestionNumbers,  
+//   List<String> textQuestionNumbers,
+//   List<String> textAnswers,
+//   List<String> checkboxQuestionNumbers,
 //   List<List<String>> checkboxAnswersList,
-//   List<String> fileQuestionNumbers,  
+//   List<String> fileQuestionNumbers,
 //   List<String> fileAnswers,
 //   BuildContext context,
 // ) async {
@@ -91,8 +119,6 @@ class ComplaintHistoryCubit extends Cubit<ComplaintHistoryState> {
 //     emit(TaskDetailsFailure('Failed to fetch data: ${e.toString()}'));
 //   }
 // }
-
-
 
   XFile? image;
 

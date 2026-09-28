@@ -4,6 +4,7 @@ import 'package:site_720/data/models/succes_response/success_response.dart';
 import '../../../data/models/complaint/complaintStatus_model.dart';
 import '../../../data/models/complaint/complaint_history_model.dart';
 import '../../../data/models/task/task_history.dart';
+import '../../../data/models/complaint/complaint_status_history_model.dart';
 
 class ComplaintHistoryState {
   ComplaintHistoryState();
@@ -15,7 +16,7 @@ class ComplaintHistoryLoading extends ComplaintHistoryState {}
 
 class ComplaintHistorySuccess extends ComplaintHistoryState {
   ComplaintHistoryModel response;
- ComplaintHistorySuccess(this.response);
+  ComplaintHistorySuccess(this.response);
 }
 
 class ComplaintHistoryFailure extends ComplaintHistoryState {
@@ -24,7 +25,7 @@ class ComplaintHistoryFailure extends ComplaintHistoryState {
 }
 
 class ComplaintHistoryDetailsSuccess extends ComplaintHistoryState {
-ComplaintHistoryModel response;
+  ComplaintHistoryModel response;
   ComplaintHistoryDetailsSuccess(this.response);
 }
 
@@ -32,7 +33,6 @@ class ComplaintHistoryDetailsFailure extends ComplaintHistoryState {
   final String message;
   ComplaintHistoryDetailsFailure(this.message);
 }
-
 
 class ImageHistorySuccess extends ComplaintHistoryState {
   final XFile image;
@@ -48,10 +48,12 @@ class ComplaintHistoryStatusUpdated extends ComplaintHistoryState {
   SuccessResponse response;
   ComplaintHistoryStatusUpdated(this.response);
 }
+
 class ComplaintHistoryStatusupdateFailed extends ComplaintHistoryState {
   final String message;
   ComplaintHistoryStatusupdateFailed(this.message);
 }
+
 class AttendanceUpdated extends ComplaintHistoryState {
   SuccessResponse response;
   AttendanceUpdated(this.response);
@@ -91,14 +93,26 @@ class ComplaintStatusLoading extends ComplaintHistoryState {}
 
 class ComplaintStatusSuccess extends ComplaintHistoryState {
   final List<ComplaintStatus> statuses;
-  
+
   ComplaintStatusSuccess(this.statuses);
 }
 
 class ComplaintStatusFailure extends ComplaintHistoryState {
   final String message;
-  
+
   ComplaintStatusFailure(this.message);
 }
 
+class ComplaintStatusHistoryLoading extends ComplaintHistoryState {}
 
+class ComplaintStatusHistorySuccess extends ComplaintHistoryState {
+  final ComplaintStatusHistoryModel response;
+
+  ComplaintStatusHistorySuccess(this.response);
+}
+
+class ComplaintStatusHistoryFailure extends ComplaintHistoryState {
+  final String message;
+
+  ComplaintStatusHistoryFailure(this.message);
+}

@@ -97,8 +97,13 @@ class _ComplaintListPageState extends State<ComplaintList> {
         ],
         child: BlocBuilder<ComplaintCubit, ComplaintState>(
           builder: (context, state) {
-            ComplaintCubit cubit = context.read<ComplaintCubit>();
-            if (filteredComplaints.isEmpty && cubit.complaints.isNotEmpty) {
+            // ComplaintCubit cubit = context.read<ComplaintCubit>();
+            // if (filteredComplaints.isEmpty && cubit.complaints.isNotEmpty) {
+            //   filteredComplaints = List.from(cubit.complaints);
+            // }
+            final ComplaintCubit cubit = context.read<ComplaintCubit>();
+
+            if (state is ComplaintSuccess) {
               filteredComplaints = List.from(cubit.complaints);
             }
             return Scaffold(
@@ -532,15 +537,24 @@ class _ComplaintListPageState extends State<ComplaintList> {
   }
 
   Color _getStatusColor(String status) {
-    switch (status.toLowerCase()) {
-      case "closed":
-        return AppColors.primaryColor;
-      case "new":
-        return Colors.blue;
-      case "in-progress":
-        return const Color.fromARGB(255, 231, 86, 42);
-      default:
+    switch (status.toLowerCase().trim()) {
+      case 'completed':
         return Colors.green;
+
+      case 'in-progress':
+      case 'in progress':
+        return Colors.orange;
+
+      case 'pending':
+        return Colors.blue;
+
+      case 'rejected':
+      case 'cancelled':
+      case 'canceled':
+        return Colors.red;
+
+      default:
+        return Colors.grey;
     }
   }
 
@@ -653,8 +667,14 @@ class _ComplaintListPageState extends State<ComplaintList> {
                             TextFormField(
                               controller: comment,
                               maxLines: 3,
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return 'Comment is required';
+                                }
+                                return null;
+                              },
                               decoration: InputDecoration(
-                                labelText: 'Comment (Optional)',
+                                labelText: 'Comment ',
                                 labelStyle:
                                     TextStyle(color: Colors.grey.shade600),
                                 alignLabelWithHint: true,
@@ -750,16 +770,20 @@ class _ComplaintListPageState extends State<ComplaintList> {
                             child: ElevatedButton(
                               onPressed: () async {
                                 if (formKey.currentState!.validate()) {
-                                  cubit.updateComplaintStatus(
+                                  await cubit.updateComplaintStatus(
                                     complaintId,
                                     image == null ? "" : image!.path,
-                                    comment.text,
+                                    comment.text.trim(),
                                     selectedStatus!,
                                   );
+
                                   image = null;
                                   selectedStatus = null;
                                   comment.clear();
-                                  Navigator.pop(context);
+
+                                  if (context.mounted) {
+                                    Navigator.pop(context);
+                                  }
                                 }
                               },
                               style: ElevatedButton.styleFrom(

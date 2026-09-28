@@ -45,7 +45,7 @@ class ComplaintCubit extends Cubit<ComplaintState> {
 
       if (response.status == true) {
         final newComplaints = response.data;
-
+        print('REFRESH API CALLED');
         if (isLoadMore) {
           final existingIds =
               complaints.map((complaint) => complaint.id).toSet();
@@ -62,11 +62,6 @@ class ComplaintCubit extends Cubit<ComplaintState> {
 
           currentPage = page;
 
-          print("PAGE: $page");
-          print("RECEIVED: ${newComplaints.length}");
-          print("ADDED: ${uniqueComplaints.length}");
-          print("TOTAL: ${complaints.length}");
-
           emit(ComplaintSuccess(response));
         } else {
           complaints = newComplaints;
@@ -76,10 +71,6 @@ class ComplaintCubit extends Cubit<ComplaintState> {
           }
 
           currentPage = page;
-
-          print("PAGE: $page");
-          print("RECEIVED: ${newComplaints.length}");
-          print("TOTAL: ${complaints.length}");
 
           emit(ComplaintSuccess(response));
         }
@@ -132,17 +123,27 @@ class ComplaintCubit extends Cubit<ComplaintState> {
   ) async {
     try {
       SuccessResponse response = await HttpServices.updateComplaintStatus(
-          complaintId, imagePath, comment, status);
+        complaintId,
+        imagePath,
+        comment,
+        status,
+      );
 
       if (response.status == true) {
-        emit(ComplaintStatusUpdated(response));
-        getComplaintList();
+        await getComplaintList(
+          page: 1,
+          pageSize: pageSize,
+          isLoadMore: false,
+        );
       } else {
         emit(ComplaintStatusupdateFailed(response.message));
       }
     } catch (e) {
       emit(
-          ComplaintStatusupdateFailed('Failed to fetch data: ${e.toString()}'));
+        ComplaintStatusupdateFailed(
+          'Failed to update status: ${e.toString()}',
+        ),
+      );
     }
   }
 }

@@ -83,6 +83,7 @@ import '../models/estimate_request/estimate_request_model.dart';
 import '../models/permissions/permissions.dart';
 import '../models/projectListRequest/projectListRequestModel.dart';
 import '../models/extrawork_Request/extra_work_request_model.dart';
+import '../models/complaint/complaint_status_history_model.dart';
 import '../models/deductionwork_request/deduction_work_request_model.dart';
 import '../models/stage_list/project_statge_list.dart';
 import 'package:http_parser/http_parser.dart';
@@ -2208,6 +2209,7 @@ class HttpServices {
 
   static Future getComplaintHistory(String complaintId) async {
     try {
+      print('complanit id: $complaintId');
       http.Response response = await http.post(
         Uri.parse("${await Config.getUrl()}get_complaint_history"),
         body: {
@@ -2221,6 +2223,33 @@ class HttpServices {
     } catch (e) {
       log(e.toString());
     }
+  }
+
+  //complaint status history
+  static Future<ComplaintStatusHistoryModel?> getComplaintStatusHistory(
+    String complaintId,
+  ) async {
+    try {
+      print('complaint id: $complaintId');
+
+      http.Response response = await http.post(
+        Uri.parse("${await Config.getUrl()}get_complaint_remark_history"),
+        body: {
+          'token': await getSharedPreference('token'),
+          'complaint_id': complaintId,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return ComplaintStatusHistoryModel.fromJson(
+          jsonDecode(response.body),
+        );
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+
+    return null;
   }
 
   static Future getComplaintHistoryStatus() async {

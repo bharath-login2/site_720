@@ -84,163 +84,169 @@ class Stages extends StatelessWidget {
           builder: (context, state) {
             final cubit = context.read<StagesCubit>();
             return Scaffold(
-                backgroundColor: AppColors.backgroundColor,
-                appBar: PreferredSize(
-                  preferredSize:
-                      Size.fromHeight(MediaQuery.of(context).size.height * 0.2),
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * .15,
-                    width: MediaQuery.of(context).size.width,
-                    decoration: const BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage("assets/images/appbar.png"),
-                            fit: BoxFit.fill),
-                        color: AppColors.primaryColor,
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(25),
-                          bottomRight: Radius.circular(25),
-                        )),
-                    child: Padding(
-                      padding:
-                          const EdgeInsets.only(left: 20.0, top: 35, right: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Icon(
-                                  Icons.arrow_back_ios,
+              backgroundColor: AppColors.backgroundColor,
+              appBar: PreferredSize(
+                preferredSize:
+                    Size.fromHeight(MediaQuery.of(context).size.height * 0.2),
+                child: Container(
+                  height: MediaQuery.of(context).size.height * .15,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: const BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage("assets/images/appbar.png"),
+                          fit: BoxFit.fill),
+                      color: AppColors.primaryColor,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(25),
+                        bottomRight: Radius.circular(25),
+                      )),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.only(left: 20.0, top: 35, right: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Icon(
+                                Icons.arrow_back_ios,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            const Text(
+                              "Stages",
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1,
+                                  fontFamily: "Lobster",
+                                  color: Colors.white),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            // InkWell(
+                            //   onTap: () {
+                            //     Navigator.of(context)
+                            //         .pushNamed(AppRoutes.stageHistory);
+                            //   },
+                            //   child: const CircleAvatar(
+                            //     radius: 20,
+                            //     backgroundColor: AppColors.lightPrimary,
+                            //     child: Icon(
+                            //       Icons.analytics_outlined,
+                            //       color: Colors.white,
+                            //     ),
+                            //   ),
+                            // ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+
+                            PopupMenuButton<String>(
+                              color: Colors.white,
+                              surfaceTintColor: Colors.transparent,
+                              onSelected: (value) async {
+                                if (value == 'add_stage') {
+                                  if (PermissionManager.hasPermission(
+                                      'add stages')) {
+                                    addStageDialog(
+                                      context,
+                                      cubit,
+                                      "",
+                                      "",
+                                      projectId,
+                                      clientId,
+                                      "",
+                                      "Add Stage",
+                                      "Add",
+                                    );
+                                  }
+                                } else if (value == 'add_schedule') {
+                                  if (PermissionManager.hasPermission(
+                                      'create stage schedule date')) {
+                                    await cubit.getStageList(projectId);
+                                    // Open Add First Schedule Date dialog/page here
+                                    addFirstScheduleDateDialog(
+                                      context,
+                                      projectId,
+                                      clientId,
+                                    );
+                                  }
+                                }
+                              },
+                              offset: const Offset(0, 45),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              itemBuilder: (context) => [
+                                if (PermissionManager.hasPermission(
+                                    'add stages'))
+                                  const PopupMenuItem<String>(
+                                    value: 'add_stage',
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.add_circle_outline,
+                                          size: 20,
+                                        ),
+                                        SizedBox(width: 10),
+                                        Text('Add Stage'),
+                                      ],
+                                    ),
+                                  ),
+                                if (PermissionManager.hasPermission(
+                                    'create stage schedule date'))
+                                  const PopupMenuItem<String>(
+                                    value: 'add_schedule',
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.calendar_today_outlined,
+                                          size: 20,
+                                        ),
+                                        SizedBox(width: 10),
+                                        Text('Add First Schedule Date'),
+                                      ],
+                                    ),
+                                  ),
+                              ],
+                              child: const CircleAvatar(
+                                radius: 20,
+                                backgroundColor: AppColors.lightPrimary,
+                                child: Icon(
+                                  Icons.add,
                                   color: Colors.white,
                                 ),
                               ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              const Text(
-                                "Stages",
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    letterSpacing: 1,
-                                    fontFamily: "Lobster",
-                                    color: Colors.white),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              // InkWell(
-                              //   onTap: () {
-                              //     Navigator.of(context)
-                              //         .pushNamed(AppRoutes.stageHistory);
-                              //   },
-                              //   child: const CircleAvatar(
-                              //     radius: 20,
-                              //     backgroundColor: AppColors.lightPrimary,
-                              //     child: Icon(
-                              //       Icons.analytics_outlined,
-                              //       color: Colors.white,
-                              //     ),
-                              //   ),
-                              // ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-
-                              PopupMenuButton<String>(
-                                color: Colors.white,
-                                surfaceTintColor: Colors.transparent,
-                                onSelected: (value) async {
-                                  if (value == 'add_stage') {
-                                    if (PermissionManager.hasPermission(
-                                        'add stages')) {
-                                      addStageDialog(
-                                        context,
-                                        cubit,
-                                        "",
-                                        "",
-                                        projectId,
-                                        clientId,
-                                        "",
-                                        "Add Stage",
-                                        "Add",
-                                      );
-                                    }
-                                  } else if (value == 'add_schedule') {
-                                    if (PermissionManager.hasPermission(
-                                        'create stage schedule date')) {
-                                      await cubit.getStageList(projectId);
-                                      // Open Add First Schedule Date dialog/page here
-                                      addFirstScheduleDateDialog(
-                                        context,
-                                        projectId,
-                                        clientId,
-                                      );
-                                    }
-                                  }
-                                },
-                                offset: const Offset(0, 45),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                itemBuilder: (context) => [
-                                  if (PermissionManager.hasPermission(
-                                      'add stages'))
-                                    const PopupMenuItem<String>(
-                                      value: 'add_stage',
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.add_circle_outline,
-                                            size: 20,
-                                          ),
-                                          SizedBox(width: 10),
-                                          Text('Add Stage'),
-                                        ],
-                                      ),
-                                    ),
-                                  if (PermissionManager.hasPermission(
-                                      'create stage schedule date'))
-                                    const PopupMenuItem<String>(
-                                      value: 'add_schedule',
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.calendar_today_outlined,
-                                            size: 20,
-                                          ),
-                                          SizedBox(width: 10),
-                                          Text('Add First Schedule Date'),
-                                        ],
-                                      ),
-                                    ),
-                                ],
-                                child: const CircleAvatar(
-                                  radius: 20,
-                                  backgroundColor: AppColors.lightPrimary,
-                                  child: Icon(
-                                    Icons.add,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
+                            ),
+                          ],
+                        )
+                      ],
                     ),
                   ),
                 ),
-                body: RefreshIndicator(
+              ),
+              body: SafeArea(
+                top: false, // app bar already handles the top
+                child: RefreshIndicator(
                   onRefresh: () async {
-                    cubit.getStagesList(projectId);
+                    await cubit.getStagesList(projectId);
                   },
                   child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).padding.bottom + 24,
+                    ),
                     child: Column(
                       children: [
                         Padding(
@@ -1215,7 +1221,9 @@ class Stages extends StatelessWidget {
                       ],
                     ),
                   ),
-                ));
+                ),
+              ),
+            );
           },
         ),
       ),

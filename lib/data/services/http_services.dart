@@ -111,7 +111,7 @@ class HttpServices {
       http.Response response = await http.post(
         Uri.parse("${await Config.getUrl()}get_version"),
       );
-      print('Response: ${response.body}');
+      // print('Response: ${response.body}');
       if (response.statusCode == 200) {
         return versionModelFromJson(response.body);
       }
@@ -167,7 +167,7 @@ class HttpServices {
       /// GET SAVED PIN
       String savedPin = await getSharedPreference("pin") ?? "";
 
-      print("SAVED PIN : $savedPin");
+      // print("SAVED PIN : $savedPin");
 
       http.Response response = await http.post(
         Uri.parse("${await Config.getUrl()}login"),
@@ -187,7 +187,7 @@ class HttpServices {
       });
 
       if (response.statusCode == 200) {
-        print("LOGIN RESPONSE : ${response.body}");
+        // print("LOGIN RESPONSE : ${response.body}");
 
         final loginResponse = loginModelFromJson(response.body);
 
@@ -669,8 +669,8 @@ class HttpServices {
           'stage_name': stageName,
         },
       );
-      print("CHECK STAGE STATUS: ${response.statusCode}");
-      print("CHECK STAGE RESPONSE: ${response.body}");
+      // print("CHECK STAGE STATUS: ${response.statusCode}");
+      // print("CHECK STAGE RESPONSE: ${response.body}");
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);

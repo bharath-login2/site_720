@@ -496,42 +496,54 @@ class WorkDetailsScreen extends StatelessWidget {
                                                           children: [
                                                             InkWell(
                                                               onTap: () {
-                                                                isWorking = workList[index]
+                                                                isWorking = workList[
+                                                                            index]
                                                                         .isWorking
                                                                         .isNotEmpty
-                                                                    ? workList[index]
+                                                                    ? workList[
+                                                                            index]
                                                                         .isWorking
                                                                     : 'Yes';
                                                                 date.text =
-                                                                    workList[index]
+                                                                    workList[
+                                                                            index]
                                                                         .workDate;
-                                                                noOfLabours.text =
-                                                                    workList[index]
-                                                                        .laboursNo;
-                                                                description.text =
-                                                                    workList[index]
-                                                                        .description;
+                                                                noOfLabours
+                                                                    .text = workList[
+                                                                        index]
+                                                                    .laboursNo;
+                                                                description
+                                                                    .text = workList[
+                                                                        index]
+                                                                    .description;
 
-                                                                String targetStatusId =
-                                                                    workList[index]
+                                                                String
+                                                                    targetStatusId =
+                                                                    workList[
+                                                                            index]
                                                                         .workStatusId
                                                                         .toString()
                                                                         .trim();
-                                                                if (targetStatusId.isNotEmpty &&
-                                                                    targetStatusId != "0" &&
+                                                                if (targetStatusId
+                                                                        .isNotEmpty &&
+                                                                    targetStatusId !=
+                                                                        "0" &&
                                                                     issuesList.any((e) =>
-                                                                        e.id.toString().trim() ==
+                                                                        e.id
+                                                                            .toString()
+                                                                            .trim() ==
                                                                         targetStatusId)) {
                                                                   selectedStatus =
                                                                       targetStatusId;
                                                                 } else {
-                                                                  String targetStatusName =
-                                                                      workList[index]
-                                                                          .workStatus
-                                                                          .toString()
-                                                                          .trim();
+                                                                  String targetStatusName = workList[
+                                                                          index]
+                                                                      .workStatus
+                                                                      .toString()
+                                                                      .trim();
                                                                   var matchByName =
-                                                                      issuesList.firstWhere(
+                                                                      issuesList
+                                                                          .firstWhere(
                                                                     (e) =>
                                                                         e.workStatus
                                                                             .toString()
@@ -539,47 +551,57 @@ class WorkDetailsScreen extends StatelessWidget {
                                                                             .toLowerCase() ==
                                                                         targetStatusName
                                                                             .toLowerCase(),
-                                                                    orElse: () =>
-                                                                        WorkIssues(
-                                                                            id: "",
-                                                                            workStatus: ""),
+                                                                    orElse: () => WorkIssues(
+                                                                        id: "",
+                                                                        workStatus:
+                                                                            ""),
                                                                   );
-                                                                  if (matchByName.id
+                                                                  if (matchByName
+                                                                          .id
                                                                           .toString()
                                                                           .trim()
                                                                           .isNotEmpty &&
-                                                                      matchByName.id
+                                                                      matchByName
+                                                                              .id
                                                                               .toString()
                                                                               .trim() !=
                                                                           "0") {
                                                                     selectedStatus =
-                                                                        matchByName.id
+                                                                        matchByName
+                                                                            .id
                                                                             .toString()
                                                                             .trim();
                                                                   } else {
-                                                                    selectedStatus = null;
+                                                                    selectedStatus =
+                                                                        null;
                                                                   }
                                                                 }
 
-                                                                String targetStageId =
-                                                                    workList[index]
+                                                                String
+                                                                    targetStageId =
+                                                                    workList[
+                                                                            index]
                                                                         .stageId
                                                                         .toString()
                                                                         .trim();
-                                                                if (targetStageId.isNotEmpty &&
+                                                                if (targetStageId
+                                                                        .isNotEmpty &&
                                                                     stageList.any((e) =>
-                                                                        e.stageId.toString().trim() ==
+                                                                        e.stageId
+                                                                            .toString()
+                                                                            .trim() ==
                                                                         targetStageId)) {
                                                                   selectedStage =
                                                                       targetStageId;
                                                                 } else {
-                                                                  String targetStageName =
-                                                                      workList[index]
-                                                                          .stageName
-                                                                          .toString()
-                                                                          .trim();
+                                                                  String targetStageName = workList[
+                                                                          index]
+                                                                      .stageName
+                                                                      .toString()
+                                                                      .trim();
                                                                   var matchByName =
-                                                                      stageList.firstWhere(
+                                                                      stageList
+                                                                          .firstWhere(
                                                                     (e) =>
                                                                         e.stageName
                                                                             .toString()
@@ -587,21 +609,24 @@ class WorkDetailsScreen extends StatelessWidget {
                                                                             .toLowerCase() ==
                                                                         targetStageName
                                                                             .toLowerCase(),
-                                                                    orElse: () =>
-                                                                        Workstage(
-                                                                            stageId: "",
-                                                                            stageName: ""),
+                                                                    orElse: () => Workstage(
+                                                                        stageId:
+                                                                            "",
+                                                                        stageName:
+                                                                            ""),
                                                                   );
-                                                                  if (matchByName.stageId
+                                                                  if (matchByName
+                                                                      .stageId
                                                                       .toString()
                                                                       .trim()
                                                                       .isNotEmpty) {
-                                                                    selectedStage =
-                                                                        matchByName.stageId
-                                                                            .toString()
-                                                                            .trim();
+                                                                    selectedStage = matchByName
+                                                                        .stageId
+                                                                        .toString()
+                                                                        .trim();
                                                                   } else {
-                                                                    selectedStage = null;
+                                                                    selectedStage =
+                                                                        null;
                                                                   }
                                                                 }
 
@@ -672,14 +697,16 @@ class WorkDetailsScreen extends StatelessWidget {
                                                                 deleteDialog(
                                                                     context,
                                                                     () {
-                                                                  String targetId =
-                                                                      workList[index]
+                                                                  String
+                                                                      targetId =
+                                                                      workList[
+                                                                              index]
                                                                           .id
                                                                           .toString();
-                                                                  workList.removeWhere(
-                                                                      (item) =>
-                                                                          item.id.toString() ==
-                                                                          targetId);
+                                                                  workList.removeWhere((item) =>
+                                                                      item.id
+                                                                          .toString() ==
+                                                                      targetId);
                                                                   cubit.deleteWorkDetails(
                                                                       id,
                                                                       targetId);
@@ -791,7 +818,8 @@ class WorkDetailsScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(top: 16.0, bottom: 25),
+                            padding:
+                                const EdgeInsets.only(top: 16.0, bottom: 25),
                             child: Text(
                               type == "add" ? "Add Work Details" : "Edit",
                               style: const TextStyle(
@@ -883,7 +911,8 @@ class WorkDetailsScreen extends StatelessWidget {
                                 return null;
                               },
                               onTap: () async {
-                                String? selectedDate = await selectDate(context);
+                                String? selectedDate =
+                                    await selectDate(context);
                                 if (selectedDate != null) {
                                   setDialogState(() {
                                     date.text = selectedDate;
@@ -983,9 +1012,15 @@ class WorkDetailsScreen extends StatelessWidget {
                               controller: description,
                               keyboardType: TextInputType.text,
                               maxLines: 3,
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return "Enter Description"; // Error message when empty
+                                }
+                                return null;
+                              },
                               decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.all(10),
-                                labelText: 'Description',
+                                labelText: 'Description*',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(5),
                                 ),

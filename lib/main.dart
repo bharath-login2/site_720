@@ -152,14 +152,25 @@ class MyApp extends StatelessWidget {
         '/purchase': (context) => const PurchaseList(),
         '/stock': (context) => Stock(),
         // '/expense': (context) => const Expense(),
+        // '/expense': (context) {
+        //   final args = ModalRoute.of(context)!.settings.arguments
+        //       as Map<String, dynamic>;
+        //   print("Expense projectId: ${args['id']}");
+        //   print("Expense project_type_id: ${args['project_type_id']}");
+        //   return Expense(
+        //     projectId: args['id'].toString(),
+        //     expenseTypeId: args['project_type_id'].toString(),
+        //   );
+        // },
         '/expense': (context) {
-          final args = ModalRoute.of(context)!.settings.arguments
-              as Map<String, dynamic>;
-          print("Expense projectId: ${args['id']}");
-          print("Expense project_type_id: ${args['project_type_id']}");
+          // Safely get arguments and check type
+          final args = ModalRoute.of(context)?.settings.arguments;
+          final mapArgs =
+              args is Map<String, dynamic> ? args : <String, dynamic>{};
+
           return Expense(
-            projectId: args['id'].toString(),
-            expenseTypeId: args['project_type_id'].toString(),
+            projectId: mapArgs['id']?.toString() ?? '',
+            expenseTypeId: mapArgs['project_type_id']?.toString() ?? '',
           );
         },
         '/paymentDetails': (context) => PaymentDetails(),
@@ -214,7 +225,8 @@ class MyApp extends StatelessWidget {
           final args = ModalRoute.of(context)?.settings.arguments;
           String projectId = '';
           if (args is Map<String, dynamic>) {
-            projectId = args["id"]?.toString() ?? args["project_id"]?.toString() ?? '';
+            projectId =
+                args["id"]?.toString() ?? args["project_id"]?.toString() ?? '';
           } else if (args is Map<String, String>) {
             projectId = args["id"] ?? args["project_id"] ?? '';
           } else if (args is String) {

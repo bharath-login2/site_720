@@ -18,7 +18,7 @@ class TaskLoading extends TaskState {}
 
 class TaskSuccess extends TaskState {
   GetTaskList response;
-  
+
   TaskSuccess(this.response);
 }
 
@@ -46,6 +46,7 @@ class TaskStatusFailure extends TaskState {
   final String message;
   TaskStatusFailure(this.message);
 }
+
 class ImageSuccess extends TaskState {
   final XFile image;
   ImageSuccess(this.image);
@@ -60,10 +61,12 @@ class TaskStatusUpdated extends TaskState {
   SuccessResponse response;
   TaskStatusUpdated(this.response);
 }
+
 class TaskStatusupdateFailed extends TaskState {
   final String message;
   TaskStatusupdateFailed(this.message);
 }
+
 class AttendanceUpdated extends TaskState {
   SuccessResponse response;
   AttendanceUpdated(this.response);
@@ -98,12 +101,12 @@ class TaskDetailsSuccessWithMessage extends TaskState {
 
   TaskDetailsSuccessWithMessage(this.message);
 }
+
 class TaskMilestoneSuccess extends TaskState {
   final MilestoneModel response;
 
   TaskMilestoneSuccess(this.response);
 }
-
 
 class TaskMilestoneUpdated extends TaskState {
   final String message;
@@ -117,12 +120,8 @@ class TaskMilestoneUpdateFailed extends TaskState {
   TaskMilestoneUpdateFailed(this.message);
 }
 
-
-
 class RunningTaskListSuccess extends TaskState {
   final ProjectWorkModel response;
 
   RunningTaskListSuccess(this.response);
 }
-
-

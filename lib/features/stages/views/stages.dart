@@ -152,83 +152,107 @@ class Stages extends StatelessWidget {
                               width: 10,
                             ),
 
-                            PopupMenuButton<String>(
-                              color: Colors.white,
-                              surfaceTintColor: Colors.transparent,
-                              onSelected: (value) async {
-                                if (value == 'add_stage') {
-                                  if (PermissionManager.hasPermission(
-                                      'add stages')) {
-                                    addStageDialog(
-                                      context,
-                                      cubit,
-                                      "",
-                                      "",
-                                      projectId,
-                                      clientId,
-                                      "",
-                                      "Add Stage",
-                                      "Add",
-                                    );
-                                  }
-                                } else if (value == 'add_schedule') {
-                                  if (PermissionManager.hasPermission(
-                                      'create stage schedule date')) {
-                                    await cubit.getStageList(projectId);
-                                    // Open Add First Schedule Date dialog/page here
-                                    addFirstScheduleDateDialog(
-                                      context,
-                                      projectId,
-                                      clientId,
-                                    );
-                                  }
-                                }
-                              },
-                              offset: const Offset(0, 45),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              itemBuilder: (context) => [
-                                if (PermissionManager.hasPermission(
-                                    'add stages'))
-                                  const PopupMenuItem<String>(
-                                    value: 'add_stage',
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.add_circle_outline,
-                                          size: 20,
-                                        ),
-                                        SizedBox(width: 10),
-                                        Text('Add Stage'),
-                                      ],
-                                    ),
+                            // PopupMenuButton<String>(
+                            //   color: Colors.white,
+                            //   surfaceTintColor: Colors.transparent,
+                            //   onSelected: (value) async {
+                            //     if (value == 'add_stage') {
+                            //       if (PermissionManager.hasPermission(
+                            //           'add stages')) {
+                            //         addStageDialog(
+                            //           context,
+                            //           cubit,
+                            //           "",
+                            //           "",
+                            //           projectId,
+                            //           clientId,
+                            //           "",
+                            //           "Add Stage",
+                            //           "Add",
+                            //         );
+                            //       }
+                            //     } else if (value == 'add_schedule') {
+                            //       if (PermissionManager.hasPermission(
+                            //           'create stage schedule date')) {
+                            //         await cubit.getStageList(projectId);
+                            //         // Open Add First Schedule Date dialog/page here
+                            //         addFirstScheduleDateDialog(
+                            //           context,
+                            //           projectId,
+                            //           clientId,
+                            //         );
+                            //       }
+                            //     }
+                            //   },
+                            //   offset: const Offset(0, 45),
+                            //   shape: RoundedRectangleBorder(
+                            //     borderRadius: BorderRadius.circular(10),
+                            //   ),
+                            //   itemBuilder: (context) => [
+                            //     if (PermissionManager.hasPermission(
+                            //         'add stages'))
+                            //       const PopupMenuItem<String>(
+                            //         value: 'add_stage',
+                            //         child: Row(
+                            //           children: [
+                            //             Icon(
+                            //               Icons.add_circle_outline,
+                            //               size: 20,
+                            //             ),
+                            //             SizedBox(width: 10),
+                            //             Text('Add Stage'),
+                            //           ],
+                            //         ),
+                            //       ),
+                            //     if (PermissionManager.hasPermission(
+                            //         'create stage schedule date'))
+                            //       const PopupMenuItem<String>(
+                            //         value: 'add_schedule',
+                            //         child: Row(
+                            //           children: [
+                            //             Icon(
+                            //               Icons.calendar_today_outlined,
+                            //               size: 20,
+                            //             ),
+                            //             SizedBox(width: 10),
+                            //             Text('Add First Schedule Date'),
+                            //           ],
+                            //         ),
+                            //       ),
+                            //   ],
+                            //   child: const CircleAvatar(
+                            //     radius: 20,
+                            //     backgroundColor: AppColors.lightPrimary,
+                            //     child: Icon(
+                            //       Icons.add,
+                            //       color: Colors.white,
+                            //     ),
+                            //   ),
+                            // ),
+                            if (PermissionManager.hasPermission(
+                                'create stage schedule date'))
+                              InkWell(
+                                borderRadius: BorderRadius.circular(20),
+                                onTap: () async {
+                                  await cubit.getStageList(projectId);
+
+                                  if (!context.mounted) return;
+
+                                  addFirstScheduleDateDialog(
+                                    context,
+                                    projectId,
+                                    clientId,
+                                  );
+                                },
+                                child: const CircleAvatar(
+                                  radius: 20,
+                                  backgroundColor: AppColors.lightPrimary,
+                                  child: Icon(
+                                    Icons.add,
+                                    color: Colors.white,
                                   ),
-                                if (PermissionManager.hasPermission(
-                                    'create stage schedule date'))
-                                  const PopupMenuItem<String>(
-                                    value: 'add_schedule',
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.calendar_today_outlined,
-                                          size: 20,
-                                        ),
-                                        SizedBox(width: 10),
-                                        Text('Add First Schedule Date'),
-                                      ],
-                                    ),
-                                  ),
-                              ],
-                              child: const CircleAvatar(
-                                radius: 20,
-                                backgroundColor: AppColors.lightPrimary,
-                                child: Icon(
-                                  Icons.add,
-                                  color: Colors.white,
                                 ),
                               ),
-                            ),
                           ],
                         )
                       ],

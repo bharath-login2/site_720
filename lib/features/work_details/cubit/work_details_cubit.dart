@@ -11,8 +11,11 @@ class WorkDetailsCubit extends Cubit<WorkDetailsState> {
   WorkDetailsCubit(String projectId) : super(WorkDetailsInitial()) {
     getWorkDetails(projectId);
     getWorkIssues();
-     getWorkStages(projectId);
+    getWorkStages(projectId);
   }
+
+  /// Blocks duplicate add/edit requests, whichever screen triggers them
+  bool _isSubmitting = false;
 
   void startLoading() {
     emit(WorkDetailsLoading());
@@ -59,7 +62,7 @@ class WorkDetailsCubit extends Cubit<WorkDetailsState> {
     }
   }
 
-    Future<void> getWorkStages(String projectId) async {
+  Future<void> getWorkStages(String projectId) async {
     try {
       WorkStagesModel response = await HttpServices.getWorkStages(projectId);
       if (response.status == true) {
@@ -72,7 +75,9 @@ class WorkDetailsCubit extends Cubit<WorkDetailsState> {
     }
   }
 
-  Future<void> addWorkDetails(
+  /// Returns true on success, false on failure (or if a request is already
+  /// running), so the dialog knows whether to close.
+  Future<bool> addWorkDetails(
       String projectId,
       String clintId,
       String isWorking,
@@ -81,6 +86,9 @@ class WorkDetailsCubit extends Cubit<WorkDetailsState> {
       String status,
       String stage,
       String description) async {
+    if (_isSubmitting) return false;
+    _isSubmitting = true;
+
     try {
       SuccessResponse response = await HttpServices.addWorkDetails(projectId,
           clintId, isWorking, date, noOfLabours, status, stage, description);
@@ -89,17 +97,24 @@ class WorkDetailsCubit extends Cubit<WorkDetailsState> {
         emit(AddingSuccess(response.message.isNotEmpty
             ? response.message
             : "Work detail added successfully"));
+        return true;
       } else {
         emit(AddingFailure(response.message.isNotEmpty
             ? response.message
             : "Failed to add work detail"));
+        return false;
       }
     } catch (e) {
-      emit(AddingFailure('Failed to fetch data: ${e.toString()}'));
+      emit(AddingFailure('Failed to add work detail: ${e.toString()}'));
+      return false;
+    } finally {
+      _isSubmitting = false;
     }
   }
 
-  Future<void> editWorkDetails(
+  /// Returns true on success, false on failure (or if a request is already
+  /// running), so the dialog knows whether to close.
+  Future<bool> editWorkDetails(
       String projectId,
       String clintId,
       String isWorking,
@@ -109,21 +124,37 @@ class WorkDetailsCubit extends Cubit<WorkDetailsState> {
       String stage,
       String description,
       String workId) async {
+    if (_isSubmitting) return false;
+    _isSubmitting = true;
+
     try {
-      SuccessResponse response = await HttpServices.editWorkDetails(projectId,
-          clintId, isWorking, date, noOfLabours, status, stage, description, workId);
+      SuccessResponse response = await HttpServices.editWorkDetails(
+          projectId,
+          clintId,
+          isWorking,
+          date,
+          noOfLabours,
+          status,
+          stage,
+          description,
+          workId);
       if (response.status == true) {
         await getWorkDetails(projectId);
         emit(AddingSuccess(response.message.isNotEmpty
             ? response.message
             : "Work detail updated successfully"));
+        return true;
       } else {
         emit(AddingFailure(response.message.isNotEmpty
             ? response.message
             : "Failed to update work detail"));
+        return false;
       }
     } catch (e) {
-      emit(AddingFailure('Failed to fetch data: ${e.toString()}'));
+      emit(AddingFailure('Failed to update work detail: ${e.toString()}'));
+      return false;
+    } finally {
+      _isSubmitting = false;
     }
   }
 

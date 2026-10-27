@@ -1,3 +1,868 @@
+// // ignore_for_file: must_be_immutable
+
+// import 'package:flutter/material.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:site_720/core/constants/colors.dart';
+// import 'package:site_720/core/constants/routes.dart';
+// import 'package:site_720/data/models/work/work_model.dart';
+// import 'package:site_720/features/work/cubit/work_cubit.dart';
+// import 'package:site_720/features/work/cubit/work_state.dart';
+// import '../../../data/services/http_services.dart';
+
+// class WorkScreen extends StatefulWidget {
+//   const WorkScreen({super.key});
+
+//   @override
+//   State<WorkScreen> createState() => _WorkScreenState();
+// }
+
+// class _WorkScreenState extends State<WorkScreen> {
+//   @override
+//   void initState() {
+//     super.initState();
+
+//     WidgetsBinding.instance.addPostFrameCallback((_) {
+//       context.read<WorkCubit>().getExternalWorkDetailsList();
+//     });
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: AppColors.backgroundColor,
+//       body: BlocBuilder<WorkCubit, WorkState>(
+//         builder: (context, state) {
+//           /// LOADING
+//           if (state is WorkLoading) {
+//             return const Center(
+//               child: CircularProgressIndicator(),
+//             );
+//           }
+
+//           /// FAILURE
+//           if (state is WorkFailure) {
+//             return Center(
+//               child: Text(
+//                 state.error,
+//               ),
+//             );
+//           }
+
+//           /// SUCCESS
+//           if (state is WorkSuccess) {
+//             final cubit = context.read<WorkCubit>();
+//             final workList = state.filteredWorkList;
+
+//             return RefreshIndicator(
+//               onRefresh: () async {
+//                 print('Refreshing work list...');
+
+//                 await cubit.getExternalWorkDetailsList(
+//                   page: 1,
+//                   isLoadMore: false,
+//                 );
+
+//                 print(
+//                   'Refresh completed → currentPage: ${cubit.currentPage}, '
+//                   'total: ${cubit.workList.length}',
+//                 );
+//               },
+//               child: NotificationListener<ScrollNotification>(
+//                 onNotification: (notification) {
+//                   if (notification is ScrollUpdateNotification &&
+//                       notification.metrics.pixels >=
+//                           notification.metrics.maxScrollExtent) {
+//                     print(
+//                       'Reached bottom → currentPage: ${cubit.currentPage}, '
+//                       'hasMoreWork: ${cubit.hasMoreWork}, '
+//                       'isLoadingMore: ${cubit.isLoadingMore}',
+//                     );
+
+//                     if (!cubit.isLoadingMore && cubit.hasMoreWork) {
+//                       final nextPage = cubit.currentPage + 1;
+
+//                       print('Loading work page: $nextPage');
+
+//                       cubit.getExternalWorkDetailsList(
+//                         page: nextPage,
+//                         isLoadMore: true,
+//                       );
+//                     }
+//                   }
+
+//                   return false;
+//                 },
+//                 child: SingleChildScrollView(
+//                   physics: const AlwaysScrollableScrollPhysics(),
+//                   child: Column(
+//                     children: [
+//                       /// HEADER
+//                       Container(
+//                         height: MediaQuery.of(context).size.height * .20,
+//                         width: double.infinity,
+//                         decoration: const BoxDecoration(
+//                           color: AppColors.primaryColor,
+//                           image: DecorationImage(
+//                             image: AssetImage(
+//                               "assets/images/appbar.png",
+//                             ),
+//                             fit: BoxFit.fill,
+//                           ),
+//                           borderRadius: BorderRadius.only(
+//                             bottomLeft: Radius.circular(30),
+//                             bottomRight: Radius.circular(30),
+//                           ),
+//                         ),
+//                         child: const SafeArea(
+//                           child: Padding(
+//                             padding: EdgeInsets.symmetric(
+//                               horizontal: 18,
+//                               vertical: 20,
+//                             ),
+//                             child: Row(
+//                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                               children: [
+//                                 Text(
+//                                   "Work Dashboard",
+//                                   style: TextStyle(
+//                                     fontSize: 24,
+//                                     fontWeight: FontWeight.bold,
+//                                     color: Colors.white,
+//                                   ),
+//                                 ),
+//                                 Icon(
+//                                   Icons.work,
+//                                   color: Colors.white,
+//                                 ),
+//                               ],
+//                             ),
+//                           ),
+//                         ),
+//                       ),
+
+//                       const SizedBox(
+//                         height: 20,
+//                       ),
+
+//                       /// SEARCH
+//                       Container(
+//                         margin: const EdgeInsets.symmetric(horizontal: 22),
+//                         decoration: BoxDecoration(
+//                           color: AppColors.search, // Keep your custom color
+//                           borderRadius: BorderRadius.circular(
+//                               16), // Slightly rounder, modern look
+//                           border: Border.all(
+//                             color: Colors.grey
+//                                 .withOpacity(0.2), // Subtle outline for depth
+//                             width: 1,
+//                           ),
+//                         ),
+//                         child: TextField(
+//                           // controller: _searchController, // Recommended: bind a TextEditingController if you want to clear it programmatically
+//                           textInputAction: TextInputAction.search,
+//                           style: const TextStyle(
+//                             fontSize: 15,
+//                             fontWeight: FontWeight.w400,
+//                           ),
+//                           decoration: InputDecoration(
+//                             hintText: "Search projects...",
+//                             hintStyle: TextStyle(
+//                               color: Colors.grey.shade500,
+//                               fontSize: 15,
+//                             ),
+//                             border: InputBorder.none,
+//                             enabledBorder: InputBorder.none,
+//                             focusedBorder: InputBorder.none,
+//                             contentPadding: const EdgeInsets.symmetric(
+//                               horizontal: 16,
+//                               vertical:
+//                                   14, // Balanced vertical spacing for touch targets
+//                             ),
+//                             prefixIcon: Padding(
+//                               padding:
+//                                   const EdgeInsets.only(left: 12, right: 8),
+//                               child: Icon(
+//                                 Icons.search_rounded,
+//                                 color: Colors.grey.shade600,
+//                                 size: 22,
+//                               ),
+//                             ),
+//                             prefixIconConstraints: const BoxConstraints(
+//                               minWidth: 0,
+//                               minHeight: 0,
+//                             ),
+//                             // Optional: Add a clear button for better UX
+//                             // suffixIcon: IconButton(
+//                             //   icon: const Icon(Icons.clear, size: 18),
+//                             //   color: Colors.grey.shade600,
+//                             //   onPressed: () {
+
+//                             //     // _searchController.clear();
+//                             //     context.read<WorkCubit>().searchProjects('');
+//                             //   },
+//                             // ),
+//                           ),
+//                           onChanged: (value) {
+//                             context.read<WorkCubit>().searchProjects(value);
+//                           },
+//                         ),
+//                       ),
+
+//                       const SizedBox(
+//                         height: 20,
+//                       ),
+
+//                       /// WORK LIST
+//                       ListView.builder(
+//                         itemCount: workList.length,
+//                         shrinkWrap: true,
+//                         physics: const NeverScrollableScrollPhysics(),
+//                         padding: const EdgeInsets.symmetric(
+//                           horizontal: 16,
+//                         ),
+//                         itemBuilder: (context, index) {
+//                           final item = workList[index];
+
+//                           bool isPending =
+//                               item.updateStatus.toLowerCase().trim() ==
+//                                   "pending";
+
+//                           /// SAFE DATE
+//                           String day = "--";
+//                           String month = "--";
+//                           String year = "--";
+
+//                           try {
+//                             final date = DateTime.parse(item.workDate);
+
+//                             day = date.day.toString();
+//                             month = _getMonth(date.month);
+//                             year = date.year.toString();
+//                           } catch (_) {}
+
+//                           return InkWell(
+//                             borderRadius: BorderRadius.circular(20),
+//                             onTap: () {
+//                               Navigator.pushNamed(
+//                                 context,
+//                                 AppRoutes.workDetails,
+//                                 arguments: {
+//                                   "id": item.projectId,
+//                                   "client_id": item.clientId,
+//                                 },
+//                               ).then((_) {
+//                                 if (context.mounted) {
+//                                   context
+//                                       .read<WorkCubit>()
+//                                       .getExternalWorkDetailsList();
+//                                 }
+//                               });
+//                             },
+//                             child: Container(
+//                               margin: const EdgeInsets.only(
+//                                 bottom: 16,
+//                               ),
+//                               padding: const EdgeInsets.all(16),
+//                               decoration: BoxDecoration(
+//                                 color: Colors.white,
+//                                 borderRadius: BorderRadius.circular(20),
+//                                 border: Border.all(
+//                                   color: Colors.grey.shade200,
+//                                 ),
+//                                 boxShadow: [
+//                                   BoxShadow(
+//                                     color: Colors.black.withValues(
+//                                       alpha: 0.08,
+//                                     ),
+//                                     blurRadius: 12,
+//                                     offset: const Offset(0, 4),
+//                                   ),
+//                                 ],
+//                               ),
+//                               child: Column(
+//                                 crossAxisAlignment: CrossAxisAlignment.start,
+//                                 children: [
+//                                   /// WORK BADGE
+//                                   Row(
+//                                     children: [
+//                                       Container(
+//                                         padding: const EdgeInsets.symmetric(
+//                                           horizontal: 10,
+//                                           vertical: 6,
+//                                         ),
+//                                         decoration: BoxDecoration(
+//                                           color: AppColors.primaryColor,
+//                                           borderRadius:
+//                                               BorderRadius.circular(10),
+//                                         ),
+//                                         child: const Row(
+//                                           mainAxisSize: MainAxisSize.min,
+//                                           children: [
+//                                             Icon(
+//                                               Icons.construction_rounded,
+//                                               color: Colors.white,
+//                                               size: 18,
+//                                             ),
+//                                             SizedBox(width: 6),
+//                                             Text(
+//                                               "WORK",
+//                                               style: TextStyle(
+//                                                 color: Colors.white,
+//                                                 fontSize: 12,
+//                                                 fontWeight: FontWeight.bold,
+//                                                 letterSpacing: 1,
+//                                               ),
+//                                             ),
+//                                           ],
+//                                         ),
+//                                       ),
+//                                       const Spacer(),
+//                                       Container(
+//                                         padding: const EdgeInsets.symmetric(
+//                                           horizontal: 10,
+//                                           vertical: 5,
+//                                         ),
+//                                         decoration: BoxDecoration(
+//                                           color: isPending
+//                                               ? Colors.orange.shade50
+//                                               : Colors.green.shade50,
+//                                           borderRadius:
+//                                               BorderRadius.circular(10),
+//                                         ),
+//                                         child: Text(
+//                                           item.updateStatus,
+//                                           style: TextStyle(
+//                                             color: isPending
+//                                                 ? Colors.orange
+//                                                 : Colors.green,
+//                                             fontWeight: FontWeight.bold,
+//                                           ),
+//                                         ),
+//                                       ),
+//                                     ],
+//                                   ),
+
+//                                   const SizedBox(height: 12),
+
+//                                   /// PROJECT NAME
+//                                   Row(
+//                                     mainAxisAlignment:
+//                                         MainAxisAlignment.spaceBetween,
+//                                     children: [
+//                                       Expanded(
+//                                         child: Text(
+//                                           item.projectName,
+//                                           maxLines: 1,
+//                                           overflow: TextOverflow.ellipsis,
+//                                           style: const TextStyle(
+//                                             fontSize: 18,
+//                                             fontWeight: FontWeight.bold,
+//                                           ),
+//                                         ),
+//                                       ),
+//                                     ],
+//                                   ),
+
+//                                   const SizedBox(height: 14),
+
+//                                   _buildInfoRow(
+//                                     Icons.engineering_outlined,
+//                                     "Working",
+//                                     item.isWorking,
+//                                   ),
+
+//                                   const SizedBox(height: 8),
+
+//                                   _buildInfoRow(
+//                                     Icons.groups_2_outlined,
+//                                     "Labours",
+//                                     item.laboursNo.toString(),
+//                                   ),
+
+//                                   const SizedBox(height: 8),
+
+//                                   _buildInfoRow(
+//                                     Icons.calendar_month_outlined,
+//                                     "Date",
+//                                     item.workDate,
+//                                   ),
+
+//                                   const SizedBox(height: 8),
+
+//                                   _buildInfoRow(
+//                                     Icons.description_outlined,
+//                                     "Description",
+//                                     item.description,
+//                                     maxLines: 2,
+//                                   ),
+//                                 ],
+//                               ),
+//                             ),
+//                           );
+//                         },
+//                       ),
+
+//                       const SizedBox(
+//                         height: 20,
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//             );
+//           }
+
+//           return const SizedBox();
+//         },
+//       ),
+//     );
+//   }
+
+//   String _getMonth(int month) {
+//     const months = [
+//       "Jan",
+//       "Feb",
+//       "Mar",
+//       "Apr",
+//       "May",
+//       "Jun",
+//       "Jul",
+//       "Aug",
+//       "Sep",
+//       "Oct",
+//       "Nov",
+//       "Dec"
+//     ];
+
+//     return months[month - 1];
+//   }
+
+//   /// ROW
+//   Widget buildRow(
+//     IconData icon,
+//     String text,
+//   ) {
+//     return Row(
+//       children: [
+//         Icon(
+//           icon,
+//           size: 18,
+//           color: Colors.grey,
+//         ),
+//         const SizedBox(width: 6),
+//         Expanded(
+//           child: Text(text),
+//         ),
+//       ],
+//     );
+//   }
+
+//   /// POPUP
+//   void addWorkPopup(
+//     ExternalWorkItem item,
+//   ) async {
+//     String? selectedStage;
+
+//     String workingStatus = "Yes";
+
+//     String? selectedWorkStatusId;
+
+//     final TextEditingController dateController = TextEditingController();
+
+//     final TextEditingController labourController = TextEditingController();
+
+//     final TextEditingController descriptionController = TextEditingController();
+
+//     List<dynamic> stageList = [];
+
+//     List<dynamic> workStatusList = [];
+
+//     /// GET STAGES API
+//     final stageResponse = await HttpServices.getStagesByprojectId(
+//       projectId: item.projectId,
+//     );
+
+//     if (stageResponse != null && stageResponse["status"] == true) {
+//       stageList = stageResponse["data"]["stages"] ?? [];
+//     }
+
+//     /// GET WORK STATUS API
+//     final workStatusResponse = await HttpServices.getWorkStatusID();
+
+//     if (workStatusResponse != null && workStatusResponse["status"] == true) {
+//       workStatusList = workStatusResponse["data"] ?? [];
+//     }
+
+//     if (!mounted) return;
+
+//     showDialog(
+//       context: context,
+//       builder: (dialogContext) {
+//         return StatefulBuilder(
+//           builder: (context, setState) {
+//             return AlertDialog(
+//               shape: RoundedRectangleBorder(
+//                 borderRadius: BorderRadius.circular(18),
+//               ),
+//               title: Text(
+//                 item.projectName,
+//                 style: const TextStyle(
+//                   fontWeight: FontWeight.bold,
+//                 ),
+//               ),
+//               content: SingleChildScrollView(
+//                 child: Column(
+//                   mainAxisSize: MainAxisSize.min,
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     /// WORKING STATUS
+//                     const Text(
+//                       "Are You Sure Today is Working?",
+//                       style: TextStyle(
+//                         fontWeight: FontWeight.w600,
+//                       ),
+//                     ),
+
+//                     Row(
+//                       children: [
+//                         Radio<String>(
+//                           value: "Yes",
+//                           groupValue: workingStatus,
+//                           activeColor: AppColors.primaryColor,
+//                           onChanged: (value) {
+//                             setState(() {
+//                               workingStatus = value!;
+
+//                               /// RESET
+//                               selectedWorkStatusId = null;
+//                               labourController.clear();
+//                             });
+//                           },
+//                         ),
+//                         const Text("Yes"),
+//                         Radio<String>(
+//                           value: "No",
+//                           groupValue: workingStatus,
+//                           activeColor: AppColors.primaryColor,
+//                           onChanged: (value) {
+//                             setState(() {
+//                               workingStatus = value!;
+
+//                               /// RESET
+//                               selectedWorkStatusId = null;
+//                               labourController.clear();
+//                             });
+//                           },
+//                         ),
+//                         const Text("No"),
+//                       ],
+//                     ),
+
+//                     const SizedBox(height: 10),
+
+//                     /// STAGE DROPDOWN
+//                     DropdownButtonFormField<String>(
+//                       value: selectedStage,
+//                       decoration: InputDecoration(
+//                         labelText: "Stage *",
+//                         border: OutlineInputBorder(
+//                           borderRadius: BorderRadius.circular(12),
+//                         ),
+//                       ),
+//                       items: stageList.map((e) {
+//                         return DropdownMenuItem<String>(
+//                           value: e["stage_id"].toString(),
+//                           child: Text(
+//                             e["stage_name"].toString(),
+//                           ),
+//                         );
+//                       }).toList(),
+//                       onChanged: (value) {
+//                         setState(() {
+//                           selectedStage = value;
+//                         });
+//                       },
+//                     ),
+
+//                     const SizedBox(height: 14),
+
+//                     /// DATE
+//                     TextFormField(
+//                       controller: dateController,
+//                       readOnly: true,
+//                       decoration: InputDecoration(
+//                         labelText: "Date *",
+//                         hintText: "dd-mm-yyyy",
+//                         suffixIcon: const Icon(
+//                           Icons.calendar_month,
+//                         ),
+//                         border: OutlineInputBorder(
+//                           borderRadius: BorderRadius.circular(12),
+//                         ),
+//                       ),
+//                       onTap: () async {
+//                         DateTime? pickedDate = await showDatePicker(
+//                           context: context,
+//                           initialDate: DateTime.now(),
+//                           firstDate: DateTime(2020),
+//                           lastDate: DateTime(2100),
+//                         );
+
+//                         if (pickedDate != null) {
+//                           String formattedDate =
+//                               "${pickedDate.day.toString().padLeft(2, '0')}-"
+//                               "${pickedDate.month.toString().padLeft(2, '0')}-"
+//                               "${pickedDate.year}";
+
+//                           dateController.text = formattedDate;
+//                         }
+//                       },
+//                     ),
+
+//                     const SizedBox(height: 14),
+
+//                     /// IF YES SHOW LABOUR FIELD
+//                     if (workingStatus == "Yes")
+//                       TextFormField(
+//                         controller: labourController,
+//                         keyboardType: TextInputType.number,
+//                         decoration: InputDecoration(
+//                           labelText: "No of Labours *",
+//                           border: OutlineInputBorder(
+//                             borderRadius: BorderRadius.circular(12),
+//                           ),
+//                         ),
+//                       ),
+
+//                     /// IF NO SHOW WORK STATUS
+//                     if (workingStatus == "No")
+//                       DropdownButtonFormField<String>(
+//                         value: selectedWorkStatusId,
+//                         decoration: InputDecoration(
+//                           labelText: "Work Status *",
+//                           border: OutlineInputBorder(
+//                             borderRadius: BorderRadius.circular(12),
+//                           ),
+//                         ),
+//                         items: workStatusList.map((e) {
+//                           return DropdownMenuItem<String>(
+//                             value: e["id"].toString(),
+//                             child: Text(
+//                               e["work_status"].toString(),
+//                             ),
+//                           );
+//                         }).toList(),
+//                         onChanged: (value) {
+//                           setState(() {
+//                             selectedWorkStatusId = value;
+//                           });
+//                         },
+//                       ),
+
+//                     const SizedBox(height: 14),
+
+//                     /// DESCRIPTION
+//                     TextFormField(
+//                       controller: descriptionController,
+//                       maxLines: 4,
+//                       decoration: InputDecoration(
+//                         labelText: "Description",
+//                         alignLabelWithHint: true,
+//                         border: OutlineInputBorder(
+//                           borderRadius: BorderRadius.circular(12),
+//                         ),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//               actions: [
+//                 /// CANCEL
+//                 TextButton(
+//                   onPressed: () {
+//                     Navigator.pop(dialogContext);
+//                   },
+//                   child: const Text(
+//                     "Cancel",
+//                   ),
+//                 ),
+
+//                 /// SUBMIT
+//                 ElevatedButton(
+//                   style: ElevatedButton.styleFrom(
+//                     backgroundColor: AppColors.primaryColor,
+//                   ),
+//                   onPressed: () async {
+//                     /// VALIDATION
+//                     if (selectedStage == null) {
+//                       ScaffoldMessenger.of(context).showSnackBar(
+//                         const SnackBar(
+//                           content: Text(
+//                             "Please Select Stage",
+//                           ),
+//                         ),
+//                       );
+
+//                       return;
+//                     }
+
+//                     if (dateController.text.isEmpty) {
+//                       ScaffoldMessenger.of(context).showSnackBar(
+//                         const SnackBar(
+//                           content: Text(
+//                             "Please Select Date",
+//                           ),
+//                         ),
+//                       );
+
+//                       return;
+//                     }
+
+//                     /// YES VALIDATION
+//                     if (workingStatus == "Yes" &&
+//                         labourController.text.isEmpty) {
+//                       ScaffoldMessenger.of(context).showSnackBar(
+//                         const SnackBar(
+//                           content: Text(
+//                             "Please Enter Labour Count",
+//                           ),
+//                         ),
+//                       );
+
+//                       return;
+//                     }
+
+//                     /// NO VALIDATION
+//                     if (workingStatus == "No" && selectedWorkStatusId == null) {
+//                       ScaffoldMessenger.of(context).showSnackBar(
+//                         const SnackBar(
+//                           content: Text(
+//                             "Please Select Work Status",
+//                           ),
+//                         ),
+//                       );
+
+//                       return;
+//                     }
+
+//                     /// API CALL
+//                     final updateResponse =
+//                         await HttpServices.updateExternalWork(
+//                       stageId: selectedStage!,
+//                       projectId: item.projectId,
+//                       clientId: item.clientId,
+
+//                       /// YES / NO
+//                       workStatus: workingStatus,
+
+//                       workDate: dateController.text,
+
+//                       /// YES
+//                       labourCount:
+//                           workingStatus == "Yes" ? labourController.text : "0",
+
+//                       /// NO
+//                       workStatusId:
+//                           workingStatus == "No" ? selectedWorkStatusId! : "0",
+
+//                       description: descriptionController.text,
+//                     );
+
+//                     /// SUCCESS
+//                     if (updateResponse != null &&
+//                         updateResponse["status"] == true) {
+//                       /// CLOSE POPUP
+//                       Navigator.pop(dialogContext);
+
+//                       /// RELOAD LIST
+//                       if (mounted) {
+//                         BlocProvider.of<WorkCubit>(
+//                           this.context,
+//                         ).getExternalWorkDetailsList();
+//                       }
+
+//                       /// SUCCESS MESSAGE
+//                       Future.delayed(
+//                         const Duration(milliseconds: 300),
+//                         () {
+//                           if (mounted) {
+//                             ScaffoldMessenger.of(this.context).showSnackBar(
+//                               SnackBar(
+//                                 backgroundColor: Colors.green,
+//                                 content: Text(
+//                                   updateResponse["message"] ??
+//                                       "Work Updated Successfully",
+//                                 ),
+//                               ),
+//                             );
+//                           }
+//                         },
+//                       );
+//                     } else {
+//                       ScaffoldMessenger.of(context).showSnackBar(
+//                         SnackBar(
+//                           backgroundColor: Colors.red,
+//                           content: Text(
+//                             updateResponse?["message"] ??
+//                                 "Something went wrong",
+//                           ),
+//                         ),
+//                       );
+//                     }
+//                   },
+//                   child: const Text(
+//                     "Submit",
+//                     style: TextStyle(
+//                       color: Colors.white,
+//                     ),
+//                   ),
+//                 ),
+//               ],
+//             );
+//           },
+//         );
+//       },
+//     );
+//   }
+
+//   Widget _buildInfoRow(
+//     IconData icon,
+//     String title,
+//     String value, {
+//     int maxLines = 1,
+//   }) {
+//     return Row(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         Icon(
+//           icon,
+//           size: 18,
+//           color: AppColors.primaryColor,
+//         ),
+//         const SizedBox(width: 8),
+//         Text(
+//           "$title: ",
+//           style: const TextStyle(
+//             fontWeight: FontWeight.w600,
+//           ),
+//         ),
+//         Expanded(
+//           child: Text(
+//             value,
+//             maxLines: maxLines,
+//             overflow: TextOverflow.ellipsis,
+//             style: TextStyle(
+//               color: Colors.grey.shade700,
+//               height: 1.4,
+//             ),
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+// }
+// ignore_for_file: must_be_immutable
+
 // ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
@@ -9,22 +874,16 @@ import 'package:site_720/features/work/cubit/work_cubit.dart';
 import 'package:site_720/features/work/cubit/work_state.dart';
 import '../../../data/services/http_services.dart';
 
-class WorkScreen extends StatefulWidget {
+/// NOTE:
+/// The initial fetch (previously in initState) must now happen where the
+/// cubit is created, e.g.:
+///
+/// BlocProvider(
+///   create: (_) => WorkCubit()..getExternalWorkDetailsList(),
+///   child: const WorkScreen(),
+/// )
+class WorkScreen extends StatelessWidget {
   const WorkScreen({super.key});
-
-  @override
-  State<WorkScreen> createState() => _WorkScreenState();
-}
-
-class _WorkScreenState extends State<WorkScreen> {
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<WorkCubit>().getExternalWorkDetailsList();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,14 +914,14 @@ class _WorkScreenState extends State<WorkScreen> {
 
             return RefreshIndicator(
               onRefresh: () async {
-                print('Refreshing work list...');
+                debugPrint('Refreshing work list...');
 
                 await cubit.getExternalWorkDetailsList(
                   page: 1,
                   isLoadMore: false,
                 );
 
-                print(
+                debugPrint(
                   'Refresh completed → currentPage: ${cubit.currentPage}, '
                   'total: ${cubit.workList.length}',
                 );
@@ -72,7 +931,7 @@ class _WorkScreenState extends State<WorkScreen> {
                   if (notification is ScrollUpdateNotification &&
                       notification.metrics.pixels >=
                           notification.metrics.maxScrollExtent) {
-                    print(
+                    debugPrint(
                       'Reached bottom → currentPage: ${cubit.currentPage}, '
                       'hasMoreWork: ${cubit.hasMoreWork}, '
                       'isLoadingMore: ${cubit.isLoadingMore}',
@@ -81,7 +940,7 @@ class _WorkScreenState extends State<WorkScreen> {
                     if (!cubit.isLoadingMore && cubit.hasMoreWork) {
                       final nextPage = cubit.currentPage + 1;
 
-                      print('Loading work page: $nextPage');
+                      debugPrint('Loading work page: $nextPage');
 
                       cubit.getExternalWorkDetailsList(
                         page: nextPage,
@@ -140,27 +999,51 @@ class _WorkScreenState extends State<WorkScreen> {
                         ),
                       ),
 
-                      const SizedBox(
-                        height: 20,
-                      ),
+                      const SizedBox(height: 20),
 
                       /// SEARCH
                       Container(
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 22,
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                        ),
+                        margin: const EdgeInsets.symmetric(horizontal: 22),
                         decoration: BoxDecoration(
                           color: AppColors.search,
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: Colors.grey.withOpacity(0.2),
+                            width: 1,
+                          ),
                         ),
                         child: TextField(
-                          decoration: const InputDecoration(
-                            hintText: "Search...",
+                          textInputAction: TextInputAction.search,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: "Search projects...",
+                            hintStyle: TextStyle(
+                              color: Colors.grey.shade500,
+                              fontSize: 15,
+                            ),
                             border: InputBorder.none,
-                            prefixIcon: Icon(Icons.search),
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 14,
+                            ),
+                            prefixIcon: Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 12, right: 8),
+                              child: Icon(
+                                Icons.search_rounded,
+                                color: Colors.grey.shade600,
+                                size: 22,
+                              ),
+                            ),
+                            prefixIconConstraints: const BoxConstraints(
+                              minWidth: 0,
+                              minHeight: 0,
+                            ),
                           ),
                           onChanged: (value) {
                             context.read<WorkCubit>().searchProjects(value);
@@ -168,9 +1051,33 @@ class _WorkScreenState extends State<WorkScreen> {
                         ),
                       ),
 
-                      const SizedBox(
-                        height: 20,
+                      const SizedBox(height: 14),
+
+                      /// STATUS FILTER (API)
+                      SizedBox(
+                        height: 40,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          padding: const EdgeInsets.symmetric(horizontal: 22),
+                          children: [
+                            _buildFilterChip(context, "All", null),
+                            _buildFilterChip(context, "Pending", "pending"),
+                            _buildFilterChip(context, "Updated", "updated"),
+                          ],
+                        ),
                       ),
+
+                      const SizedBox(height: 14),
+
+                      /// EMPTY STATE
+                      if (workList.isEmpty)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 40),
+                          child: Text(
+                            "No work found",
+                            style: TextStyle(color: Colors.grey.shade600),
+                          ),
+                        ),
 
                       /// WORK LIST
                       ListView.builder(
@@ -219,9 +1126,7 @@ class _WorkScreenState extends State<WorkScreen> {
                               });
                             },
                             child: Container(
-                              margin: const EdgeInsets.only(
-                                bottom: 16,
-                              ),
+                              margin: const EdgeInsets.only(bottom: 16),
                               padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
                                 color: Colors.white,
@@ -362,9 +1267,7 @@ class _WorkScreenState extends State<WorkScreen> {
                         },
                       ),
 
-                      const SizedBox(
-                        height: 20,
-                      ),
+                      const SizedBox(height: 20),
                     ],
                   ),
                 ),
@@ -373,6 +1276,36 @@ class _WorkScreenState extends State<WorkScreen> {
           }
 
           return const SizedBox();
+        },
+      ),
+    );
+  }
+
+  /// FILTER CHIP
+  Widget _buildFilterChip(
+    BuildContext context,
+    String label,
+    String? status,
+  ) {
+    final cubit = context.read<WorkCubit>();
+    final isSelected = cubit.selectedStatus == status;
+
+    return Padding(
+      padding: const EdgeInsets.only(right: 10),
+      child: ChoiceChip(
+        label: Text(label),
+        selected: isSelected,
+        selectedColor: AppColors.primaryColor,
+        backgroundColor: Colors.white,
+        labelStyle: TextStyle(
+          color: isSelected ? Colors.white : Colors.black87,
+          fontWeight: FontWeight.w600,
+        ),
+        showCheckmark: false,
+        onSelected: (_) {
+          if (!isSelected) {
+            cubit.setStatusFilter(status);
+          }
         },
       ),
     );
@@ -418,7 +1351,9 @@ class _WorkScreenState extends State<WorkScreen> {
   }
 
   /// POPUP
+  /// Pass the screen's BuildContext (replaces State.mounted / this.context)
   void addWorkPopup(
+    BuildContext screenContext,
     ExternalWorkItem item,
   ) async {
     String? selectedStage;
@@ -453,10 +1388,10 @@ class _WorkScreenState extends State<WorkScreen> {
       workStatusList = workStatusResponse["data"] ?? [];
     }
 
-    if (!mounted) return;
+    if (!screenContext.mounted) return;
 
     showDialog(
-      context: context,
+      context: screenContext,
       builder: (dialogContext) {
         return StatefulBuilder(
           builder: (context, setState) {
@@ -642,9 +1577,7 @@ class _WorkScreenState extends State<WorkScreen> {
                   onPressed: () {
                     Navigator.pop(dialogContext);
                   },
-                  child: const Text(
-                    "Cancel",
-                  ),
+                  child: const Text("Cancel"),
                 ),
 
                 /// SUBMIT
@@ -657,9 +1590,7 @@ class _WorkScreenState extends State<WorkScreen> {
                     if (selectedStage == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text(
-                            "Please Select Stage",
-                          ),
+                          content: Text("Please Select Stage"),
                         ),
                       );
 
@@ -669,9 +1600,7 @@ class _WorkScreenState extends State<WorkScreen> {
                     if (dateController.text.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text(
-                            "Please Select Date",
-                          ),
+                          content: Text("Please Select Date"),
                         ),
                       );
 
@@ -683,9 +1612,7 @@ class _WorkScreenState extends State<WorkScreen> {
                         labourController.text.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text(
-                            "Please Enter Labour Count",
-                          ),
+                          content: Text("Please Enter Labour Count"),
                         ),
                       );
 
@@ -696,9 +1623,7 @@ class _WorkScreenState extends State<WorkScreen> {
                     if (workingStatus == "No" && selectedWorkStatusId == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text(
-                            "Please Select Work Status",
-                          ),
+                          content: Text("Please Select Work Status"),
                         ),
                       );
 
@@ -735,9 +1660,9 @@ class _WorkScreenState extends State<WorkScreen> {
                       Navigator.pop(dialogContext);
 
                       /// RELOAD LIST
-                      if (mounted) {
+                      if (screenContext.mounted) {
                         BlocProvider.of<WorkCubit>(
-                          this.context,
+                          screenContext,
                         ).getExternalWorkDetailsList();
                       }
 
@@ -745,8 +1670,8 @@ class _WorkScreenState extends State<WorkScreen> {
                       Future.delayed(
                         const Duration(milliseconds: 300),
                         () {
-                          if (mounted) {
-                            ScaffoldMessenger.of(this.context).showSnackBar(
+                          if (screenContext.mounted) {
+                            ScaffoldMessenger.of(screenContext).showSnackBar(
                               SnackBar(
                                 backgroundColor: Colors.green,
                                 content: Text(
@@ -772,9 +1697,7 @@ class _WorkScreenState extends State<WorkScreen> {
                   },
                   child: const Text(
                     "Submit",
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
               ],

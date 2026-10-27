@@ -40,11 +40,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   TextEditingController tdate = TextEditingController();
 
-  List colors = [
+  List<Color> colors = [
     Colors.blue,
     Colors.green,
     Colors.orange,
     Colors.red,
+    Colors.purple,
   ];
 
   Map<String, dynamic>? profileData;
@@ -129,6 +130,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     backgroundColor: Colors.red,
                   ),
                 );
+                if (!context.mounted) return;
                 await logOut(context);
               }
             },
@@ -831,6 +833,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                             Colors.blue,
                                             // AppColors.primaryColor,
                                             Colors.red,
+                                            // Colors.purple,
                                           ],
                                           // labels: ["", "", "", ""],
                                         )
@@ -1123,8 +1126,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                                               totalCount,
                                                           valueColor:
                                                               AlwaysStoppedAnimation<
-                                                                      Color>(
-                                                                  colors[i]),
+                                                                  Color>(
+                                                            colors[i %
+                                                                colors.length],
+                                                          ),
                                                           minHeight: 5,
                                                         ),
                                                       ],

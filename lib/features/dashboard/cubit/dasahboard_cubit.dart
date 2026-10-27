@@ -7,6 +7,7 @@ import 'dashboard_state.dart';
 class DashboardCubit extends Cubit<DashboardState> {
   DashboardCubit(String fDate, String tDate) : super(DashboardInitial()) {
     getDashboard(fDate, tDate);
+    checkTokenExpirationStatus();
   }
 
   Future<void> getDashboard(String fDate, String tDate) async {
@@ -33,6 +34,24 @@ class DashboardCubit extends Cubit<DashboardState> {
           'Failed to fetch data: ${e.toString()}',
         ),
       );
+    }
+  }
+
+  //token check
+  Future<void> checkTokenExpirationStatus() async {
+    try {
+      // Call your static service method
+      bool? isExpired = await HttpServices.isTokenExpired();
+
+      if (isExpired == true) {
+        print("TOKEN EXPIRED / LOGGED IN ELSEWHERE - LOGGING OUT");
+        emit(DashboardTokenExpired());
+        return;
+      }
+
+      // If false or null (network error), do nothing and let normal data loading continue
+    } catch (e) {
+      print("Error checking token expiration: $e");
     }
   }
 

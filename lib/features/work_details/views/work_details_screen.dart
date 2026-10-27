@@ -801,8 +801,12 @@ class WorkDetailsScreen extends StatelessWidget {
       }
     }
 
+    /// Lives outside the builder so it survives dialog rebuilds
+    bool isSubmitting = false;
+
     return showDialog(
       context: context,
+      barrierDismissible: false, // can't tap outside to close mid-request
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setDialogState) {
@@ -841,21 +845,25 @@ class WorkDetailsScreen extends StatelessWidget {
                               Radio<String>(
                                 value: 'Yes',
                                 groupValue: isWorking,
-                                onChanged: (value) {
-                                  setDialogState(() {
-                                    isWorking = value!;
-                                  });
-                                },
+                                onChanged: isSubmitting
+                                    ? null
+                                    : (value) {
+                                        setDialogState(() {
+                                          isWorking = value!;
+                                        });
+                                      },
                               ),
                               const Text("Yes"),
                               Radio<String>(
                                 value: 'No',
                                 groupValue: isWorking,
-                                onChanged: (value) {
-                                  setDialogState(() {
-                                    isWorking = value!;
-                                  });
-                                },
+                                onChanged: isSubmitting
+                                    ? null
+                                    : (value) {
+                                        setDialogState(() {
+                                          isWorking = value!;
+                                        });
+                                      },
                               ),
                               const Text("No"),
                             ],
@@ -876,11 +884,13 @@ class WorkDetailsScreen extends StatelessWidget {
                                   ),
                                 );
                               }).toList(),
-                              onChanged: (value) {
-                                setDialogState(() {
-                                  selectedStage = value;
-                                });
-                              },
+                              onChanged: isSubmitting
+                                  ? null
+                                  : (value) {
+                                      setDialogState(() {
+                                        selectedStage = value;
+                                      });
+                                    },
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
                                   return "Select a Stage";
@@ -910,15 +920,17 @@ class WorkDetailsScreen extends StatelessWidget {
                                 }
                                 return null;
                               },
-                              onTap: () async {
-                                String? selectedDate =
-                                    await selectDate(context);
-                                if (selectedDate != null) {
-                                  setDialogState(() {
-                                    date.text = selectedDate;
-                                  });
-                                }
-                              },
+                              onTap: isSubmitting
+                                  ? null
+                                  : () async {
+                                      String? selectedDate =
+                                          await selectDate(context);
+                                      if (selectedDate != null) {
+                                        setDialogState(() {
+                                          date.text = selectedDate;
+                                        });
+                                      }
+                                    },
                               readOnly: true,
                               controller: date,
                               decoration: InputDecoration(
@@ -939,6 +951,7 @@ class WorkDetailsScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: TextFormField(
+                                enabled: !isSubmitting,
                                 validator: (value) {
                                   if (isWorking == "Yes") {
                                     if (value == null || value.trim().isEmpty) {
@@ -979,11 +992,13 @@ class WorkDetailsScreen extends StatelessWidget {
                                     ),
                                   );
                                 }).toList(),
-                                onChanged: (value) {
-                                  setDialogState(() {
-                                    selectedStatus = value;
-                                  });
-                                },
+                                onChanged: isSubmitting
+                                    ? null
+                                    : (value) {
+                                        setDialogState(() {
+                                          selectedStatus = value;
+                                        });
+                                      },
                                 validator: (value) {
                                   if (isWorking == "No") {
                                     if (value == null || value.trim().isEmpty) {
@@ -1009,18 +1024,19 @@ class WorkDetailsScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(5),
                             ),
                             child: TextFormField(
+                              enabled: !isSubmitting,
                               controller: description,
                               keyboardType: TextInputType.text,
                               maxLines: 3,
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
-                                  return "Enter Description"; // Error message when empty
+                                  return "Enter Remark"; // Error message when empty
                                 }
                                 return null;
                               },
                               decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.all(10),
-                                labelText: 'Description*',
+                                labelText: 'Remark*',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(5),
                                 ),
@@ -1029,48 +1045,94 @@ class WorkDetailsScreen extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 20),
-                          GestureDetector(
-                            onTap: () async {
-                              if (formKey.currentState!.validate()) {
-                                if (type == "add") {
-                                  cubit.addWorkDetails(
-                                      projectId,
-                                      clientId,
-                                      isWorking,
-                                      date.text,
-                                      noOfLabours.text,
-                                      selectedStatus ?? "",
-                                      selectedStage ?? "",
-                                      description.text);
-                                } else {
-                                  cubit.editWorkDetails(
-                                      projectId,
-                                      clientId,
-                                      isWorking,
-                                      date.text,
-                                      noOfLabours.text,
-                                      selectedStatus ?? "",
-                                      selectedStage ?? "",
-                                      description.text,
-                                      workId);
-                                }
-                                Navigator.pop(context);
-                                date.clear();
-                                noOfLabours.clear();
-                                description.clear();
-                                selectedStatus = null;
-                                selectedStage = null;
-                                isWorking = 'Yes';
-                              }
-                            },
-                            child: LargeButton(
-                                title: type == "add" ? "Add" : "Update"),
-                          ),
+
+                          /// ADD / UPDATE (shows loader while submitting)
+                          isSubmitting
+                              ? const Center(
+                                  child: Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 8.0),
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                )
+                              : GestureDetector(
+                                  onTap: () async {
+                                    // Guard: ignore taps while a request is running
+                                    if (isSubmitting) return;
+                                    if (!formKey.currentState!.validate())
+                                      return;
+
+                                    setDialogState(() => isSubmitting = true);
+
+                                    try {
+                                      final dynamic result;
+
+                                      if (type == "add") {
+                                        result = await cubit.addWorkDetails(
+                                            projectId,
+                                            clientId,
+                                            isWorking,
+                                            date.text,
+                                            noOfLabours.text,
+                                            selectedStatus ?? "",
+                                            selectedStage ?? "",
+                                            description.text);
+                                      } else {
+                                        result = await cubit.editWorkDetails(
+                                            projectId,
+                                            clientId,
+                                            isWorking,
+                                            date.text,
+                                            noOfLabours.text,
+                                            selectedStatus ?? "",
+                                            selectedStage ?? "",
+                                            description.text,
+                                            workId);
+                                      }
+
+                                      // Works with Future<void> (null) and
+                                      // Future<bool> (false = failed)
+                                      final bool success = result != false;
+
+                                      if (!context.mounted) return;
+
+                                      if (success) {
+                                        Navigator.pop(context);
+
+                                        date.clear();
+                                        noOfLabours.clear();
+                                        description.clear();
+                                        selectedStatus = null;
+                                        selectedStage = null;
+                                        isWorking = 'Yes';
+                                      } else {
+                                        // keep dialog + typed values, allow retry
+                                        setDialogState(
+                                            () => isSubmitting = false);
+                                      }
+                                    } catch (e) {
+                                      if (context.mounted) {
+                                        setDialogState(
+                                            () => isSubmitting = false);
+                                      }
+                                    }
+                                  },
+                                  child: LargeButton(
+                                      title: type == "add" ? "Add" : "Update"),
+                                ),
                           Center(
                             child: TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
+                              onPressed: isSubmitting
+                                  ? null
+                                  : () {
+                                      Navigator.pop(context);
+                                      date.clear();
+                                      noOfLabours.clear();
+                                      description.clear();
+                                      selectedStatus = null;
+                                      selectedStage = null;
+                                      isWorking = 'Yes';
+                                    },
                               child: const Text('Close'),
                             ),
                           ),

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../data/models/work/work_model.dart';
 import '../../../data/services/http_services.dart';
@@ -13,30 +14,43 @@ class WorkCubit extends Cubit<WorkState> {
   bool isLoadingMore = false;
   bool hasMoreWork = true;
 
+  /// STATUS FILTER (null = All, "pending", "updated")
+  String? selectedStatus;
+
+  /// Keeps the search text so it survives reloads / pagination
+  String _searchQuery = '';
+
+  /// SET STATUS FILTER → reloads page 1 from the API
+  Future<void> setStatusFilter(String? status) async {
+    selectedStatus = status;
+    await getExternalWorkDetailsList(page: 1, isLoadMore: false);
+  }
+
   /// GET WORK LIST
   Future<void> getExternalWorkDetailsList({
     int page = 1,
     bool isLoadMore = false,
   }) async {
-    print(
-      'getExternalWorkDetailsList → page: $page, isLoadMore: $isLoadMore',
+    debugPrint(
+      'getExternalWorkDetailsList → page: $page, isLoadMore: $isLoadMore, '
+      'status: $selectedStatus',
     );
 
     if (isLoadMore) {
       if (isLoadingMore || !hasMoreWork) {
-        print(
+        debugPrint(
           'Pagination stopped → isLoadingMore: $isLoadingMore, hasMoreWork: $hasMoreWork',
         );
         return;
       }
 
       isLoadingMore = true;
-      print('Loading more work...');
+      debugPrint('Loading more work...');
     } else {
       currentPage = page;
       hasMoreWork = true;
 
-      print('Initial load → page: $page');
+      debugPrint('Initial load → page: $page');
 
       emit(WorkLoading());
     }
@@ -45,37 +59,30 @@ class WorkCubit extends Cubit<WorkState> {
       final response = await HttpServices.getExternalWorkDetailsList(
         page: page,
         pageSize: pageSize,
+        status: selectedStatus, // <-- passed to API
       );
 
       final model = ExternalWorkModel.fromJson(response);
 
-      print('API response status: ${model.status}');
-      print('Items received: ${model.data.length}');
+      debugPrint('API response status: ${model.status}');
+      debugPrint('Items received: ${model.data.length}');
 
       if (model.status == true) {
         if (isLoadMore) {
-          print('Before add → total work: ${workList.length}');
-
           workList.addAll(model.data);
-
-          print('After add → total work: ${workList.length}');
 
           if (model.data.length < pageSize) {
             hasMoreWork = false;
-            print('No more work data available.');
+            debugPrint('No more work data available.');
           }
 
           currentPage = page;
-
-          print('Current page updated to: $currentPage');
         } else {
           workList = model.data;
 
-          print('Initial work count: ${workList.length}');
-
           if (model.data.length < pageSize) {
             hasMoreWork = false;
-            print('First page contains less than $pageSize items.');
+            debugPrint('First page contains less than $pageSize items.');
           }
 
           currentPage = page;
@@ -84,54 +91,53 @@ class WorkCubit extends Cubit<WorkState> {
         emit(
           WorkSuccess(
             workList: workList,
-            filteredWorkList: workList,
+            filteredWorkList: _applySearch(workList),
           ),
         );
       } else {
-        print('API returned failure: ${model.message}');
+        debugPrint('API returned failure: ${model.message}');
         emit(
           WorkFailure(model.message),
         );
       }
     } catch (e) {
-      print('getExternalWorkDetailsList error: $e');
+      debugPrint('getExternalWorkDetailsList error: $e');
 
       emit(
         WorkFailure(e.toString()),
       );
     } finally {
       isLoadingMore = false;
-      print(
+      debugPrint(
         'Pagination finished → currentPage: $currentPage, '
         'total: ${workList.length}, hasMore: $hasMoreWork',
       );
     }
   }
 
+  /// LOCAL SEARCH (applied on top of the API-filtered list)
   void searchProjects(String query) {
+    _searchQuery = query;
+
     if (state is WorkSuccess) {
       final currentState = state as WorkSuccess;
-
-      if (query.isEmpty) {
-        emit(
-          WorkSuccess(
-            workList: currentState.workList,
-            filteredWorkList: currentState.workList,
-          ),
-        );
-        return;
-      }
-
-      final filteredList = currentState.workList.where((item) {
-        return item.projectName.toLowerCase().contains(query.toLowerCase());
-      }).toList();
 
       emit(
         WorkSuccess(
           workList: currentState.workList,
-          filteredWorkList: filteredList,
+          filteredWorkList: _applySearch(currentState.workList),
         ),
       );
     }
+  }
+
+  List<ExternalWorkItem> _applySearch(List<ExternalWorkItem> list) {
+    if (_searchQuery.isEmpty) return list;
+
+    final q = _searchQuery.toLowerCase();
+
+    return list
+        .where((item) => item.projectName.toLowerCase().contains(q))
+        .toList();
   }
 }

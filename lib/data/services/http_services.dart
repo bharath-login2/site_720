@@ -232,6 +232,84 @@ class HttpServices {
       log(e.toString());
     }
   }
+
+  //check token
+  static Future<bool?> isTokenExpired() async {
+    try {
+      final token = await getSharedPreference('token');
+
+      final response = await http.post(
+        Uri.parse("${await Config.getUrl()}is_token_expired"),
+        body: {'token': token},
+      );
+
+      // Parse JSON body safely for both 200 and 401 statuses
+      if (response.body.isNotEmpty) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        final int statusCode = data['status_code'] ?? response.statusCode;
+        final bool status = data['status'] ?? false;
+        final bool isDataValid = data['data'] ?? false;
+
+        // If status_code is 401, or status is false, or data is false -> Token is expired/invalid
+        if (statusCode == 401 || status == false || isDataValid == false) {
+          return true; // Expired / Logged in elsewhere
+        }
+
+        // If status_code is 200, status is true, and data is true -> Token is valid
+        if (statusCode == 200 && status == true && isDataValid == true) {
+          return false; // Not expired
+        }
+      }
+
+      // Fallback for raw status code if json structure differs
+      if (response.statusCode == 401) return true;
+      if (response.statusCode == 200) return false;
+
+      return null; // Server error: don't log out
+    } catch (e) {
+      log(e.toString());
+      return null; // No internet or exception: don't log out
+    }
+  }
+  // static Future<bool?> isTokenExpired() async {
+  //   try {
+  //     final token = await getSharedPreference('token');
+  //     final response = await http.post(
+  //       Uri.parse("${await Config.getUrl()}is_token_expired"),
+  //       body: {'token': token},
+  //     );
+  //     log('TOKEN CHECK -> token: $token, statusCode: ${response.statusCode}, body: ${response.body}');
+
+  //     if (response.statusCode == 401) return true;
+
+  //     if (response.statusCode == 200) {
+  //       final data = jsonDecode(response.body);
+  //       if (data is Map<String, dynamic>) {
+  //         final status = data['status'];
+  //         final expired = data['expired'];
+  //         final message = (data['message'] ?? '').toString().toLowerCase();
+
+  //         if (status == false ||
+  //             status == 'false' ||
+  //             status == 0 ||
+  //             status == '0' ||
+  //             expired == true ||
+  //             expired == 'true' ||
+  //             expired == 1 ||
+  //             expired == '1' ||
+  //             message.contains('invalid token') ||
+  //             message.contains('expired')) {
+  //           return true;
+  //         }
+  //       }
+  //       return false;
+  //     }
+  //     return null; // server error: don't log out
+  //   } catch (e) {
+  //     log('TOKEN CHECK ERROR -> ${e.toString()}');
+  //     return null; // no internet: don't log out
+  //   }
+  // }
   // static Future<DashboardModel?> dashboard(
   //   String fromDate,
   //   String toDate,
@@ -1762,6 +1840,7 @@ class HttpServices {
         } else {
           log("Server returned status=false: ${responseData['message']}");
         }
+        print("hey");
       } else {
         log("HTTP Error: ${response.statusCode}");
       }
@@ -2947,6 +3026,7 @@ class HttpServices {
   static Future getExternalWorkDetailsList({
     int page = 1,
     int pageSize = 20,
+    String? status,
   }) async {
     try {
       http.Response response = await http.post(
@@ -2955,12 +3035,11 @@ class HttpServices {
           "token": await getSharedPreference('token'),
           "page": page.toString(),
           "page_size": pageSize.toString(),
+          if (status != null) "update_status": status,
         },
       );
 
       if (response.statusCode == 200) {
-        // );
-        //print("GET work RESPONSE : ${response.body}");
         return jsonDecode(response.body);
       }
     } catch (e) {

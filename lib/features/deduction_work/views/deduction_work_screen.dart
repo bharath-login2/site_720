@@ -122,22 +122,22 @@ class DeductionWork extends StatelessWidget {
                               ),
                             ],
                           ),
-                          if (PermissionManager.hasPermission(
-                              'add deduction work'))
-                            InkWell(
-                              onTap: () {
-                                workDialog(context, cubit, phaseList, projectId,
-                                    clientId, "", "add", "add");
-                              },
-                              child: const CircleAvatar(
-                                radius: 20,
-                                backgroundColor: AppColors.lightPrimary,
-                                child: Icon(
-                                  Icons.add,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            )
+                          // if (PermissionManager.hasPermission(
+                          //     'add deduction work'))
+                          //   InkWell(
+                          //     onTap: () {
+                          //       workDialog(context, cubit, phaseList, projectId,
+                          //           clientId, "", "add", "add");
+                          //     },
+                          //     child: const CircleAvatar(
+                          //       radius: 20,
+                          //       backgroundColor: AppColors.lightPrimary,
+                          //       child: Icon(
+                          //         Icons.add,
+                          //         color: Colors.white,
+                          //       ),
+                          //     ),
+                          //   )
                         ],
                       ),
                     ),
@@ -452,96 +452,96 @@ class DeductionWork extends StatelessWidget {
                                               Row(
                                                 children: [
                                                   // Edit button
-                                                  if (PermissionManager
-                                                      .hasPermission(
-                                                          'edit deduction work'))
-                                                    InkWell(
-                                                      onTap: () {
-                                                        workDialog(
-                                                          context,
-                                                          cubit,
-                                                          phaseList,
-                                                          projectId,
-                                                          clientId,
-                                                          work.id,
-                                                          "edit",
-                                                          "update",
-                                                        );
-                                                      },
-                                                      child: Container(
-                                                        height: 28,
-                                                        width: 28,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: AppColors
-                                                              .lightBlue,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(6),
-                                                          boxShadow: [
-                                                            BoxShadow(
-                                                              color: Colors.grey
-                                                                  .withOpacity(
-                                                                      0.3),
-                                                              blurRadius: 4,
-                                                              offset:
-                                                                  const Offset(
-                                                                      1, 1),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        child: const Icon(
-                                                          Icons.edit,
-                                                          size: 18,
-                                                          color: Colors.white,
-                                                        ),
-                                                      ),
-                                                    ),
+                                                  // if (PermissionManager
+                                                  //     .hasPermission(
+                                                  //         'edit deduction work'))
+                                                  //   InkWell(
+                                                  //     onTap: () {
+                                                  //       workDialog(
+                                                  //         context,
+                                                  //         cubit,
+                                                  //         phaseList,
+                                                  //         projectId,
+                                                  //         clientId,
+                                                  //         work.id,
+                                                  //         "edit",
+                                                  //         "update",
+                                                  //       );
+                                                  //     },
+                                                  //     child: Container(
+                                                  //       height: 28,
+                                                  //       width: 28,
+                                                  //       decoration:
+                                                  //           BoxDecoration(
+                                                  //         color: AppColors
+                                                  //             .lightBlue,
+                                                  //         borderRadius:
+                                                  //             BorderRadius
+                                                  //                 .circular(6),
+                                                  //         boxShadow: [
+                                                  //           BoxShadow(
+                                                  //             color: Colors.grey
+                                                  //                 .withOpacity(
+                                                  //                     0.3),
+                                                  //             blurRadius: 4,
+                                                  //             offset:
+                                                  //                 const Offset(
+                                                  //                     1, 1),
+                                                  //           ),
+                                                  //         ],
+                                                  //       ),
+                                                  //       child: const Icon(
+                                                  //         Icons.edit,
+                                                  //         size: 18,
+                                                  //         color: Colors.white,
+                                                  //       ),
+                                                  //     ),
+                                                  //   ),
                                                   const SizedBox(width: 8),
 
                                                   // Delete button
-                                                  if (PermissionManager
-                                                      .hasPermission(
-                                                          'delete deduction work'))
-                                                    InkWell(
-                                                      onTap: () {
-                                                        deleteDialog(
-                                                            context,
-                                                            cubit,
-                                                            projectId,
-                                                            work.id, () {
-                                                          Navigator.pop(
-                                                              context);
-                                                        });
-                                                      },
-                                                      child: Container(
-                                                        height: 28,
-                                                        width: 28,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: Colors.red,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(6),
-                                                          boxShadow: [
-                                                            BoxShadow(
-                                                              color: Colors.grey
-                                                                  .withOpacity(
-                                                                      0.3),
-                                                              blurRadius: 4,
-                                                              offset:
-                                                                  const Offset(
-                                                                      1, 1),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        child: const Icon(
-                                                          Icons.delete,
-                                                          size: 18,
-                                                          color: Colors.white,
-                                                        ),
-                                                      ),
-                                                    ),
+                                                  // if (PermissionManager
+                                                  //     .hasPermission(
+                                                  //         'delete deduction work'))
+                                                  //   InkWell(
+                                                  //     onTap: () {
+                                                  //       deleteDialog(
+                                                  //           context,
+                                                  //           cubit,
+                                                  //           projectId,
+                                                  //           work.id, () {
+                                                  //         Navigator.pop(
+                                                  //             context);
+                                                  //       });
+                                                  //     },
+                                                  //     child: Container(
+                                                  //       height: 28,
+                                                  //       width: 28,
+                                                  //       decoration:
+                                                  //           BoxDecoration(
+                                                  //         color: Colors.red,
+                                                  //         borderRadius:
+                                                  //             BorderRadius
+                                                  //                 .circular(6),
+                                                  //         boxShadow: [
+                                                  //           BoxShadow(
+                                                  //             color: Colors.grey
+                                                  //                 .withOpacity(
+                                                  //                     0.3),
+                                                  //             blurRadius: 4,
+                                                  //             offset:
+                                                  //                 const Offset(
+                                                  //                     1, 1),
+                                                  //           ),
+                                                  //         ],
+                                                  //       ),
+                                                  //       child: const Icon(
+                                                  //         Icons.delete,
+                                                  //         size: 18,
+                                                  //         color: Colors.white,
+                                                  //       ),
+                                                  //     ),
+                                                  //   ),
                                                 ],
                                               ),
                                             ],

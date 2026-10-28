@@ -74,7 +74,7 @@ class Expense extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (PermissionManager.hasPermission('Add expence'))
+                if (PermissionManager.hasPermission('is_petty_cash'))
                   InkWell(
                     onTap: () {
                       Navigator.push(

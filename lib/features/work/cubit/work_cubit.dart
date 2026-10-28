@@ -20,7 +20,9 @@ class WorkCubit extends Cubit<WorkState> {
   /// Keeps the search text so it survives reloads / pagination
   String _searchQuery = '';
 
-  /// SET STATUS FILTER → reloads page 1 from the API
+  String get searchQuery => _searchQuery;
+
+  /// SET STATUS FILTER → reloads page 1 from the A PI
   Future<void> setStatusFilter(String? status) async {
     selectedStatus = status;
     await getExternalWorkDetailsList(page: 1, isLoadMore: false);

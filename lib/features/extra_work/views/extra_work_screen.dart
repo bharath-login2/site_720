@@ -104,22 +104,22 @@ class ExtraWork extends StatelessWidget {
                               ),
                             ],
                           ),
-                          if (PermissionManager.hasPermission('add extra work'))
-                            InkWell(
-                              onTap: () {
-                                String workId = "";
-                                workDialog(context, cubit, projectId, clientId,
-                                    workId, "add", "add");
-                              },
-                              child: const CircleAvatar(
-                                radius: 20,
-                                backgroundColor: AppColors.lightPrimary,
-                                child: Icon(
-                                  Icons.add,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            )
+                          // if (PermissionManager.hasPermission('add extra work'))
+                          //   InkWell(
+                          //     onTap: () {
+                          //       String workId = "";
+                          //       workDialog(context, cubit, projectId, clientId,
+                          //           workId, "add", "add");
+                          //     },
+                          //     child: const CircleAvatar(
+                          //       radius: 20,
+                          //       backgroundColor: AppColors.lightPrimary,
+                          //       child: Icon(
+                          //         Icons.add,
+                          //         color: Colors.white,
+                          //       ),
+                          //     ),
+                          //   )
                         ],
                       ),
                     ),
@@ -286,133 +286,133 @@ class ExtraWork extends StatelessWidget {
                                                   children: [
                                                     Row(
                                                       children: [
-                                                        if (PermissionManager
-                                                            .hasPermission(
-                                                                'edit extra work'))
-                                                          InkWell(
-                                                            onTap: () {
-                                                              String workId =
-                                                                  state
-                                                                      .response
-                                                                      .data[
-                                                                          index]
-                                                                      .id;
-                                                              work.text = state
-                                                                  .response
-                                                                  .data[index]
-                                                                  .workName;
-                                                              amount.text =
-                                                                  state
-                                                                      .response
-                                                                      .data[
-                                                                          index]
-                                                                      .amount;
-                                                              description.text =
-                                                                  state
-                                                                      .response
-                                                                      .data[
-                                                                          index]
-                                                                      .description;
-                                                              workDialog(
-                                                                  context,
-                                                                  cubit,
-                                                                  projectId,
-                                                                  clientId,
-                                                                  workId,
-                                                                  "edit",
-                                                                  "update");
-                                                            },
-                                                            child: Container(
-                                                              height: 25,
-                                                              width: 25,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            5),
-                                                                color: AppColors
-                                                                    .lightBlue,
-                                                                boxShadow: [
-                                                                  BoxShadow(
-                                                                    color: Colors
-                                                                        .grey
-                                                                        .withOpacity(
-                                                                            0.8),
-                                                                    blurRadius:
-                                                                        6,
-                                                                    offset:
-                                                                        const Offset(
-                                                                            1,
-                                                                            1),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              child: const Icon(
-                                                                Icons.edit,
-                                                                size: 18,
-                                                                color: Colors
-                                                                    .white,
-                                                              ),
-                                                            ),
-                                                          ),
+                                                        // if (PermissionManager
+                                                        //     .hasPermission(
+                                                        //         'edit extra work'))
+                                                        //   InkWell(
+                                                        //     onTap: () {
+                                                        //       String workId =
+                                                        //           state
+                                                        //               .response
+                                                        //               .data[
+                                                        //                   index]
+                                                        //               .id;
+                                                        //       work.text = state
+                                                        //           .response
+                                                        //           .data[index]
+                                                        //           .workName;
+                                                        //       amount.text =
+                                                        //           state
+                                                        //               .response
+                                                        //               .data[
+                                                        //                   index]
+                                                        //               .amount;
+                                                        //       description.text =
+                                                        //           state
+                                                        //               .response
+                                                        //               .data[
+                                                        //                   index]
+                                                        //               .description;
+                                                        //       workDialog(
+                                                        //           context,
+                                                        //           cubit,
+                                                        //           projectId,
+                                                        //           clientId,
+                                                        //           workId,
+                                                        //           "edit",
+                                                        //           "update");
+                                                        //     },
+                                                        //     child: Container(
+                                                        //       height: 25,
+                                                        //       width: 25,
+                                                        //       decoration:
+                                                        //           BoxDecoration(
+                                                        //         borderRadius:
+                                                        //             BorderRadius
+                                                        //                 .circular(
+                                                        //                     5),
+                                                        //         color: AppColors
+                                                        //             .lightBlue,
+                                                        //         boxShadow: [
+                                                        //           BoxShadow(
+                                                        //             color: Colors
+                                                        //                 .grey
+                                                        //                 .withOpacity(
+                                                        //                     0.8),
+                                                        //             blurRadius:
+                                                        //                 6,
+                                                        //             offset:
+                                                        //                 const Offset(
+                                                        //                     1,
+                                                        //                     1),
+                                                        //           ),
+                                                        //         ],
+                                                        //       ),
+                                                        //       child: const Icon(
+                                                        //         Icons.edit,
+                                                        //         size: 18,
+                                                        //         color: Colors
+                                                        //             .white,
+                                                        //       ),
+                                                        //     ),
+                                                        //   ),
                                                         const SizedBox(
                                                           width: 7,
                                                         ),
-                                                        if (PermissionManager
-                                                            .hasPermission(
-                                                                'delete extra work'))
-                                                          InkWell(
-                                                            onTap: () {
-                                                              String workId =
-                                                                  state
-                                                                      .response
-                                                                      .data[
-                                                                          index]
-                                                                      .id;
-                                                              deleteDialog(
-                                                                  context,
-                                                                  cubit,
-                                                                  projectId,
-                                                                  workId, () {
-                                                                Navigator.pop(
-                                                                    context);
-                                                              });
-                                                            },
-                                                            child: Container(
-                                                              height: 25,
-                                                              width: 25,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            5),
-                                                                color:
-                                                                    Colors.red,
-                                                                boxShadow: [
-                                                                  BoxShadow(
-                                                                    color: Colors
-                                                                        .grey
-                                                                        .withOpacity(
-                                                                            0.8),
-                                                                    blurRadius:
-                                                                        6,
-                                                                    offset:
-                                                                        const Offset(
-                                                                            1,
-                                                                            1),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              child: const Icon(
-                                                                Icons.delete,
-                                                                size: 18,
-                                                                color: Colors
-                                                                    .white,
-                                                              ),
-                                                            ),
-                                                          ),
+                                                        // if (PermissionManager
+                                                        //     .hasPermission(
+                                                        //         'delete extra work'))
+                                                        //   InkWell(
+                                                        //     onTap: () {
+                                                        //       String workId =
+                                                        //           state
+                                                        //               .response
+                                                        //               .data[
+                                                        //                   index]
+                                                        //               .id;
+                                                        //       deleteDialog(
+                                                        //           context,
+                                                        //           cubit,
+                                                        //           projectId,
+                                                        //           workId, () {
+                                                        //         Navigator.pop(
+                                                        //             context);
+                                                        //       });
+                                                        //     },
+                                                        //     child: Container(
+                                                        //       height: 25,
+                                                        //       width: 25,
+                                                        //       decoration:
+                                                        //           BoxDecoration(
+                                                        //         borderRadius:
+                                                        //             BorderRadius
+                                                        //                 .circular(
+                                                        //                     5),
+                                                        //         color:
+                                                        //             Colors.red,
+                                                        //         boxShadow: [
+                                                        //           BoxShadow(
+                                                        //             color: Colors
+                                                        //                 .grey
+                                                        //                 .withOpacity(
+                                                        //                     0.8),
+                                                        //             blurRadius:
+                                                        //                 6,
+                                                        //             offset:
+                                                        //                 const Offset(
+                                                        //                     1,
+                                                        //                     1),
+                                                        //           ),
+                                                        //         ],
+                                                        //       ),
+                                                        //       child: const Icon(
+                                                        //         Icons.delete,
+                                                        //         size: 18,
+                                                        //         color: Colors
+                                                        //             .white,
+                                                        //       ),
+                                                        //     ),
+                                                        //   ),
                                                       ],
                                                     ),
                                                     const SizedBox(

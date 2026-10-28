@@ -124,12 +124,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
           BlocListener<DashboardCubit, DashboardState>(
             listener: (context, state) async {
               if (state is DashboardTokenExpired) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Token expired. Please login again.'),
-                    backgroundColor: Colors.red,
-                  ),
-                );
+                // ScaffoldMessenger.of(context).showSnackBar(
+                //   const SnackBar(
+                //     content: Text('Token expired. Please login again.'),
+                //     backgroundColor: Colors.red,
+                //   ),
+                // );
                 if (!context.mounted) return;
                 await logOut(context);
               }

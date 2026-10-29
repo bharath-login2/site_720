@@ -108,6 +108,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return BlocProvider.value(
       value: dashboardCubit,
       child: MultiBlocListener(
+        // listeners: [
+        //   BlocListener<ConnectivityCubit, ConnectivityState>(
+        //     listener: (context, state) {
+        //       if (state is ConnectivityDisconnected) {
+        //         if (connStatus == true) {
+        //           connStatus = false;
+        //           connectivityDialog(context);
+        //         }
+        //       } else {
+        //         connStatus = true;
+        //       }
+        //     },
+        //   ),
+        //   BlocListener<DashboardCubit, DashboardState>(
+        //     // listener: (context, state) async {
+        //     //   // if (state is DashboardTokenExpired) {
+        //     //   //   // ScaffoldMessenger.of(context).showSnackBar(
+        //     //   //   //   const SnackBar(
+        //     //   //   //     content: Text('Token expired. Please login again.'),
+        //     //   //   //     backgroundColor: Colors.red,
+        //     //   //   //   ),
+        //     //   //   // );
+        //     //   //   if (!context.mounted) return;
+        //     //   //   await logOut(context);
+        //     //   // }
+        //     // },
+        //   ),
+        // ],
         listeners: [
           BlocListener<ConnectivityCubit, ConnectivityState>(
             listener: (context, state) {
@@ -122,16 +150,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
             },
           ),
           BlocListener<DashboardCubit, DashboardState>(
-            listener: (context, state) async {
-              if (state is DashboardTokenExpired) {
-                // ScaffoldMessenger.of(context).showSnackBar(
-                //   const SnackBar(
-                //     content: Text('Token expired. Please login again.'),
-                //     backgroundColor: Colors.red,
-                //   ),
-                // );
-                if (!context.mounted) return;
-                await logOut(context);
+            listener: (context, state) {
+              if (state is DashboardFailure) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.message),
+                    backgroundColor: Colors.red,
+                  ),
+                );
               }
             },
           ),

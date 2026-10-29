@@ -16,17 +16,14 @@ class DashboardCubit extends Cubit<DashboardState> {
     try {
       DashboardModel response = await HttpServices.dashboard(fDate, tDate);
 
-      if (response.status == false &&
-          (response.message == "Token expired" ||
-              response.message == "Invalid Token!")) {
-        print("Dashboard status is FALSE");
-        print("TOKEN INVALID - LOGGING OUT");
-        emit(DashboardTokenExpired());
-        return;
-      }
-
       if (response.status == true) {
         emit(DashboardSuccess(response));
+      } else {
+        emit(
+          DashboardFailure(
+            response.message ?? 'Failed to fetch dashboard data',
+          ),
+        );
       }
     } catch (e) {
       emit(

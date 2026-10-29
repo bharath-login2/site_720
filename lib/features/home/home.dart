@@ -169,7 +169,8 @@ import 'package:site_720/features/dashboard/cubit/dasahboard_cubit.dart';
 import 'package:site_720/features/dashboard/cubit/dashboard_state.dart';
 import 'package:site_720/features/work/views/work_screen.dart';
 import 'package:site_720/features/work/cubit/work_cubit.dart';
-
+import '../../../core/constants/routes.dart';
+import '../../../core/utilities/shared_preferences.dart';
 import '../task_management/views/task_list.dart';
 import '../visit/views/visit_details.dart';
 
@@ -192,12 +193,12 @@ class _HomeState extends State<Home> {
     _dashboardCubit = DashboardCubit("", "");
 
     // Initial check on mount
-    _dashboardCubit.checkTokenExpirationStatus();
+    // _dashboardCubit.checkTokenExpirationStatus();
 
     widgetOptions = [
       BlocProvider.value(
         value: _dashboardCubit,
-        child: DashboardScreen(),
+        child: const DashboardScreen(),
       ),
       BlocProvider(
         create: (_) => WorkCubit()..getExternalWorkDetailsList(),
@@ -224,7 +225,14 @@ class _HomeState extends State<Home> {
   }
 
   Future<void> logOut(BuildContext context) async {
-    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+    await clearSharedPreference(); // Clears the saved token/session
+
+    if (!context.mounted) return;
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      AppRoutes.login,
+      (route) => false,
+    );
   }
 
   @override

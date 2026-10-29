@@ -238,30 +238,34 @@ class HttpServices {
     try {
       final token = await getSharedPreference('token');
 
+      if (token == null || token.isEmpty) {
+        return true; // No token found, treat as expired/unauthenticated
+      }
+
       final response = await http.post(
         Uri.parse("${await Config.getUrl()}is_token_expired"),
         body: {'token': token},
       );
 
-      // Parse JSON body safely for both 200 and 401 statuses
       if (response.body.isNotEmpty) {
         final Map<String, dynamic> data = jsonDecode(response.body);
         final int statusCode = data['status_code'] ?? response.statusCode;
-        final bool status = data['status'] ?? false;
-        final bool isDataValid = data['data'] ?? false;
 
-        // If status_code is 401, or status is false, or data is false -> Token is expired/invalid
-        if (statusCode == 401 || status == false || isDataValid == false) {
-          return true; // Expired / Logged in elsewhere
+        final String message = data['message']?.toString().toLowerCase() ?? '';
+
+        if (statusCode == 401 ||
+            message.contains('expired') ||
+            message.contains('invalid')) {
+          return true;
         }
 
-        // If status_code is 200, status is true, and data is true -> Token is valid
-        if (statusCode == 200 && status == true && isDataValid == true) {
+        // If the server responded successfully with 200, the token is valid
+        if (statusCode == 200) {
           return false; // Not expired
         }
       }
 
-      // Fallback for raw status code if json structure differs
+      // Fallback for raw status code
       if (response.statusCode == 401) return true;
       if (response.statusCode == 200) return false;
 

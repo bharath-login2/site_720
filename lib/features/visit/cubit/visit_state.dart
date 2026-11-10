@@ -25,7 +25,8 @@ class VisitFailure extends VisitState {
 
 class VisitDetailsSuccess extends VisitState {
   final ListVisitModel response;
-  VisitDetailsSuccess(this.response);
+  final List<StatusModel> statuses;
+  VisitDetailsSuccess(this.response, {this.statuses = const []});
 }
 
 

@@ -1,47 +1,68 @@
+// import '../../../data/models/succes_response/success_response.dart';
+// import '../../../data/models/visit/visit_details_model.dart';
 
+// class VisitDetailsState {
+//   VisitDetailsState();
+// }
 
-import '../../../data/models/succes_response/success_response.dart';
-import '../../../data/models/visit/visit_details_model.dart';
+// class VisitDetailInitial extends VisitDetailsState {}
 
-class VisitDetailsState {
-  VisitDetailsState();
+// class VisitDetailLoading extends VisitDetailsState {}
+
+// class VisitDetailSuccess extends VisitDetailsState {
+//   final  ListVisitDetailsModel response;
+//  VisitDetailSuccess(this.response);
+// }
+
+// class VisitDetailFailure extends VisitDetailsState {
+//   final String message;
+//   VisitDetailFailure(this.message);
+// }
+
+// class VisitDetailsSuccess extends VisitDetailsState {
+//   final ListVisitDetailsModel response;
+//   VisitDetailsSuccess(this.response);
+// }
+
+// class VisitDetailsFailure extends VisitDetailsState {
+//   final String message;
+//   VisitDetailsFailure(this.message);
+// }
+
+// class VisitDetailSuccessWithMessage extends VisitDetailsState {
+//   final String message;
+
+//   VisitDetailSuccessWithMessage(this.message);
+// }
+
+// class VisitStatusUpdateSuccess extends VisitDetailsState {
+//   final SuccessResponse response;
+//   VisitStatusUpdateSuccess(this.response);
+// }
+import '../../../data/models/visit/visit_questions_model.dart';
+
+abstract class VisitTaskState {}
+
+class VisitTaskLoading extends VisitTaskState {}
+
+class VisitTaskLoaded extends VisitTaskState {
+  final VisitTaskData data;
+  VisitTaskLoaded(this.data);
 }
 
-class VisitDetailInitial extends VisitDetailsState {}
-
-class VisitDetailLoading extends VisitDetailsState {}
-
-class VisitDetailSuccess extends VisitDetailsState {
-  final  ListVisitDetailsModel response;
- VisitDetailSuccess(this.response);
-}
-
-class VisitDetailFailure extends VisitDetailsState {
+class VisitTaskFailure extends VisitTaskState {
   final String message;
-  VisitDetailFailure(this.message);
+  VisitTaskFailure(this.message);
 }
 
-class VisitDetailsSuccess extends VisitDetailsState {
-  final ListVisitDetailsModel response;
-  VisitDetailsSuccess(this.response);
-}
+class VisitTaskSaving extends VisitTaskState {}
 
-
-class VisitDetailsFailure extends VisitDetailsState {
+class VisitTaskSaved extends VisitTaskState {
   final String message;
-  VisitDetailsFailure(this.message);
+  VisitTaskSaved(this.message);
 }
 
-class VisitDetailSuccessWithMessage extends VisitDetailsState {
+class VisitTaskSaveFailed extends VisitTaskState {
   final String message;
-
-  VisitDetailSuccessWithMessage(this.message);
-}
-
-
-
-
-class VisitStatusUpdateSuccess extends VisitDetailsState {
-  final SuccessResponse response;
-  VisitStatusUpdateSuccess(this.response);
+  VisitTaskSaveFailed(this.message);
 }

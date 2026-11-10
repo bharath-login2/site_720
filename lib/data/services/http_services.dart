@@ -60,6 +60,8 @@ import '../models/version/version_model.dart';
 import '../models/visit/visit_details_model.dart';
 import '../models/visit/visit_history_model.dart';
 import '../models/visit/visit_list_model.dart';
+import '../models/visit/vist_status_model.dart';
+import '../models/visit/visit_questions_model.dart';
 import '../models/work_issues/work_issues_model.dart';
 import '../models/workdetails/add_work_details_model.dart';
 import '../models/stages/stage_model.dart';
@@ -1901,11 +1903,20 @@ class HttpServices {
     }
   }
 
-  static Future getVisitDetails() async {
+  static Future<ListVisitModel?> getVisitDetails(
+    String? statusId, {
+    String? fromDate,
+    String? toDate,
+  }) async {
     try {
       http.Response response = await http.post(
-        Uri.parse("${await Config.getUrl()}get_visit_details"),
-        body: {'token': await getSharedPreference('token')},
+        Uri.parse("${await Config.getUrl()}get_site_visit_list"),
+        body: {
+          'token': await getSharedPreference('token'),
+          if (statusId != null && statusId.isNotEmpty) 'visit_status': statusId,
+          if (fromDate != null) 'from_date': fromDate,
+          if (toDate != null) 'to_date': toDate,
+        },
       );
       if (response.statusCode == 200) {
         return listVisitModelFromJson(response.body);
@@ -1913,10 +1924,12 @@ class HttpServices {
     } catch (e) {
       log(e.toString());
     }
+    return null;
   }
 
   static Future getVisitalldetails(visitId) async {
     try {
+      print("vistId: $visitId");
       http.Response response = await http.post(
         Uri.parse("${await Config.getUrl()}get_visitall_details"),
         body: {
@@ -1991,7 +2004,7 @@ class HttpServices {
   static Future getTaskStatus() async {
     try {
       http.Response response = await http.post(
-        Uri.parse("${await Config.getUrl()}get_task_status"),
+        Uri.parse("${await Config.getUrl()}get_site_visit_status"),
         body: {'token': await getSharedPreference('token')},
       );
       if (response.statusCode == 200) {
@@ -2000,6 +2013,75 @@ class HttpServices {
     } catch (e) {
       log(e.toString());
     }
+  }
+
+  //get_site_visit_status
+  static Future getVisitStatus() async {
+    try {
+      http.Response response = await http.post(
+        Uri.parse("${await Config.getUrl()}get_site_visit_status"),
+        body: {'token': await getSharedPreference('token')},
+      );
+
+      if (response.statusCode == 200) {
+        return VisitStatusModel.fromJson(jsonDecode(response.body));
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  //site_vist questions and answers
+  static Future<VisitQuestionsModel?> getVisitQuestions(String visitId) async {
+    try {
+      final response = await http.post(
+        Uri.parse("${await Config.getUrl()}get_site_visit_details"), // GUESS
+        body: {
+          'token': await getSharedPreference('token'),
+          'task_id': visitId, // GUESS
+        },
+      );
+      log('questions response: ${response.statusCode} ${response.body}');
+      if (response.statusCode == 200) {
+        return visitQuestionsModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+    return null;
+  }
+
+  /// answers: [{question_id, answer_type, answer}]
+  /// files: {question_id: local file path} (only newly picked files)
+  static Future<Map<String, dynamic>?> saveVisitAnswers({
+    required String visitId,
+    required String status, // "Pending" | "Completed"
+    required List<Map<String, dynamic>> answers,
+    required Map<int, String> files,
+  }) async {
+    try {
+      final request = http.MultipartRequest(
+        'POST',
+        Uri.parse("${await Config.getUrl()}save_visit_answers"), // GUESS
+      );
+      request.fields['token'] = await getSharedPreference('token') ?? '';
+      request.fields['visit_id'] = visitId; // GUESS
+      request.fields['task_status'] = status; // GUESS
+      request.fields['answers'] = jsonEncode(answers); // GUESS
+      for (final e in files.entries) {
+        request.files
+            .add(await http.MultipartFile.fromPath('file_${e.key}', e.value));
+      }
+      final streamed = await request.send();
+      final response = await http.Response.fromStream(streamed);
+      log('save response: ${response.statusCode} ${response.body}');
+      if (response.statusCode == 200) {
+        return Map<String, dynamic>.from(json.decode(response.body));
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+    return null;
   }
 
   // static Future updateTaskStatus(
@@ -3025,29 +3107,69 @@ class HttpServices {
       print(e.toString());
     }
   }
+  // /// EXTERNAL WORK LIST
+  // static Future getExternalWorkDetailsList({
+  //   int page = 1,
+  //   int pageSize = 20,
+  //   String? status,
+  // }) async {
+  //   try {
+  //     http.Response response = await http.post(
+  //       Uri.parse("${await Config.getUrl()}getExternalWorkDetailsList"),
+  //       body: {
+  //         "token": await getSharedPreference('token'),
+  //         "page": page.toString(),
+  //         "page_size": pageSize.toString(),
+  //         if (status != null) "update_status": status,
+  //       },
+  //     );
 
+  //     if (response.statusCode == 200) {
+  //       return jsonDecode(response.body);
+  //     }
+  //   } catch (e) {
+  //     print(e.toString());
+  //   }
+  // }
   /// EXTERNAL WORK LIST
   static Future getExternalWorkDetailsList({
     int page = 1,
     int pageSize = 20,
     String? status,
+    String? scheduledSts,
+    String? date, // <-- added (dd-mm-yyyy)
   }) async {
     try {
       http.Response response = await http.post(
-        Uri.parse("${await Config.getUrl()}getExternalWorkDetailsList"),
+        Uri.parse("${await Config.getUrl()}get_work_dashboard"),
         body: {
           "token": await getSharedPreference('token'),
           "page": page.toString(),
           "page_size": pageSize.toString(),
           if (status != null) "update_status": status,
+          if (date != null) "from_date": date,
+          if (date != null) "to_date": date,
+          if (scheduledSts != null) "scheduled_sts": scheduledSts,
         },
       );
-
+      print({
+        "token": await getSharedPreference('token'),
+        "page": page.toString(),
+        "page_size": pageSize.toString(),
+        if (status != null) "update_status": status,
+        if (date != null) "from_date": date,
+        if (date != null) "to_date": date,
+        if (scheduledSts != null) "scheduled_sts": scheduledSts,
+      });
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
       }
+
+      throw Exception(
+          "Server error (${response.statusCode}). Please try again.");
     } catch (e) {
       print(e.toString());
+      rethrow; // let the cubit show the failure screen with Retry
     }
   }
 

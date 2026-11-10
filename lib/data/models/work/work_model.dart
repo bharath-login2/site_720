@@ -1,36 +1,39 @@
-import 'dart:convert';
 
 class ExternalWorkModel {
   bool status;
   String message;
   List<ExternalWorkItem> data;
+  ExternalWorkCounts? counts;
 
   ExternalWorkModel({
     required this.status,
     required this.message,
     required this.data,
+    this.counts,
   });
 
-  factory ExternalWorkModel.fromJson(
-    Map<String, dynamic> json,
-  ) {
+  factory ExternalWorkModel.fromJson(Map<String, dynamic> json) {
+    final responseData = json["data"];
+
     return ExternalWorkModel(
       status: json["status"] ?? false,
       message: json["message"] ?? "",
-      data: json["data"] == null
+      data: responseData == null
           ? []
           : List<ExternalWorkItem>.from(
-              json["data"].map(
+              (responseData["lists"] ?? []).map(
                 (x) => ExternalWorkItem.fromJson(x),
               ),
             ),
+      counts: responseData?["counts"] != null
+          ? ExternalWorkCounts.fromJson(responseData["counts"])
+          : null,
     );
   }
 }
 
 class ExternalWorkItem {
   String slNo;
-  String clientId;
   String projectId;
   String projectName;
   String workDate;
@@ -40,10 +43,10 @@ class ExternalWorkItem {
   String workStatus;
   String updatedAt;
   String updateStatus;
+  String clientId;
 
   ExternalWorkItem({
     required this.slNo,
-    required this.clientId,
     required this.projectId,
     required this.projectName,
     required this.workDate,
@@ -53,14 +56,12 @@ class ExternalWorkItem {
     required this.workStatus,
     required this.updatedAt,
     required this.updateStatus,
+    required this.clientId,
   });
 
-  factory ExternalWorkItem.fromJson(
-    Map<String, dynamic> json,
-  ) {
+  factory ExternalWorkItem.fromJson(Map<String, dynamic> json) {
     return ExternalWorkItem(
       slNo: json["sl_no"]?.toString() ?? "",
-      clientId: json["client_id"]?.toString() ?? "",
       projectId: json["project_id"]?.toString() ?? "",
       projectName: json["project_name"]?.toString() ?? "",
       workDate: json["work_date"]?.toString() ?? "",
@@ -70,6 +71,40 @@ class ExternalWorkItem {
       workStatus: json["work_status"]?.toString() ?? "",
       updatedAt: json["updated_at"]?.toString() ?? "",
       updateStatus: json["update_status"]?.toString() ?? "",
+      clientId: json["client_id"]?.toString() ?? "",
     );
+  }
+}
+
+class ExternalWorkCounts {
+  String workDate;
+  int totalProjects;
+  int updated;
+  int pending;
+  int scheduled;
+  int notScheduled;
+
+  ExternalWorkCounts({
+    required this.workDate,
+    required this.totalProjects,
+    required this.updated,
+    required this.pending,
+    required this.scheduled,
+    required this.notScheduled,
+  });
+
+  factory ExternalWorkCounts.fromJson(Map<String, dynamic> json) {
+    return ExternalWorkCounts(
+      workDate: json["work_date"]?.toString() ?? "",
+      totalProjects: _toInt(json["total_projects"]),
+      updated: _toInt(json["updated"]),
+      pending: _toInt(json["pending"]),
+      scheduled: _toInt(json["scheduled"]),
+      notScheduled: _toInt(json["not_scheduled"]),
+    );
+  }
+
+  static int _toInt(dynamic value) {
+    return int.tryParse(value?.toString() ?? "") ?? 0;
   }
 }

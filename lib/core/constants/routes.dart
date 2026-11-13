@@ -1,4 +1,3 @@
-
 class AppRoutes {
   static const splash = '/splash';
   static const login = '/login';
@@ -44,15 +43,18 @@ class AppRoutes {
   static const notification = '/notification';
   static const workIssuesList = '/workIssuesList';
   static const vistDetails = '/visitDetails';
+  static const siteVisitDetails = '/siteVistDetails';
+  static const siteVisitHistory = '/siteVisitHistory';
   static const visitHistory = '/visitHistory';
   static const subContractorDetails = '/subContractorDetails';
   static const projectInfo = '/projectInfo';
   static const estimateRequest = '/estimateRequest';
-  static const SiteDrawingRequest ='/siteDrawingRequest';
-  static const DeductionWorkRequest ='/deductionWorkRequest';
-  static const deductionWorkRequest ='/deductionWorkRequest';
-  static const deductionWorkRequestProjectSelect = '/deductionWorkRequestProjectSelect';
-  static const ExtraWorkRequest ='/extraWorkRequest';
-  static const extraWorkRequest ='/extraWorkRequest';
+  static const SiteDrawingRequest = '/siteDrawingRequest';
+  static const DeductionWorkRequest = '/deductionWorkRequest';
+  static const deductionWorkRequest = '/deductionWorkRequest';
+  static const deductionWorkRequestProjectSelect =
+      '/deductionWorkRequestProjectSelect';
+  static const ExtraWorkRequest = '/extraWorkRequest';
+  static const extraWorkRequest = '/extraWorkRequest';
   static const extraWorkProjectSelect = '/extraWorkProjectSelect';
 }

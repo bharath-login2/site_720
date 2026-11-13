@@ -1613,11 +1613,11 @@ class _VisitDetailsState extends State<VisitDetails> {
       });
     }
 
-    cubit.save(
-      status: _completed ? "Completed" : "Pending",
-      answers: answers,
-      files: Map<int, String>.from(_files),
-    );
+    // cubit.save(
+    //   status: _completed ? "Completed" : "Pending",
+    //   answers: answers,
+    //   files: Map<int, String>.from(_files),
+    // );
   }
 
   Future<void> _pickFile(VisitQuestion q) async {

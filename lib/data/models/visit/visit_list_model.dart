@@ -11,27 +11,61 @@ ListVisitModel listVisitModelFromJson(String str) =>
 String listVisitModelToJson(ListVisitModel data) => json.encode(data.toJson());
 
 class ListVisitModel {
-  List<VisitItem> data;
+  List<VisitItem> data; // the items, read from data.lists
+  int completedCount;
+  int pendingCount;
+  int totalCount;
   String message;
   bool status;
 
   ListVisitModel({
     required this.data,
+    this.completedCount = 0,
+    this.pendingCount = 0,
+    this.totalCount = 0,
     required this.message,
     required this.status,
   });
 
-  factory ListVisitModel.fromJson(Map<String, dynamic> json) => ListVisitModel(
-        data: json["data"] is List
-            ? List<VisitItem>.from(
-                (json["data"] as List).map((x) => VisitItem.fromJson(x)))
-            : [],
+  static int _toInt(dynamic v) => int.tryParse(v?.toString() ?? '') ?? 0;
+
+  static List<VisitItem> _items(dynamic raw) => raw is List
+      ? raw
+          .whereType<Map>()
+          .map((x) => VisitItem.fromJson(Map<String, dynamic>.from(x)))
+          .toList()
+      : <VisitItem>[];
+
+  factory ListVisitModel.fromJson(Map<String, dynamic> json) {
+    final d = json["data"];
+
+    // New shape: data is an object with counts and "lists".
+    if (d is Map) {
+      return ListVisitModel(
+        data: _items(d["lists"]),
+        completedCount: _toInt(d["completed_count"]),
+        pendingCount: _toInt(d["pending_count"]),
+        totalCount: _toInt(d["total_count"]),
         message: json["message"]?.toString() ?? "",
         status: json["status"] == true,
       );
+    }
+
+    // Old shape: data is the list itself.
+    return ListVisitModel(
+      data: _items(d),
+      message: json["message"]?.toString() ?? "",
+      status: json["status"] == true,
+    );
+  }
 
   Map<String, dynamic> toJson() => {
-        "data": List<dynamic>.from(data.map((x) => x.toJson())),
+        "data": {
+          "completed_count": completedCount,
+          "pending_count": pendingCount,
+          "total_count": totalCount,
+          "lists": data.map((x) => x.toJson()).toList(),
+        },
         "message": message,
         "status": status,
       };
@@ -49,6 +83,7 @@ class VisitItem {
   String priority;
   String projectName;
   String stageName;
+  String staffName;
   String status;
 
   VisitItem({
@@ -63,16 +98,19 @@ class VisitItem {
     required this.priority,
     required this.projectName,
     required this.stageName,
+    required this.staffName,
     required this.status,
   });
 
   static final DateFormat _apiDate = DateFormat('dd-MM-yyyy');
 
-  // API sends dates like "10-11-2026"
+  // API sends dates like "10-11-2026", and "00-00-0000" when there is no date.
   static DateTime? _parseDate(dynamic value) {
     if (value == null) return null;
     final text = value.toString().trim();
-    if (text.isEmpty) return null;
+    if (text.isEmpty || text.startsWith('00-00') || text.startsWith('0000')) {
+      return null;
+    }
     try {
       return _apiDate.parseStrict(text);
     } catch (_) {
@@ -92,6 +130,7 @@ class VisitItem {
         priority: json["priority"]?.toString() ?? "",
         projectName: (json["project_name"]?.toString() ?? "").trim(),
         stageName: json["stage_name"]?.toString() ?? "",
+        staffName: json["staff_name"]?.toString() ?? "",
         status: json["status"]?.toString() ?? "",
       );
 
@@ -107,6 +146,7 @@ class VisitItem {
         "priority": priority,
         "project_name": projectName,
         "stage_name": stageName,
+        "staff_name": staffName,
         "status": status,
       };
 }

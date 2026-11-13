@@ -88,6 +88,7 @@ import '../models/extrawork_Request/extra_work_request_model.dart';
 import '../models/complaint/complaint_status_history_model.dart';
 import '../models/deductionwork_request/deduction_work_request_model.dart';
 import '../models/stage_list/project_statge_list.dart';
+import 'package:site_720/data/models/site_visit_history/site_visit_history_model.dart';
 import 'package:http_parser/http_parser.dart';
 
 class HttpServices {
@@ -1903,16 +1904,21 @@ class HttpServices {
     }
   }
 
+  //get visit details
   static Future<ListVisitModel?> getVisitDetails(
     String? statusId, {
     String? fromDate,
     String? toDate,
+    int page = 1,
+    int pageSize = 10,
   }) async {
     try {
       http.Response response = await http.post(
         Uri.parse("${await Config.getUrl()}get_site_visit_list"),
         body: {
           'token': await getSharedPreference('token'),
+          'page': page.toString(),
+          'page_size': pageSize.toString(),
           if (statusId != null && statusId.isNotEmpty) 'visit_status': statusId,
           if (fromDate != null) 'from_date': fromDate,
           if (toDate != null) 'to_date': toDate,
@@ -1927,6 +1933,177 @@ class HttpServices {
     return null;
   }
 
+  //get_site_visit_status
+  static Future getVisitStatus() async {
+    try {
+      http.Response response = await http.post(
+        Uri.parse("${await Config.getUrl()}get_site_visit_status"),
+        body: {'token': await getSharedPreference('token')},
+      );
+
+      if (response.statusCode == 200) {
+        return VisitStatusModel.fromJson(jsonDecode(response.body));
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  //site_vist questions and answers
+  static Future<VisitQuestionsModel?> getVisitQuestions(String visitId) async {
+    try {
+      final response = await http.post(
+        Uri.parse("${await Config.getUrl()}get_site_visit_details"), // GUESS
+        body: {
+          'token': await getSharedPreference('token'),
+          'task_id': visitId, // GUESS
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return visitQuestionsModelFromJson(response.body);
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+    return null;
+  }
+
+  //SAVE
+  static Future<Map<String, dynamic>?> saveVisitAnswers({
+    required String visitId,
+    required String statusId, // "Pending" | "Completed" (from the screen)
+    required List<Map<String, dynamic>> answers,
+    required Map<int, List<String>> files,
+  }) async {
+    try {
+      final request = http.MultipartRequest(
+        'POST',
+        Uri.parse(
+            "${await Config.getUrl()}post_site_visit_details"), // endpoint: confirm
+      );
+
+      request.fields['token'] = await getSharedPreference('token') ?? '';
+      request.fields['task_id'] = visitId;
+      request.fields['visit_status'] = statusId;
+      // answers[i][question_id] and answers[i][answer]
+      for (int i = 0; i < answers.length; i++) {
+        final a = answers[i];
+        request.fields['answers[$i][question_id]'] =
+            a['question_id'].toString();
+        // file questions send only the question_id, as in your Postman call
+        if (a['answer_type'] != 'file_upload') {
+          request.fields['answers[$i][answer]'] = a['answer']?.toString() ?? '';
+        }
+      }
+
+      // answer_files[<question_id>][] for every picked file
+      for (final e in files.entries) {
+        for (final path in e.value) {
+          request.files.add(
+            await http.MultipartFile.fromPath('answer_files[${e.key}][]', path),
+          );
+        }
+      }
+
+      final streamed = await request.send();
+      final response = await http.Response.fromStream(streamed);
+
+      if (response.statusCode == 200) {
+        return Map<String, dynamic>.from(json.decode(response.body));
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+    return null;
+  }
+
+  //delete
+  static Future<bool> deleteVisitFile(
+      {required String fileId, required String visitId}) async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+            "${await Config.getUrl()}delete_site_visit_task_image"), // GUESS
+        body: {
+          'token': await getSharedPreference('token'),
+          'task_id': visitId,
+          'file_id': fileId, // GUESS
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['status'] == true;
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+    return false;
+  }
+
+  //site visit histoty project overview
+  // static Future<VisitTaskResponse?> getSiteVisitHistory(
+  //   String projectId, {
+  //   String? token, // optional: falls back to the saved token
+  //   int page = 1,
+  //   int pageSize = 10,
+  // }) async {
+  //   try {
+  //     http.Response response = await http.post(
+  //       Uri.parse("${await Config.getUrl()}get_site_visit_by_project"),
+  //       body: {
+  //         'token': token ?? await getSharedPreference('token'),
+  //         'project_id': projectId,
+  //         'page': page.toString(),
+  //         'page_size': pageSize.toString(),
+  //       },
+  //     );
+
+  //     log('SiteVisitHistory status: ${response.statusCode}');
+  //     log('SiteVisitHistory body: ${response.body}');
+
+  //     if (response.statusCode == 200) {
+  //       return VisitTaskResponse.fromJson(jsonDecode(response.body));
+  //     }
+  //   } catch (e) {
+  //     log('SiteVisitHistory error: $e');
+  //   }
+  //   return null;
+  // }
+  static Future<VisitTaskResponse?> getSiteVisitHistory(
+    String projectId, {
+    String? token, // optional: falls back to the saved token
+    int page = 1,
+    int pageSize = 10,
+    String? visitStatus, // null/empty = all visits
+  }) async {
+    try {
+      http.Response response = await http.post(
+        Uri.parse("${await Config.getUrl()}get_site_visit_by_project"),
+        body: {
+          'token': token ?? await getSharedPreference('token'),
+          'project_id': projectId,
+          'page': page.toString(),
+          'page_size': pageSize.toString(),
+          if (visitStatus != null && visitStatus.isNotEmpty)
+            'visit_status': visitStatus,
+        },
+      );
+
+      log('SiteVisitHistory status: ${response.statusCode}');
+      log('SiteVisitHistory body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        return VisitTaskResponse.fromJson(jsonDecode(response.body));
+      }
+    } catch (e) {
+      log('SiteVisitHistory error: $e');
+    }
+    return null;
+  }
+
+  //unused
   static Future getVisitalldetails(visitId) async {
     try {
       print("vistId: $visitId");
@@ -2013,75 +2190,6 @@ class HttpServices {
     } catch (e) {
       log(e.toString());
     }
-  }
-
-  //get_site_visit_status
-  static Future getVisitStatus() async {
-    try {
-      http.Response response = await http.post(
-        Uri.parse("${await Config.getUrl()}get_site_visit_status"),
-        body: {'token': await getSharedPreference('token')},
-      );
-
-      if (response.statusCode == 200) {
-        return VisitStatusModel.fromJson(jsonDecode(response.body));
-      }
-    } catch (e) {
-      log(e.toString());
-    }
-  }
-
-  //site_vist questions and answers
-  static Future<VisitQuestionsModel?> getVisitQuestions(String visitId) async {
-    try {
-      final response = await http.post(
-        Uri.parse("${await Config.getUrl()}get_site_visit_details"), // GUESS
-        body: {
-          'token': await getSharedPreference('token'),
-          'task_id': visitId, // GUESS
-        },
-      );
-      log('questions response: ${response.statusCode} ${response.body}');
-      if (response.statusCode == 200) {
-        return visitQuestionsModelFromJson(response.body);
-      }
-    } catch (e) {
-      log(e.toString());
-    }
-    return null;
-  }
-
-  /// answers: [{question_id, answer_type, answer}]
-  /// files: {question_id: local file path} (only newly picked files)
-  static Future<Map<String, dynamic>?> saveVisitAnswers({
-    required String visitId,
-    required String status, // "Pending" | "Completed"
-    required List<Map<String, dynamic>> answers,
-    required Map<int, String> files,
-  }) async {
-    try {
-      final request = http.MultipartRequest(
-        'POST',
-        Uri.parse("${await Config.getUrl()}save_visit_answers"), // GUESS
-      );
-      request.fields['token'] = await getSharedPreference('token') ?? '';
-      request.fields['visit_id'] = visitId; // GUESS
-      request.fields['task_status'] = status; // GUESS
-      request.fields['answers'] = jsonEncode(answers); // GUESS
-      for (final e in files.entries) {
-        request.files
-            .add(await http.MultipartFile.fromPath('file_${e.key}', e.value));
-      }
-      final streamed = await request.send();
-      final response = await http.Response.fromStream(streamed);
-      log('save response: ${response.statusCode} ${response.body}');
-      if (response.statusCode == 200) {
-        return Map<String, dynamic>.from(json.decode(response.body));
-      }
-    } catch (e) {
-      log(e.toString());
-    }
-    return null;
   }
 
   // static Future updateTaskStatus(

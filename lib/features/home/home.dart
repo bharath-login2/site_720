@@ -172,7 +172,7 @@ import 'package:site_720/features/work/cubit/work_cubit.dart';
 import '../../../core/constants/routes.dart';
 import '../../../core/utilities/shared_preferences.dart';
 import '../task_management/views/task_list.dart';
-import '../visit/views/visit_details.dart';
+import '../site_visit/views/site_visit_list.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});

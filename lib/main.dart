@@ -49,10 +49,12 @@ import 'features/stages/views/stages.dart';
 import 'features/stages/views/stage_history.dart';
 import 'features/task_management/views/task_details.dart';
 import 'features/task_management/views/task_history.dart';
-import 'features/visit/views/visit_detailed_list.dart';
+import 'features/site_visit/views/site_visit_details_summary.dart';
 import 'features/visit/views/visit_history.dart';
 import 'features/work_details/views/work_details_screen.dart';
 import 'features/payment_details/views/payment_details_screen.dart';
+import 'package:site_720/features/site_visit_history/cubit/site_visit_history_cubit.dart';
+import 'package:site_720/features/site_visit_history/views/site_visit_history.dart';
 import 'features/payment_schedule/views/payment_schedule_screen.dart';
 import 'features/installment/views/installment_screen.dart';
 import 'features/estimate_request/views/estimate_request_screen.dart';
@@ -331,7 +333,7 @@ class MyApp extends StatelessWidget {
         '/taskHistoryScreen': (context) => const TaskHistoryScreen(),
         '/notification': (context) => const NotificationList(),
         '/workIssuesList': (context) => WorkIssues(),
-        '/visitDetails': (context) => const VisitDetails(),
+        '/siteVistDetails': (context) => const VisitDetails(),
         '/visitHistory': (context) => VisitHistory(),
         '/myAccount': (context) => const MyAccount(),
         '/petty': (context) => const PettyScreen(),
@@ -341,6 +343,16 @@ class MyApp extends StatelessWidget {
               create: (_) => ProjectInfoCubit(),
               child: const ProjectInfoPage(),
             ),
+        AppRoutes.siteVisitHistory: (context) {
+          final args = ModalRoute.of(context)!.settings.arguments
+              as Map<String, dynamic>;
+          final id = args['id'].toString();
+
+          return BlocProvider(
+            create: (_) => SiteVisitHistoryCubit()..fetchVisits(id),
+            child: SiteVisitHistoryPage(id: id),
+          );
+        },
       },
     );
   }

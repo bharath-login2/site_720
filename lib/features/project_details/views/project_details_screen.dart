@@ -752,6 +752,20 @@ class ProjectDetails extends StatelessWidget {
                                           .43,
                                     ),
                                   ),
+                                  InkWell(
+                                    onTap: () {
+                                      connStatus = true;
+                                      Navigator.pushNamed(
+                                          context, AppRoutes.siteVisitHistory,
+                                          arguments: {"id": id});
+                                    },
+                                    child: DetailsButtonContainer(
+                                      title: "Site visit history",
+                                      color: AppColors.primaryColor,
+                                      width: MediaQuery.of(context).size.width *
+                                          .43,
+                                    ),
+                                  ),
                                   // InkWell(
                                   //   onTap: () {
                                   //     connStatus = true;

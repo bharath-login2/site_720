@@ -108,29 +108,29 @@ class VisitTaskCubit extends Cubit<VisitTaskState> {
     }
   }
 
-  Future<void> save({
-    required String status,
-    required List<Map<String, dynamic>> answers,
-    required Map<int, String> files,
-  }) async {
-    emit(VisitTaskSaving());
-    try {
-      final res = await HttpServices.saveVisitAnswers(
-        visitId: visitId,
-        status: status,
-        answers: answers,
-        files: files,
-      );
-      if (res != null && res['status'] == true) {
-        emit(VisitTaskSaved(res['message']?.toString().isNotEmpty == true
-            ? res['message'].toString()
-            : 'Saved successfully'));
-      } else {
-        emit(VisitTaskSaveFailed(
-            res?['message']?.toString() ?? 'Failed to save'));
-      }
-    } catch (e) {
-      emit(VisitTaskSaveFailed('Failed to save: $e'));
-    }
-  }
+  // Future<void> save({
+  //   required String status,
+  //   required List<Map<String, dynamic>> answers,
+  //   required Map<int, String> files,
+  // }) async {
+  //   emit(VisitTaskSaving());
+  //   try {
+  //     final res = await HttpServices.saveVisitAnswers(
+  //       visitId: visitId,
+  //       status: status,
+  //       answers: answers,
+  //       files: files,
+  //     );
+  //     if (res != null && res['status'] == true) {
+  //       emit(VisitTaskSaved(res['message']?.toString().isNotEmpty == true
+  //           ? res['message'].toString()
+  //           : 'Saved successfully'));
+  //     } else {
+  //       emit(VisitTaskSaveFailed(
+  //           res?['message']?.toString() ?? 'Failed to save'));
+  //     }
+  //   } catch (e) {
+  //     emit(VisitTaskSaveFailed('Failed to save: $e'));
+  //   }
+  // }
 }
